@@ -397,6 +397,41 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
 /* Ask Ula, parked in the right column so it is reachable from any question */
 .aside-ask { margin-bottom: 18px; }
 
+/* --- your answers, as chips that edit themselves ------------------------- */
+/* A tester went looking for her earlier choices and could not find them. These
+   sit at the top of every screen in the journey and each one is its own edit
+   control, so "where do I change that?" has a visible answer. */
+.chips-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 0 0 22px; }
+.chips-row__label {
+  font-size: 12.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+  color: var(--navy-soft); margin-right: 3px;
+}
+.answer-chip {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: #fff; border: 1px solid var(--border); border-radius: 999px;
+  padding: 6px 12px 6px 11px; font-size: 14.5px; font-weight: 600; color: var(--ink);
+  max-width: 100%; cursor: pointer;
+}
+.answer-chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 22ch; }
+.answer-chip svg:first-child { color: var(--navy-soft); flex: 0 0 auto; }
+.answer-chip svg:last-child { color: var(--navy-soft); flex: 0 0 auto; opacity: .75; }
+.answer-chip:hover { border-color: var(--ink); }
+.answer-chip:hover svg:last-child { opacity: 1; }
+
+/* the questions own the screen — no side panel to compete with them */
+.one-col { display: block; }
+.one-col__main { padding: 8px clamp(20px, 3.4vw, 60px) 90px; max-width: 720px; margin: 0 auto; }
+
+/* what we found so far, inline and only once there is something to show */
+.found { margin-top: 30px; padding-top: 22px; border-top: 1px solid var(--border); }
+.found__head { display: flex; align-items: center; gap: 8px; font-size: 15px; color: var(--navy); margin-bottom: 12px; }
+.found .venue-strip { grid-template-columns: repeat(3, minmax(0,1fr)); }
+
+/* Ask Ula on a question screen: one quiet line until asked for */
+.quietask__link { margin: 26px 0 0; font-size: 15px; }
+.quietask__link .linkish { display: inline-flex; align-items: center; gap: 7px; color: var(--navy); font-weight: 600; }
+.quietask { margin-top: 26px; }
+
 /* --- the recommendation as value, not a checkout ------------------------- */
 /* The page used to open with a price. It now opens with a week, and the plan sits
    in a sticky column beside it — a consequence of the value, not the pitch. */
@@ -429,7 +464,8 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
   font-size: 12.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
   color: var(--navy-soft); margin-bottom: 9px;
 }
-.planbox__alt-row { font-size: 15.5px; margin-bottom: 12px; }
+.planbox__alt-row { font-size: 15.5px; }
+.planbox__alt-row .linkish { margin-left: 6px; }
 .planbox__alt-row em { display: block; font-style: normal; font-size: 14px; color: var(--navy); margin-top: 3px; }
 
 /* the week */
@@ -476,7 +512,28 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
 .paybar { display: none; }
 
 /* --- coverage: what you can actually do on this plan --------------------- */
-.cov__summary { font-size: 17px; line-height: 1.45; margin: 0 0 20px; }
+.cov__summary { font-size: 18px; line-height: 1.4; margin: 0 0 14px; }
+.cov__line { display: flex; align-items: flex-start; gap: 9px; font-size: 15px; line-height: 1.45; margin: 0 0 10px; color: var(--navy); }
+.cov__line svg { flex: 0 0 auto; margin-top: 3px; }
+.cov__line b { color: var(--ink); }
+.cov__detail-wrap > summary {
+  display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
+  font-size: 14.5px; font-weight: 700; color: var(--ink); margin-top: 6px;
+}
+.cov__detail-wrap > summary::-webkit-details-marker { display: none; }
+.cov__detail-wrap > summary::after {
+  content: ""; width: 7px; height: 7px; border-right: 2px solid var(--navy-soft);
+  border-bottom: 2px solid var(--navy-soft); transform: rotate(45deg); margin-left: 2px;
+}
+.cov__detail-wrap[open] > summary::after { transform: rotate(225deg); }
+.cov__detail-wrap[open] .cov__rows { margin-top: 16px; }
+.morevenues > summary {
+  display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
+  font-size: 14.5px; font-weight: 700; margin-top: 14px;
+}
+.morevenues > summary::-webkit-details-marker { display: none; }
+.planbox__one { display: flex; gap: 9px; font-size: 15px; line-height: 1.45; margin: 16px 0 0; }
+.planbox__one svg { flex: 0 0 auto; margin-top: 2px; }
 .cov__rows { display: flex; flex-direction: column; gap: 4px; }
 .cov__row { display: flex; gap: 14px; padding: 14px 0; border-top: 1px solid var(--border); }
 .cov__row:first-child { border-top: 0; padding-top: 4px; }
@@ -864,6 +921,11 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
   .week__day { flex-basis: 68px; font-size: 13.5px; }
   .week__each { text-align: left; }
   .venue-grid--big { grid-template-columns: 1fr 1fr; }
+  .one-col__main { padding-bottom: 110px; }
+  .found .venue-strip { grid-template-columns: 1fr 1fr; }
+  .chips-row { gap: 7px; margin-bottom: 18px; }
+  .answer-chip { font-size: 13.5px; padding: 5px 10px; }
+  .answer-chip span { max-width: 14ch; }
   /* On a phone the question owns the screen. Ask Ula is one tap away on the
      landing page and on the recommendation, so it does not need to be here. */
   .aside-ask { display: none; }
@@ -1039,6 +1101,7 @@ const VARIANT = new URLSearchParams(location.search).get('variant') === 'email-f
 /* ---------------- icons ---------------- */
 const svg = (b, s = 22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${b}</svg>`;
 const ICONS = {
+  pencil:'<path d="M4 20h4L20 8l-4-4L4 16v4Z"/><path d="M14.5 5.5 18.5 9.5"/>',
   pin:'<path d="M12 21s7-5.4 7-11a7 7 0 1 0-14 0c0 5.6 7 11 7 11Z"/><circle cx="12" cy="10" r="2.6"/>',
   grid:'<rect x="4" y="4" width="6.5" height="6.5" rx="1.2"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.2"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.2"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.2"/>',
   clock:'<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
@@ -1570,7 +1633,7 @@ let ROUTE='landing', ACKTEXT=null, UNCLEAR=false, NOCHOICE=false, EDITING=null, 
 /* City is "detected" in production (IP or browser location). The pilot only has
    venue data loaded for Berlin, so the chip says so plainly and a Change link
    never lies about coverage — picking another city logs the demand instead. */
-let CITYPICK=false, CITYWANTED=null;
+let CITYPICK=false, CITYWANTED=null, ASKOPEN=false;
 
 const esc = v => String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 const log = (name,payload) => S.events.push({ name, payload:payload||null, at:new Date().toISOString() });
@@ -1894,6 +1957,23 @@ function landing() {
   </footer>`;
 }
 
+/* The answers you have given, as chips you can tap to change.
+   A tester went looking for her earlier choices and could not find them: they
+   were in a side panel that only showed them, and in a disclosure at the very
+   bottom of the recommendation. Now they sit at the top of whatever screen you
+   are on, and each one is the edit control for itself. */
+function answerChips(opts = {}) {
+  const { label = 'Your answers', compact = false } = opts;
+  const given = QUESTIONS.filter(q => isAnswered(S.answers[q.id]));
+  if (!given.length) return '';
+  return `<div class="chips-row ${compact?'chips-row--compact':''}">
+    <span class="chips-row__label">${esc(label)}</span>
+    ${given.map(q => `<button class="answer-chip" data-edit="${esc(q.id)}"
+        aria-label="Change your answer to: ${esc(q.prompt)}">
+        ${icon(q.icon,15)}<span>${esc(answerLabel(q.id,S.answers[q.id]))}</span>${icon('pencil',14)}</button>`).join('')}
+  </div>`;
+}
+
 function fitScreen() {
   const q = EDITING ? qById(EDITING) : nextQuestion(S.answers);
   if (!q) return recommendationScreen();
@@ -1910,9 +1990,14 @@ function fitScreen() {
       <input type="${q.multi?'checkbox':'radio'}" name="choice" value="${esc(o.id)}" ${picked.includes(o.id)?'checked':''} style="position:absolute;opacity:0;width:0;height:0">
       <span class="option-card__icon">${icon(o.icon||'grid',22)}</span><span class="option-card__label">${esc(o.label)}</span>
       <span class="option-card__check">${icon(q.multi?'checkThin':'checkThin',17)}</span></label>`).join('');
-  return `${topbar(1)}<div class="two-col"><main class="two-col__main" id="main">
+  /* Once we know where they are, show what we found — inline, small, and only
+     then. Before that there is nothing worth putting in a side panel, and a
+     tester told us the panel was a distraction on the first questions. */
+  const found = S.answers.area ? (match.venues||[]).slice(0,3) : [];
+  return `${topbar(1)}<div class="one-col"><main class="one-col__main" id="main">
     <div class="qprogress"><span class="qprogress__label">Question ${idx+1} of ${QUESTIONS.length}</span>
       <span class="qprogress__track"><span class="qprogress__fill" style="width:${(idx)/QUESTIONS.length*100}%"></span></span></div>
+    ${answerChips({ label:'So far' })}
     ${echo?`${ulaRow()}<div class="bubble">${esc(echo)}</div>`:''}
     ${ACKTEXT?`<div class="notice">${icon('sparkle',19)}<span>${esc(ACKTEXT)}</span></div>`:''}
     ${UNCLEAR?`<div class="notice notice--grey">${icon('info',19)}<span>I didn&rsquo;t quite catch that one — could you pick the closest option below? You can always change it later.</span></div>`:''}
@@ -1937,7 +2022,12 @@ function fitScreen() {
         ${idx>0?`<button class="btn btn--secondary" type="button" data-back="${esc(q.id)}">${icon('back',18)}</button>`:''}
         <button class="btn btn--primary" type="submit" data-continue>Continue</button></div>
     </form>`}
-  </main>${fitPanel(match,prov,false,true)}</div>${exitModal()}${venueSheet()}`;
+    ${found.length?`<div class="found">
+      <div class="found__head">${icon('pin',16)} ${plural((match.venues||[]).length,'place','places')} near ${esc(match.area.name)} so far${prov?` &middot; looking like <b>${esc(prov.planName)}</b>`:''}</div>
+      <div class="venue-strip">${found.map(v=>venueCard(v)).join('')}</div></div>`:''}
+    ${ASKOPEN?`<div class="quietask">${askBlock(true)}</div>`
+      :`<p class="quietask__link"><button class="linkish" type="button" data-open-ask>${icon('sparkle',15)} Something you want to ask Ula first?</button></p>`}
+  </main></div>${exitModal()}${venueSheet()}`;
 }
 
 /* The block that answers the question the pricing page never does. One row per
@@ -1971,22 +2061,21 @@ function coverageBlock(rec, match, plan) {
       </div></div>`;
   }).join('');
 
+  /* One sentence by default. A tester said there was too much to process at the
+     end, so the per-activity detail is one tap away instead of always open —
+     but the number itself, and any real upgrade, stay in plain sight. */
   return `<div class="card cov">
-    <div class="fitpanel__label">What you can do on ${esc(plan.name)}, ${where}</div>
-    <p class="cov__summary"><b>${cov.totals.included} of ${cov.totals.nearby}</b> places you&rsquo;d use are included, covering
-      ${cov.totals.groupsCovered} of the ${plural(cov.totals.groupsAsked,'activity','activities')} you picked.</p>
-    <div class="cov__rows">${rows}</div>
-    ${up?`<div class="cov__upsell">
-        <div>
-          <div class="cov__upsell-head">${icon('star',18)} ${esc(up.planName)} adds ${plural(up.addsCount,'place','places')} you&rsquo;d use</div>
-          <div class="cov__upsell-body">${up.adds.slice(0,3).map(v=>esc(v.name)).join(', ')}${up.addsCount>3?` and ${up.addsCount-3} more`:''}
-            &mdash; ${up.delta} € more a month.</div>
-        </div>
-        <button class="btn btn--secondary" data-plan="${esc(up.planId)}">Switch to ${esc(up.planName)}</button>
-      </div>`:''}
-    ${down?`<p class="cov__down">${icon('info',16)} <span>${esc(down.planName)} would cover the same places for ${down.saves} € less a month.
-        <button class="linkish strong" data-plan="${esc(down.planId)}">Switch to ${esc(down.planName)}</button></span></p>`:''}
-    <p class="xsmall muted" style="margin-top:14px">Counted from the visit limits each venue publishes on its own page. Not an estimate.</p>
+    <p class="cov__summary"><b>${esc(plan.name)} opens ${cov.totals.included} of the ${plural(cov.totals.nearby,'place','places')}</b>
+      you&rsquo;d use ${where}.</p>
+    ${up?`<p class="cov__line">${icon('star',16)} <span><b>${esc(up.planName)}</b> would add ${plural(up.addsCount,'place','places')}
+        &mdash; ${up.adds.slice(0,2).map(v=>esc(v.name)).join(', ')}${up.addsCount>2?` +${up.addsCount-2}`:''}, ${up.delta} € more a month.
+        <button class="linkish strong" data-plan="${esc(up.planId)}">Switch</button></span></p>`:''}
+    ${down?`<p class="cov__line">${icon('info',16)} <span><b>${esc(down.planName)}</b> covers the same places for ${down.saves} € less.
+        <button class="linkish strong" data-plan="${esc(down.planId)}">Switch</button></span></p>`:''}
+    <details class="cov__detail-wrap"><summary>Activity by activity</summary>
+      <div class="cov__rows">${rows}</div>
+      <p class="xsmall muted" style="margin-top:14px">Counted from the visit limits each venue publishes on its own page. Not an estimate.</p>
+    </details>
   </div>`;
 }
 
@@ -2036,7 +2125,9 @@ function recommendationScreen() {
     ? pool.filter(v=>groups.some(g=>venueInGroup(v,groupById(g)||{activities:[]}))).sort((x,y)=>x.distanceKm-y.distanceKm)
     : [];
   const usingWanted = wanted.length>=3;
-  const shownVenues = (usingWanted ? wanted : (match.venues||[])).slice(0,6);
+  const allVenues = usingWanted ? wanted : (match.venues||[]);
+  const shownVenues = allVenues.slice(0,4);
+  const moreVenues = allVenues.slice(4,10);
 
   const commits = COMMITMENTS.map(c=>`<button class="alt-card ${c.id===S.commitmentId?'is-current':''}" data-commit="${esc(c.id)}" aria-pressed="${c.id===S.commitmentId}">
       <span class="alt-card__name">${priceFor(plan,c.id)} € <span style="font-size:15px;font-weight:600">/ month</span></span>
@@ -2073,17 +2164,13 @@ function recommendationScreen() {
     <div class="planbox__price"><b>${price} €</b><span>/ month</span></div>
     <div class="planbox__term">${esc(commitment.label)}</div>
     ${each?`<div class="planbox__each">about ${each} € a session at ${plural(wp.perMonth,'visit','visits')} a month</div>`:''}
-    <ul class="planbox__facts">
-      <li>${icon('checkThin',17)}<span>${esc(plan.checkInModel)}</span></li>
-      <li>${icon('checkThin',17)}<span>${esc(plan.venueCount)} venues across the network</span></li>
-      <li>${icon('checkThin',17)}<span>${commitment.canPause?'Pause for 1–6 months at no cost':'Cancel with 72 hours&rsquo; notice at the end of the term'}</span></li>
-    </ul>
+    <p class="planbox__one">${icon('checkThin',16)} <span>${esc(plan.checkInModel)}${commitment.canPause?', and you can pause it':''}.</span></p>
     <div class="planbox__cta desktop-cta"><button class="btn btn--primary btn--block" data-go="${S.email?'details':'save'}">Continue with ${esc(plan.name)}</button></div>
     <p class="planbox__fine">No payment yet &mdash; you can still change everything.</p>
     ${alt?`<div class="planbox__alt">
       <div class="planbox__alt-head">${altIsRecommendation?'Ula&rsquo;s pick':'Also worth a look'}</div>
-      <div class="planbox__alt-row"><span><b>${esc(alt.name)}</b> ${altPrice} € / month<em>${altLine}</em></span></div>
-      <button class="btn btn--secondary btn--block" data-plan="${esc(alt.id)}">Switch to ${esc(alt.name)}</button>
+      <div class="planbox__alt-row"><b>${esc(alt.name)}</b> &middot; ${altPrice} € / month
+        <button class="linkish strong" data-plan="${esc(alt.id)}">Switch</button><em>${altLine}</em></div>
     </div>`:''}
   </div>`;
 
@@ -2091,17 +2178,21 @@ function recommendationScreen() {
     ${ulaRow()}
     <h1 class="h-question" style="margin:6px 0 10px" tabindex="-1">Here&rsquo;s what you could do near ${esc(where)}</h1>
     <p class="lede" style="margin:0 0 6px;max-width:56ch">${esc(rec.explanation)}</p>
+    ${answerChips({ label:'Change anything' })}
     ${match.reachedFurther?`<div class="notice notice--grey">${icon('info',19)}<span>Nothing in this pilot&rsquo;s venue set does ${esc(groupWords(groups))} right by ${esc(where)}, so I looked across the city. The distances below are real.</span></div>`:''}
 
     ${weekBlock}
 
     <div class="card"><div class="fitpanel__label">${usingWanted?`Your places for ${esc(groupWords(groups))}`:'Places near you'}</div>
       <div class="venue-grid venue-grid--big">${shownVenues.map(v=>venueCard(v)).join('')}</div>
-      <p class="xsmall muted" style="margin-top:14px">Tap any venue for opening hours, what your plan covers there, and a link to its page. Real Urban Sports Club venues; distances from ${esc(where)} are approximate.</p></div>
+      ${moreVenues.length?`<details class="morevenues"><summary>${plural(moreVenues.length,'more place','more places')} nearby</summary>
+        <div class="venue-grid venue-grid--big" style="margin-top:14px">${moreVenues.map(v=>venueCard(v)).join('')}</div></details>`:''}
+      <p class="xsmall muted" style="margin-top:14px">Tap any venue for opening hours and what your plan covers there.</p></div>
 
     ${coverageBlock(rec, match, plan)}
 
-    ${askBlock(true)}
+    ${ASKOPEN?`<div class="quietask">${askBlock(true)}</div>`
+      :`<p class="quietask__link"><button class="linkish" type="button" data-open-ask>${icon('sparkle',15)} Ask Ula a question about any of this</button></p>`}
 
     <div style="margin-top:26px">
       <details class="disclosure" open><summary><span class="disclosure__icon">${icon('sparkle',18)}</span>Why ${esc(plan.name)} for you? <span class="disclosure__hint">${rec.reasons.length} reasons</span></summary>
@@ -2109,26 +2200,25 @@ function recommendationScreen() {
         ${rec.notes.length?`<div class="notice notice--grey" style="margin-top:18px">${icon('info',19)}<span>${esc(rec.notes.join(' '))}</span></div>`:''}
         <p class="xsmall muted" style="margin-top:14px">Chosen by rules you can read, not by a model. Ula never picks the plan.</p></div></details>
 
-      <details class="disclosure"><summary><span class="disclosure__icon">${icon('info',18)}</span>What&rsquo;s not included <span class="disclosure__hint">worth knowing</span></summary>
-        <div class="disclosure__body"><ul class="reasons">${plan.limitations.map(l=>`<li>${icon('info',19)}<span>${esc(l)}</span></li>`).join('')}</ul>
-        <p class="xsmall muted" style="margin-top:14px">${esc(plan.checkInModel)} · ${esc(plan.venueCount)} venues · ${commitment.minimumTermMonths===1?'no minimum term':commitment.minimumTermMonths+'-month minimum term'}. ${esc(RULES.cancellationNotice)}</p></div></details>
+      <details class="disclosure"><summary><span class="disclosure__icon">${icon('info',18)}</span>The small print, and the other plans <span class="disclosure__hint">limits, terms, prices</span></summary>
+        <div class="disclosure__body">
+          <div class="fitpanel__label">Worth knowing about ${esc(plan.name)}</div>
+          <ul class="reasons">${plan.limitations.map(l=>`<li>${icon('info',19)}<span>${esc(l)}</span></li>`).join('')}</ul>
+          <p class="xsmall muted" style="margin-top:12px">${esc(plan.checkInModel)} · ${esc(plan.venueCount)} venues · ${commitment.minimumTermMonths===1?'no minimum term':commitment.minimumTermMonths+'-month minimum term'}. ${esc(RULES.cancellationNotice)}</p>
 
-      <details class="disclosure"><summary><span class="disclosure__icon">${icon('calendar',18)}</span>Pay monthly or commit for a year <span class="disclosure__hint">${esc(commitment.label)}</span></summary>
-        <div class="disclosure__body"><div class="alt-grid" style="margin-top:0">${commits}</div></div></details>
+          <div class="fitpanel__label" style="margin-top:26px">Pay monthly, or commit and pay less</div>
+          <div class="alt-grid" style="margin-top:0">${commits}</div>
 
-      <details class="disclosure"><summary><span class="disclosure__icon">${icon('tag',18)}</span>See the other plans <span class="disclosure__hint">${PLANS.length-1} alternatives</span></summary>
-        <div class="disclosure__body"><div class="alt-quiet">${others}</div>
-        ${!isRec?`<p style="margin-top:16px"><button class="linkish strong" data-plan="${esc(rec.planId)}">${icon('refresh',16)} Back to Ula&rsquo;s recommendation (${esc(rec.planName)})</button></p>`:''}</div></details>
-
-      <details class="disclosure"><summary><span class="disclosure__icon">${icon('refresh',18)}</span>Change an answer <span class="disclosure__hint">${QUESTIONS.filter(q=>isAnswered(S.answers[q.id])).length} given</span></summary>
-        <div class="disclosure__body"><div class="answer-review">${review}</div></div></details>
+          <div class="fitpanel__label" style="margin-top:26px">The other plans</div>
+          <div class="alt-quiet">${others}</div>
+          ${!isRec?`<p style="margin-top:16px"><button class="linkish strong" data-plan="${esc(rec.planId)}">${icon('refresh',16)} Back to Ula&rsquo;s recommendation (${esc(rec.planName)})</button></p>`:''}
+        </div></details>
     </div>
 
     <div class="btn-row"><button class="btn btn--secondary" data-open-exit>Save and come back later</button></div>
   </main>
   <aside class="two-col__aside two-col__aside--sticky">
     ${planAside}
-    ${fitPanelContents(match, true)}
   </aside></div>
   <div class="paybar">
     <div class="paybar__info"><b>${esc(plan.name)}</b><span>${price} € / month${each?` · ≈ ${each} € a session`:''}</span></div>
@@ -2392,7 +2482,7 @@ function render(focus = true) {
 function go(route, opts={}) {
   if (['recommendation','save','details','payment'].includes(route) && !fitComplete(S.answers)) route = 'fit';
   if (route==='details' && !S.email && !S.skippedSave) route = 'save';
-  ROUTE = route; EDITING = null; SHEET = null; CITYPICK = false; CITYWANTED = null;
+  ROUTE = route; EDITING = null; SHEET = null; CITYPICK = false; CITYWANTED = null; ASKOPEN = false;
   if (['fit','recommendation','save','details','payment'].includes(route)) S.lastStep = route;
   if (!opts.replace) history.pushState({ route }, '', location.href.split('#')[0] + '#' + route);
   render();
@@ -2411,7 +2501,7 @@ function advance(nextRoute) {
 
 /* ---------------- interactions ---------------- */
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-change-city],[data-city],[data-unsure],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula]');
+  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-change-city],[data-city],[data-unsure],[data-open-ask],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula]');
   if (!t) return;
 
   if (t.dataset.go !== undefined) { e.preventDefault(); go(t.dataset.go); return; }
@@ -2434,6 +2524,8 @@ document.addEventListener('click', e => {
   if (t.dataset.closeSheet !== undefined) { SHEET=null; render(false); return; }
   if (t.dataset.changeCity !== undefined) { CITYPICK=!CITYPICK; if(!CITYPICK) CITYWANTED=null;
     if (CITYPICK) log('city_change_opened'); render(false); return; }
+  if (t.dataset.openAsk !== undefined) { ASKOPEN = true; log('ask_opened_from_question'); render(false);
+    document.querySelector('.quietask .ask__row input')?.focus(); return; }
   if (t.dataset.unsure) {
     S.answers[t.dataset.unsure] = [SKIP];
     log('answer_given', { question:t.dataset.unsure, value:'not_sure', mode:'skip' });
