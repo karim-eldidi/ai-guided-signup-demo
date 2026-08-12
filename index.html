@@ -298,12 +298,26 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
 
 /* Questions with many equivalent choices (e.g. which part of the city) become a
    compact two-column grid, so the screen still reads as one decision. */
-.options--compact { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.options--compact .option-card { min-height: 54px; padding: 10px 16px; font-size: 16.5px; }
+.options--compact { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.options--compact /* The input is the real control: off-screen but focusable, full-size to the
+   browser, so keyboard and screen-reader behaviour is the native one. */
+.option-card__input {
+  position: absolute; width: 1px; height: 1px; margin: -1px;
+  padding: 0; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); border: 0;
+}
+.option-card:has(.option-card__input:focus-visible) { outline: 3px solid #1b4bd8; outline-offset: 2px; }
+.option-card { min-height: 54px; padding: 10px 16px; font-size: 16.5px; }
 .options--compact .option-card.is-selected { padding: 9px 15px; }
 .options--compact .option-card__icon { width: 30px; height: 30px; }
 .options--compact .option-card__check { width: 25px; height: 25px; }
 
+/* The input is the real control: off-screen but focusable, full-size to the
+   browser, so keyboard and screen-reader behaviour is the native one. */
+.option-card__input {
+  position: absolute; width: 1px; height: 1px; margin: -1px;
+  padding: 0; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); border: 0;
+}
+.option-card:has(.option-card__input:focus-visible) { outline: 3px solid #1b4bd8; outline-offset: 2px; }
 .option-card {
   display: flex; align-items: center; gap: 17px;
   width: 100%;
@@ -366,7 +380,14 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
    than a stack of rows, and shorter, so the question and its CTA stay on one
    screen. */
 .options--tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.options--tiles .option-card {
+.options--tiles /* The input is the real control: off-screen but focusable, full-size to the
+   browser, so keyboard and screen-reader behaviour is the native one. */
+.option-card__input {
+  position: absolute; width: 1px; height: 1px; margin: -1px;
+  padding: 0; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); border: 0;
+}
+.option-card:has(.option-card__input:focus-visible) { outline: 3px solid #1b4bd8; outline-offset: 2px; }
+.option-card {
   position: relative;
   flex-direction: column; align-items: flex-start; justify-content: flex-start;
   gap: 14px; min-height: 118px; padding: 18px 18px 20px;
@@ -380,15 +401,15 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
 /* --- answering in your own words ----------------------------------------- */
 /* Was a link that opened a field. It is the whole point of a guide you can
    talk to, so it is visible, labelled, and sits directly under the options. */
-.ownwords { margin-top: 16px; }
+.ownwords { margin-top: 12px; }
 .ownwords__label {
   display: flex; align-items: center; gap: 9px;
-  font-size: 15px; color: var(--navy); margin-bottom: 9px;
+  font-size: 15px; color: var(--navy); margin-bottom: 7px;
 }
 .ownwords__row {
   display: flex; align-items: center; gap: 10px;
   background: #fff; border: 1px dashed #b9b6ad; border-radius: var(--radius);
-  padding: 0 8px 0 18px; height: 56px;
+  padding: 0 8px 0 18px; height: 50px;
 }
 .ownwords__row:focus-within { border-style: solid; border-color: var(--ink); }
 .ownwords__row input { flex: 1 1 auto; border: 0; outline: none; height: 100%; background: transparent; font-size: 16.5px; }
@@ -441,7 +462,10 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
 /* A tester went looking for her earlier choices and could not find them. These
    sit at the top of every screen in the journey and each one is its own edit
    control, so "where do I change that?" has a visible answer. */
-.chips-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 0 0 22px; }
+/* One short sentence under the headline, not a paragraph of lede at 20px. */
+.reco-lede { font-size: 16.5px; line-height: 1.45; color: var(--navy); max-width: 46ch; margin: 0 0 14px; }
+
+.chips-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 0 0 16px; }
 .chips-row__label {
   font-size: 12.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
   color: var(--navy-soft); margin-right: 3px;
@@ -460,7 +484,7 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
 
 /* the questions own the screen — no side panel to compete with them */
 .one-col { display: block; }
-.one-col__main { padding: 8px clamp(20px, 3.4vw, 60px) 90px; max-width: 720px; margin: 0 auto; }
+.one-col__main { padding: 4px clamp(20px, 3.4vw, 60px) 90px; max-width: 720px; margin: 0 auto; }
 
 /* what we found so far, inline and only once there is something to show */
 .found { margin-top: 30px; padding-top: 22px; border-top: 1px solid var(--border); }
@@ -574,7 +598,8 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
 .paybar { display: none; }
 
 /* --- coverage: what you can actually do on this plan --------------------- */
-.cov__summary { font-size: 18px; line-height: 1.4; margin: 0 0 14px; }
+.cov__summary { font-size: 18px; line-height: 1.4; margin: 0 0 8px; }
+.cov__caveat { font-size: 13px; line-height: 1.45; color: var(--navy-soft); margin: 0 0 14px; }
 .cov__line { display: flex; align-items: flex-start; gap: 9px; font-size: 15px; line-height: 1.45; margin: 0 0 10px; color: var(--navy); }
 .cov__line svg { flex: 0 0 auto; margin-top: 3px; }
 .cov__line b { color: var(--ink); }
@@ -643,7 +668,14 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
 
 /* 5-6 options: chips rather than tall tiles, so the question still fits a screen */
 .options--chips { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.options--chips .option-card { min-height: 58px; padding: 11px 15px; font-size: 16.5px; gap: 12px; }
+.options--chips /* The input is the real control: off-screen but focusable, full-size to the
+   browser, so keyboard and screen-reader behaviour is the native one. */
+.option-card__input {
+  position: absolute; width: 1px; height: 1px; margin: -1px;
+  padding: 0; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); border: 0;
+}
+.option-card:has(.option-card__input:focus-visible) { outline: 3px solid #1b4bd8; outline-offset: 2px; }
+.option-card { min-height: 58px; padding: 11px 15px; font-size: 16.5px; gap: 12px; }
 .options--chips .option-card.is-selected { padding: 10px 14px; }
 .options--chips .option-card__icon { width: 34px; height: 34px; }
 .options--chips .option-card__check { width: 24px; height: 24px; }
@@ -670,7 +702,7 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
 /* --- detected city ------------------------------------------------------- */
 /* The location we assume, shown as a correctable statement rather than a
    silent default. In production the city comes from IP or browser location. */
-.geoblock { margin: -6px 0 16px; }
+.geoblock { margin: -4px 0 12px; }
 .geochip {
   display: inline-flex; align-items: center; gap: 9px;
   background: var(--cream); border: 1px solid var(--cream-line);
@@ -997,7 +1029,14 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
      landing page and on the recommendation, so it does not need to be here. */
   .aside-ask { display: none; }
   .options--tiles { gap: 10px; }
-  .options--tiles .option-card { min-height: 104px; padding: 14px 14px 16px; font-size: 16px; gap: 10px; }
+  .options--tiles /* The input is the real control: off-screen but focusable, full-size to the
+   browser, so keyboard and screen-reader behaviour is the native one. */
+.option-card__input {
+  position: absolute; width: 1px; height: 1px; margin: -1px;
+  padding: 0; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); border: 0;
+}
+.option-card:has(.option-card__input:focus-visible) { outline: 3px solid #1b4bd8; outline-offset: 2px; }
+.option-card { min-height: 104px; padding: 14px 14px 16px; font-size: 16px; gap: 10px; }
   .options--tiles .option-card__icon { width: 42px; height: 42px; }
   .ownwords__label { font-size: 14.5px; }
   .form-grid { grid-template-columns: 1fr; }
@@ -1039,7 +1078,7 @@ h1:focus, h2:focus { outline: none; }
 .copybox { word-break:break-all; background:var(--page-grey); padding:12px 14px; border-radius:6px; font-size:12.5px; line-height:1.5; }
 
 /* question progress */
-.qprogress { display:flex; align-items:center; gap:12px; margin-bottom:6px; }
+.qprogress { display:flex; align-items:center; gap:12px; margin-bottom:4px; }
 .qprogress__label { font-size:14px; font-weight:700; color:var(--navy-soft); white-space:nowrap; }
 .qprogress__track { flex:1 1 auto; max-width:220px; height:4px; background:#e7e5df; border-radius:3px; overflow:hidden; }
 .qprogress__fill { height:100%; background:var(--ink); transition:width .25s ease; }
@@ -1143,7 +1182,7 @@ button.venue-card:hover { border-color:var(--ink); }
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to main content</a>
-<div class="demo-banner">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment. <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button> <span class="demo-banner__build">build 12 Aug 13:05 UTC</span></div>
+<div class="demo-banner">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment. <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button> <span class="demo-banner__build">build 12 Aug 13:26 UTC</span></div>
 <div id="app"></div>
 
 <script>
@@ -1703,7 +1742,12 @@ function askBlock(compact) {
 }
 
 /* ---------------- state ---------------- */
-const BLANK = { email:null, authMethod:null, marketing:false, marketingAsked:false, answers:{}, freeText:{},
+/* `email` is whatever address we hold. `saveOptIn` is the separate fact that the
+   visitor ASKED us to keep their progress. A reviewer found the journey claiming
+   "Saved to you@example.com" after they had explicitly chosen not to save and
+   then typed the address the membership legally requires. Those are two different
+   things and the interface must not conflate them. */
+const BLANK = { email:null, authMethod:null, saveOptIn:false, marketing:false, marketingAsked:false, answers:{}, freeText:{},
                 weekDays:[], weekSwap:{},
                 chosenPlanId:null, planOverridden:false, commitmentId:'monthly', details:{}, startDate:null,
                 paid:false, lastStep:'landing', returns:0, events:[], source:null, campaign:null, variant:VARIANT };
@@ -1729,7 +1773,7 @@ const validEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e||'');
 /* ---------------- shared chrome ---------------- */
 const STEP_LABELS = { landing:'the landing page', fit:"Ula's questions", recommendation:'your recommendation', save:'saving your fit', details:'your details', payment:'the payment screen', converted:'a completed signup' };
 function topbar(step, opts={}) {
-  const { savedNote = Boolean(S.email), saveExit = true } = opts;
+  const { savedNote = Boolean(S.email && S.saveOptIn), saveExit = true } = opts;
   const steps=[{n:1,l:'Your fit'},{n:2,l:'Details'},{n:3,l:'Payment'}];
   const dots=steps.map((s,i)=>{
     const state=s.n===step?'is-current':s.n<step?'is-done':'';
@@ -1864,10 +1908,15 @@ const venueCard = (v, tappable=true) => {
   const plan = currentPlan();
   const inPlan = includedIn(v, plan.id);
   const needs = inPlan ? null : firstPlanWithAccess(v);
+  /* Name the match. A reviewer saw a bouldering hall in a list for "gym and
+     swimming" and could not tell why — it does have a gym floor, but the card
+     never said so. */
+  const chosen = (A().activities||[]).filter(x=>x!==SKIP).map(groupById).filter(Boolean);
+  const hits = chosen.filter(g=>venueInGroup(v,g)).map(g=>g.label.toLowerCase());
   return `<${tappable?'button':'div'} class="venue-card ${inPlan?'':'is-locked'}" ${tappable?`data-venue="${esc(v.id)}" aria-label="More about ${esc(v.name)}"`:''}>
   <div class="venue-card__media">${venueMedia(v)}${inPlan?'':`<span class="venue-card__lock">${icon('lock',13)} ${needs?esc(needs.name):'not included'}</span>`}</div>
   <div class="venue-card__body"><div class="venue-card__name">${esc(v.name)}</div>
-    <div class="venue-card__meta">${v.distanceKm} km away</div>
+    <div class="venue-card__meta">${v.distanceKm} km away${chosen.length?` · ${hits.length?`for ${esc(hits.join(', '))}`:'other activities'}`:''}</div>
     ${tappable?`<span class="venue-card__more">More</span>`:''}</div></${tappable?'button':'div'}>`;
 };
 
@@ -2001,7 +2050,7 @@ function landing() {
         <p class="terms-line">By continuing, you agree to our <button class="linkish" data-go="terms">Terms</button> and <button class="linkish" data-go="privacy">Privacy Policy</button>.</p>
         <button class="scrollcue" type="button" data-scroll-ula><span class="arrow">${icon('chevronDown',18)}</span> Or look around first &mdash; ask Ula a question</button>
         <p class="terms-line" style="margin-top:18px">Already a member? <button class="linkish" data-go="login">Log in</button></p></form>`;
-  return `<section class="landing" id="main">
+  return `<main class="landing" id="main">
     <div class="landing__panel">
       <div class="landing__panelbar"><button class="wordmark linkish" style="text-decoration:none" data-go="landing">Urban Sports Club</button>
         <button class="login-link login-link--mobile linkish" data-go="login">Log in</button></div>
@@ -2017,7 +2066,7 @@ function landing() {
       </div></div>
     <div class="landing__media"><button class="login-link login-link--desktop linkish" data-go="login">Log in</button>
       <img src="${IMG['/images/hero-climber.jpg']}" alt="A climber resting and smiling at a bouldering gym in Berlin"></div>
-  </section>
+  </main>
   <section class="ula-section"><div class="ula-section__inner">
     <div class="ula-section__eyebrow">${ulaAvatar('sm')}<span>Ula · Membership guide</span></div>
     <h2 class="h-section">Not sure where to start? Ask Ula.</h2>
@@ -2066,8 +2115,12 @@ function fitScreen() {
   /* A multi-select question is real checkboxes, so it still works with no
      JavaScript — same as every other action here. */
   const picked = Array.isArray(S.answers[q.id]) ? S.answers[q.id] : (S.answers[q.id]?[S.answers[q.id]]:[]);
-  const cards = opts.map(o=>`<label class="option-card ${picked.includes(o.id)?'is-selected':''}" tabindex="0" data-card>
-      <input type="${q.multi?'checkbox':'radio'}" name="choice" value="${esc(o.id)}" ${picked.includes(o.id)?'checked':''} style="position:absolute;opacity:0;width:0;height:0">
+  /* The input is the control: visually hidden but focusable and real size, so Tab
+     reaches the group, arrows move within a radio group, Space toggles, and screen
+     readers announce the checked state. It used to be 0x0 with opacity:0 and the
+     LABEL carried tabindex, which broke all four. */
+  const cards = opts.map(o=>`<label class="option-card ${picked.includes(o.id)?'is-selected':''}" data-card>
+      <input class="option-card__input" type="${q.multi?'checkbox':'radio'}" name="choice" value="${esc(o.id)}" ${picked.includes(o.id)?'checked':''}>
       <span class="option-card__icon">${icon(o.icon||'grid',22)}</span><span class="option-card__label">${esc(o.label)}</span>
       <span class="option-card__check">${icon(q.multi?'checkThin':'checkThin',17)}</span></label>`).join('');
   /* Once we know where they are, show what we found — inline, small, and only
@@ -2078,7 +2131,7 @@ function fitScreen() {
     <div class="qprogress"><span class="qprogress__label">Question ${idx+1} of ${QUESTIONS.length}</span>
       <span class="qprogress__track"><span class="qprogress__fill" style="width:${(idx)/QUESTIONS.length*100}%"></span></span></div>
     ${answerChips({ label:'So far' })}
-    ${echo?`${ulaRow()}<div class="bubble">${esc(echo)}</div>`:''}
+    ${echo && idx===1 ? `${ulaRow()}<div class="bubble">${esc(echo)}</div>` : (idx===0?ulaRow():'')}
     ${ACKTEXT?`<div class="notice">${icon('sparkle',19)}<span>${esc(ACKTEXT)}</span></div>`:''}
     ${UNCLEAR?`<div class="notice notice--grey">${icon('info',19)}<span>I didn&rsquo;t quite catch that one — could you pick the closest option below? You can always change it later.</span></div>`:''}
     ${TYPING?`<div class="typing" role="status" aria-label="Ula is typing"><span></span><span></span><span></span></div>`
@@ -2173,8 +2226,10 @@ function coverageBlock(rec, match, plan) {
      end, so the per-activity detail is one tap away instead of always open —
      but the number itself, and any real upgrade, stay in plain sight. */
   return `<div class="card cov">
-    <p class="cov__summary"><b>${esc(plan.name)} opens ${cov.totals.included} of the ${plural(cov.totals.nearby,'place','places')}</b>
-      you&rsquo;d use ${where}.</p>
+    <p class="cov__summary"><b>${esc(plan.name)} gets you into ${cov.totals.included} of the ${plural(cov.totals.nearby,'place','places')}</b>
+      I found for you ${where}.</p>
+    <p class="cov__caveat">That count is the ${plural(cov.totals.nearby,'venue','venues')} in this pilot&rsquo;s data near you &mdash; not the whole network,
+      which has ${esc(plan.venueCount)} venues on ${esc(plan.name)}.</p>
     ${up?`<p class="cov__line">${icon('star',16)} <span><b>${esc(up.planName)}</b> would add ${plural(up.addsCount,'place','places')}
         &mdash; ${up.adds.slice(0,2).map(v=>esc(v.name)).join(', ')}${up.addsCount>2?` +${up.addsCount-2}`:''}, ${up.delta} € more a month.
         <button class="linkish strong" data-plan="${esc(up.planId)}">Switch</button></span></p>`:''}
@@ -2310,7 +2365,7 @@ function recommendationScreen() {
   return `${topbar(1)}<div class="two-col two-col--reco"><main class="two-col__main" id="main">
     ${ulaRow()}
     <h1 class="h-question" style="margin:6px 0 10px" tabindex="-1">Here&rsquo;s what you could do near ${esc(where)}</h1>
-    <p class="lede" style="margin:0 0 6px;max-width:56ch">${esc(rec.explanation)}</p>
+    <p class="reco-lede">${esc(rec.explanation.split('. ')[0])}.</p>
     ${answerChips({ label:'Change anything' })}
     ${match.reachedFurther?`<div class="notice notice--grey">${icon('info',19)}<span>Nothing in this pilot&rsquo;s venue set does ${esc(groupWords(groups))} right by ${esc(where)}, so I looked across the city. The distances below are real.</span></div>`:''}
 
@@ -2393,22 +2448,27 @@ function saveScreen() {
 function detailsScreen() {
   const plan = currentPlan(), commitment = commitmentById(S.commitmentId);
   const d = Object.assign({ email: S.email||'' }, S.details||{});
+  /* autocomplete and inputmode: a reviewer pointed out the browser could not
+     autofill any of this, which is pure typing on a phone. */
   const f=(name,label,o={})=>`<div class="field ${o.wide?'field--wide':''}">
     <label for="${name}">${esc(label)}${o.optional?' <span class="muted" style="font-weight:400">(optional)</span>':''}</label>
-    <input id="${name}" name="${name}" type="${o.type||'text'}" value="${esc(d[name]||'')}" placeholder="${esc(o.ph||'')}">
+    <input id="${name}" name="${name}" type="${o.type||'text'}" value="${esc(d[name]||'')}" placeholder="${esc(o.ph||'')}"
+      ${o.auto?`autocomplete="${o.auto}"`:''} ${o.mode?`inputmode="${o.mode}"`:''} ${o.optional?'':'required aria-required="true"'}>
     ${ERRORS[name]?`<div class="field-error">${esc(ERRORS[name])}</div>`:''}
     ${o.why?`<div class="field__why">${icon('info',14)} ${esc(o.why)}</div>`:''}</div>`;
   return `${topbar(2)}<main class="content" id="main">
     <h1 class="h-question" style="margin-top:14px" tabindex="-1">Your details</h1>
     ${ulaNote(`Just what&rsquo;s needed to create your <strong>${esc(plan.name)}</strong> membership — nothing else. I&rsquo;ve explained the two that usually raise an eyebrow.`)}
     <form data-form="details" novalidate>
+      <p class="small muted" style="margin:0 0 14px">Everything is required except the mobile number.</p>
       <div class="card"><div class="form-grid">
-        ${f('firstName','First name')}${f('lastName','Last name')}
-        ${f('email','Email',{type:'email',wide:true})}
-        ${f('birthDate','Date of birth',{type:'date',why:'Venues check age on entry, and some classes have a minimum age. We don’t use it for anything else.'})}
-        ${f('phone','Mobile number',{type:'tel',optional:true,why:'Only used if a venue needs to reach you about a booking.'})}
-        ${f('street','Street and number',{wide:true})}
-        ${f('postcode','Postcode',{ph:'12045'})}${f('city','City',{ph:'Berlin'})}
+        ${f('firstName','First name',{auto:'given-name'})}${f('lastName','Last name',{auto:'family-name'})}
+        ${f('email','Email for your membership',{type:'email',auto:'email',mode:'email',wide:true,
+            why:S.saveOptIn?'Your progress is already saved to this address.':'Needed to create the membership. It does not save your progress — use “Save and exit” for that.'})}
+        ${f('birthDate','Date of birth',{type:'date',auto:'bday',why:'Venues check age on entry, and some classes have a minimum age. We don’t use it for anything else.'})}
+        ${f('phone','Mobile number',{type:'tel',auto:'tel',mode:'tel',optional:true,why:'Only used if a venue needs to reach you about a booking.'})}
+        ${f('street','Street and number',{auto:'street-address',wide:true})}
+        ${f('postcode','Postcode',{auto:'postal-code',mode:'numeric',ph:'12045'})}${f('city','City',{auto:'address-level2',ph:'Berlin'})}
       </div>
       <div class="notice" style="margin:24px 0 0">${icon('lock',19)}<span>Pilot demo — nothing you type here leaves this page, and no Urban Sports Club system receives it.</span></div></div>
       <div class="card"><div class="fitpanel__label">What you&rsquo;re signing up for</div>
@@ -2434,7 +2494,7 @@ function paymentScreen() {
       <div class="summary-row"><dt>Membership</dt><dd>${esc(plan.name)}</dd></div>
       <div class="summary-row"><dt>Billing frequency</dt><dd>Monthly</dd></div>
       <div class="summary-row"><dt>Commitment</dt><dd>${esc(commitment.label)}</dd></div>
-      <div class="summary-row"><dt>Start date</dt><dd>${esc(fmtDate(S.startDate))}</dd></div>
+      <div class="summary-row"><dt>Start date</dt><dd>${esc(fmtDate(S.startDate))}<div class="xsmall muted" style="font-weight:400">the 1st of next month, so you pay for whole months</div></dd></div>
       <div class="summary-row"><dt>Member</dt><dd>${esc(((S.details.firstName||'')+' '+(S.details.lastName||'')).trim()||'—')}</dd></div>
       <div class="summary-row summary-row--total"><dt>Total each month</dt><dd>${price} €</dd></div></dl></div>
     <form data-form="payment"><div class="card"><div class="fitpanel__label">Payment method</div>
@@ -2619,6 +2679,9 @@ function go(route, opts={}) {
   if (['recommendation','save','details','payment'].includes(route) && !fitComplete(S.answers)) route = 'fit';
   if (route==='details' && !S.email && !S.skippedSave) route = 'save';
   ROUTE = route; EDITING = null; SHEET = null; CITYPICK = false; CITYWANTED = null; ASKOPEN = false; DAYSOPEN = false;
+  /* A reviewer saw the save screen's "enter a valid email" error appear under the
+     details form's own email field. Errors belong to the screen that produced them. */
+  ERRORS = {}; FIELDS = {}; NOCHOICE = false; UNCLEAR = false;
   if (['fit','recommendation','save','details','payment'].includes(route)) S.lastStep = route;
   if (!opts.replace) history.pushState({ route }, '', location.href.split('#')[0] + '#' + route);
   render();
@@ -2802,8 +2865,8 @@ document.addEventListener('submit', e => {
     document.querySelector('.ask__answer')?.scrollIntoView({ behavior:'smooth', block:'center' });
     return;
   }
-  if (kind === 'start') { identify('fit'); return; }
-  if (kind === 'save')  { identify('details'); return; }
+  if (kind === 'start') { S.saveOptIn = true; identify('fit'); return; }
+  if (kind === 'save')  { S.saveOptIn = true; identify('details'); return; }
 
   if (kind === 'answer') {
     const qid = form.dataset.qid, q = qById(qid), text = (fd.get('freeText')||'').trim();
@@ -2821,8 +2884,12 @@ document.addEventListener('submit', e => {
       S.freeText[qid] = text;
       log('answer_given',{ question:qid, value:S.answers[qid], mode:'free_text', text });
       ACKTEXT = ackFor(qid, Array.isArray(S.answers[qid]) ? '_default' : S.answers[qid]);
-    } else { NOCHOICE = true; EDITING = qid; const keep=true; render(false); NOCHOICE = keep;
-      document.getElementById('app').innerHTML = fitScreen(); NOCHOICE=false; return; }
+    } else {
+      /* Re-render this same question with the error. EDITING used to be set here,
+         which made the screen claim the visitor was changing an earlier answer on
+         their very first attempt. */
+      NOCHOICE = true; EDITING = S.answers[qid] ? qid : null;
+      document.getElementById('app').innerHTML = fitScreen(); NOCHOICE = false; return; }
     EDITING = null;
     if (S.answers.area && !PANEL_OPEN) PANEL_OPEN = true;   // reveal the matches the first time there are any
     if (fitComplete(S.answers)) { const r=recommend(A(),matchVenues(A())); log('recommendation_shown',{ planId:r.planId, rules:r.appliedRules }); advance('recommendation'); }
@@ -2843,6 +2910,8 @@ document.addEventListener('submit', e => {
     if (Object.keys(ERRORS).length) { log('details_validation_failed',{ fields:Object.keys(ERRORS) });
       const keep={...ERRORS}; document.getElementById('app').innerHTML=(()=>{ ERRORS=keep; return detailsScreen(); })();
       document.querySelector('.field-error')?.scrollIntoView({block:'center'}); return; }
+    /* We now hold an address, but holding one is not the same as being asked to
+       keep the journey — saveOptIn stays as the visitor left it. */
     S.email = d.email; S.startDate = S.startDate || firstOfNextMonth();
     log('details_completed'); go('payment'); return;
   }
