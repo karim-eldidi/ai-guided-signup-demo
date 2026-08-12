@@ -4,6 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
+<!-- GitHub Pages caches for ~10 minutes; without these a tester can open the link
+     and see yesterday's build with no way of knowing. -->
+<meta http-equiv="cache-control" content="no-cache, must-revalidate">
+<meta http-equiv="pragma" content="no-cache">
 <title>Urban Sports Club — Ula signup pilot</title>
 <style>/* ===========================================================================
    Urban Sports Club — Ula pilot
@@ -860,6 +864,7 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
   padding: 9px 20px; text-align: center; letter-spacing: .01em;
 }
 .demo-banner a { color: var(--yellow-bright); text-decoration: underline; }
+.demo-banner__build { opacity: .55; margin-left: 8px; font-size: 12px; }
 
 .sticky-cta { display: none; }
 
@@ -1138,7 +1143,7 @@ button.venue-card:hover { border-color:var(--ink); }
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to main content</a>
-<div class="demo-banner">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment. <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button></div>
+<div class="demo-banner">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment. <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button> <span class="demo-banner__build">build 12 Aug 13:05 UTC</span></div>
 <div id="app"></div>
 
 <script>
