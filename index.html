@@ -397,6 +397,42 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
 /* Ask Ula, parked in the right column so it is reachable from any question */
 .aside-ask { margin-bottom: 18px; }
 
+/* --- why this plan, as things rather than a checklist -------------------- */
+.why { margin-top: 26px; }
+.why__title { font-size: clamp(21px, 1.8vw, 26px); letter-spacing: -.02em; margin: 0 0 16px; }
+.why__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.why__card {
+  display: flex; gap: 13px; align-items: flex-start;
+  background: #fff; border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 16px 17px;
+}
+.why__card p { margin: 0; font-size: 15.5px; line-height: 1.45; }
+.why__icon {
+  flex: 0 0 auto; width: 38px; height: 38px; border-radius: 50%;
+  background: var(--yellow-pale); display: grid; place-items: center;
+}
+.why__note { display: flex; align-items: flex-start; gap: 9px; font-size: 14.5px; line-height: 1.45; margin: 14px 0 0; }
+.why__note svg { flex: 0 0 auto; margin-top: 3px; }
+.why__foot { font-size: 12.5px; color: var(--navy-soft); margin: 14px 0 0; }
+
+/* Ask Ula and the small print, grouped after the reasons */
+.ask-and-print { margin-top: 30px; padding-top: 26px; border-top: 1px solid var(--border); }
+.ask-and-print .ask { margin-bottom: 8px; }
+
+/* the alternative plan, spelled out instead of run together */
+.altcard { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 15px 16px 16px; }
+.altcard__top { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.altcard__name { font-size: 19px; font-weight: 700; letter-spacing: -.01em; }
+.altcard__price { font-size: 21px; font-weight: 700; letter-spacing: -.02em; white-space: nowrap; }
+.altcard__price small { font-size: 13px; font-weight: 600; color: var(--navy); margin-left: 2px; }
+.altcard__delta { display: inline-block; font-size: 13px; font-weight: 700; border-radius: 999px; padding: 3px 10px; margin-top: 8px; }
+.altcard__delta.is-down { background: #e7f2ea; color: #2f6b3f; }
+.altcard__delta.is-up { background: var(--page-grey); color: var(--navy); }
+.altcard__cov { font-size: 14.5px; line-height: 1.45; margin-top: 11px; }
+.altcard__warn, .altcard__good { display: flex; align-items: center; gap: 6px; font-size: 13.5px; margin-top: 5px; }
+.altcard__warn { color: #8a5a1a; }
+.altcard__good { color: #2f6b3f; }
+
 /* --- your answers, as chips that edit themselves ------------------------- */
 /* A tester went looking for her earlier choices and could not find them. These
    sit at the top of every screen in the journey and each one is its own edit
@@ -471,7 +507,7 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
 /* the week */
 .week {
   background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg);
-  padding: 24px 26px 22px; margin: 22px 0 0;
+  padding: 24px 26px 22px; margin: 22px 0 20px;
 }
 .week__head { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
 .week__eyebrow {
@@ -500,6 +536,28 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
 .week__note { display: flex; align-items: center; gap: 7px; font-size: 13.5px; color: var(--navy); margin-top: 5px; }
 .week__foot { display: flex; align-items: flex-start; gap: 8px; font-size: 13.5px; line-height: 1.45; color: var(--navy-soft); margin: 16px 0 0; }
 .week__foot svg { flex: 0 0 auto; margin-top: 3px; }
+
+/* pick your own days: the cheap half of "make it fit me" — no times, no booking */
+.week__item { position: relative; }
+.week__swap {
+  position: absolute; top: 14px; right: 0;
+  display: inline-flex; align-items: center; gap: 5px;
+  background: none; border: 0; padding: 4px 2px;
+  font-size: 13px; font-weight: 700; color: var(--navy); cursor: pointer;
+}
+.week__swap:hover { color: var(--ink); text-decoration: underline; }
+.week__days { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border); }
+.week__days-label { font-size: 14.5px; font-weight: 700; margin-bottom: 10px; }
+.week__days-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.daybtn {
+  min-width: 52px; height: 42px; padding: 0 12px;
+  border: 1px solid var(--border); border-radius: 8px; background: #fff;
+  font-size: 14.5px; font-weight: 700; color: var(--navy); cursor: pointer;
+}
+.daybtn:hover { border-color: var(--ink); }
+.daybtn.is-on { background: var(--ink); border-color: var(--ink); color: #fff; }
+.week__days-note { display: flex; align-items: flex-start; gap: 7px; font-size: 13.5px; line-height: 1.45; color: var(--navy); margin: 12px 0 0; }
+.week__days-note svg { flex: 0 0 auto; margin-top: 3px; }
 
 /* bigger venue cards, because the venues are the argument */
 .venue-grid--big { grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; }
@@ -918,11 +976,15 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
   .paybar__info span { color: var(--navy); font-size: 13.5px; }
   .paybar .btn { flex: 0 0 auto; height: 52px; padding: 0 22px; }
   .week { padding: 20px 18px 18px; }
-  .week__day { flex-basis: 68px; font-size: 13.5px; }
+  .week__day { flex-basis: 62px; font-size: 13.5px; }
+  .week__swap { position: static; margin-top: 6px; }
+  .week__item { flex-wrap: wrap; }
+  .daybtn { min-width: 44px; height: 40px; padding: 0 9px; font-size: 13.5px; }
   .week__each { text-align: left; }
   .venue-grid--big { grid-template-columns: 1fr 1fr; }
   .one-col__main { padding-bottom: 110px; }
   .found .venue-strip { grid-template-columns: 1fr 1fr; }
+  .why__grid { grid-template-columns: 1fr; }
   .chips-row { gap: 7px; margin-bottom: 18px; }
   .answer-chip { font-size: 13.5px; padding: 5px 10px; }
   .answer-chip span { max-width: 14ch; }
@@ -1334,9 +1396,18 @@ function downsell(groupIds = [], venues = [], planId = 'classic', commitmentId =
 const SESSIONS = { once:1, twice:2, often:3, daily:5 };
 const DAY_SPREAD = { 1:['Wednesday'], 2:['Tuesday','Saturday'], 3:['Monday','Wednesday','Saturday'],
                      4:['Monday','Wednesday','Friday','Sunday'], 5:['Monday','Tuesday','Thursday','Friday','Sunday'] };
+const DAY_ORDER = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+const DAY_SHORT = { Monday:'Mon', Tuesday:'Tue', Wednesday:'Wed', Thursday:'Thu', Friday:'Fri', Saturday:'Sat', Sunday:'Sun' };
+/* Days they picked win over the days we guessed. Frequency follows the days,
+   because "I'd go Tue and Sat" is a more honest answer than a dropdown. */
+const freqForDays = n => n<=1?'once' : n===2?'twice' : n<=4?'often' : 'daily';
+
 function weekPlan(groupIds = [], venues = [], planId = 'classic', frequency = 'twice') {
-  const count = SESSIONS[frequency] || 2;
-  const days = DAY_SPREAD[count] || DAY_SPREAD[2];
+  const chosenDays = (S.weekDays||[]).filter(d=>DAY_ORDER.includes(d));
+  const count = chosenDays.length || SESSIONS[frequency] || 2;
+  const days = chosenDays.length
+    ? DAY_ORDER.filter(d=>chosenDays.includes(d))
+    : (DAY_SPREAD[count] || DAY_SPREAD[2]);
   const groups = (groupIds.length ? groupIds.map(groupById).filter(Boolean) : ACTIVITY_GROUPS)
     .filter(g => venues.some(v => venueInGroup(v,g)));
   if (!groups.length) return { sessions:[], perMonth:count*4, note:null };
@@ -1345,12 +1416,15 @@ function weekPlan(groupIds = [], venues = [], planId = 'classic', frequency = 't
     const group = groups[i % groups.length];
     const forGroup = venues.filter(v => venueInGroup(v,group)).sort((a,b)=>a.distanceKm-b.distanceKm);
     const preferred = forGroup.filter(v => includedIn(v,planId));
-    const pick = preferred.find(v=>!used.has(v.id)) || preferred[0] || forGroup.find(v=>!used.has(v.id)) || forGroup[0];
+    const swapped = (S.weekSwap||{})[day];
+    const pick = (swapped && forGroup.find(v=>v.id===swapped))
+      || preferred.find(v=>!used.has(v.id)) || preferred[0] || forGroup.find(v=>!used.has(v.id)) || forGroup[0];
     if (!pick) return null;
     used.add(pick.id);
     const included = includedIn(pick, planId);
     return { day, groupId:group.id, activity:group.label, icon:group.icon, venue:pick,
              distanceKm:pick.distanceKm, included, access:accessLabel(pick,planId),
+             alternatives: forGroup.length,
              needs: included ? null : firstPlanWithAccess(pick) };
   }).filter(Boolean);
   return { sessions, perMonth:count*4,
@@ -1625,6 +1699,7 @@ function askBlock(compact) {
 
 /* ---------------- state ---------------- */
 const BLANK = { email:null, authMethod:null, marketing:false, marketingAsked:false, answers:{}, freeText:{},
+                weekDays:[], weekSwap:{},
                 chosenPlanId:null, planOverridden:false, commitmentId:'monthly', details:{}, startDate:null,
                 paid:false, lastStep:'landing', returns:0, events:[], source:null, campaign:null, variant:VARIANT };
 let S = JSON.parse(JSON.stringify(BLANK));
@@ -1633,7 +1708,7 @@ let ROUTE='landing', ACKTEXT=null, UNCLEAR=false, NOCHOICE=false, EDITING=null, 
 /* City is "detected" in production (IP or browser location). The pilot only has
    venue data loaded for Berlin, so the chip says so plainly and a Change link
    never lies about coverage — picking another city logs the demand instead. */
-let CITYPICK=false, CITYWANTED=null, ASKOPEN=false;
+let CITYPICK=false, CITYWANTED=null, ASKOPEN=false, DAYSOPEN=false;
 
 const esc = v => String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 const log = (name,payload) => S.events.push({ name, payload:payload||null, at:new Date().toISOString() });
@@ -2030,6 +2105,34 @@ function fitScreen() {
   </main></div>${exitModal()}${venueSheet()}`;
 }
 
+/* Reasons for the plan actually on screen.
+   The rules produce their reasons for the plan THEY chose. If the visitor
+   switches, the person-facts still hold (how often, what they'd do) but every
+   plan-specific line has to be recomputed, or the page argues for one plan under
+   the heading of another — which is exactly what a tester found confusing. */
+function reasonsFor(rec, plan, match, groups) {
+  const pool = match.pool || match.venues || [];
+  const where = match.anywhere ? 'Berlin' : (match.area ? match.area.name : 'your area');
+  const out = [];
+  const freq = S.answers.frequency;
+  if (freq && freq !== SKIP) out.push({ icon:'calendar', text:`You said you'd realistically go ${FREQ_WORDS[freq]}.` });
+  const GOAL_TEXT = { move_more:'You want to move more, so I put regular training first.',
+                      unwind:'You want to unwind, so I put calmer studios, pools and sauna first.',
+                      try_new:'You want to try something new, so I mixed the venue types.' };
+  if (S.answers.goal && GOAL_TEXT[S.answers.goal]) out.push({ icon:'target', text:GOAL_TEXT[S.answers.goal] });
+  if (groups.length && pool.length) {
+    const c = coverage(groups, pool, plan.id).totals;
+    if (c.nearby) out.push({ icon:'pin',
+      text:`Of the ${plural(c.nearby,'place','places')} near ${where} that do ${groupWords(groups)}, ${plan.name} lets you into ${c.included}.` });
+  }
+  out.push({ icon:'star', text:`${plan.name} opens ${plan.venueCount} venues, and gives you ${lowerFirst(plan.checkInModel)}.` });
+  if (plan.id === rec.planId) {
+    const extra = rec.reasons.find(r => /needs |can't cover|start at Classic|starts at Classic/i.test(r));
+    if (extra) out.push({ icon:'info', text:extra });
+  }
+  return out;
+}
+
 /* The block that answers the question the pricing page never does. One row per
    activity they chose: how many places near them this plan actually lets them into,
    which ones are locked, and what would open them. Every number is counted. */
@@ -2133,6 +2236,9 @@ function recommendationScreen() {
       <span class="alt-card__name">${priceFor(plan,c.id)} € <span style="font-size:15px;font-weight:600">/ month</span></span>
       <span class="alt-card__tradeoff">${esc(c.label)}</span></button>`).join('');
 
+  const covIncluded = groups.length && pool.length ? coverage(groups, pool, plan.id).totals.included : 0;
+  const whyCards = reasonsFor(rec, plan, match, groups);
+
   /* ---- the week, which is the actual argument for paying ---- */
   const wp = weekPlan(groups, pool, plan.id, a.frequency);
   const each = perSession(price, a.frequency);
@@ -2153,8 +2259,22 @@ function recommendationScreen() {
         <div class="week__note">${x.included
           ? `${icon('checkThin',15)} ${esc(x.access)} on ${esc(plan.name)}`
           : `${icon('lock',15)} needs ${x.needs?esc(x.needs.name):'a higher plan'}`}</div>
-      </div></li>`).join('')}</ol>
-    <p class="week__foot">${icon('info',15)} <span>A suggestion, not a booking — swap anything, and check each venue&rsquo;s timetable before you go.${wp.note?` ${esc(wp.note)}`:''}</span></p>
+      </div>
+      ${x.alternatives>1?`<button class="week__swap" data-swap="${esc(x.day)}" aria-label="Show a different place for ${esc(x.day)}">${icon('refresh',15)} <span>swap</span></button>`:''}
+      </li>`).join('')}</ol>
+
+    <div class="week__days">
+      <div class="week__days-label">${DAYSOPEN?'Which days suit you?':'These days not right?'}</div>
+      ${DAYSOPEN?`<div class="week__days-row">${DAY_ORDER.map(d=>{
+          const on = wp.sessions.some(x=>x.day===d);
+          return `<button class="daybtn ${on?'is-on':''}" data-day="${esc(d)}" aria-pressed="${on}">${DAY_SHORT[d]}</button>`;
+        }).join('')}</div>
+        <p class="week__days-note">${icon('info',14)} <span>Pick the days you&rsquo;d actually go. ${plural(wp.sessions.length,'day','days')} chosen
+          &mdash; that&rsquo;s ${esc(FREQ_WORDS[S.answers.frequency]||'a couple of times a week')}, and it&rsquo;s what the price below is based on.</span></p>`
+        :`<button class="linkish strong" type="button" data-open-days>Pick your own days</button>`}
+    </div>
+
+    <p class="week__foot">${icon('info',15)} <span>A suggestion, not a booking — check each venue&rsquo;s timetable before you go.${wp.note?` ${esc(wp.note)}`:''}</span></p>
   </div>` : '';
 
   /* ---- the plan, on the side, as a consequence of the above ---- */
@@ -2168,9 +2288,17 @@ function recommendationScreen() {
     <div class="planbox__cta desktop-cta"><button class="btn btn--primary btn--block" data-go="${S.email?'details':'save'}">Continue with ${esc(plan.name)}</button></div>
     <p class="planbox__fine">No payment yet &mdash; you can still change everything.</p>
     ${alt?`<div class="planbox__alt">
-      <div class="planbox__alt-head">${altIsRecommendation?'Ula&rsquo;s pick':'Also worth a look'}</div>
-      <div class="planbox__alt-row"><b>${esc(alt.name)}</b> &middot; ${altPrice} € / month
-        <button class="linkish strong" data-plan="${esc(alt.id)}">Switch</button><em>${altLine}</em></div>
+      <div class="planbox__alt-head">${altIsRecommendation?'What Ula would pick' :`If ${esc(plan.name)} is too much`}</div>
+      <div class="altcard">
+        <div class="altcard__top"><span class="altcard__name">${esc(alt.name)}</span>
+          <span class="altcard__price">${altPrice} €<small>/mo</small></span></div>
+        <div class="altcard__delta ${altDelta<0?'is-down':'is-up'}">${altDelta<0?`${Math.abs(altDelta)} € cheaper`:`${altDelta} € more`}</div>
+        ${altCovT&&altCovT.nearby?`<div class="altcard__cov">Opens <b>${altCovT.included} of your ${altCovT.nearby}</b> places
+          ${altCovT.included<covIncluded?`<span class="altcard__warn">${icon('info',14)} ${covIncluded-altCovT.included} fewer than ${esc(plan.name)}</span>`
+            :altCovT.included>covIncluded?`<span class="altcard__good">${icon('checkThin',14)} ${altCovT.included-covIncluded} more than ${esc(plan.name)}</span>`
+            :`<span class="altcard__good">${icon('checkThin',14)} the same as ${esc(plan.name)}</span>`}</div>`:''}
+        <button class="btn btn--secondary btn--block" data-plan="${esc(alt.id)}" style="height:48px;font-size:16px;margin-top:14px">Switch to ${esc(alt.name)}</button>
+      </div>
     </div>`:''}
   </div>`;
 
@@ -2191,14 +2319,18 @@ function recommendationScreen() {
 
     ${coverageBlock(rec, match, plan)}
 
-    ${ASKOPEN?`<div class="quietask">${askBlock(true)}</div>`
-      :`<p class="quietask__link"><button class="linkish" type="button" data-open-ask>${icon('sparkle',15)} Ask Ula a question about any of this</button></p>`}
+    <div class="why">
+      <h2 class="why__title">${isRec?`Why ${esc(plan.name)} for you`:`What ${esc(plan.name)} means for you`}</h2>
+      <div class="why__grid">${whyCards.map(r=>`<div class="why__card">
+        <span class="why__icon">${icon(r.icon,20)}</span><p>${esc(r.text)}</p></div>`).join('')}</div>
+      ${!isRec?`<p class="why__note">${icon('info',16)} <span>Ula would have picked <b>${esc(rec.planName)}</b> for you.
+        <button class="linkish strong" data-plan="${esc(rec.planId)}">See that instead</button></span></p>`:''}
+      ${rec.notes.length?`<p class="why__note">${icon('info',16)} <span>${esc(rec.notes.join(' '))}</span></p>`:''}
+      <p class="why__foot">Chosen by rules you can read, not by a model. Ula never picks the plan.</p>
+    </div>
 
-    <div style="margin-top:26px">
-      <details class="disclosure" open><summary><span class="disclosure__icon">${icon('sparkle',18)}</span>Why ${esc(plan.name)} for you? <span class="disclosure__hint">${rec.reasons.length} reasons</span></summary>
-        <div class="disclosure__body"><ul class="reasons">${rec.reasons.map(r=>`<li>${icon('checkThin',19)}<span>${esc(r)}</span></li>`).join('')}</ul>
-        ${rec.notes.length?`<div class="notice notice--grey" style="margin-top:18px">${icon('info',19)}<span>${esc(rec.notes.join(' '))}</span></div>`:''}
-        <p class="xsmall muted" style="margin-top:14px">Chosen by rules you can read, not by a model. Ula never picks the plan.</p></div></details>
+    <div class="ask-and-print">
+      ${askBlock(true)}
 
       <details class="disclosure"><summary><span class="disclosure__icon">${icon('info',18)}</span>The small print, and the other plans <span class="disclosure__hint">limits, terms, prices</span></summary>
         <div class="disclosure__body">
@@ -2211,7 +2343,6 @@ function recommendationScreen() {
 
           <div class="fitpanel__label" style="margin-top:26px">The other plans</div>
           <div class="alt-quiet">${others}</div>
-          ${!isRec?`<p style="margin-top:16px"><button class="linkish strong" data-plan="${esc(rec.planId)}">${icon('refresh',16)} Back to Ula&rsquo;s recommendation (${esc(rec.planName)})</button></p>`:''}
         </div></details>
     </div>
 
@@ -2482,7 +2613,7 @@ function render(focus = true) {
 function go(route, opts={}) {
   if (['recommendation','save','details','payment'].includes(route) && !fitComplete(S.answers)) route = 'fit';
   if (route==='details' && !S.email && !S.skippedSave) route = 'save';
-  ROUTE = route; EDITING = null; SHEET = null; CITYPICK = false; CITYWANTED = null; ASKOPEN = false;
+  ROUTE = route; EDITING = null; SHEET = null; CITYPICK = false; CITYWANTED = null; ASKOPEN = false; DAYSOPEN = false;
   if (['fit','recommendation','save','details','payment'].includes(route)) S.lastStep = route;
   if (!opts.replace) history.pushState({ route }, '', location.href.split('#')[0] + '#' + route);
   render();
@@ -2501,7 +2632,7 @@ function advance(nextRoute) {
 
 /* ---------------- interactions ---------------- */
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-change-city],[data-city],[data-unsure],[data-open-ask],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula]');
+  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-change-city],[data-city],[data-unsure],[data-open-ask],[data-open-days],[data-day],[data-swap],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula]');
   if (!t) return;
 
   if (t.dataset.go !== undefined) { e.preventDefault(); go(t.dataset.go); return; }
@@ -2524,6 +2655,38 @@ document.addEventListener('click', e => {
   if (t.dataset.closeSheet !== undefined) { SHEET=null; render(false); return; }
   if (t.dataset.changeCity !== undefined) { CITYPICK=!CITYPICK; if(!CITYPICK) CITYWANTED=null;
     if (CITYPICK) log('city_change_opened'); render(false); return; }
+  if (t.dataset.openDays !== undefined) { DAYSOPEN = true; log('week_days_opened'); render(false); return; }
+
+  if (t.dataset.day) {
+    /* Days are the schedule. Changing them changes how often they'd go, which
+       changes the plan and the price — so the whole page recalculates, and the
+       frequency chip stays true to what they just told us. */
+    const day = t.dataset.day;
+    const cur = new Set(S.weekDays.length ? S.weekDays : weekPlan(A().activities||[], matchVenues(A()).pool||[], currentPlan().id, S.answers.frequency).sessions.map(x=>x.day));
+    if (cur.has(day)) { if (cur.size>1) cur.delete(day); } else cur.add(day);
+    S.weekDays = DAY_ORDER.filter(d=>cur.has(d));
+    const newFreq = freqForDays(S.weekDays.length);
+    if (newFreq !== S.answers.frequency) { S.answers.frequency = newFreq; S.planOverridden = false; }
+    log('week_days_changed', { days:S.weekDays, frequency:newFreq });
+    DAYSOPEN = true; render(false); return;
+  }
+
+  if (t.dataset.swap) {
+    const day = t.dataset.swap;
+    const a2 = A(), m2 = matchVenues(a2), pool2 = m2.pool||[];
+    const wp2 = weekPlan(a2.activities||[], pool2, currentPlan().id, a2.frequency);
+    const sess = wp2.sessions.find(x=>x.day===day);
+    if (sess) {
+      const g = groupById(sess.groupId);
+      const list = pool2.filter(v=>venueInGroup(v,g)).sort((x,y)=>x.distanceKm-y.distanceKm);
+      const i = list.findIndex(v=>v.id===sess.venue.id);
+      const next = list[(i+1) % list.length];
+      S.weekSwap = Object.assign({}, S.weekSwap, { [day]: next.id });
+      log('week_venue_swapped', { day, venue:next.id });
+    }
+    render(false); return;
+  }
+
   if (t.dataset.openAsk !== undefined) { ASKOPEN = true; log('ask_opened_from_question'); render(false);
     document.querySelector('.quietask .ask__row input')?.focus(); return; }
   if (t.dataset.unsure) {
@@ -2642,6 +2805,7 @@ document.addEventListener('submit', e => {
     const opts = optionsFor(q);
     const chosen = fd.getAll('choice').filter(id => opts.some(o => o.id === id));
     if (chosen.length) {
+      if (qid === 'frequency') { S.weekDays = []; S.weekSwap = {}; }   // a new frequency rebuilds the week
       S.answers[qid] = q.multi ? chosen : chosen[0];
       log('answer_given',{ question:qid, value:q.multi?chosen:chosen[0], mode:'choice' }); ACKTEXT = null;
     }
