@@ -318,7 +318,6 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
 .options--compact .option-card { min-height: 54px; padding: 10px 16px; font-size: 16.5px; }
 .options--compact .option-card.is-selected { padding: 9px 15px; }
 .options--compact .option-card__icon { width: 30px; height: 30px; }
-.options--compact .option-card__check { width: 25px; height: 25px; }
 
 /* The input is the real control: off-screen but focusable, full-size to the
    browser, so keyboard and screen-reader behaviour is the native one. */
@@ -344,15 +343,23 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
 .option-card:hover { border-color: #b9b6ad; }
 .option-card.is-selected { border: 2px solid var(--ink); padding: 12px 19px; }
 .option-card__icon {
+  position: relative;
   flex: 0 0 auto; width: 36px; height: 36px; border-radius: 50%;
   background: var(--yellow-pale); display: grid; place-items: center;
 }
 .option-card__label { flex: 1 1 auto; }
+/* The tick lives ON the icon, not beside the label. As a sibling it took 36px of
+   width off the label the moment you selected the card, so "Five times a week or
+   more" broke onto a second line and the row jumped — selecting an answer must not
+   reflow it. Over the icon it costs nothing, and the state reads where the eye
+   already is. */
 .option-card__check {
-  flex: 0 0 auto; width: 30px; height: 30px; border-radius: 50%;
+  position: absolute; inset: 0; border-radius: 50%;
   background: var(--ink); color: #fff; display: none; place-items: center;
 }
 .option-card.is-selected .option-card__check { display: grid; }
+/* the landing's starter cards keep their chevron, which is decorative and hidden */
+.option-card__chev { display: none; }
 
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 10px;
@@ -392,7 +399,6 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
 .options--tiles .option-card { min-height: 58px; padding: 11px 16px; font-size: 16.5px; gap: 13px; }
 .options--tiles .option-card.is-selected { padding: 10px 15px; }
 .options--tiles .option-card__icon { width: 34px; height: 34px; }
-.options--tiles .option-card__check { width: 26px; height: 26px; }
 
 /* --- answering in your own words ----------------------------------------- */
 /* Was a link that opened a field. It is the whole point of a guide you can
@@ -627,19 +633,19 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
 .week__days-label span { font-weight: 400; color: var(--navy-soft); }
 .week__days-row { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
 .daybtn {
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
-  min-width: 0; padding: 8px 2px 7px;
+  display: flex; align-items: center; justify-content: center;
+  min-width: 0; padding: 10px 2px;
   border: 1px solid var(--border); border-radius: 8px; background: #fff;
+  font-size: 13px; font-weight: 700; letter-spacing: .01em; text-transform: uppercase;
   color: var(--navy); cursor: pointer;
 }
-.daybtn b { font-size: 15px; font-weight: 800; line-height: 1.1; }
-.daybtn span { font-size: 10.5px; font-weight: 600; letter-spacing: .02em; text-transform: uppercase; color: var(--navy-soft); }
 .daybtn:hover { border-color: var(--ink); }
 /* Brand yellow, not filled black: a black chip here counted as a main CTA — the
    one-CTA check caught two of them sitting above "Continue with Classic" — and the
    yellow says "chosen" without competing with the one button that matters. */
-.daybtn.is-on { background: var(--yellow-bright); border: 2px solid var(--ink); padding: 7px 1px 6px; color: var(--ink); }
-.daybtn.is-on span { color: var(--navy); }
+/* Chosen, not shouted: the yellow fill plus a 2px black border was heavier than the
+   thing it sits under. A pale fill and an ink border is enough to read as chosen. */
+.daybtn.is-on { background: var(--yellow-pale); border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); color: var(--ink); }
 .week__days-note { display: flex; align-items: flex-start; gap: 7px; font-size: 13px; line-height: 1.4; color: var(--navy); margin: 9px 0 0; }
 .week__days-note svg { flex: 0 0 auto; margin-top: 3px; }
 
@@ -727,7 +733,6 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
 .options--chips .option-card { min-height: 58px; padding: 11px 15px; font-size: 16.5px; gap: 12px; }
 .options--chips .option-card.is-selected { padding: 10px 14px; }
 .options--chips .option-card__icon { width: 34px; height: 34px; }
-.options--chips .option-card__check { width: 24px; height: 24px; }
 
 /* --- what Ula heard ------------------------------------------------------ */
 .intent { background: var(--cream); border-radius: var(--radius); padding: 18px 20px; text-align: left; }
@@ -1072,9 +1077,7 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
   /* the hint wraps to its own line on a phone and the chips are obviously tappable */
   .week__days-label span { display: none; }
   .week__days-row { gap: 4px; }
-  .daybtn { padding: 6px 1px 5px; }
-  .daybtn b { font-size: 14px; }
-  .daybtn span { font-size: 9px; }
+  .daybtn { padding: 9px 1px; font-size: 11.5px; }
   .week__each { text-align: left; }
   .venue-grid--big { grid-template-columns: 1fr 1fr; }
   .one-col__main { padding-bottom: 110px; }
@@ -1189,6 +1192,21 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 /* Prices are the figures people scan hardest, so they get the tighter tracking a
    number deserves and the currency stays optically attached. */
 .plancard__price b, .planbox__price b { letter-spacing: -.02em; }
+
+@media (max-width: 900px) {
+  /* The end of this page is the part testers said they could not process, so on a
+     phone the seams between its sections are tighter than on desktop. */
+  .ask-and-print { margin-top: 22px; padding-top: 19px; }
+  .ask__examples { gap: 6px; }
+  .why__grid { gap: 9px; }
+}
+
+/* The number lands after the week, not before it: the block opens on your days and
+   your places, and the arithmetic backs it up. */
+.week__each { margin-top: 14px; padding-top: 13px; border-top: 1px solid var(--border); font-size: 15px; color: var(--navy); }
+.week__each b { font-size: 21px; letter-spacing: -.02em; color: var(--ink); font-variant-numeric: tabular-nums; }
+.altcard__neutral { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; color: var(--navy-soft); }
+.altcard__neutral svg { flex: 0 0 auto; }
 
 /* ============================================================
    standalone-only additions
@@ -1306,7 +1324,7 @@ button.venue-card:hover { border-color:var(--ink); }
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to main content</a>
-<div class="demo-banner">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment. <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button> <span class="demo-banner__build">build 13 Aug 10:02 UTC</span></div>
+<div class="demo-banner">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment. <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button> <span class="demo-banner__build">build 13 Aug 10:21 UTC</span></div>
 <div id="app"></div>
 
 <script>
@@ -1953,11 +1971,13 @@ function askBlock(compact) {
       ? `${icon('info',14)} From ${esc(r.sourceLabel)}${r.sourceUrl?` · <a href="${esc(r.sourceUrl)}" target="_blank" rel="noopener">see the original</a>`:''}`
       : `${icon('info',14)} Ula only answers from approved Urban Sports Club information. <button class="linkish" data-ask-contact>Ask a human instead</button>`}</p>`;
   }
-  const examples = ['Can I pause a 12-month membership?','How often can I go?','Is there a pool near Neukölln?','What are Plus check-ins?'];
+  /* Three, not four. A fourth chip earns nothing and costs a line on a phone, where
+     the end of this page was already the part testers said they could not process. */
+  const examples = ['Can I pause a 12-month membership?','How often can I go?','What are Plus check-ins?'];
   return `<section class="ask ${compact?'ask--compact':''}">
     <div class="ask__head">${ulaAvatar('sm')}<div>
-      <div class="ask__title">Ask Ula anything</div>
-      <div class="ask__sub">Plans, prices, cancelling, what&rsquo;s near you. She answers from published information only.</div></div></div>
+      <div class="ask__title">A specific membership question?</div>
+      <div class="ask__sub">Plans, prices, pausing, what&rsquo;s near you. Answered from published information only.</div></div></div>
     <form data-form="ask"><div class="ask__row">
       <input type="text" name="q" value="${esc(ASK.q||'')}" placeholder="Type a question…" aria-label="Ask Ula a question" autocomplete="off">
       <button class="btn btn--secondary" type="submit">Ask</button></div></form>
@@ -2299,7 +2319,7 @@ function partnerAsk(match, groups) {
   if (PLACEWANTED) return `<div class="notice" style="margin-top:16px">${icon('checkThin',19)}<span>Noted &mdash;
     <b>${esc(PLACEWANTED)}</b> near ${esc(where)}. It shows up in the <button class="linkish" data-go="data">journey data</button> as a place members are asking for.</span></div>`;
   return `<details class="partnerask"${thin?' open':''}>
-    <summary>${icon('pin',16)} <span>${thin?`Not enough near ${esc(where)}?`:`Somewhere you go that isn&rsquo;t here?`} Tell us what to add</span></summary>
+    <summary>${icon('pin',16)} <span>${thin?`Not enough nearby?`:`Somewhere you go that isn&rsquo;t here?`} Tell us what to add</span></summary>
     <form data-form="place-demand" class="partnerask__form">
       <input type="text" name="place" placeholder="Name a studio, gym or pool near ${esc(where)}" aria-label="A place we should add">
       <button class="btn btn--secondary" type="submit" style="height:48px;font-size:16px">Suggest it</button>
@@ -2354,7 +2374,7 @@ function landing() {
       <div class="options">
         ${QUESTIONS[0].options.map(o=>`<button class="option-card" data-begin="${esc(o.id)}">
           <span class="option-card__icon">${icon(o.icon,20)}</span><span class="option-card__label">${o.label}</span>
-          <span class="option-card__check">${icon('chevron',17)}</span></button>`).join('')}
+          <span class="option-card__chev">${icon('chevron',17)}</span></button>`).join('')}
       </div>
       <p class="xsmall muted" style="margin-top:16px">Choosing one starts the conversation &mdash; no email needed.</p>
     </div>
@@ -2397,8 +2417,8 @@ function fitScreen() {
      LABEL carried tabindex, which broke all four. */
   const cards = opts.map(o=>`<label class="option-card ${picked.includes(o.id)?'is-selected':''}" data-card>
       <input class="option-card__input" type="${q.multi?'checkbox':'radio'}" name="choice" value="${esc(o.id)}" ${picked.includes(o.id)?'checked':''}>
-      <span class="option-card__icon">${icon(o.icon||'grid',22)}</span><span class="option-card__label">${esc(o.label)}</span>
-      <span class="option-card__check">${icon(q.multi?'checkThin':'checkThin',17)}</span></label>`).join('');
+      <span class="option-card__icon">${icon(o.icon||'grid',22)}<span class="option-card__check">${icon('checkThin',17)}</span></span>
+      <span class="option-card__label">${esc(o.label)}</span></label>`).join('');
   /* Once we know where they are, show what we found — inline, small, and only
      then. Before that there is nothing worth putting in a side panel, and a
      tester told us the panel was a distraction on the first questions. */
@@ -2447,17 +2467,27 @@ function reasonsFor(rec, plan, match, groups) {
   const where = whereName(match);
   const out = [];
   const freq = S.answers.frequency;
-  if (freq && freq !== SKIP) out.push({ icon:'calendar', text:`You said you'd realistically go ${FREQ_WORDS[freq]}.` });
-  const GOAL_TEXT = { move_more:'You want to move more, so I put regular training first.',
-                      unwind:'You want to unwind, so I put calmer studios, pools and sauna first.',
+  /* Three reasons, and none of them repeats a chip. "You said you'd realistically go
+     five or more times a week" was the frequency chip written out longhand, one row
+     above itself; the place name was appearing three times above the fold. Karim
+     wanted this to read as a story with the data behind it — so each reason names one
+     thing about them and then the number that supports it, and the place is named
+     once, in the headline. */
+  const GOAL_TEXT = { move_more:'You want to move more, so regular training came first.',
+                      unwind:'You want to unwind, so calmer studios, pools and sauna came first.',
                       try_new:'You want to try something new, so I mixed the venue types.' };
   if (S.answers.goal && GOAL_TEXT[S.answers.goal]) out.push({ icon:'target', text:GOAL_TEXT[S.answers.goal] });
   if (groups.length && pool.length) {
     const c = coverage(groups, pool, plan.id).totals;
     if (c.nearby) out.push({ icon:'pin',
-      text:`Of the ${plural(c.nearby,'place','places')} near ${where} that do ${groupWords(groups)}, ${plan.name} lets you into ${c.included}.` });
+      text:`${c.included} of the ${plural(c.nearby,'place','places')} near you for ${groupWords(groups)} ${c.included===1?'is':'are'} on ${plan.name}.` });
   }
-  out.push({ icon:'star', text:`${plan.name} opens ${plan.venueCount} venues, and gives you ${lowerFirst(plan.checkInModel)}.` });
+  if (freq && freq !== SKIP) {
+    const wants = visitsWanted(freq), allows = monthlyAllowance(plan);
+    out.push({ icon:'calendar',
+      text:`Your week needs about ${wants} visits a month, and ${plan.name} allows ${allows===30?'one a day':allows}.` });
+  }
+  out.push({ icon:'star', text:`${plan.venueCount} venues in total, across the cities we cover.` });
   if (plan.id === rec.planId) {
     const extra = rec.reasons.find(r => /needs |can't cover|start at Classic|starts at Classic/i.test(r));
     if (extra) out.push({ icon:'info', text:extra });
@@ -2501,7 +2531,7 @@ function coverageBlock(rec, match, plan) {
      but the number itself, and any real upgrade, stay in plain sight. */
   return `<div class="card cov">
     <p class="cov__summary"><b>${esc(plan.name)} gets you into ${cov.totals.included} of the ${plural(cov.totals.nearby,'place','places')}</b>
-      I found for you ${where}.</p>
+      I found near you.</p>
     <p class="cov__caveat">That count is the ${plural(cov.totals.nearby,'venue','venues')} in this pilot&rsquo;s data near you &mdash; not the whole network,
       which has ${esc(plan.venueCount)} venues on ${esc(plan.name)}.</p>
     ${up?(()=>{ const upPlan=planById(up.planId);
@@ -2552,10 +2582,14 @@ function recommendationScreen() {
      the upsell version of the trap. If neither direction is worth a visitor's
      attention, offer nothing — an empty space is more honest than a false choice. */
   const richerAddsSomething = Boolean(richerPlan) && (!richerT || !hereT || !richerT.nearby || richerT.included > hereT.included);
+  /* Karim liked having a second option beside the recommendation, and he is right that
+     a single take-it-or-leave-it reads worse. The trap was never the card's existence
+     — it was heading it "if you want more places open" when it opened none. So the
+     card always shows, and its heading only ever claims what is true. */
   const alt = altIsRecommendation ? planById(rec.planId)
             : cheaperOpensSomething ? cheaperPlan
             : richerAddsSomething ? richerPlan
-            : null;
+            : (cheaperPlan || richerPlan || null);
   const altPrice = alt ? priceFor(alt,S.commitmentId) : 0;
   const altDelta = alt ? altPrice - price : 0;
   const altCovT = alt && groupsForAlt.length && pool.length ? coverage(groupsForAlt, pool, alt.id).totals : null;
@@ -2589,9 +2623,8 @@ function recommendationScreen() {
     <div class="week__head">
       <div>
         <div class="week__eyebrow">${icon('calendar',16)} A possible week</div>
-        <h2 class="week__title">${plural(wp.sessions.length,'session','sessions')} a week, all within ${Math.max(...wp.sessions.map(x=>x.distanceKm))} km of ${esc(where)}</h2>
+        <h2 class="week__title">${plural(wp.sessions.length,'session','sessions')} a week, none further than ${Math.max(...wp.sessions.map(x=>x.distanceKm))} km away</h2>
       </div>
-      ${each?`<div class="week__each"><b>≈ ${each} €</b><span>a session at ${plural(wp.perMonth,'visit','visits')} a month</span></div>`:''}
     </div>
     <ol class="week__list">${wp.sessions.map(x=>`<li class="week__item ${x.included?'':'is-locked'}">
       <span class="week__day">${esc(x.day)}</span>
@@ -2610,10 +2643,11 @@ function recommendationScreen() {
       <div class="week__days-label" id="week-days-label">Which days suit you? <span>Tap to change &mdash; the price follows.</span></div>
       <div class="week__days-row" role="group" aria-labelledby="week-days-label">${DAY_ORDER.map(d=>{
           const on = wp.sessions.some(x=>x.day===d);
-          return `<button class="daybtn ${on?'is-on':''}" data-day="${esc(d)}" aria-pressed="${on}"><b>${DAY_SHORT[d].charAt(0)}</b><span>${DAY_SHORT[d]}</span></button>`;
+          return `<button class="daybtn ${on?'is-on':''}" data-day="${esc(d)}" aria-pressed="${on}">${DAY_SHORT[d]}</button>`;
         }).join('')}</div>
     </div>
 
+    ${each?`<div class="week__each"><b>≈ ${each} €</b> <span>a session, at ${plural(wp.perMonth,'visit','visits')} a month</span></div>`:''}
     <p class="week__foot">${icon('info',15)} <span>A suggestion, not a booking — check each venue&rsquo;s timetable before you go.${wp.note?` ${esc(wp.note)}`:''}</span></p>
   </div>` : '';
 
@@ -2637,8 +2671,9 @@ function recommendationScreen() {
     <p class="planbox__seeall"><button class="linkish" type="button" data-go="plans">Not this one? Compare all four plans</button></p>
     ${alt?`<div class="planbox__alt">
       <div class="planbox__alt-head">${altIsRecommendation?'What Ula would pick'
-        : alt.rank < plan.rank ? `If ${esc(plan.name)} is too much`
-        : `If you want more places open`}</div>
+        : alt.rank < plan.rank ? `The cheaper option`
+        : richerAddsSomething ? `Opens more of your places`
+        : `The next plan up`}</div>
       <div class="altcard">
         <div class="altcard__top"><span class="altcard__name">${esc(alt.name)}</span>
           <span class="altcard__price">${altPrice} €<small>/mo</small></span></div>
@@ -2649,7 +2684,7 @@ function recommendationScreen() {
         ${altCovT&&altCovT.nearby?`<div class="altcard__cov">Opens <b>${altCovT.included} of your ${altCovT.nearby}</b> places
           ${altCovT.included<covIncluded?`<span class="altcard__warn">${icon('info',14)} ${covIncluded-altCovT.included} fewer than ${esc(plan.name)}</span>`
             :altCovT.included>covIncluded?`<span class="altcard__good">${icon('checkThin',14)} ${altCovT.included-covIncluded} more than ${esc(plan.name)}</span>`
-            :`<span class="altcard__good">${icon('checkThin',14)} the same as ${esc(plan.name)}</span>`}</div>`:''}
+            :`<span class="altcard__neutral">${icon('info',14)} the same places as ${esc(plan.name)}</span>`}</div>`:''}
         <button class="btn btn--secondary btn--block" data-plan="${esc(alt.id)}" style="height:48px;font-size:16px;margin-top:14px">Switch to ${esc(alt.name)}</button>
       </div>
     </div>`:''}
@@ -2668,7 +2703,7 @@ function recommendationScreen() {
       ${!isRec?`<p class="why__note">${icon('info',16)} <span>Ula would have picked <b>${esc(rec.planName)}</b> for you.
         <button class="linkish strong" data-plan="${esc(rec.planId)}">See that instead</button></span></p>`:''}
       ${rec.notes.length?`<p class="why__note">${icon('info',16)} <span>${esc(rec.notes.join(' '))}</span></p>`:''}
-      <p class="why__foot">Chosen by rules you can read, not by a model. Ula never picks the plan.</p>
+      <p class="why__foot">Based on your four answers and each plan&rsquo;s published access rules &mdash; not on a model&rsquo;s guess.</p>
     </div>
 
     ${weekBlock}
