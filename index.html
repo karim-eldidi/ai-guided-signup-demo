@@ -1263,7 +1263,7 @@ button.venue-card:hover { border-color:var(--ink); }
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to main content</a>
-<div class="demo-banner">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment. <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button> <span class="demo-banner__build">build 13 Aug 09:11 UTC</span></div>
+<div class="demo-banner">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment. <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button> <span class="demo-banner__build">build 13 Aug 09:28 UTC</span></div>
 <div id="app"></div>
 
 <script>
@@ -1537,11 +1537,18 @@ function upsell(groupIds = [], venues = [], planId = 'classic', commitmentId = '
 
 /* The mirror image. Recommending down when the data supports it is what makes
    recommending up credible. */
-function downsell(groupIds = [], venues = [], planId = 'classic', commitmentId = 'monthly') {
+/* The cheapest plan that loses them nothing — and that can still carry the visits
+   they told us about. Two corrections live here. It used to walk DOWN one tier and
+   stop, so a five-times-a-week visitor on Max was moved to Premium and told Classic
+   covered the same places, which meant the page argued against its own
+   recommendation. And it ignored the monthly check-in allowance entirely, so
+   "cheapest with equal coverage" could be a plan that permits four visits a month. */
+function downsell(groupIds = [], venues = [], planId = 'classic', commitmentId = 'monthly', frequency = null) {
   const current = PLANS.find(p=>p.id===planId); if (!current) return null;
   const mine = new Set(coverage(groupIds,venues,planId).rows.flatMap(r=>r.included.map(v=>v.id)));
   if (!mine.size) return null;
-  for (const plan of PLANS.filter(p=>p.rank<current.rank).sort((a,b)=>b.rank-a.rank)) {
+  for (const plan of PLANS.filter(p=>p.rank<current.rank).sort((a,b)=>a.rank-b.rank)) {
+    if (frequency && !carriesFrequency(plan, frequency)) continue;
     const theirs = new Set(coverage(groupIds,venues,plan.id).rows.flatMap(r=>r.included.map(v=>v.id)));
     if ([...mine].every(id=>theirs.has(id)))
       return { planId:plan.id, planName:plan.name, saves: priceFor(current,commitmentId) - priceFor(plan,commitmentId) };
@@ -1554,6 +1561,14 @@ function downsell(groupIds = [], venues = [], planId = 'classic', commitmentId =
    same answers into a week: which day, which activity, which real venue, how far,
    and what the plan gets you there. A plan, not a promise — nothing is booked. */
 const SESSIONS = { once:1, twice:2, often:3, daily:5 };
+/* What the plan actually permits in a month, from the published fields that were
+   already in plans.json and that the rules were ignoring. Essential is "4 check-ins
+   a month, in total"; every other plan is one a day, so ~30. This is a HARD limit,
+   not a preference: a plan that cannot carry the frequency someone gave us must
+   never be recommended for it, and must never be priced as if it could. */
+const monthlyAllowance = plan => !plan ? 0 : (plan.dailyCheckIn ? 30 : (plan.checkInsPerMonth || 0));
+const visitsWanted = freq => (SESSIONS[freq] || 2) * 4;
+const carriesFrequency = (plan, freq) => monthlyAllowance(plan) >= visitsWanted(freq);
 const DAY_SPREAD = { 1:['Wednesday'], 2:['Tuesday','Saturday'], 3:['Monday','Wednesday','Saturday'],
                      4:['Monday','Wednesday','Friday','Sunday'], 5:['Monday','Tuesday','Thursday','Friday','Sunday'] };
 const DAY_ORDER = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
@@ -1570,7 +1585,9 @@ function weekPlan(groupIds = [], venues = [], planId = 'classic', frequency = 't
     : (DAY_SPREAD[count] || DAY_SPREAD[2]);
   const groups = (groupIds.length ? groupIds.map(groupById).filter(Boolean) : ACTIVITY_GROUPS)
     .filter(g => venues.some(v => venueInGroup(v,g)));
-  if (!groups.length) return { sessions:[], perMonth:count*4, note:null };
+  const wantedVisits = count*4, allowedVisits = monthlyAllowance(planById(planId));
+  const overAllowance = allowedVisits > 0 && wantedVisits > allowedVisits;
+  if (!groups.length) return { sessions:[], perMonth:Math.min(wantedVisits, allowedVisits||wantedVisits), wantedVisits, allowedVisits, overAllowance, note:null };
   const used = new Set();
   const sessions = days.map((day,i) => {
     const group = groups[i % groups.length];
@@ -1587,12 +1604,18 @@ function weekPlan(groupIds = [], venues = [], planId = 'classic', frequency = 't
              alternatives: forGroup.length,
              needs: included ? null : firstPlanWithAccess(pick) };
   }).filter(Boolean);
-  return { sessions, perMonth:count*4,
-           note: sessions.some(x=>!x.included) ? 'One of these needs a higher plan — swap it, or open it below.' : null };
+  const planName = (planById(planId)||{}).name || 'this plan';
+  return { sessions, perMonth:Math.min(wantedVisits, allowedVisits||wantedVisits), wantedVisits, allowedVisits, overAllowance,
+           note: overAllowance
+             ? `This week is about ${wantedVisits} visits a month, and ${planName} allows ${allowedVisits}. Pick fewer days, or move up a plan.`
+             : sessions.some(x=>!x.included) ? 'One of these needs a higher plan — swap it, or open it below.' : null };
 }
-/* The most persuasive number on the page, and an honest one. */
-const perSession = (price, frequency='twice') => {
-  const perMonth = (SESSIONS[frequency]||2)*4;
+/* The most persuasive number on the page, so it has to be the honest one: divided
+   by the visits you can actually take, never by the visits you hoped for. Dividing
+   35 € by 8 gave 4.40 € a session on a plan that allows 4. */
+const perSession = (price, frequency='twice', plan=null) => {
+  const wanted = visitsWanted(frequency);
+  const perMonth = plan ? Math.min(wanted, monthlyAllowance(plan)) : wanted;
   return perMonth ? Math.round((price/perMonth)*10)/10 : null;
 };
 const accessLabel = (v,planId) => (v.access && typeof v.access[planId]==='string')
@@ -1654,11 +1677,34 @@ function recommend(answers = {}, match = { venues:[], categories:[] }) {
      Runs last, so it can undo any bump above it. */
   if (groups.length && pool.length) {
     const asIs = planByRank(rank)||planByRank(2);
-    const cheaper = downsell(groups, pool, asIs.id, S.commitmentId);
+    const cheaper = downsell(groups, pool, asIs.id, S.commitmentId, answers.frequency);
     const cheapPlan = cheaper ? planById(cheaper.planId) : null;
-    if (cheapPlan && cheapPlan.rank < rank) {
+    /* ...but only down to a plan that can still carry the visits they told us about.
+       Without that last clause this rule dropped a twice-a-week visitor to Essential
+       because the venue happened to be included there — 8 visits a month against an
+       allowance of 4. Coverage is not the only constraint. */
+    if (cheapPlan && cheapPlan.rank < rank && carriesFrequency(cheapPlan, answers.frequency)) {
       rank = cheapPlan.rank; appliedRules.push('no-upsell-without-benefit');
       reasons.push(`${cheapPlan.name} opens the same places near you as ${asIs.name}, for ${cheaper.saves} € a month less — so I didn't put you on ${asIs.name}.`);
+    }
+  }
+
+  /* The last word, and a hard one. The frequency they gave us is a floor on the
+     monthly check-in allowance, not a hint: no rule above may leave them on a plan
+     whose published allowance cannot carry it. An external reviewer found exactly
+     that failure — "twice a week" recommended on 4 check-ins a month — and it is the
+     one kind of error that discredits every other number on the page. */
+  if (answers.frequency) {
+    const need = visitsWanted(answers.frequency);
+    const floor = PLANS.filter(p=>monthlyAllowance(p) >= need).sort((a,b)=>a.rank-b.rank)[0];
+    if (floor && floor.rank > rank) {
+      const was = planByRank(rank)||planByRank(2);
+      rank = floor.rank; appliedRules.push('frequency-allowance-floor');
+      /* the reason that argued for the plan we just left is now false */
+      for (let i=reasons.length-1;i>=0;i--) if (reasons[i].includes("didn't put you on")) reasons.splice(i,1);
+      reasons.push(`${was.name} allows only ${monthlyAllowance(was)} check-ins a month, and ${FREQ_WORDS[answers.frequency]} is about ${need}. ${floor.name} is the cheapest plan that carries that.`);
+    } else if (!floor) {
+      notes.push(`No plan covers ${need} check-ins a month — the most any plan allows is one a day.`);
     }
   }
 
@@ -1894,7 +1940,7 @@ let ROUTE='landing', ACKTEXT=null, UNCLEAR=false, NOCHOICE=false, EDITING=null, 
 /* City is "detected" in production (IP or browser location). The pilot only has
    venue data loaded for Berlin, so the chip says so plainly and a Change link
    never lies about coverage — picking another city logs the demand instead. */
-let CITYPICK=false, CITYWANTED=null, ASKOPEN=false, DAYSOPEN=false, PLACEWANTED=null;
+let CITYPICK=false, CITYWANTED=null, ASKOPEN=false, DAYSOPEN=false, PLACEWANTED=null, STALELINK=null;
 
 const esc = v => String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 const log = (name,payload) => S.events.push({ name, payload:payload||null, at:new Date().toISOString() });
@@ -2251,6 +2297,7 @@ function landing() {
       <div class="landing__body">
         <h1 class="h-hero" tabindex="-1">Your way to move.</h1>
         <p class="lede">Find nearby activities and a membership that fits your life.</p>
+        ${STALELINK?`<div class="notice notice--grey" style="max-width:560px">${icon('info',20)}<span>That link points at a step, not at your answers, so I can&rsquo;t bring them back. Four questions and you&rsquo;re there again &mdash; and this time you&rsquo;ll get a link that does carry them.</span></div>`:''}
         ${S.returns?`<div class="notice" style="max-width:560px">${icon('checkThin',20)}<span>Welcome back. Your answers are saved — continue where you left off.</span></div>`:''}
         ${primary}
       </div></div>
@@ -2386,7 +2433,7 @@ function coverageBlock(rec, match, plan) {
   const cov = coverage(groups, pool, plan.id);
   if (!cov.rows.length) return '';
   const up = upsell(groups, pool, plan.id, S.commitmentId);
-  const down = downsell(groups, pool, plan.id, S.commitmentId);
+  const down = downsell(groups, pool, plan.id, S.commitmentId, A().frequency);
   const where = match.anywhere ? 'across Berlin' : `near ${esc(whereName(match))}`;
 
   const rows = cov.rows.map(r => {
@@ -2488,7 +2535,7 @@ function recommendationScreen() {
 
   /* ---- the week, which is the actual argument for paying ---- */
   const wp = weekPlan(groups, pool, plan.id, a.frequency);
-  const each = perSession(price, a.frequency);
+  const each = perSession(price, a.frequency, plan);
   const weekBlock = wp.sessions.length ? `<div class="week">
     <div class="week__head">
       <div>
@@ -2911,7 +2958,12 @@ function go(route, opts={}) {
      details form's own email field. Errors belong to the screen that produced them. */
   ERRORS = {}; FIELDS = {}; NOCHOICE = false; UNCLEAR = false;
   if (['fit','recommendation','save','details','payment'].includes(route)) S.lastStep = route;
-  if (!opts.replace) history.pushState({ route }, '', location.href.split('#')[0] + '#' + route);
+  /* The route lives in history state, not in the address bar. It used to write
+     "#recommendation", which looked like a deep link and was not one: opening it in a
+     fresh browser silently showed the landing page, so a saved or shared link quietly
+     lost someone's answers. Back and forward still work — popstate reads the state
+     object. The only shareable link is the resume link, which carries the answers. */
+  if (!opts.replace) history.pushState({ route }, '', location.href.split('#')[0]);
   render();
 }
 window.addEventListener('popstate', e => {
@@ -3018,7 +3070,7 @@ document.addEventListener('click', e => {
     S.chosenPlanId = t.dataset.plan; S.planOverridden = t.dataset.plan !== recId;
     log(S.planOverridden?'plan_changed':'plan_reset_to_recommended', { to:t.dataset.plan }); render(false); return; }
   if (t.dataset.commit) { S.commitmentId = t.dataset.commit; log('commitment_changed',{ to:t.dataset.commit }); render(false); return; }
-  if (t.dataset.edit) { EDITING = t.dataset.edit; ROUTE='fit'; history.pushState({route:'fit'},'',location.href.split('#')[0]+'#fit'); render(); return; }
+  if (t.dataset.edit) { EDITING = t.dataset.edit; ROUTE='fit'; history.pushState({route:'fit'},'',location.href.split('#')[0]); render(); return; }
   if (t.dataset.back) { const i=qIndex(t.dataset.back); const prev=QUESTIONS[i-1];
     if (prev) { EDITING = prev.id; ROUTE='fit'; render(); } return; }
   if (t.dataset.skipSave !== undefined) { S.skippedSave = true; log('save_declined'); go('details'); return; }
@@ -3182,6 +3234,11 @@ document.addEventListener('submit', e => {
 
 /* ---------------- boot ---------------- */
 (function boot() {
+  /* Older builds wrote "#recommendation" and friends into the address bar. Anyone
+     who saved or shared one of those gets told the truth rather than being dropped on
+     the landing page as though they had never been here. */
+  const stale = location.hash.match(/^#(fit|recommendation|save|details|payment)$/);
+  if (stale) { STALELINK = stale[1]; history.replaceState({ route:'landing' }, '', location.pathname); }
   const m = location.hash.match(/^#resume=(.+)$/);
   if (m) {
     try {
