@@ -1236,7 +1236,7 @@ button.venue-card:hover { border-color:var(--ink); }
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to main content</a>
-<div class="demo-banner">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment. <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button> <span class="demo-banner__build">build 12 Aug 15:02 UTC</span></div>
+<div class="demo-banner">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment. <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button> <span class="demo-banner__build">build 13 Aug 08:45 UTC</span></div>
 <div id="app"></div>
 
 <script>
@@ -2264,9 +2264,6 @@ function fitScreen() {
   if (!q) return recommendationScreen();
   const opts = optionsFor(q);
   const idx = qIndex(q.id);
-  const answeredBefore = QUESTIONS.slice(0,idx).filter(x=>S.answers[x.id]);
-  const last = answeredBefore.length?answeredBefore[answeredBefore.length-1]:null;
-  const echo = last && !EDITING ? answerEcho(last.id,S.answers[last.id]) : null;
   const match = matchVenues(A()), prov = provisionalPlan(A(),match);
   /* A multi-select question is real checkboxes, so it still works with no
      JavaScript — same as every other action here. */
@@ -2287,7 +2284,10 @@ function fitScreen() {
     <div class="qprogress"><span class="qprogress__label">Question ${idx+1} of ${QUESTIONS.length}</span>
       <span class="qprogress__track"><span class="qprogress__fill" style="width:${(idx)/QUESTIONS.length*100}%"></span></span></div>
     ${answerChips({ label:'So far' })}
-    ${echo && idx===1 ? `${ulaRow()}<div class="bubble">${esc(echo)}</div>` : (idx===0?ulaRow():'')}
+    ${/* Ula introduces herself once, on the first question. She used to repeat the
+         previous answer back as a chat bubble on question two — but the chips above
+         already show it, so it was the same fact twice, and it pushed the Continue
+         button off the first screen. */ idx===0?ulaRow():''}
     ${ACKTEXT?`<div class="notice">${icon('sparkle',19)}<span>${esc(ACKTEXT)}</span></div>`:''}
     ${UNCLEAR?`<div class="notice notice--grey">${icon('info',19)}<span>I didn&rsquo;t quite catch that one — could you pick the closest option below? You can always change it later.</span></div>`:''}
     ${TYPING?`<div class="typing" role="status" aria-label="Ula is typing"><span></span><span></span><span></span></div>`
