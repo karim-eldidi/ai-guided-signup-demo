@@ -617,17 +617,30 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
   font-size: 13px; font-weight: 700; color: var(--navy); cursor: pointer;
 }
 .week__swap:hover { color: var(--ink); text-decoration: underline; }
-.week__days { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border); }
-.week__days-label { font-size: 14.5px; font-weight: 700; margin-bottom: 10px; }
-.week__days-row { display: flex; flex-wrap: wrap; gap: 8px; }
+/* The signature of this page. Nothing on a pricing table can show you a week, and
+   this block is the whole argument for the recommendation — so it should look like a
+   week rather than like a list with a picker hidden behind a link. Seven columns,
+   always visible: the days you'd go are filled, the rest are the shape of the week
+   around them. The structure encodes real information, and it is its own control. */
+.week__days { margin-top: 14px; padding-top: 13px; border-top: 1px solid var(--border); }
+.week__days-label { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+.week__days-label span { font-weight: 400; color: var(--navy-soft); }
+.week__days-row { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
 .daybtn {
-  min-width: 52px; height: 42px; padding: 0 12px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
+  min-width: 0; padding: 8px 2px 7px;
   border: 1px solid var(--border); border-radius: 8px; background: #fff;
-  font-size: 14.5px; font-weight: 700; color: var(--navy); cursor: pointer;
+  color: var(--navy); cursor: pointer;
 }
+.daybtn b { font-size: 15px; font-weight: 800; line-height: 1.1; }
+.daybtn span { font-size: 10.5px; font-weight: 600; letter-spacing: .02em; text-transform: uppercase; color: var(--navy-soft); }
 .daybtn:hover { border-color: var(--ink); }
-.daybtn.is-on { background: var(--ink); border-color: var(--ink); color: #fff; }
-.week__days-note { display: flex; align-items: flex-start; gap: 7px; font-size: 13.5px; line-height: 1.45; color: var(--navy); margin: 12px 0 0; }
+/* Brand yellow, not filled black: a black chip here counted as a main CTA — the
+   one-CTA check caught two of them sitting above "Continue with Classic" — and the
+   yellow says "chosen" without competing with the one button that matters. */
+.daybtn.is-on { background: var(--yellow-bright); border: 2px solid var(--ink); padding: 7px 1px 6px; color: var(--ink); }
+.daybtn.is-on span { color: var(--navy); }
+.week__days-note { display: flex; align-items: flex-start; gap: 7px; font-size: 13px; line-height: 1.4; color: var(--navy); margin: 9px 0 0; }
 .week__days-note svg { flex: 0 0 auto; margin-top: 3px; }
 
 /* bigger venue cards, because the venues are the argument */
@@ -1054,7 +1067,14 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
   .week__day { flex-basis: 62px; font-size: 13.5px; }
   .week__swap { position: static; margin-top: 6px; }
   .week__item { flex-wrap: wrap; }
-  .daybtn { min-width: 44px; height: 40px; padding: 0 9px; font-size: 13.5px; }
+  .week__days { margin-top: 11px; padding-top: 10px; }
+  .week__days-label { margin-bottom: 6px; }
+  /* the hint wraps to its own line on a phone and the chips are obviously tappable */
+  .week__days-label span { display: none; }
+  .week__days-row { gap: 4px; }
+  .daybtn { padding: 6px 1px 5px; }
+  .daybtn b { font-size: 14px; }
+  .daybtn span { font-size: 9px; }
   .week__each { text-align: left; }
   .venue-grid--big { grid-template-columns: 1fr 1fr; }
   .one-col__main { padding-bottom: 110px; }
@@ -1152,6 +1172,23 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .landing__alt { font-size: 15.5px; color: var(--navy); margin: 22px 0 0; }
 .landing__alt .linkish.strong { display: inline-flex; align-items: center; gap: 8px; text-decoration: underline; }
 .landing__alt--login { margin-top: 12px; }
+
+/* --- a utility role for numbers ------------------------------------------- */
+/* The frontend-design skill's point about typography carrying meaning applies to
+   data as much as to headlines. Every price, count and distance on this page is a
+   figure the visitor is comparing against another figure, so they get tabular
+   numerals: the columns line up, and swapping 75 € for 59 € no longer shifts the
+   words beside it. One family, three roles — display, body, and figures. */
+.plancard__price b, .planbox__price b, .altcard__price, .termpick__opt span,
+.plancard__venues, .planbox__each, .week__each b, .paybar__info span,
+.cov__headline, .stepper__dot, .qprogress__label, .week__venue span,
+.appcard__cat, .savenote__mail, .demo-banner__build {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+/* Prices are the figures people scan hardest, so they get the tighter tracking a
+   number deserves and the currency stays optically attached. */
+.plancard__price b, .planbox__price b { letter-spacing: -.02em; }
 
 /* ============================================================
    standalone-only additions
@@ -1269,7 +1306,7 @@ button.venue-card:hover { border-color:var(--ink); }
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to main content</a>
-<div class="demo-banner">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment. <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button> <span class="demo-banner__build">build 13 Aug 09:37 UTC</span></div>
+<div class="demo-banner">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment. <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button> <span class="demo-banner__build">build 13 Aug 10:02 UTC</span></div>
 <div id="app"></div>
 
 <script>
@@ -2508,10 +2545,17 @@ function recommendationScreen() {
   const cheaperPlan = PLANS.find(p=>p.rank===plan.rank-1) || null;
   const richerPlan  = PLANS.find(p=>p.rank===plan.rank+1) || null;
   const totalsFor = pl => pl && groupsForAlt.length && pool.length ? coverage(groupsForAlt, pool, pl.id).totals : null;
-  const cheaperT = totalsFor(cheaperPlan);
+  const cheaperT = totalsFor(cheaperPlan), richerT = totalsFor(richerPlan), hereT = totalsFor(plan);
   const cheaperOpensSomething = Boolean(cheaperPlan) && (!cheaperT || !cheaperT.nearby || cheaperT.included > 0);
+  /* And the same test in the other direction, which the first pass missed: a richer
+     plan headed "if you want more places open" that opens exactly the same places is
+     the upsell version of the trap. If neither direction is worth a visitor's
+     attention, offer nothing — an empty space is more honest than a false choice. */
+  const richerAddsSomething = Boolean(richerPlan) && (!richerT || !hereT || !richerT.nearby || richerT.included > hereT.included);
   const alt = altIsRecommendation ? planById(rec.planId)
-            : (cheaperOpensSomething ? cheaperPlan : (richerPlan || cheaperPlan || null));
+            : cheaperOpensSomething ? cheaperPlan
+            : richerAddsSomething ? richerPlan
+            : null;
   const altPrice = alt ? priceFor(alt,S.commitmentId) : 0;
   const altDelta = alt ? altPrice - price : 0;
   const altCovT = alt && groupsForAlt.length && pool.length ? coverage(groupsForAlt, pool, alt.id).totals : null;
@@ -2563,14 +2607,11 @@ function recommendationScreen() {
       </li>`).join('')}</ol>
 
     <div class="week__days">
-      <div class="week__days-label">${DAYSOPEN?'Which days suit you?':'These days not right?'}</div>
-      ${DAYSOPEN?`<div class="week__days-row">${DAY_ORDER.map(d=>{
+      <div class="week__days-label" id="week-days-label">Which days suit you? <span>Tap to change &mdash; the price follows.</span></div>
+      <div class="week__days-row" role="group" aria-labelledby="week-days-label">${DAY_ORDER.map(d=>{
           const on = wp.sessions.some(x=>x.day===d);
-          return `<button class="daybtn ${on?'is-on':''}" data-day="${esc(d)}" aria-pressed="${on}">${DAY_SHORT[d]}</button>`;
+          return `<button class="daybtn ${on?'is-on':''}" data-day="${esc(d)}" aria-pressed="${on}"><b>${DAY_SHORT[d].charAt(0)}</b><span>${DAY_SHORT[d]}</span></button>`;
         }).join('')}</div>
-        <p class="week__days-note">${icon('info',14)} <span>Pick the days you&rsquo;d actually go. ${plural(wp.sessions.length,'day','days')} chosen
-          &mdash; that&rsquo;s ${esc(FREQ_WORDS[S.answers.frequency]||'a couple of times a week')}, and it&rsquo;s what the price below is based on.</span></p>`
-        :`<button class="linkish strong" type="button" data-open-days>Pick your own days</button>`}
     </div>
 
     <p class="week__foot">${icon('info',15)} <span>A suggestion, not a booking — check each venue&rsquo;s timetable before you go.${wp.note?` ${esc(wp.note)}`:''}</span></p>
@@ -2602,6 +2643,9 @@ function recommendationScreen() {
         <div class="altcard__top"><span class="altcard__name">${esc(alt.name)}</span>
           <span class="altcard__price">${altPrice} €<small>/mo</small></span></div>
         <div class="altcard__delta ${altDelta<0?'is-down':'is-up'}">${altDelta<0?`${Math.abs(altDelta)} € cheaper`:`${altDelta} € more`}</div>
+        ${a.frequency && !carriesFrequency(alt, a.frequency)
+          ? `<div class="altcard__warn">${icon('info',14)} ${monthlyAllowance(alt)} check-ins a month, not the ${visitsWanted(a.frequency)} your week needs</div>`
+          : ''}
         ${altCovT&&altCovT.nearby?`<div class="altcard__cov">Opens <b>${altCovT.included} of your ${altCovT.nearby}</b> places
           ${altCovT.included<covIncluded?`<span class="altcard__warn">${icon('info',14)} ${covIncluded-altCovT.included} fewer than ${esc(plan.name)}</span>`
             :altCovT.included>covIncluded?`<span class="altcard__good">${icon('checkThin',14)} ${altCovT.included-covIncluded} more than ${esc(plan.name)}</span>`
@@ -2978,7 +3022,12 @@ window.addEventListener('popstate', e => {
 });
 
 /* advance with a short "Ula is typing" beat so she reads as a guide, not a form */
+const REDUCED_MOTION = () => window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 function advance(nextRoute) {
+  /* The "Ula is typing" beat is motion, and someone who has asked their system for
+     less of it should not be made to wait for a simulated one. The CSS already turns
+     animations off; this turns off the delay behind them. */
+  if (REDUCED_MOTION()) { TYPING = false; go(nextRoute); return; }
   TYPING = true; render(false);
   setTimeout(() => { TYPING = false; go(nextRoute); }, 480);
 }
