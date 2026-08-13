@@ -8,7 +8,7 @@
      and see yesterday's build with no way of knowing. -->
 <meta http-equiv="cache-control" content="no-cache, must-revalidate">
 <meta http-equiv="pragma" content="no-cache">
-<title>Urban Sports Club — Ula signup pilot</title>
+<title>Urban Sports Club — Urby signup pilot</title>
 <style>/* ===========================================================================
    Urban Sports Club — Ula pilot
    Design tokens sampled directly from the supplied designs.
@@ -284,7 +284,12 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
   gap: 0;
   align-items: start;
 }
-.two-col__main { padding: 8px clamp(20px, 3.4vw, 60px) 80px; max-width: 860px; }
+.two-col__main { padding: 8px clamp(20px, 3.4vw, 60px) 80px; max-width: 860px; min-width: 0; }
+/* A grid item defaults to min-width:auto, so the rail's 2,500px of scroll content was
+   forcing the whole column — and on a phone the layout viewport with it, which zoomed
+   the page out and made the carousel feel broken. Every ancestor of a scroller needs
+   min-width:0 or the scroller never gets to clip anything. */
+.two-col__main, .reco-tail, .places, .card, .week { min-width: 0; }
 .two-col__aside { margin: 4px 16px 24px 0; }
 
 /* --- Ula conversation ----------------------------------------------------- */
@@ -553,7 +558,21 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
 .reco-tail { grid-column: 1; grid-row: 2; padding: 0 clamp(20px, 3.4vw, 60px) 80px; max-width: 860px; }
 .two-col--reco .two-col__main { grid-column: 1; grid-row: 1; padding-bottom: 26px; }
 .two-col--reco .two-col__aside { grid-column: 2; grid-row: 1 / span 2; }
-.two-col__aside--sticky { position: sticky; top: 22px; }
+/* Karim: "I have to get to the bottom of the page to see the rest of the side menu."
+   A sticky column taller than the viewport is unreachable until you scroll past it. It
+   now caps at the viewport and scrolls itself, so the plan, the alternative and the
+   reasoning are all reachable from anywhere on the page. */
+.two-col__aside--sticky {
+  position: sticky; top: 22px;
+  max-height: calc(100vh - 44px);
+  /* auto, not contain: `overscroll-behavior: contain` stops scroll chaining, so a wheel
+     over this column would hit its end and then refuse to move the page — which is the
+     annoying half of what Karim reported, reintroduced by the fix for the other half. */
+  overflow-y: auto;
+  scrollbar-width: thin; scrollbar-gutter: stable;
+}
+/* And it only scrolls when it has to: with the reasoning collapsed the column is 831px,
+   so at any normal window height there is one scroll area, not two. */
 
 .planbox {
   background: var(--cream); border: 1px solid var(--cream-line);
@@ -587,7 +606,8 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
 .termpick__opt span { font-size: 12px; color: var(--navy); }
 .termpick__opt.is-on { border: 2px solid var(--ink); padding: 6px 3px; }
 .planbox__seeall { text-align: center; margin: 12px 0 0; font-size: 13.5px; }
-.planbox__alt { margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--cream-line); }
+.planbox__alt { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--cream-line); }
+.planbox__alt-head { letter-spacing: .04em; }
 .planbox__alt-head {
   font-size: 12.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
   color: var(--navy-soft); margin-bottom: 9px;
@@ -1078,7 +1098,10 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
   .desktop-cta { display: none; }
 
   .decision-pair { grid-template-columns: 1fr; }
-  .two-col__aside--sticky { position: static; }
+  /* and it must stop being a clipped, self-scrolling box: on a phone the plan column
+     is just a section of the page, and a max-height here turned it into a small inner
+     scroller sitting on top of the sticky price bar. */
+  .two-col__aside--sticky { position: static; max-height: none; overflow: visible; }
   .paybar {
     display: flex; align-items: center; gap: 14px;
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
@@ -1095,8 +1118,7 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
   .week__item { flex-wrap: wrap; }
   .week__days { margin-top: 11px; padding-top: 10px; }
   .week__days-label { margin-bottom: 6px; }
-  /* the hint wraps to its own line on a phone and the chips are obviously tappable */
-  .week__days-label span { display: none; }
+  .week__days-label span { display: block; font-size: 13px; margin-top: 2px; }
   .week__days-row { gap: 4px; }
   .daybtn { padding: 9px 1px; font-size: 11.5px; }
   .week__each { text-align: left; }
@@ -1146,29 +1168,32 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 /* --- the app catalogue, next to the venues ------------------------------- */
 /* Real logos, loaded from each app's own domain, with a lettered tile beneath so
    an offline or blocked request degrades to something deliberate. */
-.appgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-.moreapps > summary { text-decoration: underline; }
+.appgrid { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.moreapps { flex: 0 0 auto; }
+.moreapps > summary { text-decoration: underline; font-size: 13px; margin-top: 0; }
 .appgrid.is-locked .appcard { opacity: .62; }
 .appcard {
-  background: #fff; border: 1px solid var(--border); border-radius: var(--radius);
-  padding: 10px 8px; text-align: center;
+  display: flex; align-items: center; gap: 8px;
+  background: #fff; border: 1px solid var(--border); border-radius: 999px;
+  padding: 5px 12px 5px 5px; text-align: left; white-space: nowrap;
 }
 .appcard__logo {
-  position: relative; display: block; width: 38px; height: 38px; margin: 0 auto 7px;
-  border-radius: 11px; background: var(--yellow-pale); overflow: hidden;
+  position: relative; flex: 0 0 auto; display: block; width: 26px; height: 26px;
+  border-radius: 50%; background: var(--yellow-pale); overflow: hidden;
 }
 .appcard__logo b {
   position: absolute; inset: 0; display: grid; place-items: center;
-  font-size: 20px; font-weight: 800; color: var(--ink);
+  font-size: 13px; font-weight: 800; color: var(--ink);
 }
-.appcard__logo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; padding: 8px; background: #fff; }
-.appcard__name { font-size: 14px; font-weight: 700; line-height: 1.2; }
-.appcard__cat { font-size: 12.5px; color: var(--navy-soft); margin-top: 3px; }
-.apps__unlock { display: flex; align-items: flex-start; gap: 8px; font-size: 13.5px; color: var(--navy); margin: 14px 0 0; }
+.appcard__logo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; padding: 4px; background: #fff; }
+.appcard__name { font-size: 13px; font-weight: 700; line-height: 1.2; }
+.appcard__cat { display: none; }
+.apps__unlock { flex: 1 1 100%; display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: var(--navy); margin: 2px 0 0; }
 .apps__unlock svg { flex: 0 0 auto; margin-top: 2px; }
 
 @media (max-width: 900px) {
-  .appgrid { grid-template-columns: repeat(3, 1fr); }
+  .apps { gap: 12px; padding: 13px 14px; }
+  .apps__head { flex: 1 1 100%; }
 }
 
 /* --- "add a place near me": demand we can only collect here ---------------- */
@@ -1185,8 +1210,14 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 }
 
 /* the app catalogue lives inside the places card, as a strip */
-.apps { margin-top: 18px; border-top: 1px solid var(--cream-line); padding-top: 16px; }
-.apps__head { font-size: 14.5px; font-weight: 700; color: var(--navy); margin-bottom: 12px; }
+/* Karim: the catalogue block was "clunky, out of place, too big". It is a bonus, so it
+   reads as one line with the logos inline — a band, not a second venue grid. Same
+   information, about a third of the height. */
+.apps { display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+  margin-top: 0; padding: 14px 18px; border: 1px solid var(--cream-line);
+  border-radius: var(--radius); background: var(--cream); }
+.apps__head { flex: 1 1 210px; min-width: 0; font-size: 14px; font-weight: 700; color: var(--navy); margin: 0; }
+.apps__head span { display: block; font-weight: 400; color: var(--navy-soft); font-size: 13px; margin-top: 2px; }
 
 /* --- the landing, August 13 layout ---------------------------------------- */
 /* Why we ask for the address, and the way past it, on one line. A second button
@@ -1276,10 +1307,25 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .sec__title { font-size: 19px; font-weight: 800; letter-spacing: -.02em; margin: 0; }
 .places { margin-top: 4px; }
 .places + .week { margin-top: 34px; }
-.week + .apps { margin-top: 22px; }
+.week + .apps { margin-top: 20px; }
 
-.planbox__why { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--cream-line); }
-.planbox__why-head { font-size: 14.5px; font-weight: 700; margin-bottom: 4px; }
+/* Karim's boss could not find the second membership option: it sat under ~600px of
+   reasoning. The reasoning is now a disclosure, closed by default, and it comes after
+   the alternative rather than in front of it. Support belongs behind the choice. */
+.planbox__why { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--cream-line); }
+.planbox__why > summary {
+  display: flex; align-items: center; gap: 8px; cursor: pointer; list-style: none;
+  font-size: 14.5px; font-weight: 700;
+}
+.planbox__why > summary::-webkit-details-marker { display: none; }
+.planbox__why > summary::after {
+  content: ""; width: 7px; height: 7px; margin-left: auto;
+  border-right: 2px solid var(--navy); border-bottom: 2px solid var(--navy);
+  transform: rotate(45deg); transition: transform .15s ease;
+}
+.planbox__why[open] > summary::after { transform: rotate(225deg); }
+.planbox__why[open] > summary { margin-bottom: 10px; }
+.planbox__why-head { font-size: 14.5px; font-weight: 700; }
 .planbox__why .why__list { gap: 9px; }
 .planbox__why .why__list li { font-size: 14.5px; line-height: 1.4; }
 .planbox__why .why__list .why__icon { width: 25px; height: 25px; }
@@ -1302,6 +1348,42 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .venue-grid--big .venue-card__name { overflow-wrap: anywhere; hyphens: auto; }
 .venue-grid--big .venue-card__more { margin-top: auto; padding-top: 6px; }
 
+/* What just changed, said at the moment it changes. Karim's boss played with the days
+   and never realised the plan on the right was following him. */
+.week__changed {
+  display: flex; align-items: flex-start; gap: 8px;
+  margin: 12px 0 0; padding: 11px 13px;
+  background: var(--yellow-pale); border-radius: var(--radius);
+  font-size: 14px; line-height: 1.45; color: var(--ink);
+}
+.week__changed svg { flex: 0 0 auto; margin-top: 2px; }
+.week__days-label span { display: inline; }
+
+/* --- the rail's affordances ------------------------------------------------ */
+/* A horizontal rail with no arrows and an overlay scrollbar is invisible to anyone on
+   a mouse, which reads as broken. Arrows only where there is a pointer; a touch
+   device already knows how to swipe. */
+.places__tools { display: flex; align-items: center; gap: 14px; }
+.railnav { display: none; gap: 6px; }
+.railnav__btn {
+  display: grid; place-items: center; width: 34px; height: 34px;
+  border: 1px solid var(--border); border-radius: 50%; background: #fff; color: var(--ink);
+}
+.railnav__btn:hover { border-color: var(--ink); }
+@media (hover: hover) and (pointer: fine) { .railnav { display: inline-flex; } }
+
+/* how far we looked, as a control rather than a fact */
+.radius { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+.radius__label { display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 700; color: var(--navy); }
+.radius .chip-sm { font-size: 13px; padding: 5px 11px; }
+.radius .chip-sm.is-current { background: var(--yellow-bright); border-color: var(--ink); font-weight: 700; }
+.radius__count { font-size: 13px; color: var(--navy-soft); margin-left: auto; font-variant-numeric: tabular-nums; }
+
+@media (max-width: 900px) {
+  .radius { gap: 6px; margin-top: 12px; }
+  .radius__count { margin-left: 0; flex: 1 1 100%; }
+}
+
 /* ============================================================
    standalone-only additions
    ============================================================ */
@@ -1319,13 +1401,13 @@ h1:focus, h2:focus { outline: none; }
 .qprogress__track { flex:1 1 auto; max-width:220px; height:4px; background:#e7e5df; border-radius:3px; overflow:hidden; }
 .qprogress__fill { height:100%; background:var(--ink); transition:width .25s ease; }
 
-/* Ula typing indicator */
+/* Urby typing indicator */
 .typing { display:inline-flex; gap:5px; align-items:center; background:var(--grey-bubble); border-radius:7px; padding:16px 20px; margin-bottom:26px; }
 .typing span { width:7px; height:7px; border-radius:50%; background:#9a9a9a; animation:blink 1.1s infinite both; }
 .typing span:nth-child(2){ animation-delay:.18s } .typing span:nth-child(3){ animation-delay:.36s }
 @keyframes blink { 0%,80%,100%{opacity:.25;transform:translateY(0)} 40%{opacity:1;transform:translateY(-2px)} }
 
-/* Ula's line on the form steps, so she does not vanish when it gets personal */
+/* Urby's line on the form steps, so she does not vanish when it gets personal */
 .ula-note { display:flex; gap:13px; align-items:flex-start; background:var(--cream); border:1px solid var(--cream-line);
   border-radius:var(--radius); padding:16px 18px; margin:0 0 24px; }
 .ula-note p { margin:0; font-size:16px; line-height:1.45; color:var(--navy); }
@@ -1389,7 +1471,7 @@ button.venue-card:hover { border-color:var(--ink); }
   .venue-strip { grid-template-columns:1fr 1fr; }
 }
 
-/* Ask Ula */
+/* Ask Urby */
 .ask { background:var(--cream); border:1px solid var(--cream-line); border-radius:var(--radius-lg); padding:24px 26px; margin-top:28px; }
 .ask--compact { padding:18px 20px; margin-top:26px; }
 .ask__head { display:flex; gap:12px; align-items:flex-start; margin-bottom:16px; }
@@ -1418,17 +1500,17 @@ button.venue-card:hover { border-color:var(--ink); }
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to main content</a>
-<div class="demo-banner">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment. <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button> <span class="demo-banner__build">build 13 Aug 11:44 UTC</span></div>
+<div class="demo-banner">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment. <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button> <span class="demo-banner__build">build 13 Aug 13:25 UTC</span></div>
 <div id="app"></div>
 
 <script>
 /* =====================================================================
-   Urban Sports Club — Ula signup pilot (self-contained build)
+   Urban Sports Club — Urby signup pilot (self-contained build)
 
    Design intent, after a usability pass:
      - one decision per screen; everything else on demand, never on display
-     - Ula holds the recommendation and stays present through details and payment
-     - you can talk to Ula before giving an email; the ask to save comes once
+     - Urby holds the recommendation and stays present through details and payment
+     - you can talk to Urby before giving an email; the ask to save comes once
        there is something worth saving
      - venues open in place, so exploring never costs you your progress
 
@@ -1489,20 +1571,20 @@ const APPLE = '<svg width="20" height="20" viewBox="0 0 24 24" fill="#08090a" ar
 const SKIP = '__skip';
 const SKIP_OPTION = { id: SKIP, label: "I'm not sure yet", echo: "I'm not sure yet", icon: 'question' };
 const QUESTIONS = [
-  { id:'goal', prompt:'What would you love to do more of?', summaryLabel:'Goal', icon:'target', placeholder:'Or tell Ula in your own words…', skip:true,
+  { id:'goal', prompt:'What would you love to do more of?', summaryLabel:'Goal', icon:'target', placeholder:'Or tell Urby in your own words…', skip:true,
     options:[{id:'move_more',label:'Move more',echo:'I want to move more',icon:'bolt'},{id:'unwind',label:'Unwind',echo:'I want to unwind',icon:'leaf'},{id:'try_new',label:'Try something new',echo:'I want to try something new',icon:'sparkle'}] },
   /* The concrete question the old "what would make it easier?" was dancing around.
      Multi-select, because nobody does exactly one thing — and because this answer is
      what makes the recommendation checkable: these are the activities we then count
      venues for, plan by plan. */
   { id:'activities', prompt:'What would you actually do?', hint:'Pick as many as you like — I&rsquo;ll count the places near you for each one.',
-    summaryLabel:'Activities', icon:'grid', multi:true, placeholder:'Or tell Ula in your own words…', optionsFrom:'activityGroups' },
+    summaryLabel:'Activities', icon:'grid', multi:true, placeholder:'Or tell Urby in your own words…', optionsFrom:'activityGroups' },
   /* Two areas, not one. People live in one place and work in another, and asking
      them to pick a single neighbourhood makes the search worse than they are.
      Distances below are then measured from whichever of their areas is nearer. */
   { id:'area', prompt:'Where should we search?', hint:'Pick one or two &mdash; home and work, if they differ.',
     summaryLabel:'Area', icon:'pin', multi:true, maxPick:2, placeholder:'Postcode or neighbourhood…', optionsFrom:'areas' },
-  { id:'frequency', prompt:'How often would you realistically like to go?', summaryLabel:'Frequency', icon:'calendar', placeholder:'Or tell Ula in your own words…', skip:true,
+  { id:'frequency', prompt:'How often would you realistically like to go?', summaryLabel:'Frequency', icon:'calendar', placeholder:'Or tell Urby in your own words…', skip:true,
     options:[{id:'once',label:'About once a week',echo:'About once a week',icon:'one'},{id:'twice',label:'Twice a week',echo:'Twice a week',icon:'two'},{id:'often',label:'Three or four times a week',echo:'Three or four times a week',icon:'three'},{id:'daily',label:'Five times a week or more',echo:'Five times a week or more',icon:'four'}] }
 ];
 const AREAS = DATA.venues.areas, VENUES = DATA.venues.venues, PLANS = DATA.plans.plans, COMMITMENTS = DATA.plans.commitments;
@@ -1524,7 +1606,7 @@ const ANYWHERE = { id:'anywhere', name:'Anywhere in Berlin', lat:52.5200, lng:13
 /* Real Urban Sports Club cities in Germany. Only Berlin has venues loaded here. */
 const CITIES = ['Berlin','Hamburg','Munich','Cologne','Frankfurt','Stuttgart','D\u00fcsseldorf','Leipzig'];
 /* Venue data uses fine-grained activity ids ('strength', 'barre'…). Nobody picks
-   from a list of seventeen, so Ula offers eight groups and each expands to the ids
+   from a list of seventeen, so Urby offers eight groups and each expands to the ids
    behind it. Groups are disjoint, so "3 of 4 places" can never double-count. */
 const ACTIVITY_GROUPS = [
   { id:'gym',   label:'Gym & strength',          short:'gym and strength',          icon:'dumbbell', activities:['gym','strength','crossfit','hiit'] },
@@ -1623,9 +1705,16 @@ function matchVenues(answers = {}, limit = 6) {
   }).sort((x,y) => y.score - x.score);
   if (anywhere) return { venues: scored.slice(0,limit), pool: scored, area, areas: from, radiusKm:null, widened:false, anywhere:true,
                          categories:[...new Set(scored.slice(0,limit).flatMap(v=>v.activities))] };
-  let nearby = scored.filter(v => v.distanceKm <= 3), radiusKm = 3, widened = false;
-  if (nearby.length < 3) { radiusKm = 8; nearby = scored.filter(v => v.distanceKm <= 8); widened = true; }
-  if (nearby.length < 3) { nearby = scored; radiusKm = null; widened = true; }
+  /* An explicit choice wins over the automatic widening. */
+  const pick = RADII.find(r => r.id === (S.radiusKm || 'auto')) || RADII[0];
+  let nearby, radiusKm = pick.km, widened = false;
+  if (pick.id === 'any') { nearby = scored; radiusKm = null; }
+  else if (pick.id !== 'auto') { nearby = scored.filter(v => v.distanceKm <= pick.km); }
+  else {
+    nearby = scored.filter(v => v.distanceKm <= 3); radiusKm = 3;
+    if (nearby.length < 3) { radiusKm = 8; nearby = scored.filter(v => v.distanceKm <= 8); widened = true; }
+    if (nearby.length < 3) { nearby = scored; radiusKm = null; widened = true; }
+  }
   /* If they named activities and nothing within the radius does any of them, look
      across the whole city rather than reporting "0 of 0 places". Distances stay
      real, so the screen can say how much further it is. */
@@ -1715,6 +1804,10 @@ function downsell(groupIds = [], venues = [], planId = 'classic', commitmentId =
    The screen used to open with a price, which reads like a checkout. This turns the
    same answers into a week: which day, which activity, which real venue, how far,
    and what the plan gets you there. A plan, not a promise — nothing is booked. */
+/* How far to look. "auto" is the original behaviour — 3 km, widening only when that
+   finds fewer than three places — and the others are explicit choices, because Karim
+   asked what happens when someone wants to reach further for more to choose from. */
+const RADII = [{ id:'auto', label:'walking distance', km:3 }, { id:'8', label:'8 km', km:8 }, { id:'any', label:'all of Berlin', km:null }];
 const SESSIONS = { once:1, twice:2, often:3, daily:5 };
 /* What the plan actually permits in a month, from the published fields that were
    already in plans.json and that the rules were ignoring. Essential is "4 check-ins
@@ -1972,8 +2065,8 @@ const ACK = { goal:{ move_more:"Great — I'll find nearby activities that fit y
 const ackFor=(qid,aid)=>(ACK[qid]||{})[aid]||(ACK[qid]||{})._default||'Thanks — noted.';
 
 
-/* ---------------- Ask Ula: grounded answers, no invention ----------------
-   Ula answers only from data/faqs.json, data/plans.json and data/venues.json.
+/* ---------------- Ask Urby: grounded answers, no invention ----------------
+   Urby answers only from data/faqs.json, data/plans.json and data/venues.json.
    Every answer carries the source it came from. When nothing matches well
    enough she says she doesn't know and offers a next step — which is what the
    brief asks for, and what a retrieval answer can guarantee and a generated
@@ -1997,7 +2090,7 @@ const INTENT = new Set(['pause','freeze','suspend','cancel','cancellation','upgr
 /* how many entries use each tag — rare tags identify a topic, common ones don't */
 const ASK_DF = (() => { const d = {}; for (const f of KB) for (const t of f.tags) d[t] = (d[t]||0)+1; return d; })();
 
-function askUla(query) {
+function askUrby(query) {
   const q = norm(query);
   if (!q || toks(q).length === 0) return null;
   const words = toks(q);
@@ -2063,7 +2156,7 @@ function askBlock(compact) {
     }
     body += `<p class="ask__source">${r.sourceLabel
       ? `${icon('info',14)} From ${esc(r.sourceLabel)}${r.sourceUrl?` · <a href="${esc(r.sourceUrl)}" target="_blank" rel="noopener">see the original</a>`:''}`
-      : `${icon('info',14)} Ula only answers from approved Urban Sports Club information. <button class="linkish" data-ask-contact>Ask a human instead</button>`}</p>`;
+      : `${icon('info',14)} Urby only answers from approved Urban Sports Club information. <button class="linkish" data-ask-contact>Ask a human instead</button>`}</p>`;
   }
   /* Three, not four. A fourth chip earns nothing and costs a line on a phone, where
      the end of this page was already the part testers said they could not process. */
@@ -2073,7 +2166,7 @@ function askBlock(compact) {
       <div class="ask__title">A specific membership question?</div>
       <div class="ask__sub">Plans, prices, pausing, what&rsquo;s near you. Answered from published information only.</div></div></div>
     <form data-form="ask"><div class="ask__row">
-      <input type="text" name="q" value="${esc(ASK.q||'')}" placeholder="Type a question…" aria-label="Ask Ula a question" autocomplete="off">
+      <input type="text" name="q" value="${esc(ASK.q||'')}" placeholder="Type a question…" aria-label="Ask Urby a question" autocomplete="off">
       <button class="btn btn--secondary" type="submit">Ask</button></div></form>
     ${body}
     ${!r?`<div class="ask__examples">${examples.map(x=>`<button class="chip-sm" data-ask-example="${esc(x)}">${esc(x)}</button>`).join('')}</div>`:
@@ -2087,7 +2180,7 @@ function askBlock(compact) {
    "Saved to you@example.com" after they had explicitly chosen not to save and
    then typed the address the membership legally requires. Those are two different
    things and the interface must not conflate them. */
-const BLANK = { email:null, authMethod:null, saveOptIn:false, marketing:false, marketingAsked:false, answers:{}, freeText:{},
+const BLANK = { email:null, authMethod:null, saveOptIn:false, marketing:false, marketingAsked:false, answers:{}, freeText:{}, radiusKm:'auto',
                 weekDays:[], weekSwap:{},
                 chosenPlanId:null, planOverridden:false, commitmentId:'monthly', details:{}, startDate:null,
                 paid:false, lastStep:'landing', returns:0, events:[], source:null, campaign:null, variant:VARIANT };
@@ -2097,7 +2190,7 @@ let ROUTE='landing', ACKTEXT=null, UNCLEAR=false, NOCHOICE=false, EDITING=null, 
 /* City is "detected" in production (IP or browser location). The pilot only has
    venue data loaded for Berlin, so the chip says so plainly and a Change link
    never lies about coverage — picking another city logs the demand instead. */
-let CITYPICK=false, CITYWANTED=null, ASKOPEN=false, DAYSOPEN=false, PLACEWANTED=null, STALELINK=null, VENUESOPEN=false;
+let CITYPICK=false, CITYWANTED=null, ASKOPEN=false, DAYSOPEN=false, PLACEWANTED=null, STALELINK=null, VENUESOPEN=false, DAYNOTE=null;
 
 const esc = v => String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 const log = (name,payload) => S.events.push({ name, payload:payload||null, at:new Date().toISOString() });
@@ -2111,7 +2204,7 @@ const currentPlan = () => { const r=recommend(A(),matchVenues(A())); return plan
 const validEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e||'');
 
 /* ---------------- shared chrome ---------------- */
-const STEP_LABELS = { landing:'the landing page', fit:"Ula's questions", recommendation:'your recommendation', save:'saving your fit', details:'your details', payment:'the payment screen', converted:'a completed signup' };
+const STEP_LABELS = { landing:'the landing page', fit:"Urby's questions", recommendation:'your recommendation', save:'saving your fit', details:'your details', payment:'the payment screen', converted:'a completed signup' };
 function topbar(step, opts={}) {
   const { savedNote = Boolean(S.email && S.saveOptIn), saveExit = true } = opts;
   const steps=[{n:1,l:'Your fit'},{n:2,l:'Details'},{n:3,l:'Payment'}];
@@ -2128,7 +2221,7 @@ function topbar(step, opts={}) {
     <div class="mobile-progress__track"><div class="mobile-progress__fill" style="width:${step/3*100}%"></div></div>
     ${savedNote?`<div class="saved-note saved-note--mobile">${icon('checkThin',16)} Saved — your progress is safe.</div>`:''}</div>`;
 }
-const ulaRow = () => `<div class="ula-row">${ulaAvatar()}<div class="ula-name"><b>Ula</b> <span>· Membership guide</span></div></div>`;
+const ulaRow = () => `<div class="ula-row">${ulaAvatar()}<div class="ula-name"><b>Urby</b> <span>· Membership guide</span></div></div>`;
 const ulaNote = text => `<div class="ula-note">${ulaAvatar('sm')}<p>${text}</p></div>`;
 /* The other half of the AI layer. Answering questions is the visible half; this
    is the half that pays for itself — what the visitor actually wanted, including
@@ -2150,14 +2243,14 @@ function intentProfile() {
 
   const asks = evs('ula_asked');
   const missed = asks.filter(e => e.payload && ['none','unknown','venues-none'].includes(e.payload.matched));
-  asks.filter(e => !missed.includes(e)).forEach(e => signals.push(`Asked Ula &ldquo;${esc(e.payload.question)}&rdquo;`));
-  missed.forEach(e => gaps.push(`Asked &ldquo;${esc(e.payload.question)}&rdquo; &mdash; Ula had no approved answer`));
+  asks.filter(e => !missed.includes(e)).forEach(e => signals.push(`Asked Urby &ldquo;${esc(e.payload.question)}&rdquo;`));
+  missed.forEach(e => gaps.push(`Asked &ldquo;${esc(e.payload.question)}&rdquo; &mdash; Urby had no approved answer`));
   evs('city_unavailable_requested').forEach(e => gaps.push(`Wanted <strong>${esc(e.payload.city)}</strong>, which this pilot cannot cover`));
   evs('venue_demand').forEach(e => gaps.push(`Asked us to add <strong>${esc(e.payload.place)}</strong> &mdash; a place they would use that we do not have`));
 
   const opened = evs('venue_opened').map(e => (VENUES.find(v => v.id === e.payload.venue) || {}).name).filter(Boolean);
   if (opened.length) signals.push(`Looked at ${opened.length} venue${opened.length === 1 ? '' : 's'}: ${esc([...new Set(opened)].join(', '))}`);
-  if (S.planOverridden && S.chosenPlanId) signals.push(`Moved off Ula&rsquo;s recommendation to <strong>${esc(planById(S.chosenPlanId).name)}</strong>`);
+  if (S.planOverridden && S.chosenPlanId) signals.push(`Moved off Urby&rsquo;s recommendation to <strong>${esc(planById(S.chosenPlanId).name)}</strong>`);
   if (S.commitmentId !== 'monthly') signals.push(`Chose ${esc(commitmentById(S.commitmentId).label)} over paying monthly`);
 
   return { wanted, said, gaps, signals,
@@ -2352,7 +2445,7 @@ function fitPanel(match, provisional, confirmed, withAsk) {
 
 function fitContents(match, confirmed, provisional, facts, venues, note, planBlock) {
   return `<h2>Your fit, so far</h2>
-    <div class="fitpanel__facts">${facts||'<p class="small muted">Nothing yet — Ula is about to ask.</p>'}</div>
+    <div class="fitpanel__facts">${facts||'<p class="small muted">Nothing yet — Urby is about to ask.</p>'}</div>
     ${venues.length?`<hr><div class="fitpanel__label">Nearby venues we found for you</div><div class="venue-strip">${venues.map(v=>venueCard(v)).join('')}</div>
       ${match.widened?`<p class="xsmall muted" style="margin-top:10px">Looked a little further out to find enough options.</p>`:''}`:''}
     ${provisional?`<hr><div class="fitpanel__label">${confirmed?'Your membership':'Looking like a fit'}</div>${planBlock}`:''}
@@ -2386,17 +2479,17 @@ function appsBlock() {
      question — what do I actually get — and because the end of this page was
      already the part testers said they could not process. */
   const all = mine.length ? mine : appsFor('annual');
-  const shown = all.slice(0, 4);
+  const shown = all.slice(0, 3);
   const rest = all.length - shown.length;
   const locked = !slots;
   const card = a => `<div class="appcard">${appLogo(a)}<div class="appcard__name">${esc(a.name)}</div>
     <div class="appcard__cat">${esc(a.category)}</div></div>`;
-  return `<div class="card apps">
-    <div class="apps__head">Plus the app catalogue &mdash; ${locked
-      ? `free with a 12- or 24-month membership`
-      : `${slots===1?'one app':'two apps'} at a time, included, switchable`}</div>
+  return `<div class="apps">
+    <div class="apps__head">Plus the app catalogue
+      <span>${locked ? `free with a 12- or 24-month membership`
+        : `${slots===1?'one app':'two apps'} at a time, switchable`}</span></div>
     <div class="appgrid ${locked?'is-locked':''}">${shown.map(card).join('')}</div>
-    ${rest>0?`<details class="moreapps"><summary>${rest} more apps in the catalogue</summary>
+    ${rest>0?`<details class="moreapps"><summary>+${rest} more</summary>
       <div class="appgrid ${locked?'is-locked':''}" style="margin-top:12px">${all.slice(4).map(card).join('')}</div></details>`:''}
     ${locked?`<p class="apps__unlock">${icon('info',15)} <span>Switch to <button class="linkish strong" type="button" data-commit="annual">12 months</button> for one, or <button class="linkish strong" type="button" data-commit="biennial">24 months</button> for two.</span></p>`:''}
   </div>`;
@@ -2436,12 +2529,12 @@ function landing() {
         <div class="ula-intro">
           <span class="ula-intro__icon">${icon('sparkle',22)}</span>
           <div><div class="ula-intro__title">Not sure where to start?</div>
-            <div class="ula-intro__sub">Get nearby activity matches and a recommended membership in four quick questions.</div></div>
+            <div class="ula-intro__sub">Four questions, then real places near you and the membership that fits. No email needed.</div></div>
         </div>
-        <div class="signup-row"><input type="email" name="email" placeholder="Your email address" aria-label="Your email address" value="${esc(FIELDS.email||'')}">
+        <div class="signup-row"><input type="email" name="email" placeholder="Your email address &mdash; optional" aria-label="Your email address, optional" value="${esc(FIELDS.email||'')}">
           <button type="submit">Find my fit</button></div>
         ${ERRORS.email?`<p class="field-error" role="alert">${esc(ERRORS.email)}</p>`:''}
-        <p class="savenote">We&rsquo;ll save your progress. <button class="linkish" type="button" data-start-fit>Or start without one</button>.</p>
+        <p class="savenote">Leave it blank if you&rsquo;d rather just look. Add it and we&rsquo;ll save your answers so you can come back to them.</p>
         <div class="consent-row"><label class="checkbox"><input type="checkbox" name="marketing" id="marketing"><span></span></label>
           <label class="consent-label" for="marketing">Email me offers, news and activity inspiration.</label></div>
         <p class="terms-line">By continuing, you agree to our <button class="linkish" data-go="terms">Terms</button> and <button class="linkish" data-go="privacy">Privacy Policy</button>.</p>
@@ -2461,8 +2554,8 @@ function landing() {
       <img src="${IMG['/images/hero-climber.jpg']}" alt="A climber resting and smiling at a bouldering gym in Berlin"></div>
   </main>
   <section class="ula-section"><div class="ula-section__inner">
-    <div class="ula-section__eyebrow">${ulaAvatar('sm')}<span>Ula · Membership guide</span></div>
-    <h2 class="h-section">Not sure where to start? Ask Ula.</h2>
+    <div class="ula-section__eyebrow">${ulaAvatar('sm')}<span>Urby · Membership guide</span></div>
+    <h2 class="h-section">Not sure where to start? Ask Urby.</h2>
     <p class="ula-section__lede">Tell me what you want from movement and I&rsquo;ll find nearby places and a membership that fits. Pick one and we&rsquo;ll begin.</p>
     <div class="ula-demo"><div class="ula-demo__q">What would you love to do more of?</div>
       <div class="options">
@@ -2521,25 +2614,25 @@ function fitScreen() {
     <div class="qprogress"><span class="qprogress__label">Question ${idx+1} of ${QUESTIONS.length}</span>
       <span class="qprogress__track"><span class="qprogress__fill" style="width:${(idx)/QUESTIONS.length*100}%"></span></span></div>
     ${answerChips({ label:'So far' })}
-    ${/* Ula introduces herself once, on the first question. She used to repeat the
+    ${/* Urby introduces herself once, on the first question. She used to repeat the
          previous answer back as a chat bubble on question two — but the chips above
          already show it, so it was the same fact twice, and it pushed the Continue
          button off the first screen. */ idx===0?ulaRow():''}
     ${ACKTEXT?`<div class="notice">${icon('sparkle',19)}<span>${esc(ACKTEXT)}</span></div>`:''}
     ${UNCLEAR?`<div class="notice notice--grey">${icon('info',19)}<span>I didn&rsquo;t quite catch that one — could you pick the closest option below? You can always change it later.</span></div>`:''}
-    ${TYPING?`<div class="typing" role="status" aria-label="Ula is typing"><span></span><span></span><span></span></div>`
+    ${TYPING?`<div class="typing" role="status" aria-label="Urby is typing"><span></span><span></span><span></span></div>`
       :`<form data-form="answer" data-qid="${esc(q.id)}">
       <h1 class="h-question" tabindex="-1">${esc(q.prompt)}</h1>
       ${q.hint?`<p class="qhint">${q.hint}</p>`:''}
       ${q.id==='area'?cityChip():''}
       <div class="options ${opts.length>6?'options--compact':opts.length>4?'options--chips':'options--tiles'}"${q.maxPick?` data-maxpick="${q.maxPick}"`:''}>${cards}</div>
-      ${NOCHOICE?`<p class="field-error" role="alert">${q.multi?'Pick at least one, or tell Ula in your own words.':'Pick one of the options, or tell Ula in your own words.'}</p>`:''}
+      ${NOCHOICE?`<p class="field-error" role="alert">${q.multi?'Pick at least one, or tell Urby in your own words.':'Pick one of the options, or tell Urby in your own words.'}</p>`:''}
       ${q.multi&&q.id!=='area'?`<p class="small muted" style="margin:14px 0 0"><button class="linkish" type="button" data-unsure="${esc(q.id)}">I&rsquo;m not sure yet &mdash; surprise me</button></p>`:''}
       <div class="btn-row desktop-cta">
         ${idx>0?`<button class="btn btn--secondary" type="button" data-back="${esc(q.id)}">${icon('back',18)} Back</button>`:''}
         <button class="btn btn--primary" type="submit" data-continue style="flex:1 1 auto">Continue</button></div>
       <div class="ownwords">
-        <div class="ownwords__label">${icon('speech',18)} None of these? Say it in your own words &mdash; Ula reads it.</div>
+        <div class="ownwords__label">${icon('speech',18)} None of these? Say it in your own words &mdash; Urby reads it.</div>
         <div class="ownwords__row">
           <input type="text" name="freeText" placeholder="${esc(q.placeholder)}" aria-label="Answer in your own words" autocomplete="off">
           <button class="ownwords__send" type="submit">Send</button></div></div>
@@ -2740,13 +2833,15 @@ function recommendationScreen() {
       </li>`).join('')}</ol>
 
     <div class="week__days">
-      <div class="week__days-label" id="week-days-label">Which days suit you? <span>Tap to change &mdash; the price follows.</span></div>
+      <div class="week__days-label" id="week-days-label">Which days suit you?
+        <span>Add or drop days &mdash; the plan and the price follow.</span></div>
       <div class="week__days-row" role="group" aria-labelledby="week-days-label">${DAY_ORDER.map(d=>{
           const on = wp.sessions.some(x=>x.day===d);
           return `<button class="daybtn ${on?'is-on':''}" data-day="${esc(d)}" aria-pressed="${on}">${DAY_SHORT[d]}</button>`;
         }).join('')}</div>
     </div>
 
+    ${DAYNOTE?`<p class="week__changed" role="status">${icon('sparkle',16)} <span>${DAYNOTE}</span></p>`:''}
     <p class="week__foot">${icon('info',15)} <span>A suggestion, not a booking — check each venue&rsquo;s timetable before you go.${wp.note?` ${esc(wp.note)}`:''}</span></p>
   </div>` : '';
 
@@ -2768,17 +2863,8 @@ function recommendationScreen() {
     <div class="planbox__cta desktop-cta"><button class="btn btn--primary btn--block" data-go="${S.email?'details':'save'}">Continue with ${esc(plan.name)}</button></div>
     <p class="planbox__fine">No payment yet &mdash; you can still change everything.</p>
     <p class="planbox__seeall"><button class="linkish" type="button" data-go="plans">Not this one? Compare all four plans</button></p>
-    <div class="planbox__why">
-      <div class="planbox__why-head">${isRec?`Why ${esc(plan.name)} for you`:`What ${esc(plan.name)} means for you`}</div>
-      <ul class="why__list">${whyCards.map(r=>`<li><span class="why__icon">${icon(r.icon,16)}</span><span>${esc(r.text)}</span></li>`).join('')}</ul>
-      ${!isRec?`<p class="why__note">${icon('info',15)} <span>Ula would have picked <b>${esc(rec.planName)}</b>.
-        <button class="linkish strong" data-plan="${esc(rec.planId)}">See that instead</button></span></p>`:''}
-      ${rec.notes.length?`<p class="why__note">${icon('info',15)} <span>${esc(rec.notes.join(' '))}</span></p>`:''}
-      ${coverageBlock(rec, match, plan)}
-      <p class="why__foot">From your four answers and each plan&rsquo;s published access rules.</p>
-    </div>
     ${alt?`<div class="planbox__alt">
-      <div class="planbox__alt-head">${altIsRecommendation?'What Ula would pick'
+      <div class="planbox__alt-head">${altIsRecommendation?'What Urby would pick'
         : alt.rank < plan.rank ? `The cheaper option`
         : richerAddsSomething ? `Opens more of your places`
         : `The next plan up`}</div>
@@ -2796,6 +2882,15 @@ function recommendationScreen() {
         <button class="btn btn--secondary btn--block" data-plan="${esc(alt.id)}" style="height:48px;font-size:16px;margin-top:14px">Switch to ${esc(alt.name)}</button>
       </div>
     </div>`:''}
+    <details class="planbox__why">
+      <summary class="planbox__why-head">${isRec?`Why ${esc(plan.name)} for you`:`What ${esc(plan.name)} means for you`}</summary>
+      <ul class="why__list">${whyCards.map(r=>`<li><span class="why__icon">${icon(r.icon,16)}</span><span>${esc(r.text)}</span></li>`).join('')}</ul>
+      ${!isRec?`<p class="why__note">${icon('info',15)} <span>Urby would have picked <b>${esc(rec.planName)}</b>.
+        <button class="linkish strong" data-plan="${esc(rec.planId)}">See that instead</button></span></p>`:''}
+      ${rec.notes.length?`<p class="why__note">${icon('info',15)} <span>${esc(rec.notes.join(' '))}</span></p>`:''}
+      ${coverageBlock(rec, match, plan)}
+      <p class="why__foot">From your four answers and each plan&rsquo;s published access rules.</p>
+    </details>
   </div>`;
 
   return `${topbar(1)}<div class="two-col two-col--reco"><main class="two-col__main" id="main">
@@ -2812,9 +2907,24 @@ function recommendationScreen() {
     <section class="places">
       <div class="places__head">
         <h2 class="sec__title">${usingWanted?`Your places for ${esc(groupWords(groups))}`:'Places near you'}</h2>
-        ${allVenues.length>4?`<button class="linkish strong places__toggle" type="button" data-toggle-venues>${VENUESOPEN?'Back to a row':`See all ${allVenues.length}`}</button>`:''}
+        <div class="places__tools">
+          ${allVenues.length>4?`<button class="linkish strong places__toggle" type="button" data-toggle-venues>${VENUESOPEN?'Back to a row':`See all ${allVenues.length}`}</button>`:''}
+          ${VENUESOPEN?'':`<span class="railnav">
+            <button type="button" class="railnav__btn" data-rail="-1" aria-label="Previous places">${icon('back',17)}</button>
+            <button type="button" class="railnav__btn" data-rail="1" aria-label="More places">${icon('chevron',17)}</button></span>`}
+        </div>
       </div>
+      <!-- Karim: "carousel scroll doesn't work". It always did scroll — but a horizontal
+           rail with no arrows and an overlay scrollbar is invisible to anyone using a
+           mouse, and invisible is the same thing as broken. -->
       <div class="venue-grid venue-grid--big ${VENUESOPEN?'is-grid':'is-rail'}">${allVenues.map(v=>venueCard(v)).join('')}</div>
+      <!-- How far we looked, as a control rather than a fact: he asked what happens when
+           he wants to reach further for more to choose from. -->
+      <div class="radius" role="group" aria-label="How far to look">
+        <span class="radius__label">${icon('pin',15)} Within</span>
+        ${RADII.map(r=>`<button type="button" class="chip-sm ${(S.radiusKm||'auto')===r.id?'is-current':''}" data-radius="${esc(r.id)}">${esc(r.label)}</button>`).join('')}
+        <span class="radius__count">${plural(allVenues.length,'place','places')} found</span>
+      </div>
       ${partnerAsk(match, groups)}
     </section>
 
@@ -2880,7 +2990,7 @@ function plansScreen() {
     <p class="xsmall muted" style="margin-top:18px">All four include unlimited video on demand and the app catalogue.
       <b>To cancel:</b> ${esc(lowerFirst(RULES.cancellationNotice))} ${esc(RULES.upgrade)}</p>
     <div class="btn-row"><button class="btn btn--secondary" data-go="landing">${icon('back',18)} Back</button>
-      <button class="linkish strong" data-start-fit>Not sure? Let Ula pick for me</button></div>
+      <button class="linkish strong" data-start-fit>Not sure? Let Urby pick for me</button></div>
   </main>${exitModal()}`;
 }
 
@@ -3044,7 +3154,7 @@ function emailScreen() {
         <div class="email-hero__inner"><span class="wordmark">Urban Sports Club</span><h1>Your next move is waiting</h1></div></div>
       <div class="email-body">
         <p>Hi ${esc(cap(first))},</p>
-        <p>${goal&&goal!=='Not sure yet'?`Thanks for telling us you want to ${esc(goal.toLowerCase())}.`:'Thanks for starting to look around.'} Ula has saved your answers${area?` and found options ${area==='Anywhere in Berlin'?'across Berlin':'close to '+esc(area)}`:''}.</p>
+        <p>${goal&&goal!=='Not sure yet'?`Thanks for telling us you want to ${esc(goal.toLowerCase())}.`:'Thanks for starting to look around.'} Urby has saved your answers${area?` and found options ${area==='Anywhere in Berlin'?'across Berlin':'close to '+esc(area)}`:''}.</p>
         ${acts&&acts!=='Not sure yet'?`<p>You said you&rsquo;d do <strong>${esc(acts.toLowerCase())}</strong> — that is exactly what we counted places for.</p>`:''}
         <p>${S.paid?'Your membership is set up — this is what the reminder would have looked like if you had left before finishing.':'Pick up where you left off. There&rsquo;s just a step or two left.'}</p>
         <div class="email-facts"><h3>Your fit so far</h3>
@@ -3096,7 +3206,7 @@ function dataScreen() {
           <ul class="reasons">${ip.signals.map(t=>`<li>${icon('checkThin',19)}<span>${t}</span></li>`).join('')}</ul>`:''}
         ${ip.gaps.length?`<div class="fitpanel__label" style="margin-top:18px">Wants we could not serve</div>
           <ul class="reasons">${ip.gaps.map(t=>`<li>${icon('info',19)}<span>${t}</span></li>`).join('')}</ul>
-          <p class="xsmall muted" style="margin-top:12px">This is the list worth reading every week. Each line is a question Ula could not answer,
+          <p class="xsmall muted" style="margin-top:12px">This is the list worth reading every week. Each line is a question Urby could not answer,
             a city we do not cover, or an answer a visitor did not have &mdash; measured, not guessed.</p>`:''}
         <p class="xsmall muted" style="margin-top:14px">Stopped at: <strong>${esc(ip.stoppedAt)}</strong>.</p></div>`;
     })()}
@@ -3132,7 +3242,7 @@ function render(focus = true) {
     if (h) h.focus({ preventScroll:true });
   }
   window.scrollTo(0,0);
-  /* Don't consume the one-shot messages on the "Ula is typing" frame — that
+  /* Don't consume the one-shot messages on the "Urby is typing" frame — that
      frame is painted before the answer screen, and clearing here swallowed
      every acknowledgement of a free-text answer. */
   if (!TYPING) { ACKTEXT=null; UNCLEAR=false; NOCHOICE=false; }
@@ -3145,7 +3255,7 @@ function go(route, opts={}) {
   if (['recommendation'].includes(route) && !fitComplete(S.answers)) route = 'fit';
   if (['save','details','payment'].includes(route) && !fitComplete(S.answers) && !S.planOverridden) route = 'fit';
   if (route==='details' && !S.email && !S.skippedSave) route = 'save';
-  ROUTE = route; EDITING = null; SHEET = null; CITYPICK = false; CITYWANTED = null; ASKOPEN = false; DAYSOPEN = false; PLACEWANTED = null; VENUESOPEN = false;
+  ROUTE = route; EDITING = null; SHEET = null; CITYPICK = false; CITYWANTED = null; ASKOPEN = false; DAYSOPEN = false; PLACEWANTED = null; VENUESOPEN = false; DAYNOTE = null;
   /* A reviewer saw the save screen's "enter a valid email" error appear under the
      details form's own email field. Errors belong to the screen that produced them. */
   ERRORS = {}; FIELDS = {}; NOCHOICE = false; UNCLEAR = false;
@@ -3164,10 +3274,10 @@ window.addEventListener('popstate', e => {
   ROUTE = r; EDITING=null; render();
 });
 
-/* advance with a short "Ula is typing" beat so she reads as a guide, not a form */
+/* advance with a short "Urby is typing" beat so she reads as a guide, not a form */
 const REDUCED_MOTION = () => window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 function advance(nextRoute) {
-  /* The "Ula is typing" beat is motion, and someone who has asked their system for
+  /* The "Urby is typing" beat is motion, and someone who has asked their system for
      less of it should not be made to wait for a simulated one. The CSS already turns
      animations off; this turns off the delay behind them. */
   if (REDUCED_MOTION()) { TYPING = false; go(nextRoute); return; }
@@ -3177,13 +3287,13 @@ function advance(nextRoute) {
 
 /* ---------------- interactions ---------------- */
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-change-city],[data-city],[data-unsure],[data-open-ask],[data-toggle-venues],[data-open-days],[data-day],[data-swap],[data-pick-plan],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula]');
+  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-change-city],[data-city],[data-unsure],[data-open-ask],[data-rail],[data-radius],[data-toggle-venues],[data-open-days],[data-day],[data-swap],[data-pick-plan],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula]');
   if (!t) return;
 
   if (t.dataset.go !== undefined) { e.preventDefault(); go(t.dataset.go); return; }
   if (t.dataset.startFit !== undefined) { log('started_conversation', { variant:VARIANT }); go('fit'); return; }
-  if (t.dataset.scrollUla !== undefined) { document.querySelector('.ula-section')?.scrollIntoView({ behavior:'smooth', block:'start' }); return; }
-  if (t.dataset.askExample) { ASK.q = t.dataset.askExample; ASK.result = askUla(ASK.q);
+  if (t.dataset.scrollUrby !== undefined) { document.querySelector('.ula-section')?.scrollIntoView({ behavior:'smooth', block:'start' }); return; }
+  if (t.dataset.askExample) { ASK.q = t.dataset.askExample; ASK.result = askUrby(ASK.q);
     log('ula_asked', { question:ASK.q, matched:ASK.result?ASK.result.kind:'none', example:true }); render(false);
     document.querySelector('.ask__answer')?.scrollIntoView({ behavior:'smooth', block:'center' }); return; }
   if (t.dataset.askClear !== undefined) { ASK = { q:'', result:null }; render(false);
@@ -3206,6 +3316,22 @@ document.addEventListener('click', e => {
     go(S.email ? 'details' : 'save'); return;
   }
   if (t.dataset.toggleVenues !== undefined) { VENUESOPEN = !VENUESOPEN; render(false); return; }
+  if (t.dataset.rail) {
+    const rail = document.querySelector('.venue-grid--big.is-rail');
+    if (rail) {
+      const card = rail.querySelector('.venue-card');
+      const step = (card ? card.getBoundingClientRect().width + 14 : 250) * 2;
+      rail.scrollBy({ left: Number(t.dataset.rail) * step, behavior: REDUCED_MOTION() ? 'auto' : 'smooth' });
+    }
+    return;
+  }
+  if (t.dataset.radius) {
+    S.radiusKm = t.dataset.radius;
+    S.weekDays = []; S.weekSwap = {};              // the week is rebuilt from what is in range now
+    if (!S.planOverridden) S.chosenPlanId = null;  // and so is the plan
+    log('radius_changed', { radius: S.radiusKm });
+    render(false); return;
+  }
   if (t.dataset.openDays !== undefined) { DAYSOPEN = true; log('week_days_opened'); render(false); return; }
 
   if (t.dataset.day) {
@@ -3213,12 +3339,29 @@ document.addEventListener('click', e => {
        changes the plan and the price — so the whole page recalculates, and the
        frequency chip stays true to what they just told us. */
     const day = t.dataset.day;
+    const wasPlan = currentPlan(), wasEach = perSession(priceFor(wasPlan,S.commitmentId), S.answers.frequency, wasPlan);
     const cur = new Set(S.weekDays.length ? S.weekDays : weekPlan(A().activities||[], matchVenues(A()).pool||[], currentPlan().id, S.answers.frequency).sessions.map(x=>x.day));
     if (cur.has(day)) { if (cur.size>1) cur.delete(day); } else cur.add(day);
     S.weekDays = DAY_ORDER.filter(d=>cur.has(d));
     const newFreq = freqForDays(S.weekDays.length);
-    if (newFreq !== S.answers.frequency) { S.answers.frequency = newFreq; S.planOverridden = false; }
+    if (newFreq !== S.answers.frequency) {
+      S.answers.frequency = newFreq; S.planOverridden = false;
+      /* and let the rules re-pick: the chosen id is stale the moment the frequency
+         moves, and reading it made the note say "still fits Essential" on the very tap
+         that had just moved them to Classic. */
+      S.chosenPlanId = null;
+    }
     log('week_days_changed', { days:S.weekDays, frequency:newFreq });
+    /* Karim's boss did not know the days drove the plan, and nothing on the page told
+       him at the moment it happened. So the page says it out loud, in the two numbers
+       that actually moved. */
+    const nowPlan = currentPlan(), nowEach = perSession(priceFor(nowPlan,S.commitmentId), S.answers.frequency, nowPlan);
+    const days = plural(S.weekDays.length,'day','days');
+    DAYNOTE = nowPlan.id !== wasPlan.id
+      ? `${days} a week needs <b>${esc(nowPlan.name)}</b> now, not ${esc(wasPlan.name)} — the plan on the right has changed with you.`
+      : (nowEach && wasEach && nowEach !== wasEach)
+        ? `${days} a week brings ${esc(nowPlan.name)} to <b>about ${nowEach} € a session</b>, from ${wasEach} €.`
+        : `${days} a week still fits <b>${esc(nowPlan.name)}</b> — no change to the plan or the price.`;
     DAYSOPEN = true; render(false); return;
   }
 
@@ -3358,7 +3501,7 @@ document.addEventListener('submit', e => {
 
   if (kind === 'ask') {
     ASK.q = (fd.get('q')||'').trim();
-    ASK.result = askUla(ASK.q);
+    ASK.result = askUrby(ASK.q);
     log('ula_asked', { question:ASK.q, matched:ASK.result?ASK.result.kind:'none' });
     render(false);
     document.querySelector('.ask__answer')?.scrollIntoView({ behavior:'smooth', block:'center' });
@@ -3371,7 +3514,17 @@ document.addEventListener('submit', e => {
     log('venue_demand', { place, area: areaIds(S.answers.area), activities: S.answers.activities || [] });
     render(false); return;
   }
-  if (kind === 'start') { S.saveOptIn = true; identify('fit'); return; }
+  if (kind === 'start') {
+    /* Karim's boss did not want to hand over an email to see a recommendation, and did
+       not know what he would get for it. Three reviews have now said the same thing in
+       different words. So the email is optional here: Find my fit works either way, and
+       we ask again on the save screen once there is something worth keeping. An empty
+       field is a choice, not an error. */
+    const typed = (fd.get('email')||'').trim();
+    S.marketing = fd.get('marketing') !== null; S.marketingAsked = true;
+    if (!typed && !provider) { log('started_without_email'); go('fit'); return; }
+    S.saveOptIn = true; identify('fit'); return;
+  }
   if (kind === 'save')  { S.saveOptIn = true; identify('details'); return; }
 
   if (kind === 'answer') {
