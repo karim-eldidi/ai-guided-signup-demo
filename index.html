@@ -1217,7 +1217,13 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .places__head { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; margin-bottom: 14px; }
 .places__toggle { white-space: nowrap; font-size: 14.5px; }
 .venue-grid--big.is-rail {
-  display: grid; grid-auto-flow: column; grid-auto-columns: minmax(232px, 1fr);
+  /* A fixed track, not minmax(…, 1fr): inside a horizontally scrolling container the
+     1fr resolved against the container rather than the content and collapsed every
+     card to 2px wide, which is why the rail looked like it held four venues. */
+  /* And the explicit three-column template from .venue-grid has to be cleared, or the
+     first three cards land in tracks of minmax(0,1fr) — which is zero inside a
+     scrolling container — while only the implicit tracks get their real width. */
+  display: grid; grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 238px;
   gap: 14px; overflow-x: auto; overflow-y: hidden;
   scroll-snap-type: x mandatory; scroll-padding-left: 0;
   padding-bottom: 6px; margin-bottom: -6px;
@@ -1235,11 +1241,44 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 }
 
 @media (max-width: 900px) {
-  .venue-grid--big.is-rail { grid-auto-columns: 78%; gap: 10px; }
+  .venue-grid--big.is-rail { grid-auto-columns: 76%; gap: 10px; }
   .venue-grid--big.is-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
   .places__head { margin-bottom: 11px; }
   .why__list li { font-size: 15px; }
 }
+
+/* --- two sections, not six ------------------------------------------------ */
+/* Karim: "I don't know why you made so many containers, I want simplicity." The main
+   column is the story — the places and the week — and it uses headings and space to
+   separate them rather than a border around each one. The plan, why it fits and what
+   it opens are one argument, so they sit together in the column beside it. */
+.sec__title { font-size: 19px; font-weight: 800; letter-spacing: -.02em; margin: 0; }
+.places { margin-top: 4px; }
+.places + .week { margin-top: 34px; }
+
+.planbox__why { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--cream-line); }
+.planbox__why-head { font-size: 14.5px; font-weight: 700; margin-bottom: 4px; }
+.planbox__why .why__list { gap: 9px; }
+.planbox__why .why__list li { font-size: 14.5px; line-height: 1.4; }
+.planbox__why .why__list .why__icon { width: 25px; height: 25px; }
+.planbox__why .cov { margin-top: 14px; padding-top: 13px; border-top: 1px solid var(--cream-line); }
+.planbox__why .cov__summary { font-size: 14.5px; line-height: 1.45; margin: 0; }
+.planbox__why .cov__caveat { display: block; font-size: 12.5px; margin-top: 4px; }
+.planbox__why .cov__line { font-size: 13.5px; margin: 10px 0 0; }
+.planbox__why .cov__detail-wrap > summary { font-size: 13.5px; margin-top: 12px; }
+.planbox__why .why__note { font-size: 13.5px; }
+.planbox__why .why__foot { font-size: 12px; margin-top: 12px; }
+
+/* Every card the same height, and a name that never clips: the rail was showing four
+   cards of four different heights with "Holmes Place Gendarmenmarkt" running off the
+   edge of its own box. */
+/* In a rail the grid row already stretches every card to the tallest one, so an
+   explicit height:100% here made each card as tall as the row it was defining. */
+.venue-grid--big.is-rail { align-items: stretch; grid-auto-rows: max-content; }
+.venue-grid--big.is-rail > .venue-card { height: 100%; }
+.venue-grid--big .venue-card__body { display: flex; flex-direction: column; gap: 3px; flex: 1 1 auto; }
+.venue-grid--big .venue-card__name { overflow-wrap: anywhere; hyphens: auto; }
+.venue-grid--big .venue-card__more { margin-top: auto; padding-top: 6px; }
 
 /* ============================================================
    standalone-only additions
@@ -1357,7 +1396,7 @@ button.venue-card:hover { border-color:var(--ink); }
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to main content</a>
-<div class="demo-banner">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment. <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button> <span class="demo-banner__build">build 13 Aug 10:41 UTC</span></div>
+<div class="demo-banner">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment. <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button> <span class="demo-banner__build">build 13 Aug 10:58 UTC</span></div>
 <div id="app"></div>
 
 <script>
@@ -2562,11 +2601,13 @@ function coverageBlock(rec, match, plan) {
   /* One sentence by default. A tester said there was too much to process at the
      end, so the per-activity detail is one tap away instead of always open —
      but the number itself, and any real upgrade, stay in plain sight. */
-  return `<div class="card cov">
-    <p class="cov__summary"><b>${esc(plan.name)} gets you into ${cov.totals.included} of the ${plural(cov.totals.nearby,'place','places')}</b>
-      I found near you.</p>
-    <p class="cov__caveat">That count is the ${plural(cov.totals.nearby,'venue','venues')} in this pilot&rsquo;s data near you &mdash; not the whole network,
-      which has ${esc(plan.venueCount)} venues on ${esc(plan.name)}.</p>
+  /* No card of its own any more: this is part of the argument for the plan, so it sits
+     in the plan column with it. It used to be a separate box directly under the "from
+     your four answers" line, and the two ran into each other as one broken sentence. */
+  return `<div class="cov">
+    <p class="cov__summary"><b>${cov.totals.included} of the ${plural(cov.totals.nearby,'place','places')} near you</b>
+      ${cov.totals.included===1?'is':'are'} on ${esc(plan.name)}.
+      <span class="cov__caveat">That count is this pilot&rsquo;s venue data, not the whole network of ${esc(plan.venueCount)}.</span></p>
     ${up?(()=>{ const upPlan=planById(up.planId);
         const gained=(upPlan.benefits||[]).filter(x=>!(plan.benefits||[]).includes(x)).slice(0,2);
         return `<p class="cov__line">${icon('star',16)} <span><b>${esc(up.planName)}</b> adds ${plural(up.addsCount,'place','places')}
@@ -2641,7 +2682,13 @@ function recommendationScreen() {
     ? pool.filter(v=>groups.some(g=>venueInGroup(v,groupById(g)||{activities:[]}))).sort((x,y)=>x.distanceKm-y.distanceKm)
     : [];
   const usingWanted = wanted.length>=3;
-  const allVenues = (usingWanted ? wanted : (match.venues||[])).slice(0,10);
+  /* Karim: "you should definitely be displaying more than four venues, and I should be
+     able to scroll it like a carousel." Only four matched sauna-and-climbing near him,
+     so the rail was data-starved rather than layout-starved. The places they asked for
+     lead, then the rest of what is nearby follows — each card already says whether it
+     is "for climbing" or "other activities", so nothing is being passed off. */
+  const wantedIds = new Set(wanted.map(v=>v.id));
+  const allVenues = [...wanted, ...pool.filter(v=>!wantedIds.has(v.id))].slice(0,12);
 
 
   const covIncluded = groups.length && pool.length ? coverage(groups, pool, plan.id).totals.included : 0;
@@ -2699,6 +2746,15 @@ function recommendationScreen() {
     <div class="planbox__cta desktop-cta"><button class="btn btn--primary btn--block" data-go="${S.email?'details':'save'}">Continue with ${esc(plan.name)}</button></div>
     <p class="planbox__fine">No payment yet &mdash; you can still change everything.</p>
     <p class="planbox__seeall"><button class="linkish" type="button" data-go="plans">Not this one? Compare all four plans</button></p>
+    <div class="planbox__why">
+      <div class="planbox__why-head">${isRec?`Why ${esc(plan.name)} for you`:`What ${esc(plan.name)} means for you`}</div>
+      <ul class="why__list">${whyCards.map(r=>`<li><span class="why__icon">${icon(r.icon,16)}</span><span>${esc(r.text)}</span></li>`).join('')}</ul>
+      ${!isRec?`<p class="why__note">${icon('info',15)} <span>Ula would have picked <b>${esc(rec.planName)}</b>.
+        <button class="linkish strong" data-plan="${esc(rec.planId)}">See that instead</button></span></p>`:''}
+      ${rec.notes.length?`<p class="why__note">${icon('info',15)} <span>${esc(rec.notes.join(' '))}</span></p>`:''}
+      ${coverageBlock(rec, match, plan)}
+      <p class="why__foot">From your four answers and each plan&rsquo;s published access rules.</p>
+    </div>
     ${alt?`<div class="planbox__alt">
       <div class="planbox__alt-head">${altIsRecommendation?'What Ula would pick'
         : alt.rank < plan.rank ? `The cheaper option`
@@ -2726,35 +2782,22 @@ function recommendationScreen() {
     ${answerChips({ label:'Change anything' })}
     ${match.reachedFurther?`<div class="notice notice--grey">${icon('info',19)}<span>Nothing in this pilot&rsquo;s venue set does ${esc(groupWords(groups))} right by ${esc(where)}, so I looked across the city. The distances below are real.</span></div>`:''}
 
-    <!-- The places come first. They are the most concrete thing on the page and the
-         reason someone would pay; four cards of reasoning before them made the page
-         open on an argument instead of on the thing being argued for. A rail rather
-         than a grid, because it reads as a set you can move through — and because the
-         same component works on a phone, where a grid becomes a column. -->
-    <div class="card places">
+    <!-- Two sections in this column, not six. Karim: "I don't know why you made so many
+         containers, I want simplicity." The places and the week are the story, and they
+         are the only things that live here. The plan, why it fits, and what it opens
+         are one argument, so they live together in the column beside it — which also
+         killed the two blocks that ran into each other at the seam. -->
+    <section class="places">
       <div class="places__head">
-        <div class="fitpanel__label" style="margin:0">${usingWanted?`Your places for ${esc(groupWords(groups))}`:'Places near you'}</div>
-        ${allVenues.length>3?`<button class="linkish strong places__toggle" type="button" data-toggle-venues>${VENUESOPEN?'Show as a row':`See all ${allVenues.length} at once`}</button>`:''}
+        <h2 class="sec__title">${usingWanted?`Your places for ${esc(groupWords(groups))}`:'Places near you'}</h2>
+        ${allVenues.length>4?`<button class="linkish strong places__toggle" type="button" data-toggle-venues>${VENUESOPEN?'Back to a row':`See all ${allVenues.length}`}</button>`:''}
       </div>
       <div class="venue-grid venue-grid--big ${VENUESOPEN?'is-grid':'is-rail'}">${allVenues.map(v=>venueCard(v)).join('')}</div>
-      <p class="xsmall muted" style="margin-top:12px">Tap any place for opening hours and what your plan covers there.</p>
+      ${appsBlock()}
       ${partnerAsk(match, groups)}
-    </div>
-
-    ${appsBlock()}
+    </section>
 
     ${weekBlock}
-
-    <div class="why">
-      <h2 class="why__title">${isRec?`Why ${esc(plan.name)}`:`What ${esc(plan.name)} means for you`}</h2>
-      <ul class="why__list">${whyCards.map(r=>`<li><span class="why__icon">${icon(r.icon,17)}</span><span>${esc(r.text)}</span></li>`).join('')}</ul>
-      ${!isRec?`<p class="why__note">${icon('info',16)} <span>Ula would have picked <b>${esc(rec.planName)}</b> for you.
-        <button class="linkish strong" data-plan="${esc(rec.planId)}">See that instead</button></span></p>`:''}
-      ${rec.notes.length?`<p class="why__note">${icon('info',16)} <span>${esc(rec.notes.join(' '))}</span></p>`:''}
-      <p class="why__foot">Based on your four answers and each plan&rsquo;s published access rules &mdash; not on a model&rsquo;s guess.</p>
-    </div>
-
-    ${coverageBlock(rec, match, plan)}
 
     <div class="ask-and-print">
       ${askBlock(true)}
