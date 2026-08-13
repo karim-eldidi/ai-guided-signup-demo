@@ -327,6 +327,11 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
 }
 .option-card:has(.option-card__input:focus-visible) { outline: 3px solid #1b4bd8; outline-offset: 2px; }
 .option-card {
+  /* Belt and braces. The tick is absolutely positioned over the icon; without a
+     positioned ancestor here, one card that kept the tick outside the icon painted a
+     full-page black circle over the payment screen. A card is always the containing
+     block for anything inside it. */
+  position: relative;
   display: flex; align-items: center; gap: 17px;
   width: 100%;
   text-align: left;
@@ -1413,7 +1418,7 @@ button.venue-card:hover { border-color:var(--ink); }
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to main content</a>
-<div class="demo-banner">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment. <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button> <span class="demo-banner__build">build 13 Aug 11:22 UTC</span></div>
+<div class="demo-banner">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment. <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button> <span class="demo-banner__build">build 13 Aug 11:44 UTC</span></div>
 <div id="app"></div>
 
 <script>
@@ -2960,12 +2965,12 @@ function paymentScreen() {
       <div class="summary-row summary-row--total"><dt>Total each month</dt><dd>${price} €</dd></div></dl></div>
     <form data-form="payment"><div class="card"><div class="fitpanel__label">Payment method</div>
       <div class="options">
-        <label class="option-card ${method==='sepa'?'is-selected':''}" tabindex="0" data-card><input type="radio" name="method" value="sepa" ${method==='sepa'?'checked':''} style="position:absolute;opacity:0;width:0;height:0">
-          <span class="option-card__icon">${icon('bank',21)}</span><span class="option-card__label">SEPA direct debit <span class="xsmall muted" style="display:block;font-weight:400">Most common in Germany</span></span>
-          <span class="option-card__check">${icon('checkThin',17)}</span></label>
-        <label class="option-card ${method==='card'?'is-selected':''}" tabindex="0" data-card><input type="radio" name="method" value="card" ${method==='card'?'checked':''} style="position:absolute;opacity:0;width:0;height:0">
-          <span class="option-card__icon">${icon('card',21)}</span><span class="option-card__label">Card <span class="xsmall muted" style="display:block;font-weight:400">Visa, Mastercard</span></span>
-          <span class="option-card__check">${icon('checkThin',17)}</span></label></div>
+        <label class="option-card ${method==='sepa'?'is-selected':''}" data-card><input class="option-card__input" type="radio" name="method" value="sepa" ${method==='sepa'?'checked':''}>
+          <span class="option-card__icon">${icon('bank',21)}<span class="option-card__check">${icon('checkThin',17)}</span></span>
+          <span class="option-card__label">SEPA direct debit <span class="xsmall muted" style="display:block;font-weight:400">Most common in Germany</span></span></label>
+        <label class="option-card ${method==='card'?'is-selected':''}" data-card><input class="option-card__input" type="radio" name="method" value="card" ${method==='card'?'checked':''}>
+          <span class="option-card__icon">${icon('card',21)}<span class="option-card__check">${icon('checkThin',17)}</span></span>
+          <span class="option-card__label">Card <span class="xsmall muted" style="display:block;font-weight:400">Visa, Mastercard</span></span></label></div>
       <p class="xsmall muted" style="margin-top:16px">${icon('lock',14)} In production this is where the existing Adyen drop-in would be embedded. Deliberately left out of the pilot.</p></div>
       <details class="disclosure" open><summary>Cancellation, pause and renewal</summary>
         <div class="disclosure__body"><ul class="reasons">
