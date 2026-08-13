@@ -541,9 +541,13 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
 /* The bonus material is a third grid region rather than the tail of the story column,
    so the reading order is right on both shapes: on a desktop it flows back under the
    story, on a phone it lands after the plan box instead of ahead of it. */
-.reco-tail { grid-column: 1; padding: 0 clamp(20px, 3.4vw, 60px) 80px; max-width: 860px; }
-/* the story column no longer ends the page, so it does not carry the page's bottom rule */
-.two-col--reco .two-col__main { padding-bottom: 26px; }
+/* The tail sits in row 2 of column 1. Without the aside spanning both rows, the plan
+   column defined the height of row 1 on its own, so the tail began below the whole
+   plan column and left ~400px of empty page under the week. Spanning it means row 1 is
+   as tall as the story and the tail follows straight on. */
+.reco-tail { grid-column: 1; grid-row: 2; padding: 0 clamp(20px, 3.4vw, 60px) 80px; max-width: 860px; }
+.two-col--reco .two-col__main { grid-column: 1; grid-row: 1; padding-bottom: 26px; }
+.two-col--reco .two-col__aside { grid-column: 2; grid-row: 1 / span 2; }
 .two-col__aside--sticky { position: sticky; top: 22px; }
 
 .planbox {
@@ -1035,6 +1039,12 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
   .saved-note--mobile { display: flex; margin-top: 11px; }
 
   .two-col { grid-template-columns: 1fr; }
+  /* stacked: the explicit row placement from the two-column layout has to go, or the
+     plan column keeps trying to span rows that no longer exist side by side */
+  .two-col--reco .two-col__main,
+  .two-col--reco .two-col__aside,
+  .reco-tail { grid-column: 1; grid-row: auto; }
+  .reco-tail { padding: 0 20px 80px; max-width: none; }
   .two-col__main { padding: 10px 20px 4px; max-width: none; }
   /* room for the sticky Continue bar, so nothing sits underneath it */
   .two-col__aside { margin: 0 20px 132px; }
@@ -1403,7 +1413,7 @@ button.venue-card:hover { border-color:var(--ink); }
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to main content</a>
-<div class="demo-banner">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment. <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button> <span class="demo-banner__build">build 13 Aug 11:14 UTC</span></div>
+<div class="demo-banner">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment. <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button> <span class="demo-banner__build">build 13 Aug 11:22 UTC</span></div>
 <div id="app"></div>
 
 <script>
