@@ -90,6 +90,8 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
   margin: 22px 0 0;
   max-width: 34ch;
   font-weight: 400;
+  /* Two even lines rather than a full line and one orphaned word. */
+  text-wrap: balance;
 }
 .landing__body .lede { max-width: 510px; }
 
@@ -134,8 +136,7 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
 .ula-intro { display: flex; gap: 14px; align-items: flex-start; margin: 40px 0 32px; }
 .ula-intro__icon { flex: 0 0 auto; margin-top: 2px; }
 .ula-intro__title { font-weight: 700; font-size: 17.5px; color: var(--navy); }
-.ula-intro__sub   { font-size: 17px; color: var(--navy); margin-top: 3px; }
-.ula-intro__mobile { display: none; }
+.ula-intro__sub   { font-size: 17px; color: var(--navy); margin-top: 3px; max-width: 46ch; text-wrap: balance; }
 
 /* email + CTA row (desktop: joined; mobile: stacked) */
 .signup-row {
@@ -454,16 +455,28 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
 
 /* --- all four plans, for people who already know ------------------------- */
 .commit-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 20px; }
-.commit-row .chip-sm.is-current { background: var(--ink); color: #fff; border-color: var(--ink); }
-.plangrid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 14px; align-items: start; }
-.plancard { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 18px 20px; }
-.plancard.is-popular { border: 2px solid var(--ink); }
-.plancard__name { font-size: 22px; font-weight: 700; letter-spacing: -.02em; margin-top: 8px; }
+/* The chosen term is a state, not an action, so it is highlighted in the brand
+   yellow rather than filled black — a black pill here read as a second CTA. */
+.commit-row .chip-sm.is-current { background: var(--yellow-bright); color: var(--ink); border-color: var(--ink); font-weight: 700; }
+/* Four cards, one height. The grid stretches them and each card is a column with
+   the button pushed to the floor, so the four CTAs land on the same line however
+   many benefits a plan has. */
+.plangrid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 14px; align-items: stretch; }
+.plancard {
+  display: flex; flex-direction: column; height: 100%;
+  background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg);
+  padding: 16px 18px 20px;
+}
+/* Reserved in every card, so the four names sit on one line. */
+.plancard__badgeslot { min-height: 28px; }
+.plancard.is-popular { border: 2px solid var(--ink); background: var(--cream); padding: 15px 17px 19px; }
+.plancard__name { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
 .plancard__price { display: flex; align-items: baseline; gap: 6px; margin-top: 4px; }
 .plancard__price b { font-size: 30px; letter-spacing: -.03em; }
 .plancard__price span { font-size: 14px; color: var(--navy); }
 .plancard__term, .plancard__venues { font-size: 13.5px; color: var(--navy); }
-.plancard__list { list-style: none; margin: 14px 0 18px; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.plancard__cta { margin-top: auto; font-size: 16px; padding: 0 12px; }
+.plancard__list { flex: 1 1 auto; list-style: none; margin: 14px 0 18px; padding: 0; display: flex; flex-direction: column; gap: 8px; }
 .plancard__list li { display: flex; gap: 9px; font-size: 14px; line-height: 1.4; }
 .plancard__list svg { flex: 0 0 auto; margin-top: 2px; }
 .planbox__benefits { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-direction: column; gap: 9px; }
@@ -966,10 +979,13 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
   .landing__media { order: 1; height: 300px; }
   .landing__media img { object-position: 50% 18%; }
   .login-link--desktop { display: none; }
-  .login-link--mobile { display: inline; position: static; color: var(--ink); text-shadow: none; font-weight: 700; }
+  .login-link--mobile { display: inline; position: static; color: var(--ink); font-weight: 700;
+    background: none; padding: 0; backdrop-filter: none; text-decoration: underline; }
 
-  .ula-intro__title, .ula-intro__sub { display: none; }
-  .ula-intro__mobile { display: block; font-size: 17px; color: var(--navy); }
+  /* These used to hide the block in favour of a shorter mobile line that the
+     landing no longer renders, which left a lone sparkle icon and no words. */
+  .ula-intro__title { font-size: 17px; }
+  .ula-intro__sub { font-size: 16px; }
 
   .signup-row { flex-direction: column; border: 0; background: none; max-width: none; overflow: visible; }
   .signup-row input[type="email"] {
@@ -977,8 +993,7 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
   }
   .signup-row button { border-radius: var(--radius-sm); height: 62px; margin-top: 14px; width: 100%; padding: 0; }
   .or-divider, .sso-row, .consent-row { max-width: none; }
-  .ula-intro { margin: 30px 0 26px; }
-  .ula-intro__title { display: none; }
+  .ula-intro { margin: 26px 0 24px; gap: 11px; }
 
   /* app shell */
   .topbar { grid-template-columns: 1fr auto; padding: 20px 20px 12px; align-items: center; }
@@ -1248,7 +1263,7 @@ button.venue-card:hover { border-color:var(--ink); }
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to main content</a>
-<div class="demo-banner">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment. <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button> <span class="demo-banner__build">build 13 Aug 08:54 UTC</span></div>
+<div class="demo-banner">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment. <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button> <span class="demo-banner__build">build 13 Aug 09:11 UTC</span></div>
 <div id="app"></div>
 
 <script>
@@ -2605,14 +2620,17 @@ function recommendationScreen() {
 function plansScreen() {
   const cards = PLANS.map(pl=>{
     const price = priceFor(pl, S.commitmentId);
+    /* The badge slot is rendered in every card, empty or not, so four headings sit
+       on one line instead of one card starting 26px lower than its neighbours. The
+       commitment is stated once, on the toggle above — repeating it in all four
+       cards was four lines saying the same thing. */
     return `<div class="plancard ${pl.mostPopular?'is-popular':''}">
-      ${pl.mostPopular?`<span class="badge">Most popular</span>`:''}
+      <div class="plancard__badgeslot">${pl.mostPopular?`<span class="badge">Most popular</span>`:''}</div>
       <div class="plancard__name">${esc(pl.name)}</div>
       <div class="plancard__price"><b>${price} €</b><span>/ month</span></div>
-      <div class="plancard__term">${esc(commitmentById(S.commitmentId).label)}</div>
       <div class="plancard__venues">${esc(pl.venueCount)} venues</div>
       <ul class="plancard__list">${(pl.benefits||[]).map(x=>`<li>${icon('checkThin',15)}<span>${esc(x)}</span></li>`).join('')}</ul>
-      <button class="btn ${pl.mostPopular?'btn--primary':'btn--secondary'} btn--block" data-pick-plan="${esc(pl.id)}">Choose ${esc(pl.name)}</button>
+      <button class="btn ${pl.mostPopular?'btn--primary':'btn--secondary'} btn--block plancard__cta" data-pick-plan="${esc(pl.id)}">Choose ${esc(pl.name)}</button>
     </div>`;
   }).join('');
   return `${topbar(1,{savedNote:Boolean(S.email&&S.saveOptIn)})}<main class="content" id="main" style="max-width:1120px">
@@ -2620,7 +2638,8 @@ function plansScreen() {
     <p class="reco-lede">Everything published, side by side. Prices are the real Urban Sports Club prices for Germany.</p>
     <div class="commit-row">${COMMITMENTS.map(c=>`<button class="chip-sm ${c.id===S.commitmentId?'is-current':''}" data-commit="${esc(c.id)}">${esc(c.label)}</button>`).join('')}</div>
     <div class="plangrid">${cards}</div>
-    <p class="xsmall muted" style="margin-top:18px">${esc(RULES.cancellationNotice)} ${esc(RULES.upgrade)}</p>
+    <p class="xsmall muted" style="margin-top:18px">All four include unlimited video on demand and the app catalogue.
+      <b>To cancel:</b> ${esc(lowerFirst(RULES.cancellationNotice))} ${esc(RULES.upgrade)}</p>
     <div class="btn-row"><button class="btn btn--secondary" data-go="landing">${icon('back',18)} Back</button>
       <button class="linkish strong" data-start-fit>Not sure? Let Ula pick for me</button></div>
   </main>${exitModal()}`;
