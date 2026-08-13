@@ -538,6 +538,12 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
    in a sticky column beside it — a consequence of the value, not the pitch. */
 /* The value column earns the width here; the plan needs only enough to be clear. */
 .two-col--reco { grid-template-columns: minmax(0, 1fr) 400px; }
+/* The bonus material is a third grid region rather than the tail of the story column,
+   so the reading order is right on both shapes: on a desktop it flows back under the
+   story, on a phone it lands after the plan box instead of ahead of it. */
+.reco-tail { grid-column: 1; padding: 0 clamp(20px, 3.4vw, 60px) 80px; max-width: 860px; }
+/* the story column no longer ends the page, so it does not carry the page's bottom rule */
+.two-col--reco .two-col__main { padding-bottom: 26px; }
 .two-col__aside--sticky { position: sticky; top: 22px; }
 
 .planbox {
@@ -1255,6 +1261,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .sec__title { font-size: 19px; font-weight: 800; letter-spacing: -.02em; margin: 0; }
 .places { margin-top: 4px; }
 .places + .week { margin-top: 34px; }
+.week + .apps { margin-top: 22px; }
 
 .planbox__why { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--cream-line); }
 .planbox__why-head { font-size: 14.5px; font-weight: 700; margin-bottom: 4px; }
@@ -1396,7 +1403,7 @@ button.venue-card:hover { border-color:var(--ink); }
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to main content</a>
-<div class="demo-banner">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment. <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button> <span class="demo-banner__build">build 13 Aug 10:58 UTC</span></div>
+<div class="demo-banner">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment. <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button> <span class="demo-banner__build">build 13 Aug 11:14 UTC</span></div>
 <div id="app"></div>
 
 <script>
@@ -2793,11 +2800,20 @@ function recommendationScreen() {
         ${allVenues.length>4?`<button class="linkish strong places__toggle" type="button" data-toggle-venues>${VENUESOPEN?'Back to a row':`See all ${allVenues.length}`}</button>`:''}
       </div>
       <div class="venue-grid venue-grid--big ${VENUESOPEN?'is-grid':'is-rail'}">${allVenues.map(v=>venueCard(v)).join('')}</div>
-      ${appsBlock()}
       ${partnerAsk(match, groups)}
     </section>
 
     ${weekBlock}
+  </main>
+  <aside class="two-col__aside two-col__aside--sticky">
+    ${planAside}
+  </aside>
+  <!-- A third region rather than the tail of the story column, so reading order is
+       right on both shapes. The app catalogue is a bonus to the plan; on a phone the
+       plan box stacks after the whole story column, which put "plus some apps" ahead of
+       the thing it is a bonus to. On a desktop this flows back under the story. -->
+  <div class="reco-tail">
+    ${appsBlock()}
 
     <div class="ask-and-print">
       ${askBlock(true)}
@@ -2814,11 +2830,7 @@ function recommendationScreen() {
 
         </div></details>
     </div>
-
-  </main>
-  <aside class="two-col__aside two-col__aside--sticky">
-    ${planAside}
-  </aside></div>
+  </div></div>
   <div class="paybar">
     <div class="paybar__info"><b>${esc(plan.name)}</b><span>${price} € / month${each?` · ≈ ${each} € a session`:''}</span></div>
     <button class="btn btn--primary" data-go="${S.email?'details':'save'}">Continue</button>
