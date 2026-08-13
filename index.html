@@ -121,16 +121,22 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
 .landing__media { position: relative; background: #d9d5cd; overflow: hidden; }
 .landing__media img { width: 100%; height: 100%; object-fit: cover; object-position: 42% center; }
 
-/* On a bright photograph white-on-white disappeared. A light pill reads on any
-   image, and keeps the wordmark's weight without shouting. */
-.login-link {
-  position: absolute; top: 30px; right: 34px;
-  color: var(--ink); text-decoration: none; font-size: 15.5px; font-weight: 600;
-  background: rgba(255,255,255,.86); padding: 8px 16px; border-radius: 999px;
-  backdrop-filter: blur(4px);
+/* The brand yellow, so it belongs to the design rather than fighting the photo.
+   White vanished into the bright corner of this crop and a white pill vanished with
+   it; the yellow chip reads on any image and matches the panel it sits beside. This
+   is now the only Log in on the page — the duplicate "Already a member?" line came
+   out of the yellow panel, which is what it was costing us in space.
+   Scoped to .landing__media because the generic .linkish rule would otherwise strip
+   the background back off it. */
+.landing__media .login-link {
+  position: absolute; top: 26px; right: 30px;
+  color: var(--ink); text-decoration: none; font-size: 15.5px; font-weight: 700;
+  background: var(--yellow-bright); padding: 9px 18px; border-radius: 999px;
+  box-shadow: 0 2px 10px rgba(8,9,10,.14);
   z-index: 2;
 }
-.login-link:hover { background: #fff; }
+.landing__media .login-link:hover { background: var(--yellow-pale); }
+.login-link { position: absolute; top: 26px; right: 30px; z-index: 2; }
 .login-link--mobile { display: none; }
 
 .ula-intro { display: flex; gap: 14px; align-items: flex-start; margin: 40px 0 32px; }
@@ -1263,7 +1269,7 @@ button.venue-card:hover { border-color:var(--ink); }
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to main content</a>
-<div class="demo-banner">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment. <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button> <span class="demo-banner__build">build 13 Aug 09:28 UTC</span></div>
+<div class="demo-banner">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment. <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button> <span class="demo-banner__build">build 13 Aug 09:37 UTC</span></div>
 <div id="app"></div>
 
 <script>
@@ -2288,8 +2294,7 @@ function landing() {
         <div class="consent-row"><label class="checkbox"><input type="checkbox" name="marketing" id="marketing"><span></span></label>
           <label class="consent-label" for="marketing">Email me offers, news and activity inspiration.</label></div>
         <p class="terms-line">By continuing, you agree to our <button class="linkish" data-go="terms">Terms</button> and <button class="linkish" data-go="privacy">Privacy Policy</button>.</p>
-        <p class="landing__alt">Already know what you want? <button class="linkish strong" type="button" data-go="plans">View memberships ${icon('arrowRight',17)}</button></p>
-        <p class="landing__alt landing__alt--login">Already a member? <button class="linkish" data-go="login">Log in</button></p></form>`;
+        <p class="landing__alt">Already know what you want? <button class="linkish strong" type="button" data-go="plans">View memberships ${icon('arrowRight',17)}</button></p></form>`;
   return `<main class="landing" id="main">
     <div class="landing__panel">
       <div class="landing__panelbar"><button class="wordmark linkish" style="text-decoration:none" data-go="landing">Urban Sports Club</button>
