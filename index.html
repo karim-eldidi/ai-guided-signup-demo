@@ -1208,6 +1208,39 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .altcard__neutral { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; color: var(--navy-soft); }
 .altcard__neutral svg { flex: 0 0 auto; }
 
+/* --- the places, first and as a rail ------------------------------------- */
+/* Karim: "what we really like is that I want to see the venues… maybe as a carousel
+   that could be expanded or collapsed." He is right that the page should open on the
+   thing being argued for rather than on the argument. A rail reads as a set you can
+   move through, works identically on a phone, and the same markup expands to a grid
+   when someone wants the whole list. */
+.places__head { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; margin-bottom: 14px; }
+.places__toggle { white-space: nowrap; font-size: 14.5px; }
+.venue-grid--big.is-rail {
+  display: grid; grid-auto-flow: column; grid-auto-columns: minmax(232px, 1fr);
+  gap: 14px; overflow-x: auto; overflow-y: hidden;
+  scroll-snap-type: x mandatory; scroll-padding-left: 0;
+  padding-bottom: 6px; margin-bottom: -6px;
+  scrollbar-width: thin;
+}
+.venue-grid--big.is-rail > * { scroll-snap-align: start; }
+.venue-grid--big.is-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; }
+
+/* the reasons, after the evidence and without the card chrome */
+.why__list { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.why__list li { display: flex; align-items: flex-start; gap: 11px; font-size: 15.5px; line-height: 1.45; color: var(--navy); }
+.why__list .why__icon {
+  flex: 0 0 auto; width: 28px; height: 28px; border-radius: 50%;
+  background: var(--yellow-pale); display: grid; place-items: center; margin-top: -1px;
+}
+
+@media (max-width: 900px) {
+  .venue-grid--big.is-rail { grid-auto-columns: 78%; gap: 10px; }
+  .venue-grid--big.is-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .places__head { margin-bottom: 11px; }
+  .why__list li { font-size: 15px; }
+}
+
 /* ============================================================
    standalone-only additions
    ============================================================ */
@@ -1324,7 +1357,7 @@ button.venue-card:hover { border-color:var(--ink); }
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to main content</a>
-<div class="demo-banner">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment. <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button> <span class="demo-banner__build">build 13 Aug 10:21 UTC</span></div>
+<div class="demo-banner">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment. <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button> <span class="demo-banner__build">build 13 Aug 10:41 UTC</span></div>
 <div id="app"></div>
 
 <script>
@@ -2003,7 +2036,7 @@ let ROUTE='landing', ACKTEXT=null, UNCLEAR=false, NOCHOICE=false, EDITING=null, 
 /* City is "detected" in production (IP or browser location). The pilot only has
    venue data loaded for Berlin, so the chip says so plainly and a Change link
    never lies about coverage — picking another city logs the demand instead. */
-let CITYPICK=false, CITYWANTED=null, ASKOPEN=false, DAYSOPEN=false, PLACEWANTED=null, STALELINK=null;
+let CITYPICK=false, CITYWANTED=null, ASKOPEN=false, DAYSOPEN=false, PLACEWANTED=null, STALELINK=null, VENUESOPEN=false;
 
 const esc = v => String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 const log = (name,payload) => S.events.push({ name, payload:payload||null, at:new Date().toISOString() });
@@ -2297,7 +2330,7 @@ function appsBlock() {
   const locked = !slots;
   const card = a => `<div class="appcard">${appLogo(a)}<div class="appcard__name">${esc(a.name)}</div>
     <div class="appcard__cat">${esc(a.category)}</div></div>`;
-  return `<div class="apps">
+  return `<div class="card apps">
     <div class="apps__head">Plus the app catalogue &mdash; ${locked
       ? `free with a 12- or 24-month membership`
       : `${slots===1?'one app':'two apps'} at a time, included, switchable`}</div>
@@ -2608,9 +2641,7 @@ function recommendationScreen() {
     ? pool.filter(v=>groups.some(g=>venueInGroup(v,groupById(g)||{activities:[]}))).sort((x,y)=>x.distanceKm-y.distanceKm)
     : [];
   const usingWanted = wanted.length>=3;
-  const allVenues = usingWanted ? wanted : (match.venues||[]);
-  const shownVenues = allVenues.slice(0,4);
-  const moreVenues = allVenues.slice(4,10);
+  const allVenues = (usingWanted ? wanted : (match.venues||[])).slice(0,10);
 
 
   const covIncluded = groups.length && pool.length ? coverage(groups, pool, plan.id).totals.included : 0;
@@ -2647,7 +2678,6 @@ function recommendationScreen() {
         }).join('')}</div>
     </div>
 
-    ${each?`<div class="week__each"><b>≈ ${each} €</b> <span>a session, at ${plural(wp.perMonth,'visit','visits')} a month</span></div>`:''}
     <p class="week__foot">${icon('info',15)} <span>A suggestion, not a booking — check each venue&rsquo;s timetable before you go.${wp.note?` ${esc(wp.note)}`:''}</span></p>
   </div>` : '';
 
@@ -2681,7 +2711,7 @@ function recommendationScreen() {
         ${a.frequency && !carriesFrequency(alt, a.frequency)
           ? `<div class="altcard__warn">${icon('info',14)} ${monthlyAllowance(alt)} check-ins a month, not the ${visitsWanted(a.frequency)} your week needs</div>`
           : ''}
-        ${altCovT&&altCovT.nearby?`<div class="altcard__cov">Opens <b>${altCovT.included} of your ${altCovT.nearby}</b> places
+        ${altCovT&&altCovT.nearby?`<div class="altcard__cov">Opens <b>${altCovT.included} of your ${altCovT.nearby}</b> ${altCovT.nearby===1?'place':'places'}
           ${altCovT.included<covIncluded?`<span class="altcard__warn">${icon('info',14)} ${covIncluded-altCovT.included} fewer than ${esc(plan.name)}</span>`
             :altCovT.included>covIncluded?`<span class="altcard__good">${icon('checkThin',14)} ${altCovT.included-covIncluded} more than ${esc(plan.name)}</span>`
             :`<span class="altcard__neutral">${icon('info',14)} the same places as ${esc(plan.name)}</span>`}</div>`:''}
@@ -2696,25 +2726,33 @@ function recommendationScreen() {
     ${answerChips({ label:'Change anything' })}
     ${match.reachedFurther?`<div class="notice notice--grey">${icon('info',19)}<span>Nothing in this pilot&rsquo;s venue set does ${esc(groupWords(groups))} right by ${esc(where)}, so I looked across the city. The distances below are real.</span></div>`:''}
 
+    <!-- The places come first. They are the most concrete thing on the page and the
+         reason someone would pay; four cards of reasoning before them made the page
+         open on an argument instead of on the thing being argued for. A rail rather
+         than a grid, because it reads as a set you can move through — and because the
+         same component works on a phone, where a grid becomes a column. -->
+    <div class="card places">
+      <div class="places__head">
+        <div class="fitpanel__label" style="margin:0">${usingWanted?`Your places for ${esc(groupWords(groups))}`:'Places near you'}</div>
+        ${allVenues.length>3?`<button class="linkish strong places__toggle" type="button" data-toggle-venues>${VENUESOPEN?'Show as a row':`See all ${allVenues.length} at once`}</button>`:''}
+      </div>
+      <div class="venue-grid venue-grid--big ${VENUESOPEN?'is-grid':'is-rail'}">${allVenues.map(v=>venueCard(v)).join('')}</div>
+      <p class="xsmall muted" style="margin-top:12px">Tap any place for opening hours and what your plan covers there.</p>
+      ${partnerAsk(match, groups)}
+    </div>
+
+    ${appsBlock()}
+
+    ${weekBlock}
+
     <div class="why">
-      <h2 class="why__title">${isRec?`Why ${esc(plan.name)} for you`:`What ${esc(plan.name)} means for you`}</h2>
-      <div class="why__grid">${whyCards.map(r=>`<div class="why__card">
-        <span class="why__icon">${icon(r.icon,20)}</span><p>${esc(r.text)}</p></div>`).join('')}</div>
+      <h2 class="why__title">${isRec?`Why ${esc(plan.name)}`:`What ${esc(plan.name)} means for you`}</h2>
+      <ul class="why__list">${whyCards.map(r=>`<li><span class="why__icon">${icon(r.icon,17)}</span><span>${esc(r.text)}</span></li>`).join('')}</ul>
       ${!isRec?`<p class="why__note">${icon('info',16)} <span>Ula would have picked <b>${esc(rec.planName)}</b> for you.
         <button class="linkish strong" data-plan="${esc(rec.planId)}">See that instead</button></span></p>`:''}
       ${rec.notes.length?`<p class="why__note">${icon('info',16)} <span>${esc(rec.notes.join(' '))}</span></p>`:''}
       <p class="why__foot">Based on your four answers and each plan&rsquo;s published access rules &mdash; not on a model&rsquo;s guess.</p>
     </div>
-
-    ${weekBlock}
-
-    <div class="card"><div class="fitpanel__label">${usingWanted?`Your places for ${esc(groupWords(groups))}`:'Places near you'}</div>
-      <div class="venue-grid venue-grid--big">${shownVenues.map(v=>venueCard(v)).join('')}</div>
-      ${moreVenues.length?`<details class="morevenues"><summary>${plural(moreVenues.length,'more place','more places')} nearby</summary>
-        <div class="venue-grid venue-grid--big" style="margin-top:14px">${moreVenues.map(v=>venueCard(v)).join('')}</div></details>`:''}
-      <p class="xsmall muted" style="margin-top:14px">Tap any venue for opening hours and what your plan covers there.</p>
-      ${partnerAsk(match, groups)}
-      ${appsBlock()}</div>
 
     ${coverageBlock(rec, match, plan)}
 
@@ -3037,7 +3075,7 @@ function go(route, opts={}) {
   if (['recommendation'].includes(route) && !fitComplete(S.answers)) route = 'fit';
   if (['save','details','payment'].includes(route) && !fitComplete(S.answers) && !S.planOverridden) route = 'fit';
   if (route==='details' && !S.email && !S.skippedSave) route = 'save';
-  ROUTE = route; EDITING = null; SHEET = null; CITYPICK = false; CITYWANTED = null; ASKOPEN = false; DAYSOPEN = false; PLACEWANTED = null;
+  ROUTE = route; EDITING = null; SHEET = null; CITYPICK = false; CITYWANTED = null; ASKOPEN = false; DAYSOPEN = false; PLACEWANTED = null; VENUESOPEN = false;
   /* A reviewer saw the save screen's "enter a valid email" error appear under the
      details form's own email field. Errors belong to the screen that produced them. */
   ERRORS = {}; FIELDS = {}; NOCHOICE = false; UNCLEAR = false;
@@ -3069,7 +3107,7 @@ function advance(nextRoute) {
 
 /* ---------------- interactions ---------------- */
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-change-city],[data-city],[data-unsure],[data-open-ask],[data-open-days],[data-day],[data-swap],[data-pick-plan],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula]');
+  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-change-city],[data-city],[data-unsure],[data-open-ask],[data-toggle-venues],[data-open-days],[data-day],[data-swap],[data-pick-plan],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula]');
   if (!t) return;
 
   if (t.dataset.go !== undefined) { e.preventDefault(); go(t.dataset.go); return; }
@@ -3097,6 +3135,7 @@ document.addEventListener('click', e => {
     log('plan_picked_directly', { planId:S.chosenPlanId });
     go(S.email ? 'details' : 'save'); return;
   }
+  if (t.dataset.toggleVenues !== undefined) { VENUESOPEN = !VENUESOPEN; render(false); return; }
   if (t.dataset.openDays !== undefined) { DAYSOPEN = true; log('week_days_opened'); render(false); return; }
 
   if (t.dataset.day) {
