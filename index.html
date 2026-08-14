@@ -530,8 +530,9 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
   background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg);
   padding: 18px 16px 18px; overflow:hidden;
 }
-.plancard.is-popular { border: 2px solid var(--ink); padding: 17px 15px; }
+.plancard.is-popular { padding-top:18px; }
 .plancard.is-popular::before { content:""; position:absolute; left:0; right:0; top:0; height:5px; background:var(--yellow-bright); }
+.plancard.is-selected { border:2px solid var(--ink); padding:17px 15px; }
 .plancard__top { min-height:78px; position:relative; }
 .plancard__badge { position:absolute; top:0; right:0; }
 .plancard__name { font-size: 19px; font-weight: 800; letter-spacing: -.02em; padding-right:4px; }
@@ -559,6 +560,12 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 .plancard__plus u { display:inline-block; font-size:12px; font-weight:700; margin-top:8px; text-underline-offset:3px; }
 .plancard__best { flex:1 1 auto; min-height:52px; font-size:13px; line-height:1.35; }
 .plancard__cta { margin-top:auto; font-size:15px; padding:0 9px; }
+.plancard__cta[aria-pressed="true"] { background:var(--ink); color:#fff; border-color:var(--ink); }
+.plans-selection { display:flex; align-items:center; justify-content:space-between; gap:18px; padding:14px 16px; margin-top:14px; border:1.5px solid var(--ink); border-radius:var(--radius); background:#fff; }
+.plans-selection__copy { min-width:0; }
+.plans-selection__copy b { display:block; font-size:15px; }
+.plans-selection__copy span { display:block; margin-top:2px; font-size:12.5px; color:var(--navy-soft); }
+.plans-selection .btn { flex:0 0 auto; height:48px; padding:0 20px; font-size:14.5px; }
 .plans-shared { display:flex; align-items:center; flex-wrap:wrap; gap:7px 16px; padding:13px 14px; margin-top:14px; border:1px solid var(--border); border-radius:var(--radius); font-size:13px; }
 .plans-shared svg { flex:0 0 auto; }
 .plans-shared__ask { margin-left:auto; min-height:40px; padding:0 16px; border:1px solid var(--ink); border-radius:6px; background:#fff; color:var(--ink); font-size:13.5px; font-weight:700; }
@@ -1245,6 +1252,55 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 .reassure {
   display: flex; align-items: center; gap: 8px;
   font-size: 13.5px; color: var(--navy-soft); margin: 14px 0 0;
+}
+
+/* Details should feel like one short administrative step, not another questionnaire. */
+.details-title { margin: 10px 0 4px; font-size: clamp(32px, 3vw, 42px); }
+.details-lede { margin: 0 0 16px; color: var(--navy); font-size: 16px; line-height: 1.45; }
+.details-lede strong { color: var(--ink); }
+.details-form { max-width: 820px; }
+.details-sso {
+  display: flex; align-items: center; justify-content: space-between; gap: 18px;
+  padding: 14px 16px; border: 1px solid var(--cream-line); border-radius: var(--radius);
+  background: var(--cream); margin-bottom: 14px;
+}
+.details-sso__copy b, .details-sso__copy span { display: block; }
+.details-sso__copy span { margin-top: 2px; color: var(--navy-soft); font-size: 13px; }
+.details-sso .sso-row { flex: 0 0 390px; gap: 9px; max-width: none; }
+.details-sso .sso-btn { height: 44px; padding: 0 13px; background: #fff; font-size: 14px; gap: 8px; }
+.details-divider { display: flex; align-items: center; gap: 12px; margin: 12px 0; color: var(--navy-soft); font-size: 12.5px; }
+.details-divider::before, .details-divider::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+.details-section { margin-top: 14px; }
+.details-section .fitpanel__label { margin-bottom: 8px; }
+.details-grid { display: grid; gap: 11px; }
+.details-grid--person { grid-template-columns: 1fr 1fr .85fr; }
+.details-grid--contact { grid-template-columns: 1.15fr .85fr; }
+.details-grid--address { grid-template-columns: 1.55fr .55fr .8fr; }
+.details-form .field { gap: 5px; }
+.details-form .field label { font-size: 13.5px; }
+.details-form .field input, .details-form .field select { height: 46px; padding: 0 13px; }
+.details-form .field__why { font-size: 12.5px; }
+.details-form__note { margin: 12px 0 0; font-size: 12.5px; color: var(--navy-soft); }
+.details-form__actions { display: flex; align-items: center; gap: 16px; margin-top: 16px; }
+.details-form__actions .btn { height: 52px; margin: 0; }
+.details-form__actions .reassure { margin: 0; }
+.details-pilot { margin-top: 14px; font-size: 12.5px; color: var(--navy-soft); }
+
+@media (max-width: 1180px) {
+  .details-sso { align-items: flex-start; flex-direction: column; }
+  .details-sso .sso-row { flex: none; width: 100%; }
+  .details-grid--person { grid-template-columns: 1fr 1fr; }
+  .details-grid--person .field:last-child { grid-column: 1 / -1; }
+}
+
+@media (max-width: 620px) {
+  .details-title { font-size: 30px; }
+  .details-sso { padding: 14px; }
+  .details-sso .sso-row { flex-direction: column; }
+  .details-grid--person, .details-grid--contact, .details-grid--address { grid-template-columns: 1fr; }
+  .details-grid--person .field:last-child { grid-column: auto; }
+  .details-form__actions { align-items: stretch; flex-direction: column; }
+  .details-form__actions .reassure { align-self: flex-start; }
 }
 
 /* The details form and its summary. Narrower aside than the recommendation's: it
@@ -2640,6 +2696,8 @@ button.venue-card:hover { border-color:var(--ink); }
   .plancard__best { min-height:0; }
   .plans-guide { padding:20px 17px; }
   .plans-shared__ask { flex:1 1 100%; margin:5px 0 0; width:100%; }
+  .plans-selection { align-items:stretch; flex-direction:column; }
+  .plans-selection .btn { width:100%; }
 }
 </style>
 </head>
@@ -5000,13 +5058,13 @@ function plansScreen() {
   const cards = PLANS.map(pl=>{
     const price=priceFor(pl,S.commitmentId), venues=parseInt(String(pl.venueCount).replace(/\D/g,''),10)||0;
     const access=Math.max(5,Math.min(100,venues/maxVenues*100));
-    const daily=Boolean(pl.dailyCheckIn), plus=pl.plusCheckIns||0;
+    const daily=Boolean(pl.dailyCheckIn), plus=pl.plusCheckIns||0, selected=S.chosenPlanId===pl.id;
     const best={essential:'Trying a few activities',classic:'A regular weekly routine',premium:'Studios and recovery',max:'Frequent premium access'}[pl.id]||pl.bestFor;
     const plusCopy=plus ? `<button class="plancard__plus" type="button" data-plus-open="${esc(pl.id)}" aria-label="Explain Plus check-ins on ${esc(pl.name)}">
         <b>${plus} Plus check-ins / month</b><span>For premium studios, spas and EMS</span>
         <em>Includes ${pl.id==='max'?'2 massages':'1 massage'}</em><u>What are Plus check-ins?</u></button>`
       : `<div class="plancard__locked">${icon('lock',13)}<span>Not included</span></div>`;
-    return `<article class="plancard ${pl.mostPopular?'is-popular':''}">
+    return `<article class="plancard ${pl.mostPopular?'is-popular':''} ${selected?'is-selected':''}" ${selected?'aria-current="true"':''}>
       <div class="plancard__top">
         ${pl.mostPopular?`<span class="badge plancard__badge">Most popular</span>`:''}
         <div class="plancard__name">${esc(pl.name)}</div>
@@ -5020,9 +5078,15 @@ function plansScreen() {
         <span class="plancard__check-sub">${daily?'up to one each day':'about once a week'}</span>${planWeekDots(daily)}</div>
       <div class="plancard__section"><span class="plancard__label">Plus &amp; recovery</span>${plusCopy}</div>
       <div class="plancard__section plancard__best"><span class="plancard__label">Best for</span>${esc(best)}</div>
-      <button class="btn ${pl.mostPopular?'btn--primary':'btn--secondary'} btn--block plancard__cta" data-pick-plan="${esc(pl.id)}">Choose ${esc(pl.name)}</button>
+      <button class="btn btn--secondary btn--block plancard__cta" data-pick-plan="${esc(pl.id)}" aria-pressed="${selected?'true':'false'}">${selected?`${icon('checkThin',17)} Selected`:`Choose ${esc(pl.name)}`}</button>
     </article>`;
   }).join('');
+  const selectedPlan=PLANS.find(pl=>pl.id===S.chosenPlanId);
+  const selection=selectedPlan?`<div class="plans-selection" role="status">
+    <div class="plans-selection__copy"><b>${esc(selectedPlan.name)} selected · ${priceFor(selectedPlan,S.commitmentId)} € /mo</b>
+      <span>You can keep comparing. Nothing moves forward until you continue.</span></div>
+    <button class="btn btn--primary" type="button" data-go="details">Continue with ${esc(selectedPlan.name)} ${icon('arrowRight',17)}</button>
+  </div>`:'';
   const journeyRoute=fitComplete(S.answers)?'recommendation':'fit';
   const guide=`<aside class="plans-guide" aria-label="Get help choosing a membership">
     <div class="plans-guide__brand">${ulaAvatar('sm')}<span>Urby</span></div>
@@ -5042,7 +5106,7 @@ function plansScreen() {
       <div class="plans-head"><h1 class="h-question" tabindex="-1">Compare memberships</h1>
         <p class="reco-lede">See how venue access, visit frequency and premium benefits change with each plan.</p></div>
       <div class="commit-row">${COMMITMENTS.map(c=>`<button class="chip-sm ${c.id===S.commitmentId?'is-current':''}" data-commit="${esc(c.id)}">${esc(c.minimumTermMonths===1?'Monthly':c.minimumTermMonths+' months')}</button>`).join('')}</div>
-      <div class="plangrid">${cards}</div>
+      <div class="plangrid">${cards}</div>${selection}
       <div class="plans-shared">${icon('checkThin',17)}<span>Every membership includes video on demand, wellbeing apps and online classes.</span>
         <button class="linkish" type="button" data-go="terms">Membership terms</button>
         <button class="plans-shared__ask" type="button" data-plan-ask>Ask Urby</button></div>
@@ -5193,7 +5257,7 @@ function detailsScreen() {
   const d = Object.assign({ email: S.email||'' }, S.details||{});
   /* autocomplete and inputmode: a reviewer pointed out the browser could not
      autofill any of this, which is pure typing on a phone. */
-  const f=(name,label,o={})=>`<div class="field ${o.wide?'field--wide':''}">
+  const f=(name,label,o={})=>`<div class="field ${o.wide?'field--wide':''} ${o.className||''}">
     <label for="${name}">${esc(label)}${o.optional?' <span class="muted" style="font-weight:400">(optional)</span>':''}</label>
     <input id="${name}" name="${name}" type="${o.type||'text'}" value="${esc(d[name]||'')}" placeholder="${esc(o.ph||'')}"
       ${o.auto?`autocomplete="${o.auto}"`:''} ${o.mode?`inputmode="${o.mode}"`:''}
@@ -5229,31 +5293,36 @@ function detailsScreen() {
     </div></div>`;
   return `${topbar(2)}<div class="two-col two-col--form">
     <main class="two-col__main" id="main">
-      <h1 class="h-question" style="margin-top:14px;max-width:16ch" tabindex="-1">Great choice. Let&rsquo;s set up your membership.</h1>
-      ${ulaNote(`${opens} Add your details, then review payment — nothing will be charged yet.`)}
-      <form data-form="details" novalidate>
-        <!-- Three named groups instead of one seven-field wall. The eye can find where it
-             is, and the address block is obviously separable from the person. -->
-        <div class="formgroup"><div class="fitpanel__label">About you</div>
-          <div class="form-grid">
+      <h1 class="details-title" tabindex="-1">Your details</h1>
+      <p class="details-lede">Set up your <strong>${esc(plan.name)}</strong> membership. One short step, then you&rsquo;ll review payment before anything is charged.</p>
+      <form class="details-form" data-form="details" novalidate>
+        <div class="details-sso">
+          <div class="details-sso__copy"><b>Fill faster</b><span>Use an account to prefill your name and email.</span></div>
+          <div class="sso-row">
+            <button class="sso-btn" type="submit" name="provider" value="google" aria-label="Prefill details with Google">${GOOGLE} Google</button>
+            <button class="sso-btn" type="submit" name="provider" value="apple" aria-label="Prefill details with Apple">${APPLE} Apple</button>
+          </div>
+        </div>
+        <div class="details-divider">or enter your details</div>
+        <section class="details-section"><div class="fitpanel__label">About you</div>
+          <div class="details-grid details-grid--person">
             ${f('firstName','First name',{auto:'given-name'})}${f('lastName','Last name',{auto:'family-name'})}
-            ${f('birthDate','Date of birth',{type:'date',auto:'bday',max:dobMax(),min:dobMin(),why:'Venues check age on entry, and some classes have a minimum age. We don’t use it for anything else.'})}
-          </div></div>
-        <div class="formgroup"><div class="fitpanel__label">Contact</div>
-          <div class="form-grid">
-            ${f('email','Email for your membership',{type:'email',auto:'email',mode:'email',
-                why:S.saveOptIn?'Your progress is already saved to this address.':'Needed to create the membership. It does not save your progress — use “Save and exit” for that.'})}
-            ${f('phone','Mobile number',{type:'tel',auto:'tel',mode:'tel',optional:true,why:'Only used if a venue needs to reach you about a booking.'})}
-          </div></div>
-        <div class="formgroup"><div class="fitpanel__label">Address</div>
-          <div class="form-grid">
-            ${f('street','Street and number',{auto:'street-address',wide:true})}
+            ${f('birthDate','Date of birth',{type:'date',auto:'bday',max:dobMax(),min:dobMin()})}
+          </div></section>
+        <section class="details-section"><div class="fitpanel__label">Contact</div>
+          <div class="details-grid details-grid--contact">
+            ${f('email','Email',{type:'email',auto:'email',mode:'email'})}
+            ${f('phone','Mobile number',{type:'tel',auto:'tel',mode:'tel',optional:true})}
+          </div></section>
+        <section class="details-section"><div class="fitpanel__label">Address</div>
+          <div class="details-grid details-grid--address">
+            ${f('street','Street and number',{auto:'street-address'})}
             ${f('postcode','Postcode',{auto:'postal-code',mode:'numeric',ph:'12045'})}${f('city','City',{auto:'address-level2',ph:'Berlin'})}
-          </div></div>
-        <p class="small muted" style="margin:18px 0 0">Everything is required except the mobile number.</p>
-        <div class="btn-row"><button class="btn btn--primary btn--wide" type="submit">Continue to payment</button></div>
-        <p class="reassure">${icon('lock',15)} You&rsquo;ll review the full price and terms before paying.</p>
-        <div class="notice" style="margin-top:26px">${icon('lock',19)}<span>Pilot demo — nothing you type here leaves this page, and no Urban Sports Club system receives it.</span></div>
+          </div></section>
+        <p class="details-form__note">Date of birth is required for venue age checks. Mobile number is optional.</p>
+        <div class="details-form__actions"><button class="btn btn--primary btn--wide" type="submit">Continue to payment</button>
+          <p class="reassure">${icon('lock',15)} Review everything before paying.</p></div>
+        <p class="details-pilot">${icon('lock',14)} Pilot demo: nothing entered here leaves this page.</p>
       </form>
     </main>
     <aside class="two-col__aside two-col__aside--sticky">${aside}</aside>
@@ -5455,8 +5524,8 @@ function render(focus = true) {
        rather than tabbing through the header to reach the answers */
     const h = document.querySelector('#main h1, #main h2');
     if (h) h.focus({ preventScroll:true });
+    window.scrollTo(0,0);
   }
-  window.scrollTo(0,0);
   /* Don't consume the one-shot messages on the "Urby is typing" frame — that
      frame is painted before the answer screen, and clearing here swallowed
      every acknowledgement of a free-text answer. */
@@ -5711,7 +5780,9 @@ document.addEventListener('click', e => {
   if (t.dataset.pickPlan) {
     S.chosenPlanId = t.dataset.pickPlan; S.planOverridden = true;
     log('plan_picked_directly', { planId:S.chosenPlanId });
-    go('details'); return;
+    render(false);
+    document.querySelector('.plans-selection')?.scrollIntoView({behavior:SCROLL_BEHAVIOR(),block:'nearest'});
+    return;
   }
   if (t.dataset.toggleVenues !== undefined) { VENUESOPEN = !VENUESOPEN; render(false); return; }
   if (t.dataset.toggleApps !== undefined) { APPSOPEN = !APPSOPEN; render(false); return; }
@@ -6057,6 +6128,17 @@ document.addEventListener('submit', e => {
   }
 
   if (kind === 'details') {
+    if (provider) {
+      const providerName = provider === 'google' ? 'Google' : 'Apple';
+      S.authMethod = provider;
+      S.email = validEmail(S.email||'') ? S.email : `demo.${provider}.user@example.com`;
+      S.details = Object.assign({}, S.details||{}, {
+        firstName:(S.details&&S.details.firstName)||providerName,
+        lastName:(S.details&&S.details.lastName)||'Member', email:S.email
+      });
+      log('details_prefilled', { provider });
+      render(false); document.getElementById('birthDate')?.focus(); return;
+    }
     const d={}; ['firstName','lastName','email','birthDate','phone','street','postcode','city'].forEach(k=>d[k]=(fd.get(k)||'').trim());
     S.details=d; ERRORS={};
     if (!d.firstName) ERRORS.firstName='We need your first name for the membership.';
