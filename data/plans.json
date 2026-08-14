@@ -1,0 +1,210 @@
+{
+  "_note": "REAL public Urban Sports Club Germany pricing and rules, retrieved 12 August 2026 from urbansportsclub.com and the public help centre. Not a live feed — re-check before any real test, and replace with the BFF API in production. Sources are recorded per field in `sources` below. Per-plan benefits (online classes, video on demand, wellbeing apps, merchandise voucher, Plus check-ins including massages) are quoted from the public pricing page, retrieved 12 Aug 2026.",
+  "market": "Germany",
+  "currency": "EUR",
+  "sources": {
+    "pricing": "https://urbansportsclub.com/en/prices/berlin",
+    "costsAndCheckIns": "https://urbansports.zendesk.com/hc/en-us/articles/21185526857746-What-do-private-memberships-cost-and-how-many-check-ins-are-included",
+    "planDifferences": "https://urbansports.zendesk.com/hc/en-us/articles/115003466185-What-is-the-difference-between-the-Essential-Classic-Premium-and-Max-memberships",
+    "visitLimits": "https://urbansports.zendesk.com/hc/en-us/articles/115003466325-What-are-visit-limits-and-how-do-they-work",
+    "cancellation": "https://urbansports.zendesk.com/hc/en-us/articles/115003466945-How-can-I-cancel-my-membership",
+    "pausing": "https://urbansports.zendesk.com/hc/en-us/articles/115003465549-How-can-I-pause-my-membership",
+    "annual": "https://urbansports.zendesk.com/hc/en-us/articles/9463067937042-Annual-Membership-Everything-You-Need-to-Know",
+    "benefits": "https://urbansportsclub.com/en/prices/berlin"
+  },
+  "plans": [
+    {
+      "id": "essential",
+      "name": "Essential",
+      "rank": 1,
+      "priceMonthly": 35,
+      "priceAnnual": 29,
+      "priceBiennial": 24,
+      "checkInModel": "4 check-ins per membership month",
+      "checkInsPerMonth": 4,
+      "dailyCheckIn": false,
+      "plusCheckIns": 0,
+      "venueCount": "5,600+",
+      "venueTiers": [
+        "standard"
+      ],
+      "bestFor": "Getting started with about one session a week",
+      "shortReason": "Good for a steady start close to home",
+      "includes": [
+        "4 check-ins per membership month",
+        "5,600+ partner venues across 7 European countries",
+        "Up to 4 live online classes",
+        "Unlimited video on demand",
+        "Free wellbeing apps"
+      ],
+      "limitations": [
+        "Only 4 check-ins per membership month in total",
+        "The smallest venue network of the four plans",
+        "Premium studios, spas and massages are not included"
+      ],
+      "benefits": [
+        "4 check-ins a month, in total",
+        "Up to 4 online class check-ins",
+        "Unlimited video on demand",
+        "Free access to popular wellbeing apps"
+      ]
+    },
+    {
+      "id": "classic",
+      "name": "Classic",
+      "rank": 2,
+      "priceMonthly": 75,
+      "priceAnnual": 64,
+      "priceBiennial": 59,
+      "checkInModel": "One check-in per day",
+      "checkInsPerMonth": null,
+      "dailyCheckIn": true,
+      "plusCheckIns": 0,
+      "venueCount": "14,800+",
+      "venueTiers": [
+        "standard",
+        "plus"
+      ],
+      "mostPopular": true,
+      "bestFor": "Regular training with real variety near you",
+      "shortReason": "Best for regular variety near you",
+      "includes": [
+        "One check-in per day",
+        "14,800+ partner venues",
+        "Up to 30 live online classes",
+        "€20 merchandise voucher on a 12-month contract"
+      ],
+      "limitations": [
+        "One check-in per day, and only once per day at the same venue",
+        "Each venue has its own monthly visit limit",
+        "Plus partners — premium studios, spas and massages — are not included"
+      ],
+      "benefits": [
+        "One check-in a day",
+        "Up to 30 online class check-ins",
+        "Unlimited video on demand",
+        "Free access to popular wellbeing apps",
+        "20 € merchandise voucher"
+      ]
+    },
+    {
+      "id": "premium",
+      "name": "Premium",
+      "rank": 3,
+      "priceMonthly": 115,
+      "priceAnnual": 104,
+      "priceBiennial": 99,
+      "checkInModel": "One check-in per day, plus 4 Plus check-ins a month",
+      "checkInsPerMonth": null,
+      "dailyCheckIn": true,
+      "plusCheckIns": 4,
+      "plusDetail": "Includes 1 massage and up to 3 EMS sessions a month",
+      "venueCount": "17,700+",
+      "venueTiers": [
+        "standard",
+        "plus",
+        "premium"
+      ],
+      "bestFor": "Training often, with spa and premium studios included",
+      "shortReason": "Built for training several times a week, with wellness included",
+      "includes": [
+        "One check-in per day",
+        "17,700+ partner venues",
+        "Up to 4 Plus check-ins a month, including 1 massage",
+        "€20 merchandise voucher on a 12-month contract"
+      ],
+      "limitations": [
+        "Plus check-ins are capped at 4 a month and do not roll over",
+        "Still one check-in per day overall",
+        "A small number of the highest-end partners need a Max plan"
+      ],
+      "benefits": [
+        "One check-in a day",
+        "Up to 4 Plus check-ins a month, including 1 massage",
+        "Up to 30 online class check-ins",
+        "Unlimited video on demand",
+        "Free access to popular wellbeing apps",
+        "20 € merchandise voucher"
+      ]
+    },
+    {
+      "id": "max",
+      "name": "Max",
+      "rank": 4,
+      "priceMonthly": 165,
+      "priceAnnual": 154,
+      "priceBiennial": 149,
+      "checkInModel": "One check-in per day, plus 8 Plus check-ins a month",
+      "checkInsPerMonth": null,
+      "dailyCheckIn": true,
+      "plusCheckIns": 8,
+      "plusDetail": "Includes 2 massages and up to 6 EMS sessions a month",
+      "venueCount": "17,800+",
+      "venueTiers": [
+        "standard",
+        "plus",
+        "premium",
+        "luxury"
+      ],
+      "bestFor": "Daily training with the fullest wellness access",
+      "shortReason": "For daily training and full wellness access",
+      "includes": [
+        "One check-in per day",
+        "17,800+ partner venues",
+        "Up to 8 Plus check-ins a month, including 2 massages",
+        "€20 merchandise voucher on a 12-month contract"
+      ],
+      "limitations": [
+        "The highest monthly price",
+        "Still one check-in per day overall",
+        "Plus check-ins are capped at 8 a month and do not roll over"
+      ],
+      "benefits": [
+        "One check-in a day",
+        "Up to 8 Plus check-ins a month, including 2 massages",
+        "Up to 30 online class check-ins",
+        "Unlimited video on demand",
+        "Free access to popular wellbeing apps",
+        "20 € merchandise voucher"
+      ]
+    }
+  ],
+  "commitments": [
+    {
+      "id": "monthly",
+      "label": "Monthly, no minimum term",
+      "minimumTermMonths": 1,
+      "priceField": "priceMonthly",
+      "canPause": true,
+      "renewal": "Renews every month until you cancel.",
+      "note": "Most flexible, and the highest monthly price."
+    },
+    {
+      "id": "annual",
+      "label": "12 months, lower monthly price",
+      "minimumTermMonths": 12,
+      "priceField": "priceAnnual",
+      "canPause": false,
+      "renewal": "After 12 months it automatically continues as a monthly membership unless you cancel.",
+      "note": "Cannot be paused, and cannot be downgraded during the 12 months."
+    },
+    {
+      "id": "biennial",
+      "label": "24 months, lowest monthly price",
+      "minimumTermMonths": 24,
+      "priceField": "priceBiennial",
+      "canPause": false,
+      "renewal": "After 24 months it automatically continues as a monthly membership unless you cancel.",
+      "note": "The cheapest per month, and the longest commitment. Cannot be paused."
+    }
+  ],
+  "rules": {
+    "cancellationNotice": "At least 72 hours before the end of your billing period. Cancel later than that and the membership runs for one more month.",
+    "accessEnds": "You keep access until 11:59 pm on the day before your cancellation date. Unused days are not refunded.",
+    "pause": "Monthly memberships can be paused for 1 to 6 full months at no cost, requested at least one day before your next billing date. 12-month and 24-month memberships cannot be paused.",
+    "upgrade": "You can upgrade at any time and it takes effect immediately. Upgrading does not extend a 12-month term.",
+    "downgrade": "Downgrades take effect at the start of your next membership month, and are not possible during a 12-month term.",
+    "sameVenue": "You can check in once per day at the same venue. Each venue also has its own monthly visit limit, which depends on your plan.",
+    "visitLimitReset": "Visit limits run with the calendar month and reset on the 1st. Unused visits do not carry over."
+  }
+}

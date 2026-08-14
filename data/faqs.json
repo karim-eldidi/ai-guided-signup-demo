@@ -1,0 +1,132 @@
+{
+  "_note": "Urby's knowledge base. Summarised from Urban Sports Club's PUBLIC help centre and pricing pages, retrieved 12 August 2026. Each entry keeps its source so any answer can be traced. This is the only place Urby may take membership facts from — it is not allowed to answer from anything else. Replace with the real help-centre feed before a live test.",
+  "retrieved": "2026-08-12",
+  "faqs": [
+    {
+      "id": "plans-difference",
+      "q": "What's the difference between the plans?",
+      "a": "There are four: Essential, Classic, Premium and Max. Essential gives you 4 check-ins per membership month at 5,600+ venues. Classic gives you one check-in per day at 14,800+ venues. Premium adds 4 Plus check-ins a month — premium studios, spas, massages — at 17,700+ venues. Max doubles that to 8 Plus check-ins at 17,800+ venues.",
+      "tags": ["plan", "plans", "difference", "compare", "tier", "essential", "classic", "premium", "max", "membership", "options"],
+      "source": "planDifferences"
+    },
+    {
+      "id": "how-often-visit",
+      "q": "How often can I go?",
+      "a": "On Classic, Premium and Max in Germany you get one check-in per day. On Essential you get 4 check-ins per membership month in total. You can only check in once per day at the same venue, so training twice in a day means using two different places.",
+      "tags": ["how often", "frequency", "per day", "daily", "check in", "checkin", "check-in", "times", "visits", "limit"],
+      "source": "visitLimits"
+    },
+    {
+      "id": "same-venue-limit",
+      "q": "How many times can I visit the same venue?",
+      "a": "Once per day at the same venue, and each venue also has its own monthly visit limit that depends on your plan — a padel court, for example, allows 8 visits a month on Classic, 12 on Premium and 16 on Max. Limits run with the calendar month and reset on the 1st. Unused visits don't carry over.",
+      "tags": ["same venue", "same gym", "same studio", "visit limit", "how many times", "monthly limit", "reset", "carry over"],
+      "source": "visitLimits"
+    },
+    {
+      "id": "cancel",
+      "q": "How do I cancel?",
+      "a": "In Settings on the website or in the app, under Cancellation. You need to give at least 72 hours' notice before the end of your billing period. Cancel later than that and your membership runs for one more month. You keep access until 11:59 pm on the day before your cancellation date, and unused days aren't refunded.",
+      "tags": ["cancel", "cancellation", "quit", "stop", "leave", "end membership", "notice", "72 hours", "terminate"],
+      "source": "cancellation"
+    },
+    {
+      "id": "pause",
+      "q": "Can I pause my membership?",
+      "a": "A monthly membership can be paused for 1 to 6 full months at no cost. Request it at least one day before your next billing date. Important: 12-month and 24-month memberships cannot be paused at all. Monthly memberships can only be paused on the website, not in the app.",
+      "tags": ["pause", "freeze", "suspend", "hold", "break", "holiday", "injury", "stop temporarily"],
+      "source": "pausing"
+    },
+    {
+      "id": "annual-term",
+      "q": "What happens at the end of a 12-month membership?",
+      "a": "It automatically continues as a monthly membership. To stop that, cancel at least 72 hours before the 12 months end. During the 12 months you can upgrade at any time — upgrading doesn't extend the term — but you cannot downgrade and you cannot pause.",
+      "tags": ["12 month", "annual", "yearly", "contract", "term", "end", "renew", "renewal", "automatic", "auto-renew"],
+      "source": "annual"
+    },
+    {
+      "id": "commitment-options",
+      "q": "Do I have to commit for a year?",
+      "a": "No. You can pay monthly with no minimum term, which costs more per month, or commit for 12 or 24 months for a lower monthly price. Classic is €75 monthly, €64 on 12 months, or €59 on 24 months.",
+      "tags": ["commit", "commitment", "contract", "minimum term", "no contract", "flexible", "monthly", "24 month"],
+      "source": "costsAndCheckIns"
+    },
+    {
+      "id": "change-plan",
+      "q": "Can I change my plan later?",
+      "a": "You can upgrade at any time and it applies immediately. Downgrades take effect at the start of your next membership month — and during a 12-month term a downgrade isn't possible at all.",
+      "tags": ["change plan", "upgrade", "downgrade", "switch", "move plan", "different plan"],
+      "source": "annual"
+    },
+    {
+      "id": "plus-checkins",
+      "q": "What are Plus check-ins?",
+      "a": "Plus check-ins get you into high-end partners — premium studios, spas, massages and EMS. Premium includes 4 a month, which covers 1 massage and up to 3 EMS sessions. Max includes 8, covering 2 massages and up to 6 EMS sessions. They reset monthly and don't roll over.",
+      "tags": ["plus", "plus check-in", "massage", "spa", "ems", "wellness", "premium partner", "high end", "sauna"],
+      "source": "planDifferences"
+    },
+    {
+      "id": "price-essential",
+      "q": "How much does Essential cost?",
+      "a": "Essential is €35 a month with no minimum term, €29 a month on a 12-month contract, or €24 a month on 24 months. It includes 4 check-ins per membership month.",
+      "tags": ["essential", "price", "cost", "cheapest", "how much", "29", "35", "24"],
+      "source": "costsAndCheckIns"
+    },
+    {
+      "id": "price-classic",
+      "q": "How much does Classic cost?",
+      "a": "Classic is €75 a month with no minimum term, €64 a month on a 12-month contract, or €59 a month on 24 months. It's the most popular plan and gives you one check-in per day.",
+      "tags": ["classic", "price", "cost", "how much", "64", "75", "59", "most popular"],
+      "source": "costsAndCheckIns"
+    },
+    {
+      "id": "price-premium",
+      "q": "How much does Premium cost?",
+      "a": "Premium is €115 a month with no minimum term, €104 a month on a 12-month contract, or €99 a month on 24 months. It adds 4 Plus check-ins a month, including a massage.",
+      "tags": ["premium", "price", "cost", "how much", "104", "115", "99"],
+      "source": "costsAndCheckIns"
+    },
+    {
+      "id": "price-max",
+      "q": "How much does Max cost?",
+      "a": "Max is €165 a month with no minimum term, €154 a month on a 12-month contract, or €149 a month on 24 months. It includes 8 Plus check-ins a month, covering 2 massages.",
+      "tags": ["max", "price", "cost", "how much", "154", "165", "149", "most expensive", "best plan"],
+      "source": "costsAndCheckIns"
+    },
+    {
+      "id": "how-many-venues",
+      "q": "How many venues can I use?",
+      "a": "It depends on the plan: 5,600+ on Essential, 14,800+ on Classic, 17,700+ on Premium and 17,800+ on Max, across 7 European countries.",
+      "tags": ["how many venues", "venues", "partners", "gyms", "studios", "network", "countries", "abroad", "europe"],
+      "source": "pricing"
+    },
+    {
+      "id": "online-classes",
+      "q": "Are online classes included?",
+      "a": "Yes. Essential includes up to 4 live online classes, Classic up to 30. Video on demand is unlimited on Essential, and free wellbeing apps are included too.",
+      "tags": ["online", "live class", "video", "on demand", "at home", "stream", "app", "digital"],
+      "source": "pricing"
+    },
+    {
+      "id": "voucher",
+      "q": "Is there a joining offer?",
+      "a": "A 12-month contract on Classic, Premium or Max includes a €20 merchandise voucher.",
+      "tags": ["voucher", "offer", "discount", "deal", "promo", "free", "merch", "gift"],
+      "source": "pricing"
+    },
+    {
+      "id": "early-cancel",
+      "q": "Can I get out of a 12-month contract early?",
+      "a": "Generally no. There are limited exceptions — relocation, pregnancy, illness, job loss — which need documentation, and even then unused days aren't refunded.",
+      "tags": ["get out", "early", "break contract", "exception", "moving", "relocation", "pregnant", "illness", "job loss", "refund"],
+      "source": "annual"
+    },
+    {
+      "id": "two-a-day",
+      "q": "Can I do two classes in one day?",
+      "a": "Yes, but not at the same venue — you can only check in once per day at any given venue. On Essential you'd also be using two of your four monthly check-ins.",
+      "tags": ["two classes", "twice a day", "two a day", "same day", "double", "morning evening"],
+      "source": "visitLimits"
+    }
+  ]
+}

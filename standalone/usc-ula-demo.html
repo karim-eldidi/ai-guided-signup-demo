@@ -1446,8 +1446,7 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
 }
 
 /* Visible focus for keyboard users everywhere. */
-a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible,
-[role="button"]:focus-visible {
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
   outline: 3px solid #1b4bd8; outline-offset: 2px;
 }
 
@@ -1458,7 +1457,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
    row of app chips, so it takes its own line and is allowed to narrow — otherwise the
    last chips render outside the card they belong to. */
 .appgrid { flex: 1 1 100%; min-width: 0; display: flex; align-items: stretch; gap: 8px; flex-wrap: wrap; }
-.appgrid.is-locked .appcard { opacity: 1; }
+.appgrid.is-locked .appcard { opacity: .62; }
 .appcard {
   display: flex; align-items: center; gap: 9px;
   background: #fff; border: 1px solid var(--border); border-radius: 999px;
@@ -1891,16 +1890,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
    places, and Urby at the foot asking the one thing a list of places cannot tell her.
    The badge on each photograph is the join a venue directory hasn't got — the cheapest
    membership that opens the place (rule 63). */
-.venuepage { max-width: 1480px; }
+.venuepage { max-width: 1160px; }
 .venuepage__h1 { margin: 0 0 22px; font-size: clamp(31px, 3.4vw, 46px); line-height: 1.04; }
-.venuepage__intro { max-width: 1040px; }
-.venuepage__layout {
-  display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 348px);
-  align-items: start; gap: 32px;
-}
-.venuepage__layout--searched { grid-template-columns: minmax(0, 1fr); max-width: 1040px; }
-.venuepage__primary { min-width: 0; }
-.venuepage__aside { min-width: 0; }
 
 /* Everything you can do to the list lives in one cream panel, so the page has one
    place to look rather than controls scattered down it. */
@@ -2005,13 +1996,12 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
    them; this asks whichever of the other two is still open, and answering it stays on
    this page (rule 11 — and nothing is asked twice). */
 .routine {
-  display: grid; grid-template-columns: 1fr;
-  align-items: start; gap: 0;
-  margin: 0; padding: 22px 22px 24px;
+  display: grid; grid-template-columns: auto minmax(0,1fr) minmax(260px, 320px);
+  align-items: start; gap: 22px 26px;
+  margin-top: 40px; padding: 24px 26px;
   background: var(--cream); border: 1px solid var(--cream-line); border-radius: var(--radius-lg);
 }
-.venuepage__aside .routine { position: sticky; top: 24px; }
-.routine__who { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; font-size: 15px; }
+.routine__who { display: flex; align-items: center; gap: 10px; font-size: 15px; }
 .routine__mid { min-width: 0; }
 .routine__title { font-size: clamp(20px, 1.8vw, 25px); line-height: 1.15; }
 .routine__q { margin: 12px 0 10px; font-size: 15.5px; font-weight: 700; color: var(--navy); }
@@ -2029,8 +2019,8 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 }
 .routine__fit > svg { flex: 0 0 auto; }
 .routine__fitlabel { font-size: 14.5px; font-weight: 700; margin-right: 2px; }
-.routine__side { display: flex; flex-direction: column; align-items: stretch; gap: 12px; margin-top: 20px; }
-.routine__side .btn { width: 100%; height: 52px; padding: 0 16px; font-size: 15.5px; }
+.routine__side { display: flex; flex-direction: column; align-items: stretch; gap: 12px; }
+.routine__side .btn { width: 100%; height: 58px; font-size: 17px; }
 .routine__note { margin: -4px 0 0; font-size: 13px; line-height: 1.45; color: var(--navy-soft); }
 .routine__save {
   display: flex; align-items: flex-start; gap: 12px; text-align: left;
@@ -2041,11 +2031,11 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .routine__save small { display: block; font-size: 13px; color: var(--navy-soft); margin-top: 2px; }
 .routine__save:hover b { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
 
-@media (max-width: 1180px) {
-  .venuepage { max-width: 1160px; }
-  .venuepage__layout { grid-template-columns: minmax(0, 1fr); }
-  .venuepage__aside .routine { position: static; margin-top: 8px; }
+@media (max-width: 1080px) {
   .hits--row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .routine { grid-template-columns: minmax(0,1fr); }
+  .routine__who { order: -1; }
+  .routine__side { max-width: 420px; }
 }
 @media (max-width: 700px) {
   /* On a phone the panel is the page: the box, then the shortcuts, then one card at a
@@ -2077,12 +2067,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
   cursor: pointer; list-style: none; padding: 14px 15px;
   font-size: 16px; font-weight: 700; letter-spacing: -.01em; color: var(--ink);
-}
-.allplans__headcopy { min-width: 0; }
-.allplans__headcopy > span { display: block; }
-.allplans__headcopy small {
-  display: block; margin-top: 3px; color: var(--navy-soft);
-  font-size: 12.5px; line-height: 1.35; font-weight: 400; letter-spacing: 0;
 }
 .allplans__head::-webkit-details-marker { display: none; }
 .allplans__head svg { flex: 0 0 auto; color: var(--navy-soft); transform: rotate(90deg); transition: transform .16s ease; }
@@ -2140,16 +2124,15 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 /* The answer sentence. Navy rather than black and set at reading size, because it is
    what we heard rather than what we are claiming — and every part of it is editable in
    the chips directly underneath. */
-.reco-hero__title { margin: 6px 0 18px; }
+.reco-hero__title { margin: 6px 0 8px; }
 .reco-hero__lede {
   font-size: clamp(16px, 1.35vw, 19px); line-height: 1.4; color: var(--navy);
   max-width: 46ch; margin: 0 0 18px;
 }
-.reco-hero__lede + .chips-row, .reco-hero__title + .chips-row { margin-bottom: 20px; }
+.reco-hero__lede + .chips-row { margin-bottom: 20px; }
 /* "You told us" reads as the start of the sentence the chips finish, so it is set like
    one — not as the small-caps eyebrow the label wears on the question screens. */
-.reco-hero__lede + .chips-row .chips-row__label,
-.reco-hero__title + .chips-row .chips-row__label {
+.reco-hero__lede + .chips-row .chips-row__label {
   text-transform: none; letter-spacing: 0; font-size: 15px; color: var(--navy);
 }
 
@@ -2176,7 +2159,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
    plan terms on the right. A locked row says which membership opens it and nothing else —
    the reasoning for that lives on the card in the other column. */
 .weekrow {
-  display: grid; grid-template-columns: 44px minmax(150px, .8fr) minmax(180px, 1.2fr) auto;
+  display: grid; grid-template-columns: 44px 232px minmax(0, 1fr) auto;
   align-items: center; gap: 14px;
   background: #fff; border-radius: var(--radius); padding: 10px 14px 10px 10px;
 }
@@ -2212,11 +2195,10 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
    the row, not a warning about it. */
 .weekrow__limit { flex: 0 0 auto; font-size: 13px; color: var(--navy-soft); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .weekrow__swap {
-  display: inline-flex; align-items: center; gap: 7px; background: #fff;
-  border: 1px solid var(--border); border-radius: 8px; padding: 8px 11px;
-  font-size: 13px; font-weight: 700; color: var(--navy);
+  display: inline-flex; align-items: center; gap: 5px; background: none; border: 0; padding: 0;
+  font-size: 13px; font-weight: 700; color: var(--navy-soft);
 }
-.weekrow__swap:hover { color: var(--ink); border-color: var(--ink); }
+.weekrow__swap:hover { color: var(--ink); text-decoration: underline; }
 /* The one thing the plan on screen cannot carry, said where the gap is visible. */
 .weekcard__adds {
   display: flex; align-items: flex-start; gap: 10px; margin: 14px 2px 0;
@@ -2230,39 +2212,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .weekcard__foot svg { flex: 0 0 auto; margin-top: 3px; }
 .weekcard .week__days { border-top-color: var(--cream-line); margin: 16px 2px 0; }
 .weekcard .week__changed { background: #fff; margin: 12px 2px 0; }
-.weekcard__controls {
-  display: flex; align-items: flex-end; justify-content: space-between; gap: 14px;
-  border-top: 1px solid var(--cream-line); margin: 16px 2px 0; padding-top: 14px;
-}
-.weekcard__controls .week__days { flex: 1 1 auto; border: 0; margin: 0; padding: 0; }
-.weekcard__search {
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  flex: 0 0 auto; min-height: 42px; padding: 0 14px; border: 1px solid var(--border);
-  border-radius: 8px; background: #fff; color: var(--navy); font-size: 13.5px; font-weight: 700;
-}
-.weekcard__search:hover { border-color: var(--ink); color: var(--ink); }
-.weekcard__helper { margin-top: 7px; font-size: 12.5px; color: var(--navy-soft); }
-
-@media (max-width: 1180px) {
-  /* The visit allowance is already stated in the recommendation card. At laptop
-     widths it yields to the venue and the direct Swap action instead of clipping them. */
-  .weekrow__limit { display: none; }
-  .weekrow { grid-template-columns: 44px minmax(0, 1fr) auto; row-gap: 9px; }
-  .weekrow__meta { grid-column: 2; grid-row: 1; }
-  .weekrow__end { grid-column: 3; grid-row: 1; }
-  .weekrow__place { grid-column: 2 / -1; grid-row: 2; }
-
-  .places__fold .rowcard__head { flex-wrap: wrap; }
-  .places__fold .rowcard__cta { flex: 1 1 100%; margin: 6px 0 0 36px; }
-
-  /* Keep recognizable full-colour marks without squeezing their names into ellipses. */
-  .rowcard--apps .appchip { padding: 5px; }
-  .rowcard--apps .appchip > span:last-child { display: none; }
-  .rowcard--apps .rowcard__chips + .rowcard__cta { margin-left: 10px; }
-
-  /* The links are available immediately after opening this single compact drawer. */
-  .rowcard--more .rowcard__links { display: none; }
-}
 
 /* --- the three rows --------------------------------------------------------
    Places, apps, questions. The same shape three times: an icon, the claim and the
@@ -2278,7 +2227,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .rowcard__text { min-width: 0; }
 .rowcard__text { flex: 0 1 auto; }
 .rowcard__text b { display: block; font-size: 16.5px; font-weight: 700; letter-spacing: -.01em; white-space: nowrap; }
-.places__fold .rowcard__text b { white-space: normal; line-height: 1.25; overflow-wrap: anywhere; }
 .rowcard__text small { display: block; font-size: 14px; color: var(--navy-soft); margin-top: 2px; font-variant-numeric: tabular-nums; }
 .rowcard__cta {
   display: inline-flex; align-items: center; gap: 9px; margin-left: auto; flex: 0 0 auto;
@@ -2320,12 +2268,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
    no button at all — rule 32. */
 .altbox { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--cream-line); }
 .altbox__head { font-size: 16px; font-weight: 700; margin-bottom: 12px; }
-.altbox__card {
-  position: relative; background: #fff; border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 14px 44px 15px 15px; cursor: pointer;
-}
-.altbox__card:hover { border-color: var(--ink); box-shadow: 0 2px 0 rgba(16,32,60,.06); }
-.altbox__chev { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--navy); }
+.altbox__card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 15px 15px; }
 .altbox__row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
 .altbox__row b { font-size: 20px; font-weight: 700; letter-spacing: -.02em; }
 .altbox__price { font-size: 18px; font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
@@ -2337,9 +2280,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 }
 .altbox__warn svg { flex: 0 0 auto; margin-top: 1px; }
 .altbox__card .btn { margin-top: 14px; height: 46px; font-size: 15.5px; }
-
-.allplans__row[data-plan] { cursor: pointer; }
-.allplans__row[data-plan]:hover { background: #fff; }
 
 @media (max-width: 980px) {
   /* One row per session becomes two: what and when on top, where underneath. A 44px
@@ -2370,8 +2310,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   /* The title and the way to change it stop sharing a line they cannot both fit on. */
   .weekcard__head { flex-wrap: wrap; gap: 6px 16px; }
   .weekcard__title { flex: 1 1 100%; }
-  .weekcard__controls { align-items: stretch; flex-direction: column; }
-  .weekcard__search { width: 100%; }
 }
 
 /* ============================================================
@@ -2505,7 +2443,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 14 Aug 08:57 UTC</span>
+  <span class="demo-banner__build">build 14 Aug 10:57 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -4077,27 +4015,21 @@ function searchScreen() {
   return `<header class="topbar"><div class="topbar__left"><button class="wordmark linkish" style="text-decoration:none" data-go="landing">Urban Sports Club</button></div><div></div>
     <div class="topbar__right"><button class="link-plain linkish" data-go="landing">${icon('back',17)} Back</button></div></header>
     <main class="content venuepage" id="main">
-    <div class="venuepage__intro">
-      <div class="search__guide">${ulaAvatar('sm')}<span>Urby &middot; Membership guide</span></div>
-      <h1 class="h-question venuepage__h1" tabindex="-1">${heading}</h1>
-    </div>
-    <div class="venuepage__layout ${searched?'venuepage__layout--searched':''}">
-    <div class="venuepage__primary">
-      ${findBar()}
-      ${searched ? '' : nearbyRow()}
-      ${searched ? `<p class="search__read">${icon('sparkle',17)} <span>${reading}</span></p>` : ''}
-      ${r && r.approximated ? `<p class="xsmall muted" style="margin-top:12px">${icon('info',14)} The pilot has no map service, so distances are measured from ${esc(from.name)} rather than from your door.</p>` : ''}
-      ${r && r.venues && r.venues.length ? `<div class="hits ${r.venues.length===1?'hits--one':'hits--row'}">${r.venues.map(hitCard).join('')}</div>` : ''}
-      ${miss}
-      ${r && r.venues && r.venues.length ? `<div class="searchnext">
+    <div class="search__guide">${ulaAvatar('sm')}<span>Urby &middot; Membership guide</span></div>
+    <h1 class="h-question venuepage__h1" tabindex="-1">${heading}</h1>
+    ${findBar()}
+    ${searched ? '' : nearbyRow()}
+    ${searched ? `<p class="search__read">${icon('sparkle',17)} <span>${reading}</span></p>` : ''}
+    ${r && r.approximated ? `<p class="xsmall muted" style="margin-top:12px">${icon('info',14)} The pilot has no map service, so distances are measured from ${esc(from.name)} rather than from your door.</p>` : ''}
+    ${r && r.venues && r.venues.length ? `<div class="hits ${r.venues.length===1?'hits--one':'hits--row'}">${r.venues.map(hitCard).join('')}</div>` : ''}
+    ${miss}
+    ${r && r.venues && r.venues.length ? `<div class="searchnext">
       <p class="searchnext__line">${icon('sparkle',18)} <span>Those are the cheapest memberships that open each place. Which one is right for
         <em>you</em> depends on how often you go and what else you want nearby &mdash; four questions and I&rsquo;ll work it out.</span></p>
       <button class="btn btn--primary" data-start-fit ${r.area?`data-area-id="${esc(r.area.id)}"`:''}>Find my fit ${icon('arrowRight',18)}</button>
       <p class="xsmall muted" style="margin-top:12px">Or <button class="linkish strong" data-go="plans">see all four memberships</button>.</p>
-      </div>` : ''}
-    </div>
-    ${searched ? '' : `<aside class="venuepage__aside" aria-label="Personalise your recommendation">${routinePanel()}</aside>`}
-    </div>
+    </div>` : ''}
+    ${searched ? '' : routinePanel()}
   </main>${venueSheet()}`;
 }
 
@@ -4355,12 +4287,15 @@ function recommendationScreen() {
      Adjusting it is a separate intention, so the day picker and the swap links appear
      when they ask for them — and appear on their own when a change has just been made,
      because a claim must not go stale inside a closed drawer (rule 46). */
+  const adjusting = WEEKOPEN || Boolean(DAYNOTE);
   /* The one session the plan on screen does not open, which is the honest argument for
      the plan above it. Rule 41: it says what the gap is, not only that there is one. */
   const gap = wp.sessions.find(x=>!x.included && x.needs);
   const weekBlock = wp.sessions.length ? `<section class="weekcard">
     <div class="weekcard__head">
       <h2 class="weekcard__title">A week that fits you</h2>
+      <button class="weekcard__adjust" type="button" data-toggle-week aria-expanded="${adjusting}">
+        <span>${adjusting?'Done adjusting':'Adjust this week'}</span>${icon('pencil',17)}</button>
     </div>
     <ol class="weekcard__list">${wp.sessions.map(x=>`<li class="weekrow ${x.included?'':'is-locked'}">
       <span class="weekrow__icon">${icon(x.icon,20)}</span>
@@ -4379,24 +4314,24 @@ function recommendationScreen() {
         ${x.included
           ? (/^(included|not included)/i.test(x.access) ? '' : `<span class="weekrow__limit">${esc(x.access)}</span>`)
           : `<span class="weekrow__pill">${x.needs?esc(x.needs.name):'Not included'} only</span>`}
-        ${x.alternatives>1?`<button class="weekrow__swap" data-swap="${esc(x.day)}"
-          aria-label="Show a different place for ${esc(x.day)}">${icon('refresh',15)} <span>Swap</span></button>`:''}
+        ${adjusting && x.alternatives>1?`<button class="weekrow__swap" data-swap="${esc(x.day)}"
+          aria-label="Show a different place for ${esc(x.day)}">${icon('refresh',15)} <span>swap</span></button>`:''}
       </span>
     </li>`).join('')}</ol>
 
-    <div class="weekcard__controls">
-      <div class="week__days">
-      <div class="week__days-label" id="week-days-label">Choose your days</div>
+    ${adjusting?`<div class="week__days">
+      <!-- "the plan and the price follow" over-promised: moving Tuesday to Wednesday
+           changes neither. What actually follows the count of days is the plan and the
+           cost per visit, so that is what the line claims. -->
+      <div class="week__days-label" id="week-days-label">Which days suit you?
+        <span>How many days you pick sets the plan and the cost per visit.</span></div>
       <div class="week__days-row" role="group" aria-labelledby="week-days-label">${DAY_ORDER.map(d=>{
           const on = wp.sessions.some(x=>x.day===d);
           return `<button class="daybtn ${on?'is-on':''}" data-day="${esc(d)}" aria-pressed="${on}">${DAY_SHORT[d]}</button>`;
         }).join('')}</div>
-      <p class="weekcard__helper">Change your days and I&rsquo;ll update the best membership automatically.</p>
-      </div>
-      <button class="weekcard__search" type="button" data-go="search">${icon('search',17)} Add a specific activity or venue</button>
-    </div>
+    </div>`:''}
 
-    <p class="week__changed" role="status">${icon('checkFill',16)} <span>${DAYNOTE || `<b>${esc(plan.name)}</b> fits &mdash; ${plural(wp.perMonth,'visit','visits')} a month.`}</span></p>
+    ${DAYNOTE?`<p class="week__changed" role="status">${icon('sparkle',16)} <span>${DAYNOTE}</span></p>`:''}
     ${gap?`<p class="weekcard__adds">${icon('sparkle',17)} <span><b>${esc(gap.needs.name)}</b> adds ${esc(gap.venue.name)}
       &mdash; the ${esc(gap.activity.toLowerCase())} option that completes your week.</span></p>`:''}
     <p class="weekcard__foot">${icon('info',15)} <span>A suggestion, not a booking — check each venue&rsquo;s timetable before you go.${wp.note?` ${esc(wp.note)}`:''}</span></p>
@@ -4453,11 +4388,10 @@ function recommendationScreen() {
   const opensNothing = t => Boolean(t && t.nearby && !t.included);
   /* Open where there is room for it, closed on a phone: there the plan card leads (rule
      65) and four more rows under it push the week off the first screen. */
-  const altOpen = ALTOPEN===true;
+  const altOpen = ALTOPEN===null ? !MOBILE() : ALTOPEN;
   const allPlans = `<details class="allplans"${altOpen?' open':''}>
     <summary class="allplans__head" data-toggle-alt>
-      <span class="allplans__headcopy"><span>Compare all ${PLANS.length===4?'four':PLANS.length} memberships</span>
-        <small>Essential, Classic, Premium and Max</small></span>${icon('chevron',18)}</summary>
+      <span>Compare all ${PLANS.length===4?'four':PLANS.length} memberships</span>${icon('chevron',18)}</summary>
     <div class="allplans__grid">
       ${PLANS.slice().sort((x,y)=>x.rank-y.rank).map(pl => {
         const p = priceFor(pl, S.commitmentId), t = totalsFor(pl), here = pl.id === plan.id;
@@ -4469,13 +4403,13 @@ function recommendationScreen() {
         const fewer = !here && t && hereT && t.nearby && t.included < hereT.included
           ? `${hereT.included-t.included} fewer ${hereT.included-t.included===1?'place':'places'} than ${plan.name}` : '';
         const note = short || fewer;
-        return `<div class="allplans__row ${here?'is-current':''}" ${here?'':`data-plan="${esc(pl.id)}" role="button" tabindex="0"`}>
+        return `<div class="allplans__row ${here?'is-current':''}">
           <div class="allplans__name">${esc(pl.name)}${tag?`<span class="allplans__tag">${tag}</span>`:''}</div>
           <div class="allplans__price">${p} €<small>/mo</small></div>
           <div class="allplans__opens">${visitsFor(pl)} visits${t&&t.nearby
             ? ` &middot; opens ${t.included} of ${t.nearby} ${t.nearby===1?'place':'places'}`
             : ` &middot; ${esc(pl.bestFor.toLowerCase())}`}</div>
-          <div class="allplans__act">${here?'':icon('chevron',17)}</div>
+          <div class="allplans__act">${here||opensNothing(t)?'':`<button class="linkish strong" type="button" data-plan="${esc(pl.id)}">Switch</button>`}</div>
           ${note?`<div class="allplans__warn">${icon('info',14)} <span>${esc(note)}</span></div>`:''}
         </div>`;
       }).join('')}
@@ -4494,16 +4428,15 @@ function recommendationScreen() {
       ? `Not enough for your ${visitsWanted(a.frequency)}-visit routine` : '';
     return `<div class="altbox">
       <div class="altbox__head">Cheaper option</div>
-      <div class="altbox__card" data-plan="${esc(cheaperPlan.id)}" role="button" tabindex="0"
-        aria-label="Switch to ${esc(cheaperPlan.name)} for ${p} euros a month">
+      <div class="altbox__card">
         <div class="altbox__row"><b>${esc(cheaperPlan.name)}</b>
           <span class="altbox__price">${p} €<small>/mo</small></span></div>
         <div class="altbox__meta">${visitsFor(cheaperPlan)} visits${cheaperT&&cheaperT.nearby
           ? ` &middot; opens ${cheaperT.included} of ${cheaperT.nearby} ${cheaperT.nearby===1?'place':'places'}`:''}</div>
         ${short?`<p class="altbox__warn">${icon('info',15)} <span>${esc(short)}</span></p>`:''}
         ${opensNothing(cheaperT)
-          ? `<p class="altbox__warn">${icon('info',15)} <span>Opens none of the places you asked for.</span></p>` : ''}
-        <span class="altbox__chev">${icon('chevron',19)}</span>
+          ? `<p class="altbox__warn">${icon('info',15)} <span>Opens none of the places you asked for, so it is here as a comparison rather than an option.</span></p>`
+          : `<button class="btn btn--secondary btn--block" type="button" data-plan="${esc(cheaperPlan.id)}">Choose ${esc(cheaperPlan.name)}</button>`}
       </div>
     </div>`;
   })() : '';
@@ -4594,7 +4527,7 @@ function recommendationScreen() {
       <summary class="rowcard__head" data-toggle-places>
         <span class="rowcard__icon">${icon('pin',22)}</span>
         <span class="rowcard__text"><b>${placesTitle}</b><small>${placesSub}</small></span>
-        <span class="rowcard__cta">Explore venues ${icon('arrowRight',18)}</span>
+        <span class="rowcard__cta">Explore venues, search and adjust distance ${icon('arrowRight',18)}</span>
       </summary>
       <div class="rowcard__body">
       <!-- The box sits inside the fold, above the list it filters. It cannot sit in the
@@ -4681,10 +4614,16 @@ function recommendationScreen() {
   const GOAL_ECHO   = { move_more:'move more', unwind:'unwind', try_new:'try something new' };
   const TIMES = ['','once','twice','three times','four times','five times','six times','seven times'];
   const weekPhrase = TIMES[wp.sessions.length] ? `train ${TIMES[wp.sessions.length]} a week` : '';
+  const lede = weekPhrase && GOAL_CLAUSE[a.goal]
+    ? `You want to ${weekPhrase} while ${GOAL_CLAUSE[a.goal]} &mdash; all near ${esc(where)}.`
+    : weekPhrase ? `You want to ${weekPhrase}, near ${esc(where)}.`
+    : GOAL_ECHO[a.goal] ? `You want to ${GOAL_ECHO[a.goal]}, near ${esc(where)}.`
+    : `Everything below is near ${esc(where)}.`;
   const story = `${ulaRow()}
     <h1 class="h-question reco-hero__title" tabindex="-1">${GOAL_TITLE[a.goal]
       ? `Your plan for ${GOAL_TITLE[a.goal]}`
       : `Your plan near ${esc(where)}`}</h1>
+    <p class="reco-hero__lede">${lede}</p>
     ${answerChips({ label:'You told us' })}
     ${match.reachedFurther?`<div class="notice notice--grey">${icon('info',19)}<span>Nothing in this pilot&rsquo;s venue set does ${esc(groupWords(groups))} right by ${esc(where)}, so I looked across the city. The distances below are real.</span></div>`:''}`;
 
@@ -5569,8 +5508,6 @@ document.addEventListener('change', e => {
 });
 document.addEventListener('keydown', e => {
   if (e.key === 'Enter') {
-    const planChoice = e.target.closest('[role="button"][data-plan]');
-    if (planChoice) { planChoice.click(); e.preventDefault(); return; }
     const card = e.target.closest('[data-card]');
     if (card) { const input = card.querySelector('input'); if (input && !input.checked) { input.checked = true; input.dispatchEvent(new Event('change',{bubbles:true})); } e.preventDefault(); return; }
   }

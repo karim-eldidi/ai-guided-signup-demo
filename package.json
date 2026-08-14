@@ -1,0 +1,21 @@
+{
+  "name": "usc-urby-pilot",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Urban Sports Club — AI-guided signup MVP (Urby). Pilot only: real published plan and venue data, simulated payment.",
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "scripts": {
+    "start": "node --no-warnings=ExperimentalWarning server.js",
+    "dev": "node --no-warnings=ExperimentalWarning --watch server.js",
+    "test": "node --no-warnings=ExperimentalWarning --test tests/*.test.js",
+    "reset:db": "node -e \"require('fs').rmSync('.data/pilot.db',{force:true});console.log('pilot database cleared')\"",
+    "verify": "node --no-warnings=ExperimentalWarning scripts/verify.mjs",
+    "build": "python3 standalone/build.py"
+  },
+  "devDependencies": {
+    "playwright": "^1.62.1"
+  }
+}

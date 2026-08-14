@@ -1,0 +1,2299 @@
+/* ===========================================================================
+   Urban Sports Club — Urby pilot
+   Design tokens sampled directly from the supplied designs.
+   Change colours, spacing and type here; every screen reads from these tokens.
+   =========================================================================== */
+
+:root {
+  --yellow-hero:   #f9e4b2;   /* landing background */
+  --yellow-bright: #f9ea92;   /* email header, strong accent */
+  --yellow-pale:   #fffab4;   /* icon circles */
+  --cream:         #fefcf4;   /* "Your fit, so far" panel */
+  --cream-line:    #efe9da;
+
+  --ink:        #08090a;
+  --navy:       #10203c;
+  --navy-soft:  #45536d;
+  --grey-bubble:#f2f3f5;
+  --border:     #e6e4dc;
+  --page:       #fdfefe;
+  --page-grey:  #f6f6f6;
+
+  --radius-sm: 4px;
+  --radius:    8px;
+  --radius-lg: 12px;
+
+  --shell: 1440px;
+  --font: "Figtree", "Inter Tight", Inter, "Helvetica Neue", Helvetica, FreeSans, Arial, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font);
+  color: var(--ink);
+  background: var(--page);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a { color: inherit; }
+img { display: block; max-width: 100%; }
+button { font-family: inherit; cursor: pointer; }
+input, select, textarea { font-family: inherit; font-size: 17px; }
+
+/* --- type ----------------------------------------------------------------- */
+
+.wordmark {
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
+
+.h-hero {
+  font-size: clamp(42px, 5.4vw, 74px);
+  line-height: 0.98;
+  letter-spacing: -0.038em;
+}
+
+.h-question {
+  font-size: clamp(25px, 2.3vw, 33px);
+  line-height: 1.12;
+  letter-spacing: -0.028em;
+  margin: 14px 0 20px;
+}
+
+.h-section { font-size: clamp(26px, 2.6vw, 38px); line-height: 1.08; }
+
+.lede {
+  font-size: clamp(17px, 1.35vw, 20px);
+  line-height: 1.45;
+  color: var(--navy);
+  margin: 22px 0 0;
+  max-width: 34ch;
+  font-weight: 400;
+  /* Two even lines rather than a full line and one orphaned word. */
+  text-wrap: balance;
+}
+.landing__body .lede { max-width: 510px; }
+
+.muted   { color: var(--navy-soft); }
+.small   { font-size: 15px; line-height: 1.5; }
+.xsmall  { font-size: 13.5px; line-height: 1.45; }
+.strong  { font-weight: 700; }
+
+/* --- landing -------------------------------------------------------------- */
+
+.landing {
+  display: grid;
+  grid-template-columns: 52% 48%;
+  min-height: 100vh;
+}
+
+.landing__panel {
+  background: var(--yellow-hero);
+  padding: 42px clamp(28px, 4.6vw, 76px) 48px;
+  display: flex;
+  flex-direction: column;
+}
+
+.landing__panelbar { display: flex; align-items: center; justify-content: space-between; }
+.landing__body { margin-top: auto; margin-bottom: auto; max-width: 640px; width: 100%; padding-top: 40px; }
+
+.landing__media { position: relative; background: #d9d5cd; overflow: hidden; }
+.landing__media img { width: 100%; height: 100%; object-fit: cover; object-position: 42% center; }
+
+/* The brand yellow, so it belongs to the design rather than fighting the photo.
+   White vanished into the bright corner of this crop and a white pill vanished with
+   it; the yellow chip reads on any image and matches the panel it sits beside. This
+   is now the only Log in on the page — the duplicate "Already a member?" line came
+   out of the yellow panel, which is what it was costing us in space.
+   Scoped to .landing__media because the generic .linkish rule would otherwise strip
+   the background back off it. */
+.landing__media .login-link {
+  position: absolute; top: 26px; right: 30px;
+  color: var(--ink); text-decoration: none; font-size: 15.5px; font-weight: 700;
+  background: var(--yellow-bright); padding: 9px 18px; border-radius: 999px;
+  box-shadow: 0 2px 10px rgba(8,9,10,.14);
+  z-index: 2;
+}
+.landing__media .login-link:hover { background: var(--yellow-pale); }
+.login-link { position: absolute; top: 26px; right: 30px; z-index: 2; }
+.login-link--mobile { display: none; }
+
+.ula-intro { display: flex; gap: 14px; align-items: flex-start; margin: 40px 0 32px; }
+.ula-intro__icon { flex: 0 0 auto; margin-top: 2px; }
+.ula-intro__title { font-weight: 700; font-size: 17.5px; color: var(--navy); }
+.ula-intro__sub   { font-size: 17px; color: var(--navy); margin-top: 3px; max-width: 46ch; text-wrap: balance; }
+
+/* email + CTA row (desktop: joined; mobile: stacked) */
+.signup-row {
+  display: flex;
+  border: 1.5px solid var(--ink);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  max-width: 560px;
+  overflow: hidden;
+}
+.signup-row input[type="email"],
+.signup-row input[type="search"] {
+  flex: 1 1 auto;
+  border: 0;
+  outline: none;
+  padding: 0 20px;
+  height: 60px;
+  font-size: 17px;
+  background: #fff;
+  min-width: 0;
+}
+/* Safari gives a search field a rounded inset chrome of its own inside the row's
+   border, which reads as a box in a box. */
+.signup-row input[type="search"] { -webkit-appearance: none; appearance: none; border-radius: 0; }
+.signup-row input[type="search"]::-webkit-search-decoration,
+.signup-row input[type="search"]::-webkit-search-cancel-button { -webkit-appearance: none; }
+.signup-row input::placeholder { color: #8a8a8a; }
+.signup-row button {
+  flex: 0 0 auto;
+  border: 0;
+  background: var(--ink);
+  color: #fff;
+  font-weight: 700;
+  font-size: 17px;
+  padding: 0 34px;
+  height: 60px;
+}
+
+.or-divider {
+  display: flex; align-items: center; gap: 16px;
+  margin: 26px 0 20px; max-width: 560px;
+  color: var(--navy-soft); font-size: 15px;
+}
+.or-divider::before, .or-divider::after {
+  content: ""; flex: 1 1 auto; height: 1px; background: rgba(16,32,60,.22);
+}
+
+.sso-row { display: flex; gap: 18px; max-width: 560px; }
+.sso-btn {
+  flex: 1 1 0;
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  height: 58px;
+  border: 1px solid rgba(8,9,10,.85);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  font-size: 17px; font-weight: 600;
+  text-decoration: none;
+}
+.sso-btn:hover { background: rgba(255,255,255,.35); }
+
+.consent-row { display: flex; align-items: flex-start; gap: 13px; margin: 30px 0 22px; max-width: 560px; }
+/* `display: flex` beats the [hidden] attribute's own display:none, so hiding the consent
+   row until there is an email did nothing at all until this line existed. */
+.consent-row[hidden] { display: none; }
+.terms-line { font-size: 15px; color: var(--navy); }
+.terms-line a { text-decoration: underline; }
+
+/* custom checkbox */
+.checkbox { position: relative; flex: 0 0 auto; width: 22px; height: 22px; }
+.checkbox input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+.checkbox span {
+  display: block; width: 22px; height: 22px;
+  border: 2px solid var(--ink); border-radius: 3px; background: transparent;
+  pointer-events: none;
+}
+.checkbox input:checked + span { background: var(--ink); }
+.checkbox input:checked + span::after {
+  content: ""; position: absolute; left: 6px; top: 3px;
+  width: 8px; height: 13px; border: solid #fff; border-width: 0 2.5px 2.5px 0;
+  transform: rotate(42deg);
+}
+.checkbox input:focus-visible + span { outline: 2px solid var(--navy); outline-offset: 2px; }
+.consent-label { font-size: 16px; color: var(--navy); line-height: 1.4; }
+
+.field-error { color: #9b1c1c; font-size: 15px; margin-top: 10px; font-weight: 600; }
+
+/* --- Urby section further down the landing page ---------------------------- */
+
+.ula-section { background: var(--cream); padding: clamp(56px, 7vw, 104px) 24px; }
+.ula-section__inner { max-width: 760px; margin: 0 auto; }
+.ula-section__eyebrow { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; }
+.ula-section__eyebrow span { font-weight: 700; font-size: 16px; }
+.ula-section__lede { font-size: 19px; color: var(--navy); line-height: 1.5; margin: 18px 0 40px; max-width: 52ch; }
+.ula-demo {
+  background: #fff; border: 1px solid var(--cream-line); border-radius: var(--radius-lg);
+  padding: clamp(24px, 3vw, 38px);
+}
+.ula-demo__q { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 20px; }
+.ula-demo__answer {
+  margin-top: 20px; padding: 16px 18px; background: var(--yellow-pale);
+  border-radius: var(--radius); font-size: 16.5px; display: none;
+}
+.ula-demo__answer.is-visible { display: block; }
+
+/* --- app shell (fit / details / payment) ---------------------------------- */
+
+.topbar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: start;
+  gap: 20px;
+  padding: 26px clamp(20px, 3vw, 44px) 22px;
+}
+.topbar__left  { display: flex; flex-direction: column; gap: 7px; }
+.topbar__right { justify-self: end; }
+/* A receipt, not a headline. It confirms once, in the smallest type on the page,
+   and never lets a long address push the wordmark around. */
+.saved-note { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--navy-soft); margin-top: 2px; }
+.saved-note svg { flex: 0 0 auto; }
+.saved-note b { font-weight: 600; }
+.saved-note__mail { max-width: 22ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.link-plain { background: none; border: 0; padding: 0; font-size: 16px; font-weight: 700; text-decoration: none; color: var(--ink); }
+
+.stepper { display: flex; align-items: flex-start; gap: 0; }
+.stepper__step { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 96px; }
+.stepper__dot {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: grid; place-items: center;
+  font-size: 15px; font-weight: 700;
+  border: 1.5px solid #c9c7c1; color: #8d8b86; background: #fff;
+}
+.stepper__step.is-current .stepper__dot { background: var(--ink); border-color: var(--ink); color: #fff; }
+.stepper__step.is-done .stepper__dot { background: var(--ink); border-color: var(--ink); color: #fff; }
+.stepper__label { font-size: 14.5px; font-weight: 600; color: var(--navy-soft); }
+.stepper__step.is-current .stepper__label { color: var(--ink); font-weight: 700; }
+.stepper__line { flex: 0 0 auto; width: 74px; height: 1.5px; background: #d8d6d0; margin-top: 15px; }
+/* The four questions are the inside of step 1, so they are drawn inside it: one segment
+   each, answered ones filled, the current one mid-grey. Narrower than the step label, so
+   the stepper does not change shape when they appear. */
+.stepper__sub { display: flex; gap: 3px; margin-top: -2px; }
+.stepper__seg { width: 12px; height: 3px; border-radius: 2px; background: #d8d6d0; }
+.stepper__seg.is-done { background: var(--ink); }
+.stepper__seg.is-now { background: var(--navy-soft); }
+
+.mobile-progress { display: none; padding: 0 20px 4px; }
+.saved-note--mobile { display: none; }
+.ai-badge { margin-top: 26px; }
+.mobile-progress__label { font-size: 15px; font-weight: 700; margin-bottom: 10px; }
+.mobile-progress__track { height: 5px; background: #e7e5df; border-radius: 3px; overflow: hidden; }
+.mobile-progress__fill { height: 100%; background: var(--ink); }
+
+.two-col {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 520px;
+  gap: 0;
+  align-items: start;
+}
+.two-col__main { padding: 8px clamp(20px, 3.4vw, 60px) 80px; max-width: 860px; min-width: 0; }
+/* A grid item defaults to min-width:auto, so the rail's 2,500px of scroll content was
+   forcing the whole column — and on a phone the layout viewport with it, which zoomed
+   the page out and made the carousel feel broken. Every ancestor of a scroller needs
+   min-width:0 or the scroller never gets to clip anything. */
+.two-col__main, .reco-tail, .places, .card, .week { min-width: 0; }
+.two-col__aside { margin: 4px 16px 24px 0; }
+
+/* --- Urby conversation ----------------------------------------------------- */
+
+.ula-row { display: flex; align-items: center; gap: 13px; margin-bottom: 14px; }
+.ula-avatar {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: #14161a; display: grid; place-items: center; flex: 0 0 auto;
+}
+.ula-avatar--sm { width: 34px; height: 34px; }
+.ula-avatar--lg { width: 60px; height: 60px; }
+.ula-name { font-size: 16.5px; }
+.ula-name b { font-weight: 700; }
+.ula-name span { color: var(--navy-soft); }
+
+.bubble {
+  display: inline-block;
+  background: var(--grey-bubble);
+  border-radius: 7px;
+  padding: 15px 20px;
+  font-size: 17px;
+  margin-bottom: 26px;
+  max-width: 100%;
+}
+
+.options { display: flex; flex-direction: column; gap: 10px; }
+
+/* Questions with many equivalent choices (e.g. which part of the city) become a
+   compact two-column grid, so the screen still reads as one decision. */
+.options--compact { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.options--compact .option-card { min-height: 54px; padding: 10px 16px; font-size: 16.5px; }
+.options--compact .option-card.is-selected { padding: 9px 15px; }
+.options--compact .option-card__icon { width: 30px; height: 30px; }
+
+/* The input is the real control: off-screen but focusable, full-size to the
+   browser, so keyboard and screen-reader behaviour is the native one. */
+.option-card__input {
+  position: absolute; width: 1px; height: 1px; margin: -1px;
+  padding: 0; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); border: 0;
+}
+.option-card:has(.option-card__input:focus-visible) { outline: 3px solid #1b4bd8; outline-offset: 2px; }
+.option-card {
+  /* Belt and braces. The tick is absolutely positioned over the icon; without a
+     positioned ancestor here, one card that kept the tick outside the icon painted a
+     full-page black circle over the payment screen. A card is always the containing
+     block for anything inside it. */
+  position: relative;
+  display: flex; align-items: center; gap: 17px;
+  width: 100%;
+  text-align: left;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 13px 20px;
+  font-size: 17.5px;
+  font-weight: 700;
+  color: var(--ink);
+  min-height: 62px;
+  transition: border-color .12s ease, box-shadow .12s ease;
+}
+.option-card:hover { border-color: #b9b6ad; }
+.option-card.is-selected { border: 2px solid var(--ink); padding: 12px 19px; }
+.option-card__icon {
+  position: relative;
+  flex: 0 0 auto; width: 36px; height: 36px; border-radius: 50%;
+  background: var(--yellow-pale); display: grid; place-items: center;
+}
+.option-card__label { flex: 1 1 auto; }
+/* The tick lives ON the icon, not beside the label. As a sibling it took 36px of
+   width off the label the moment you selected the card, so "Five times a week or
+   more" broke onto a second line and the row jumped — selecting an answer must not
+   reflow it. Over the icon it costs nothing, and the state reads where the eye
+   already is. */
+.option-card__check {
+  position: absolute; inset: 0; border-radius: 50%;
+  background: var(--ink); color: #fff; display: none; place-items: center;
+}
+.option-card.is-selected .option-card__check { display: grid; }
+/* the landing's starter cards keep their chevron, which is decorative and hidden */
+.option-card__chev { display: none; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  height: 62px; padding: 0 30px;
+  border-radius: 6px; border: 1.5px solid transparent;
+  font-size: 18px; font-weight: 700; text-decoration: none;
+}
+.btn--primary { background: var(--ink); color: #fff; }
+.btn--primary:hover { background: #1d2026; }
+.btn--secondary { background: #fff; color: var(--ink); border-color: var(--ink); }
+.btn--block { width: 100%; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+
+.btn-row { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 22px; }
+
+.freetext {
+  /* Collapsed behind a link on every viewport: the options are the fast path,
+     and an always-open text box invites people to write an essay instead. */
+  display: none; align-items: center; gap: 14px;
+  margin-top: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0 20px;
+  height: 62px;
+  background: #fff;
+}
+.freetext input { flex: 1 1 auto; border: 0; outline: none; height: 100%; background: transparent; }
+.freetext button { border: 0; background: none; font-weight: 700; font-size: 16px; padding: 0; }
+
+.freetext.is-open { display: flex; }
+
+/* --- choices as tiles ---------------------------------------------------- */
+/* Four or fewer options read as a 2x2 grid of visual tiles: more recognisable
+   than a stack of rows, and shorter, so the question and its CTA stay on one
+   screen. */
+.options--tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.options--tiles .option-card { min-height: 58px; padding: 11px 16px; font-size: 16.5px; gap: 13px; }
+.options--tiles .option-card.is-selected { padding: 10px 15px; }
+.options--tiles .option-card__icon { width: 34px; height: 34px; }
+
+/* --- answering in your own words ----------------------------------------- */
+/* Was a link that opened a field. It is the whole point of a guide you can
+   talk to, so it is visible, labelled, and sits directly under the options. */
+.ownwords { margin-top: 12px; }
+.ownwords__label {
+  display: flex; align-items: center; gap: 9px;
+  font-size: 15px; color: var(--navy); margin-bottom: 7px;
+}
+.ownwords__row {
+  display: flex; align-items: center; gap: 10px;
+  background: #fff; border: 1px dashed #b9b6ad; border-radius: var(--radius);
+  padding: 0 8px 0 18px; height: 50px;
+}
+.ownwords__row:focus-within { border-style: solid; border-color: var(--ink); }
+.ownwords__row input { flex: 1 1 auto; border: 0; outline: none; height: 100%; background: transparent; font-size: 16.5px; }
+.ownwords__send {
+  flex: 0 0 auto; height: 40px; padding: 0 18px; border-radius: 6px;
+  border: 1px solid var(--ink); background: #fff; font-weight: 700; font-size: 15.5px;
+}
+.ownwords__send:hover { background: var(--cream); }
+
+/* Ask Urby, parked in the right column so it is reachable from any question */
+.aside-ask { margin-bottom: 18px; }
+
+/* --- why this plan, as things rather than a checklist -------------------- */
+.why { margin-top: 26px; }
+.why__title { font-size: clamp(21px, 1.8vw, 26px); letter-spacing: -.02em; margin: 0 0 16px; }
+.why__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.why__card {
+  display: flex; gap: 13px; align-items: flex-start;
+  background: #fff; border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 16px 17px;
+}
+.why__card p { margin: 0; font-size: 15.5px; line-height: 1.45; }
+.why__icon {
+  flex: 0 0 auto; width: 38px; height: 38px; border-radius: 50%;
+  background: var(--yellow-pale); display: grid; place-items: center;
+}
+.why__note { display: flex; align-items: flex-start; gap: 9px; font-size: 14.5px; line-height: 1.45; margin: 14px 0 0; }
+.why__note svg { flex: 0 0 auto; margin-top: 3px; }
+.why__foot { font-size: 12.5px; color: var(--navy-soft); margin: 14px 0 0; }
+
+/* Ask Urby and the small print, grouped after the reasons */
+.ask-and-print { margin-top: 30px; padding-top: 26px; border-top: 1px solid var(--border); }
+.ask-and-print .ask { margin-bottom: 8px; }
+
+/* the alternative plan, spelled out instead of run together */
+.altcard { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 15px 15px; }
+/* Name, what it costs you or saves you, and the price: one headline row. The difference
+   was a row of its own, which is how a two-fact card became a five-row block. It wraps
+   rather than squeezes — a three-digit price next to a long name has somewhere to go. */
+.altcard__top { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 10px; }
+.altcard__name { font-size: 18px; font-weight: 700; letter-spacing: -.01em; }
+.altcard__price { font-size: 20px; font-weight: 700; letter-spacing: -.02em; white-space: nowrap; }
+.altcard__price small { font-size: 12.5px; font-weight: 600; color: var(--navy); margin-left: 2px; }
+.altcard__delta {
+  display: inline-block; font-size: 12.5px; font-weight: 700; border-radius: 999px;
+  padding: 2px 9px; white-space: nowrap; margin-right: auto;
+}
+.altcard__delta.is-down { background: #e7f2ea; color: #2f6b3f; }
+.altcard__delta.is-up { background: var(--page-grey); color: var(--navy); }
+.altcard__cov { font-size: 13.5px; line-height: 1.5; margin-top: 11px; }
+.altcard__warn, .altcard__good { display: flex; align-items: flex-start; gap: 6px; font-size: 13px; line-height: 1.4; margin-top: 7px; }
+.altcard__warn svg, .altcard__good svg { flex: 0 0 auto; margin-top: 2px; }
+/* The comparison belongs to the sentence it qualifies, so it runs on from it rather
+   than claiming its own row — but it needs a gap wide enough to read as an aside. */
+.altcard__cov .altcard__warn, .altcard__cov .altcard__good, .altcard__cov .altcard__neutral {
+  display: inline-flex; align-items: center; margin: 0 0 0 6px; vertical-align: baseline;
+}
+.altcard__cov .altcard__warn svg, .altcard__cov .altcard__good svg { margin-top: 0; }
+.altcard__switch { height: 44px; font-size: 15px; margin-top: 14px; }
+.altcard__warn { color: #8a5a1a; }
+.altcard__good { color: #2f6b3f; }
+
+/* --- landing: two buttons, no explaining ---------------------------------- */
+/* The second button is the message. Karim: "you already said that" — a bullet
+   list, a sentence and a link were three ways of saying "no email needed". */
+.startnow { height: 54px; width: 100%; max-width: 520px; margin-top: 12px; font-size: 17px; }
+
+/* --- all four plans, for people who already know ------------------------- */
+.commit-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 20px; }
+/* The chosen term is a state, not an action, so it is highlighted in the brand
+   yellow rather than filled black — a black pill here read as a second CTA. */
+.commit-row .chip-sm.is-current { background: var(--yellow-bright); color: var(--ink); border-color: var(--ink); font-weight: 700; }
+/* Four cards, one height. The grid stretches them and each card is a column with
+   the button pushed to the floor, so the four CTAs land on the same line however
+   many benefits a plan has. */
+.plangrid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 14px; align-items: stretch; }
+.plancard {
+  display: flex; flex-direction: column; height: 100%;
+  background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg);
+  padding: 16px 18px 20px;
+}
+/* Reserved in every card, so the four names sit on one line. */
+.plancard__badgeslot { min-height: 28px; }
+.plancard.is-popular { border: 2px solid var(--ink); background: var(--cream); padding: 15px 17px 19px; }
+.plancard__name { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
+.plancard__price { display: flex; align-items: baseline; gap: 6px; margin-top: 4px; }
+.plancard__price b { font-size: 30px; letter-spacing: -.03em; }
+.plancard__price span { font-size: 14px; color: var(--navy); }
+.plancard__term, .plancard__venues { font-size: 13.5px; color: var(--navy); }
+.plancard__cta { margin-top: auto; font-size: 16px; padding: 0 12px; }
+.plancard__list { flex: 1 1 auto; list-style: none; margin: 14px 0 18px; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.plancard__list li { display: flex; gap: 9px; font-size: 14px; line-height: 1.4; }
+.plancard__list svg { flex: 0 0 auto; margin-top: 2px; }
+/* Three short facts wrap as a set rather than stacking as a checklist: it reads as the
+   plan's spec instead of a sales list. Premium's "Up to 4 Plus check-ins a month,
+   including 1 massage" is nearly the full width of the column, so an item has to be
+   allowed to wrap inside itself — and then the tick belongs at the top of it, not
+   centred against two lines. */
+.planbox__benefits { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 7px 16px; }
+.planbox__benefits li {
+  display: flex; align-items: flex-start; gap: 7px; max-width: 100%;
+  font-size: 13.5px; line-height: 1.4;
+}
+.planbox__benefits li span { min-width: 0; }
+.planbox__benefits svg { flex: 0 0 auto; margin-top: 2px; }
+
+/* --- your answers, as chips that edit themselves ------------------------- */
+/* A tester went looking for her earlier choices and could not find them. These
+   sit at the top of every screen in the journey and each one is its own edit
+   control, so "where do I change that?" has a visible answer. */
+/* One short sentence under the headline, not a paragraph of lede at 20px. */
+.reco-lede { font-size: 16.5px; line-height: 1.45; color: var(--navy); max-width: 46ch; margin: 0 0 14px; }
+
+.chips-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 0 0 16px; }
+.chips-row__label {
+  font-size: 12.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+  color: var(--navy-soft); margin-right: 3px;
+}
+.answer-chip {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: #fff; border: 1px solid var(--border); border-radius: 999px;
+  padding: 6px 12px 6px 11px; font-size: 14.5px; font-weight: 600; color: var(--ink);
+  max-width: 100%; cursor: pointer;
+}
+.answer-chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 22ch; }
+.answer-chip svg:first-child { color: var(--navy-soft); flex: 0 0 auto; }
+.answer-chip svg:last-child { color: var(--navy-soft); flex: 0 0 auto; opacity: .75; }
+.answer-chip:hover { border-color: var(--ink); }
+.answer-chip:hover svg:last-child { opacity: 1; }
+
+/* the questions own the screen — no side panel to compete with them */
+.one-col { display: block; }
+.one-col__main { padding: 4px clamp(20px, 3.4vw, 60px) 90px; max-width: 720px; margin: 0 auto; }
+
+/* what we found so far, inline and only once there is something to show */
+.found { margin-top: 30px; padding-top: 22px; border-top: 1px solid var(--border); }
+.found__head { display: flex; align-items: center; gap: 8px; font-size: 15px; color: var(--navy); margin-bottom: 12px; }
+.found .venue-strip { grid-template-columns: repeat(3, minmax(0,1fr)); }
+
+/* Ask Urby on a question screen: one quiet line until asked for */
+.quietask__link { margin: 26px 0 0; font-size: 15px; }
+.quietask__link .linkish { display: inline-flex; align-items: center; gap: 7px; color: var(--navy); font-weight: 600; }
+.quietask { margin-top: 26px; }
+
+/* --- the recommendation as value, not a checkout ------------------------- */
+/* The page used to open with a price. It now opens with a week, and the plan sits
+   in a sticky column beside it — a consequence of the value, not the pitch. */
+/* The value column earns the width here; the plan needs only enough to be clear. */
+.two-col--reco { grid-template-columns: minmax(0, 1fr) 400px; }
+/* The bonus material is a third grid region rather than the tail of the story column,
+   so the reading order is right on both shapes: on a desktop it flows back under the
+   story, on a phone it lands after the plan box instead of ahead of it. */
+/* The tail sits in row 2 of column 1. Without the aside spanning both rows, the plan
+   column defined the height of row 1 on its own, so the tail began below the whole
+   plan column and left ~400px of empty page under the week. Spanning it means row 1 is
+   as tall as the story and the tail follows straight on. */
+.reco-tail { grid-column: 1; grid-row: 2; padding: 0 clamp(20px, 3.4vw, 60px) 80px; max-width: 860px; }
+/* The story column carries the whole page now — the three rows at the foot are rows of
+   it rather than a third grid region — so it keeps its own bottom padding. */
+.two-col--reco .two-col__main { grid-column: 1; grid-row: 1; padding-bottom: 80px; }
+.two-col--reco .two-col__aside { grid-column: 2; grid-row: 1 / span 2; }
+/* Karim: "I have to get to the bottom of the page to see the rest of the side menu."
+   A sticky column taller than the viewport is unreachable until you scroll past it. It
+   now caps at the viewport and scrolls itself, so the plan, the alternative and the
+   reasoning are all reachable from anywhere on the page. */
+.two-col__aside--sticky {
+  position: sticky; top: 22px;
+  max-height: calc(100vh - 44px);
+  /* auto, not contain: `overscroll-behavior: contain` stops scroll chaining, so a wheel
+     over this column would hit its end and then refuse to move the page — which is the
+     annoying half of what Karim reported, reintroduced by the fix for the other half. */
+  overflow-y: auto;
+  scrollbar-width: thin; scrollbar-gutter: stable;
+  /* Hug the content. As a stretched grid item the column was viewport-tall whatever it
+     held, so the wheel met a scrollable box over empty space below the last card and the
+     page stopped moving for no visible reason. Now it is only as tall as it needs. */
+  align-self: start;
+}
+/* And it only scrolls when it has to: with the reasoning collapsed the column is 831px,
+   so at any normal window height there is one scroll area, not two. */
+
+.planbox {
+  background: var(--cream); border: 1px solid var(--cream-line);
+  border-radius: var(--radius-lg); padding: 22px 22px 24px;
+}
+/* Karim: "make this side bar smaller vertically — more compact in terms of design, not
+   just make everything smaller." Four separate rows (name, price, term, per-session)
+   became two paired ones. Nothing was dropped and nothing shrank to fine print. */
+.planbox__badge {
+  display: inline-block; background: var(--yellow-bright); color: var(--ink);
+  font-size: 12px; font-weight: 700; letter-spacing: .02em;
+  padding: 4px 10px; border-radius: 999px;
+}
+/* Baseline, not box bottom: the price is a third taller than the name, so aligning boxes
+   left it hanging above the name's baseline and level with nothing. */
+.planbox__idrow {
+  display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
+  gap: 0 12px; margin-top: 10px;
+}
+.planbox__name { font-size: 27px; font-weight: 700; letter-spacing: -.025em; line-height: 1.05; min-width: 0; }
+.planbox__price { display: flex; align-items: baseline; gap: 4px; white-space: nowrap; }
+.planbox__price b { font-size: 33px; letter-spacing: -.03em; line-height: 1.05; }
+.planbox__price span { font-size: 14.5px; color: var(--navy); }
+/* The term the price is on, and what a session costs on it: one line, two ends. */
+.planbox__meta {
+  display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
+  gap: 6px 14px; margin-top: 12px;
+}
+.planbox__term { font-size: 13.5px; color: var(--navy-soft); }
+.planbox__each { font-size: 13.5px; color: var(--navy); font-weight: 600; }
+/* Three facts, all of them numbers. They replaced the plan's generic benefit list,
+   which said nothing this visitor could not have read on the pricing page — and they
+   absorbed the two lines above the old list that said the same things in prose. */
+.planbox__factshead { font-size: 14.5px; font-weight: 700; margin-top: 20px; }
+.planbox__facts { list-style: none; margin: 11px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.planbox__facts li { display: flex; gap: 10px; font-size: 15px; line-height: 1.4; }
+.planbox__facts svg { flex: 0 0 auto; margin-top: 2px; }
+.planbox__cta { margin-top: 20px; }
+/* The one filled button on this screen (rule 9) earns its size, but it does not need
+   the full-page 62px inside a 400px column. */
+.planbox__cta .btn { height: 54px; font-size: 17px; }
+/* The reassurance and the way out to the other plans are both one short line, so they
+   share one. */
+.planbox__foot {
+  display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center;
+  gap: 2px 8px; margin-top: 12px;
+}
+.planbox__fine { font-size: 12.5px; color: var(--navy-soft); text-align: center; margin: 0; }
+/* Rule 67: the way back to Urby's own pick never folds — a closed drawer cannot
+   offer it — so it stays on the card even though the reasoning left. */
+.planbox__back { font-size: 13.5px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--cream-line); }
+/* Commitment changes the headline price, so it sits next to the headline price
+   instead of inside the small print, which is where the PM session found it. */
+.termpick { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 12px; }
+.termpick__opt {
+  display: flex; flex-direction: column; align-items: center; gap: 1px;
+  background: #fff; border: 1px solid var(--border); border-radius: 6px;
+  padding: 6px 4px; line-height: 1.2; cursor: pointer;
+}
+.termpick__opt b { font-size: 12.5px; font-weight: 700; }
+.termpick__opt span { font-size: 12px; color: var(--navy); }
+.termpick__opt.is-on { border: 2px solid var(--ink); padding: 5px 3px; }
+.planbox__seeall { text-align: center; margin: 0; font-size: 12.5px; }
+.planbox__seeall::before { content: "·"; color: var(--navy-soft); margin-right: 8px; }
+.planbox__alt { margin-top: 20px; padding-top: 17px; border-top: 1px solid var(--cream-line); }
+.planbox__alt-head { letter-spacing: .04em; }
+.planbox__alt-head {
+  font-size: 12px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+  color: var(--navy-soft); margin-bottom: 7px;
+}
+.planbox__alt-row { font-size: 15.5px; }
+.planbox__alt-row .linkish { margin-left: 6px; }
+.planbox__alt-row em { display: block; font-style: normal; font-size: 14px; color: var(--navy); margin-top: 3px; }
+
+/* the week */
+.week {
+  background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg);
+  padding: 24px 26px 22px; margin: 22px 0 20px;
+}
+.week__head { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+
+/* Karim, 14 Aug: "the collapsed week is correct." The summary is not a label for a
+   hidden thing — it is the claim in full: how many sessions, which days, how far. The
+   fold holds the working. The summary carries the padding so the rows inside can run
+   edge to edge and their rules read as separators. */
+.week--fold { padding: 0; }
+.week__summary {
+  display: flex; align-items: center; justify-content: space-between; gap: 18px;
+  cursor: pointer; list-style: none; padding: 21px 24px;
+}
+.week__summary::-webkit-details-marker { display: none; }
+.week__summary-main { min-width: 0; }
+.week--fold .week__title { font-size: clamp(18px, 1.45vw, 22px); margin: 7px 0 0; }
+.week__sub { font-size: 13.5px; color: var(--navy-soft); margin-top: 5px; }
+.week__more {
+  display: inline-flex; align-items: center; gap: 9px; flex: 0 0 auto;
+  font-size: 14.5px; font-weight: 700; padding: 10px 15px;
+  border: 1px solid var(--border); border-radius: 999px; background: #fff;
+}
+.week__more svg { transform: rotate(90deg); transition: transform .16s ease; }
+.week--fold[open] .week__more svg { transform: rotate(-90deg); }
+.week--fold > *:not(.week__summary) { padding-left: 24px; padding-right: 24px; }
+.week--fold > .week__list { margin-top: 0; }
+.week--fold > .week__foot { padding-bottom: 22px; }
+@media (max-width: 560px) {
+  .week__summary { flex-wrap: wrap; }
+  .week__more { width: 100%; justify-content: center; }
+}
+.week__eyebrow {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--navy-soft);
+}
+.week__title { font-size: clamp(20px, 1.7vw, 25px); line-height: 1.2; letter-spacing: -.02em; margin: 9px 0 0; }
+.week__each { text-align: right; }
+.week__each b { display: block; font-size: 26px; letter-spacing: -.02em; }
+.week__each span { font-size: 13px; color: var(--navy-soft); }
+.week__list { list-style: none; margin: 20px 0 0; padding: 0; }
+.week__item { display: flex; align-items: flex-start; gap: 14px; padding: 15px 0; border-top: 1px solid var(--border); }
+.week__day { flex: 0 0 84px; font-size: 14.5px; font-weight: 700; color: var(--navy); padding-top: 9px; }
+.week__icon {
+  flex: 0 0 auto; width: 40px; height: 40px; border-radius: 50%;
+  background: var(--yellow-pale); display: grid; place-items: center;
+}
+.week__item.is-locked .week__icon { background: var(--page-grey); color: var(--navy-soft); }
+.week__body { flex: 1 1 auto; min-width: 0; }
+.week__act { font-size: 17px; font-weight: 700; }
+.week__venue {
+  background: none; border: 0; padding: 2px 0 0; font: inherit; font-size: 15.5px;
+  color: var(--ink); text-decoration: underline; text-align: left; cursor: pointer;
+}
+.week__venue span { color: var(--navy-soft); text-decoration: none; }
+.week__note { display: flex; align-items: center; gap: 7px; font-size: 13.5px; color: var(--navy); margin-top: 5px; }
+.week__foot { display: flex; align-items: flex-start; gap: 8px; font-size: 13.5px; line-height: 1.45; color: var(--navy-soft); margin: 16px 0 0; }
+.week__foot svg { flex: 0 0 auto; margin-top: 3px; }
+
+/* pick your own days: the cheap half of "make it fit me" — no times, no booking */
+.week__item { position: relative; }
+.week__swap {
+  position: absolute; top: 14px; right: 0;
+  display: inline-flex; align-items: center; gap: 5px;
+  background: none; border: 0; padding: 4px 2px;
+  font-size: 13px; font-weight: 700; color: var(--navy); cursor: pointer;
+}
+.week__swap:hover { color: var(--ink); text-decoration: underline; }
+/* The signature of this page. Nothing on a pricing table can show you a week, and
+   this block is the whole argument for the recommendation — so it should look like a
+   week rather than like a list with a picker hidden behind a link. Seven columns,
+   always visible: the days you'd go are filled, the rest are the shape of the week
+   around them. The structure encodes real information, and it is its own control. */
+.week__days { margin-top: 14px; padding-top: 13px; border-top: 1px solid var(--border); }
+.week__days-label { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+.week__days-label span { font-weight: 400; color: var(--navy-soft); }
+.week__days-row { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.daybtn {
+  display: flex; align-items: center; justify-content: center;
+  min-width: 0; padding: 10px 2px;
+  border: 1px solid var(--border); border-radius: 8px; background: #fff;
+  font-size: 13px; font-weight: 700; letter-spacing: .01em; text-transform: uppercase;
+  color: var(--navy); cursor: pointer;
+}
+.daybtn:hover { border-color: var(--ink); }
+/* Brand yellow, not filled black: a black chip here counted as a main CTA — the
+   one-CTA check caught two of them sitting above "Continue with Classic" — and the
+   yellow says "chosen" without competing with the one button that matters. */
+/* Chosen, not shouted: the yellow fill plus a 2px black border was heavier than the
+   thing it sits under. A pale fill and an ink border is enough to read as chosen. */
+.daybtn.is-on { background: var(--yellow-pale); border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); color: var(--ink); }
+.week__days-note { display: flex; align-items: flex-start; gap: 7px; font-size: 13px; line-height: 1.4; color: var(--navy); margin: 9px 0 0; }
+.week__days-note svg { flex: 0 0 auto; margin-top: 3px; }
+
+/* bigger venue cards, because the venues are the argument */
+.venue-grid--big { grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; }
+.venue-grid--big .venue-card__media { aspect-ratio: 4 / 3; }
+.venue-grid--big .venue-card__name { font-size: 15px; }
+.venue-grid--big .venue-card__meta { font-size: 13.5px; }
+.venue-grid--big .venue-card__body { padding: 12px 13px 14px; }
+
+/* mobile: the price follows you in a bar, so the page can lead with value */
+.paybar { display: none; }
+
+/* --- coverage: what you can actually do on this plan --------------------- */
+.cov__summary { font-size: 18px; line-height: 1.4; margin: 0 0 8px; }
+.cov__caveat { font-size: 13px; line-height: 1.45; color: var(--navy-soft); margin: 0 0 14px; }
+.cov__line { display: flex; align-items: flex-start; gap: 9px; font-size: 15px; line-height: 1.45; margin: 0 0 10px; color: var(--navy); }
+.cov__line svg { flex: 0 0 auto; margin-top: 3px; }
+.cov__line b { color: var(--ink); }
+.cov__detail-wrap > summary {
+  display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
+  font-size: 14.5px; font-weight: 700; color: var(--ink); margin-top: 6px;
+}
+.cov__detail-wrap > summary::-webkit-details-marker { display: none; }
+.cov__detail-wrap > summary::after {
+  content: ""; width: 7px; height: 7px; border-right: 2px solid var(--navy-soft);
+  border-bottom: 2px solid var(--navy-soft); transform: rotate(45deg); margin-left: 2px;
+}
+.cov__detail-wrap[open] > summary::after { transform: rotate(225deg); }
+.cov__detail-wrap[open] .cov__rows { margin-top: 16px; }
+.morevenues > summary {
+  display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
+  font-size: 14.5px; font-weight: 700; margin-top: 14px;
+}
+.morevenues > summary::-webkit-details-marker { display: none; }
+.planbox__one { display: flex; gap: 9px; font-size: 15px; line-height: 1.45; margin: 16px 0 0; }
+.planbox__one svg { flex: 0 0 auto; margin-top: 2px; }
+.cov__rows { display: flex; flex-direction: column; gap: 4px; }
+.cov__row { display: flex; gap: 14px; padding: 14px 0; border-top: 1px solid var(--border); }
+.cov__row:first-child { border-top: 0; padding-top: 4px; }
+.cov__icon {
+  flex: 0 0 auto; width: 40px; height: 40px; border-radius: 50%;
+  background: var(--yellow-pale); display: grid; place-items: center;
+}
+.cov__row.is-none .cov__icon { background: var(--page-grey); color: var(--navy-soft); }
+.cov__body { flex: 1 1 auto; min-width: 0; }
+.cov__head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.cov__label { font-size: 16.5px; font-weight: 700; }
+.cov__count { font-size: 15px; font-weight: 700; color: var(--navy); white-space: nowrap; }
+.cov__row.is-full .cov__count { color: #2f6b3f; }
+.cov__row.is-none .cov__count { color: var(--navy-soft); }
+.cov__bar { height: 6px; border-radius: 3px; background: #e7e5df; margin: 9px 0 8px; overflow: hidden; }
+.cov__bar span { display: block; height: 100%; background: var(--ink); border-radius: 3px; }
+.cov__row.is-full .cov__bar span { background: #2f6b3f; }
+.cov__detail { font-size: 14.5px; line-height: 1.45; color: var(--navy); }
+
+.cov__upsell {
+  display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+  margin-top: 22px; padding: 18px 20px;
+  background: var(--cream); border: 1px solid var(--cream-line); border-radius: var(--radius);
+}
+.cov__upsell > div { flex: 1 1 240px; }
+.cov__upsell-head { display: flex; align-items: center; gap: 8px; font-size: 16.5px; font-weight: 700; }
+.cov__upsell-body { font-size: 14.5px; line-height: 1.45; color: var(--navy); margin-top: 5px; }
+.cov__upsell .btn { height: 50px; padding: 0 20px; font-size: 16px; }
+.cov__down { display: flex; align-items: flex-start; gap: 8px; font-size: 14.5px; line-height: 1.45; margin: 14px 0 0; }
+.cov__down svg { flex: 0 0 auto; margin-top: 3px; }
+
+/* a venue the current plan does not cover says so, rather than looking available */
+.venue-card.is-locked .venue-card__media img { filter: grayscale(1); opacity: .55; }
+.venue-card.is-locked .venue-card__name { color: var(--navy); }
+.venue-card__lock {
+  position: absolute; left: 6px; bottom: 6px; z-index: 2;
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(8,9,10,.82); color: #fff;
+  font-size: 11.5px; font-weight: 700; letter-spacing: .01em;
+  padding: 4px 8px; border-radius: 999px;
+}
+
+/* the hint under a multi-select question */
+.qhint { font-size: 15.5px; color: var(--navy); margin: -8px 0 16px; }
+
+/* 5-6 options: chips rather than tall tiles, so the question still fits a screen */
+.options--chips { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.options--chips .option-card { min-height: 58px; padding: 11px 15px; font-size: 16.5px; gap: 12px; }
+.options--chips .option-card.is-selected { padding: 10px 14px; }
+.options--chips .option-card__icon { width: 34px; height: 34px; }
+
+/* --- what Urby heard ------------------------------------------------------ */
+.intent { background: var(--cream); border-radius: var(--radius); padding: 18px 20px; text-align: left; }
+.intent__label {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--navy-soft);
+}
+.intent__line { font-size: 16.5px; line-height: 1.45; margin: 10px 0 0; }
+.intent__quote { font-size: 16px; line-height: 1.45; margin: 10px 0 0; font-style: italic; color: var(--navy); }
+.intent__gap { display: flex; align-items: flex-start; gap: 8px; font-size: 14.5px; line-height: 1.45; margin: 12px 0 0; color: var(--navy); }
+.intent__gap svg { flex: 0 0 auto; margin-top: 3px; }
+
+/* --- one recommendation, one alternative --------------------------------- */
+.decision-pair { display: grid; grid-template-columns: 1.35fr 1fr; gap: 18px; align-items: start; }
+.decision--alt { background: #fff; border: 1px solid var(--border); }
+.decision__altname { font-size: 25px; font-weight: 700; letter-spacing: -.02em; margin-top: 10px; }
+.decision__price--sm { font-size: 26px; }
+.decision__term { font-size: 15.5px; color: var(--navy); margin-top: 4px; }
+.decision__why--sm { font-size: 16px; }
+
+/* --- detected city ------------------------------------------------------- */
+/* The location we assume, shown as a correctable statement rather than a
+   silent default. In production the city comes from IP or browser location. */
+.geoblock { margin: -4px 0 12px; }
+.geochip {
+  display: inline-flex; align-items: center; gap: 9px;
+  background: var(--cream); border: 1px solid var(--cream-line);
+  border-radius: 999px; padding: 8px 8px 8px 14px; font-size: 15.5px;
+}
+.geochip__change {
+  background: #fff; border: 1px solid var(--border); border-radius: 999px;
+  padding: 5px 13px; font-size: 14.5px; font-weight: 700; color: var(--ink);
+}
+.geochip__change:hover { border-color: var(--ink); }
+.citypick {
+  margin-top: 12px; background: var(--cream); border: 1px solid var(--cream-line);
+  border-radius: var(--radius); padding: 16px 18px;
+}
+.citypick__label { font-size: 14px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--navy-soft); }
+.citypick__grid { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 12px; }
+.citypick .chip-sm.is-current { background: var(--ink); color: #fff; border-color: var(--ink); }
+.citypick__note svg { flex: 0 0 auto; margin-top: 3px; }
+.citypick__note {
+  display: flex; align-items: flex-start; gap: 9px;
+  margin: 14px 0 0; font-size: 14.5px; line-height: 1.5; color: var(--navy);
+}
+.freetext-toggle {
+  display: inline-flex; align-items: center; gap: 11px;
+  background: none; border: 0; padding: 14px 0 0;
+  font-size: 16.5px; color: var(--navy); font-weight: 600;
+}
+.freetext-toggle:hover { text-decoration: underline; }
+
+/* --- "Your fit, so far" panel --------------------------------------------- */
+
+.fitpanel {
+  background: var(--cream);
+  border-radius: var(--radius-lg);
+  padding: 30px 32px 34px;
+}
+.fitpanel h2 { font-size: 23px; margin-bottom: 22px; }
+.fitpanel__facts { display: flex; flex-direction: column; gap: 15px; }
+.fitpanel__fact { display: flex; align-items: center; gap: 13px; font-size: 17px; }
+.fitpanel hr { border: 0; border-top: 1px solid var(--cream-line); margin: 26px 0 22px; }
+.fitpanel__label { font-size: 15px; font-weight: 700; margin-bottom: 14px; }
+
+.venue-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.venue-card {
+  background: #fff; border: 1px solid var(--cream-line); border-radius: var(--radius);
+  overflow: hidden; display: flex; flex-direction: column;
+}
+.venue-card__media { aspect-ratio: 3 / 2; background: var(--yellow-pale); display: grid; place-items: center; }
+.venue-card__media img { width: 100%; height: 100%; object-fit: cover; }
+.venue-card__glyph { color: #4a4126; opacity: .85; }
+.venue-card__media { position: relative; }
+.venue-card__media img { position: absolute; inset: 0; }
+.venue-card__body { padding: 10px 11px 12px; }
+
+/* the real per-plan visit limits, straight from the venue's own page */
+.accesslist { margin-top: 14px; border-top: 1px solid var(--border); }
+.accesslist__row {
+  display: flex; justify-content: space-between; gap: 16px;
+  padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 15px;
+}
+.accesslist__row.is-yours { font-weight: 700; }
+.accesslist__row span:last-child { color: var(--navy); text-align: right; }
+.accesslist__row.is-yours span:last-child { color: var(--ink); }
+.venue-card__name { font-size: 13px; font-weight: 700; line-height: 1.25; }
+.venue-card__meta { font-size: 12.5px; color: var(--navy-soft); margin-top: 3px; }
+
+.plan-card {
+  background: #fff; border: 1px solid var(--cream-line); border-radius: 10px;
+  padding: 20px 22px; display: flex; gap: 18px; align-items: flex-start;
+}
+.plan-card__icon {
+  flex: 0 0 auto; width: 46px; height: 46px; border-radius: 50%;
+  background: var(--yellow-pale); display: grid; place-items: center;
+}
+.plan-card__name { font-size: 27px; font-weight: 800; letter-spacing: -0.025em; line-height: 1.1; }
+.plan-card__price { font-size: 19px; margin-top: 4px; }
+.plan-card__price b { font-weight: 700; }
+.plan-card__price span { color: var(--navy-soft); }
+.plan-card__reason { font-size: 15.5px; color: var(--navy); margin-top: 12px; line-height: 1.4; }
+
+.panel-note { display: flex; align-items: flex-start; gap: 11px; margin-top: 20px; font-size: 15px; color: var(--navy); }
+
+.fitpanel-mobile-toggle { display: none; }
+
+/* --- modal ---------------------------------------------------------------- */
+
+.overlay {
+  position: fixed; inset: 0; background: rgba(24,24,24,.42);
+  display: grid; place-items: center; padding: 24px; z-index: 50;
+}
+.overlay[hidden] { display: none; }
+.modal {
+  background: #fff; border-radius: 14px; max-width: 560px; width: 100%;
+  padding: 40px 44px 34px; text-align: center; position: relative;
+  box-shadow: 0 24px 70px rgba(0,0,0,.18);
+}
+.modal__close {
+  position: absolute; top: 18px; right: 20px;
+  background: none; border: 0; font-size: 22px; line-height: 1; color: var(--navy-soft); padding: 6px;
+}
+.modal .ula-avatar { margin: 0 auto; width: 52px; height: 52px; }
+.modal h2 { font-size: 30px; margin: 18px 0 8px; }
+.modal__sub { font-size: 16px; color: var(--navy-soft); margin-bottom: 20px; }
+.modal__body { font-size: 17px; color: var(--navy); line-height: 1.5; margin-bottom: 28px; }
+.modal .btn { width: 100%; margin-bottom: 13px; }
+.modal__fine { font-size: 14px; color: var(--navy-soft); margin-top: 6px; }
+.modal__fine a { text-decoration: underline; }
+.modal__tertiary { display: inline-block; margin-top: 16px; background: none; border: 0; color: var(--navy-soft); font-size: 16px; text-decoration: none; }
+
+/* --- generic content pages ------------------------------------------------ */
+
+.content { max-width: 860px; padding: 8px clamp(20px, 3.4vw, 60px) 90px; }
+.card {
+  background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg);
+  padding: clamp(22px, 2.6vw, 34px);
+}
+.card + .card { margin-top: 18px; }
+
+.summary-list { display: flex; flex-direction: column; }
+.summary-row {
+  display: flex; justify-content: space-between; gap: 20px;
+  padding: 15px 0; border-bottom: 1px solid var(--border); font-size: 16.5px;
+}
+.summary-row:last-child { border-bottom: 0; }
+.summary-row dt { color: var(--navy-soft); margin: 0; }
+.summary-row dd { margin: 0; font-weight: 700; text-align: right; }
+.summary-row--total { font-size: 20px; padding-top: 20px; }
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.field { display: flex; flex-direction: column; gap: 8px; }
+.field--wide { grid-column: 1 / -1; }
+.field label { font-size: 15px; font-weight: 700; }
+.field input, .field select {
+  height: 56px; padding: 0 16px; border: 1px solid var(--border);
+  border-radius: var(--radius); background: #fff; outline: none;
+}
+.field input:focus, .field select:focus { border-color: var(--ink); }
+.field__why { font-size: 13.5px; color: var(--navy-soft); line-height: 1.45; }
+
+.notice {
+  display: flex; gap: 12px; align-items: flex-start;
+  background: var(--yellow-pale); border-radius: var(--radius);
+  padding: 15px 18px; font-size: 15px; line-height: 1.45; margin: 0 0 24px;
+}
+.notice--grey { background: var(--page-grey); }
+.notice--soft { background: var(--cream); border: 1px solid var(--cream-line); margin: 0; }
+.notice--soft svg { color: var(--navy-soft); }
+
+/* --- save your fit, and the details form -----------------------------------
+   Two screens that used to be one. Both show the same recap — the answers, the plan,
+   the term and the places it opens — because both are asking the visitor to hand
+   something over, and neither should ask before it has shown what for. */
+
+/* One card, split in two. The recap was a 400px sidebar next to the form, which made
+   what you are keeping look like a footnote to the ask; it is the reason to hand over
+   an address at all, so it gets half the card and the cream (rule 14). Both halves
+   share one border and one radius, so the pair reads as a single object. */
+.savewrap { max-width: 1180px; margin: 0 auto; padding: 8px clamp(16px, 3vw, 40px) 24px; }
+.savepanel {
+  display: grid; grid-template-columns: minmax(0, 1.06fr) minmax(0, 1fr);
+  border: 1px solid var(--cream-line); border-radius: 18px; overflow: hidden;
+  background: var(--page);
+}
+.savepanel__recap {
+  background: var(--cream); padding: clamp(20px, 2.2vw, 32px);
+  border-right: 1px solid var(--cream-line); min-width: 0;
+}
+.savepanel__ask { padding: clamp(20px, 2.2vw, 32px); min-width: 0; }
+.savepanel__guide {
+  display: flex; align-items: center; gap: 10px; margin: 0 0 14px;
+  font-size: 15px; font-weight: 700; color: var(--ink);
+}
+.savepanel__title { font-size: clamp(30px, 3vw, 40px); line-height: 1.06; margin: 0; }
+.savepanel__title:focus { outline: none; }
+.savepanel__sub { font-size: 16px; color: var(--navy-soft); margin: 10px 0 16px; max-width: 42ch; }
+.savepanel__recap .chips-row { margin: 0 0 18px; }
+
+/* Whose choice this was, said above the name — rule 53 in four words. */
+.savepanel__plabel {
+  font-size: 12.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--navy-soft); margin-bottom: 6px;
+}
+.savepanel__idrow { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+.savepanel__name { font-size: clamp(28px, 2.6vw, 36px); font-weight: 800; letter-spacing: -.4px; }
+.savepanel__price { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.savepanel__price b { font-size: clamp(24px, 2.2vw, 30px); font-weight: 800; }
+.savepanel__price span { font-size: 15px; color: var(--navy-soft); margin-left: 4px; }
+.savepanel__term { font-size: 14.5px; color: var(--navy-soft); margin-top: 4px; }
+/* The counted line, not an item in a list: it says what the money opens, so it sits on
+   its own with the only filled tick on the screen. */
+.savepanel__opens {
+  display: flex; align-items: center; gap: 10px; margin: 14px 0 0;
+  font-size: 16px; font-weight: 600;
+}
+.savepanel__opens svg { flex: 0 0 auto; }
+.savepanel__where, .savepanel__foot {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 14.5px; line-height: 1.5; color: var(--navy-soft);
+}
+.savepanel__where { margin: 4px 0 0; }
+.savepanel__where svg { flex: 0 0 auto; margin-top: 2px; }
+.savepanel__foot { margin: 22px 0 0; }
+.savepanel__foot svg { flex: 0 0 auto; color: #c9a227; }
+
+/* The places are a receipt for a decision already made — big enough to recognise,
+   flat and not tappable, because a sheet opening from here takes you off the form. */
+.savevenues { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+.savevenue {
+  display: flex; align-items: stretch; min-width: 0;
+  background: var(--page); border: 1px solid var(--cream-line); border-radius: 12px; overflow: hidden;
+}
+.savevenue__media {
+  position: relative; flex: 0 0 auto; width: 140px; align-self: stretch; min-height: 78px;
+  background: var(--yellow-pale); display: grid; place-items: center;
+}
+.savevenue__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.savevenue__media .venue-card__glyph svg { width: 26px; height: 26px; }
+.savevenue__text { min-width: 0; padding: 16px 18px; }
+.savevenue__name { font-size: 17px; font-weight: 700; }
+.savevenue__meta { font-size: 14px; color: var(--navy-soft); margin-top: 3px; font-variant-numeric: tabular-nums; }
+.savepanel__more { font-size: 13.5px; color: var(--navy-soft); margin: 12px 0 0; }
+
+.savepanel__asktitle { font-size: clamp(26px, 2.4vw, 34px); line-height: 1.1; }
+.savepanel__asksub { font-size: 16px; color: var(--navy-soft); margin: 10px 0 20px; max-width: 34ch; }
+.saveform { margin-top: 0; }
+/* The field is full width with the button under it, not a pill with the button inside
+   it: two things of equal weight side by side made neither look like the action. */
+.savefield__label { display: block; font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+.savefield {
+  width: 100%; padding: 15px 16px; border: 1px solid var(--border);
+  border-radius: 10px; background: var(--page); font-size: 16px;
+}
+.savefield::placeholder { color: #9aa3b2; }
+.savefield:focus-visible { outline: 2px solid var(--ink); outline-offset: 1px; }
+.btn--block { display: block; width: 100%; margin-top: 12px; }
+.orline {
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 14px;
+  margin: 20px 0; font-size: 14.5px; color: var(--navy-soft);
+}
+.orline::before, .orline::after { content: ""; height: 1px; background: var(--border); }
+.save-out { margin-top: 20px; text-align: center; }
+/* The small print of the page, not of the form. */
+.savefoot {
+  display: flex; justify-content: center; flex-wrap: wrap; gap: 8px 34px;
+  margin: 18px 0 0; font-size: 14.5px; color: var(--navy-soft);
+}
+
+.formgroup { margin-top: 26px; }
+.formgroup .fitpanel__label { margin-bottom: 12px; }
+.btn--wide { min-width: 260px; }
+.reassure {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13.5px; color: var(--navy-soft); margin: 14px 0 0;
+}
+
+/* The details form and its summary. Narrower aside than the recommendation's: it
+   carries no argument, only a reminder of the one already won. */
+.two-col--form { grid-template-columns: minmax(0, 1fr) 360px; }
+.two-col--form .two-col__main { padding-bottom: 60px; }
+.ordercard {
+  background: var(--cream); border: 1px solid var(--cream-line);
+  border-radius: var(--radius-lg); padding: 20px 20px 22px;
+}
+.ordercard__idrow { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; }
+.ordercard__name { font-size: 24px; font-weight: 800; letter-spacing: -.4px; }
+.ordercard__price { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ordercard__price b { font-size: 22px; font-weight: 800; }
+.ordercard__price span { font-size: 13px; color: var(--navy-soft); margin-left: 3px; }
+.ordercard__term { font-size: 13.5px; color: var(--navy-soft); margin-top: 3px; }
+.ordercard__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 11px; }
+.ordercard__list li { display: flex; align-items: center; gap: 11px; font-size: 15px; }
+.ordercard__list svg { flex: 0 0 auto; color: var(--navy-soft); }
+.ordercard__links {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 12px;
+  margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--cream-line);
+}
+.ordercard__links .linkish { display: flex; align-items: center; gap: 9px; font-size: 15px; }
+.ordercard__links svg { color: var(--navy-soft); }
+.asidevenues { display: flex; flex-direction: column; gap: 12px; }
+.asidevenue { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.asidevenue__media {
+  position: relative; flex: 0 0 auto; width: 56px; height: 44px;
+  border-radius: 8px; overflow: hidden; background: var(--yellow-pale);
+  display: grid; place-items: center;
+}
+.asidevenue__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.asidevenue__media .venue-card__glyph svg { width: 20px; height: 20px; }
+/* A row in a list of rows, not a call to action — full button height here made the
+   least important thing in the column the tallest. */
+.ordercard__more { height: 42px; font-size: 14.5px; margin-top: 12px; }
+.asidevenue__name { font-size: 14px; font-weight: 700; line-height: 1.25; }
+.asidevenue__meta { font-size: 12.5px; color: var(--navy-soft); margin-top: 2px; font-variant-numeric: tabular-nums; }
+
+.pill {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--cream); border: 1px solid var(--cream-line);
+  border-radius: 999px; padding: 7px 14px; font-size: 14px; font-weight: 600;
+}
+
+.reasons { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.reasons li { display: flex; gap: 11px; font-size: 16.5px; line-height: 1.45; color: var(--navy); }
+
+.alt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px; }
+.alt-card {
+  border: 1px solid var(--border); border-radius: var(--radius); padding: 20px;
+  display: flex; flex-direction: column; gap: 8px; background: #fff; text-align: left; width: 100%;
+}
+.alt-card:hover { border-color: var(--ink); }
+.alt-card__name { font-size: 20px; font-weight: 800; letter-spacing: -0.02em; }
+.alt-card__price { font-size: 16px; font-weight: 700; }
+.alt-card__tradeoff { font-size: 14.5px; color: var(--navy-soft); line-height: 1.45; }
+.alt-card.is-current { background: var(--cream); border-color: var(--ink); }
+
+.answer-review { display: flex; flex-direction: column; }
+.answer-review__row {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 14px 0; border-bottom: 1px solid var(--border);
+}
+.answer-review__row:last-child { border-bottom: 0; }
+.answer-review__q { font-size: 14px; color: var(--navy-soft); }
+.answer-review__a { font-size: 17px; font-weight: 700; }
+.answer-review__edit { font-size: 15px; font-weight: 700; text-decoration: underline; background: none; border: 0; }
+
+.table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+.table th, .table td { text-align: left; padding: 11px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.table th { font-size: 12.5px; text-transform: uppercase; letter-spacing: .04em; color: var(--navy-soft); }
+.table code { font-size: 12.5px; background: var(--page-grey); padding: 2px 5px; border-radius: 3px; }
+
+.badge {
+  display: inline-block; font-size: 12px; font-weight: 700; padding: 3px 9px;
+  border-radius: 999px; background: var(--yellow-pale);
+}
+.badge--grey { background: #e9e7e1; }
+.badge--ok   { background: #cdebd6; }
+
+.demo-banner {
+  background: var(--ink); color: #fff; font-size: 13.5px;
+  padding: 9px 20px; letter-spacing: .01em;
+  display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap;
+}
+.demo-banner a { color: var(--yellow-bright); text-decoration: underline; }
+.demo-banner__build { opacity: .55; font-size: 12px; }
+.demo-banner__toggle {
+  appearance: none; background: none; border: 1px solid rgba(255,255,255,.32);
+  color: #fff; font: inherit; font-size: 12px; line-height: 1;
+  padding: 4px 9px; border-radius: 999px; cursor: pointer; opacity: .8;
+}
+.demo-banner__toggle:hover { opacity: 1; border-color: rgba(255,255,255,.6); }
+/* Collapsed: a thin strip carrying only what must never be missed — that this is a demo,
+   and which build it is. One tap brings the rest back. */
+.demo-banner.is-collapsed { padding: 3px 12px; font-size: 11.5px; gap: 8px; }
+.demo-banner.is-collapsed .demo-banner__text,
+.demo-banner.is-collapsed .linkish { display: none; }
+.demo-banner.is-collapsed .demo-banner__build { opacity: .75; }
+/* A real element, not a ::before. The warning has to survive being read by anything that
+   walks the text — a screen reader, a test, the accessibility tree — and generated
+   content is in none of those. */
+.demo-banner__short { display: none; }
+.demo-banner.is-collapsed .demo-banner__short { display: inline; }
+
+.sticky-cta { display: none; }
+
+.skip-link {
+  position: absolute; left: -9999px;
+  background: #fff; padding: 12px 18px; z-index: 100; border: 2px solid var(--ink);
+}
+.skip-link:focus { left: 12px; top: 12px; }
+
+/* --- email preview ------------------------------------------------------- */
+
+.email-page { background: var(--page-grey); min-height: 100vh; padding: 40px 20px 70px; }
+.email-card { max-width: 620px; margin: 0 auto; background: #fff; box-shadow: 0 2px 14px rgba(0,0,0,.07); }
+.email-hero { position: relative; background: var(--yellow-bright); min-height: 300px; overflow: hidden; }
+.email-hero__photo {
+  position: absolute; top: 0; right: 0; bottom: 0; width: 58%;
+  clip-path: polygon(28% 0, 100% 0, 100% 100%, 0 100%);
+}
+.email-hero__photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 12%; }
+.email-hero__inner { position: relative; padding: 34px 36px 40px; z-index: 2; }
+.email-hero h1 { font-size: 40px; line-height: 1.02; margin-top: 74px; max-width: 8ch; }
+.email-body { padding: 34px 36px 40px; }
+.email-body p { font-size: 17px; line-height: 1.55; color: #17181a; margin: 0 0 18px; }
+.email-facts { background: #faf8f2; border-radius: var(--radius); padding: 22px 24px; margin: 26px 0; }
+.email-facts h3 { font-size: 19px; margin-bottom: 6px; }
+.email-facts__row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 13px 0; border-bottom: 1px solid #eae7de; font-size: 16px;
+}
+.email-facts__row:last-child { border-bottom: 0; }
+.email-footer { padding: 22px 36px 30px; text-align: center; font-size: 13.5px; color: var(--navy-soft); }
+.email-footer a { text-decoration: none; }
+
+/* --- responsive ---------------------------------------------------------- */
+
+@media (max-width: 1180px) {
+  .two-col { grid-template-columns: minmax(0, 1fr) 420px; }
+  /* the summary column stays the narrower of the two — it holds a reminder, not an argument */
+  .two-col--form { grid-template-columns: minmax(0, 1fr) 340px; }
+  .stepper__line { width: 46px; }
+  .stepper__step { width: 82px; }
+}
+
+@media (max-width: 980px) {
+  /* landing stacks: wordmark bar, photo band, then content.
+     `display: contents` lets the panel's children take part in the page-level
+     flex order, so the wordmark can sit above the photo without duplicating it. */
+  .landing { display: flex; flex-direction: column; min-height: 0; background: var(--yellow-hero); }
+  .landing__panel { display: contents; }
+  .landing__panelbar { order: 0; padding: 22px 22px 18px; }
+  .landing__body { order: 2; padding: 32px 22px 44px; max-width: none; margin: 0; }
+  .landing__media { order: 1; height: 300px; }
+  .landing__media img { object-position: 50% 18%; }
+  .login-link--desktop { display: none; }
+  .login-link--mobile { display: inline; position: static; color: var(--ink); font-weight: 700;
+    background: none; padding: 0; backdrop-filter: none; text-decoration: underline; }
+
+  /* These used to hide the block in favour of a shorter mobile line that the
+     landing no longer renders, which left a lone sparkle icon and no words. */
+  .ula-intro__title { font-size: 17px; }
+  .ula-intro__sub { font-size: 16px; }
+
+  .signup-row { flex-direction: column; border: 0; background: none; max-width: none; overflow: visible; }
+  .signup-row input[type="email"],
+  .signup-row input[type="search"] {
+    border: 1.5px solid var(--ink); border-radius: var(--radius-sm); height: 62px; width: 100%;
+  }
+  .signup-row button { border-radius: var(--radius-sm); height: 62px; margin-top: 14px; width: 100%; padding: 0; }
+  .or-divider, .sso-row, .consent-row { max-width: none; }
+  .ula-intro { margin: 26px 0 24px; gap: 11px; }
+
+
+  /* app shell */
+  .topbar { grid-template-columns: 1fr auto; padding: 20px 20px 12px; align-items: center; }
+  .topbar__center { display: none; }
+  .topbar .wordmark { font-size: 17px; }
+  .topbar .link-plain { font-size: 15px; white-space: nowrap; }
+  .mobile-progress { display: block; }
+  .topbar .saved-note { display: none; }
+  .saved-note--mobile { display: flex; margin-top: 11px; }
+
+  .two-col, .two-col--form { grid-template-columns: 1fr; }
+  /* Stacked, the recap keeps its place at the top — rule 14 holds on a phone too, and
+     it is already first in the source, so nothing needs reordering. */
+  .savewrap { padding: 8px 16px 40px; }
+  .savepanel { grid-template-columns: 1fr; }
+  .savepanel__recap { border-right: 0; border-bottom: 1px solid var(--cream-line); }
+  .savevenue__media { width: 108px; }
+  /* stacked: the explicit row placement from the two-column layout has to go, or the
+     plan column keeps trying to span rows that no longer exist side by side */
+  .two-col--reco .two-col__main,
+  .two-col--reco .two-col__aside,
+  .reco-tail { grid-column: 1; grid-row: auto; }
+  .reco-tail { padding: 0 20px 80px; max-width: none; }
+  .two-col__main { padding: 10px 20px 4px; max-width: none; }
+  /* room for the sticky Continue bar, so nothing sits underneath it */
+  .two-col__aside { margin: 0 20px 132px; }
+  /* the details form has no sticky bar under it, so it needs no room for one */
+  .two-col--form .two-col__aside { margin-bottom: 44px; }
+  .content { padding-bottom: 60px; }
+  .btn--wide { min-width: 0; width: 100%; }
+
+  .fitpanel { padding: 0; background: transparent; }
+  .fitpanel-mobile-toggle {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    width: 100%; background: var(--cream); border: 1px solid var(--cream-line);
+    border-radius: var(--radius); padding: 17px 18px; font-size: 16.5px; font-weight: 700;
+    margin-top: 22px;
+  }
+  .fitpanel__contents { display: none; background: var(--cream); border-radius: var(--radius); padding: 22px 20px; margin-top: 10px; }
+  .fitpanel__contents.is-open { display: block; }
+  .venue-grid { grid-template-columns: 1fr 1fr; }
+
+  .sticky-cta {
+    display: flex; gap: 10px; position: fixed; left: 0; right: 0; bottom: 0;
+    background: #fff; border-top: 1px solid var(--border);
+    padding: 14px 20px calc(14px + env(safe-area-inset-bottom));
+    z-index: 30;
+  }
+  .sticky-cta .btn { height: 56px; }
+  .sticky-cta .btn--primary { flex: 1 1 auto; }
+  .sticky-cta .btn--secondary { flex: 0 0 auto; padding: 0 18px; }
+  .desktop-cta { display: none; }
+
+  .decision-pair { grid-template-columns: 1fr; }
+  /* and it must stop being a clipped, self-scrolling box: on a phone the plan column
+     is just a section of the page, and a max-height here turned it into a small inner
+     scroller sitting on top of the sticky price bar. */
+  .two-col__aside--sticky { position: static; max-height: none; overflow: visible; }
+  .paybar {
+    display: flex; align-items: center; gap: 14px;
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
+    background: #fff; border-top: 1px solid var(--border);
+    padding: 12px 18px calc(12px + env(safe-area-inset-bottom));
+  }
+  .paybar__info { flex: 1 1 auto; min-width: 0; font-size: 15px; }
+  .paybar__info b { display: block; font-size: 16.5px; }
+  .paybar__info span { color: var(--navy); font-size: 13.5px; }
+  .paybar .btn { flex: 0 0 auto; height: 52px; padding: 0 22px; }
+  .week { padding: 20px 18px 18px; }
+  .week__day { flex-basis: 62px; font-size: 13.5px; }
+  .week__swap { position: static; margin-top: 6px; }
+  .week__item { flex-wrap: wrap; }
+  .week__days { margin-top: 11px; padding-top: 10px; }
+  .week__days-label { margin-bottom: 6px; }
+  .week__days-label span { display: block; font-size: 13px; margin-top: 2px; }
+  .week__days-row { gap: 4px; }
+  .daybtn { padding: 9px 1px; font-size: 11.5px; }
+  .week__each { text-align: left; }
+  .venue-grid--big { grid-template-columns: 1fr 1fr; }
+  .one-col__main { padding-bottom: 110px; }
+  .found .venue-strip { grid-template-columns: 1fr 1fr; }
+  .why__grid { grid-template-columns: 1fr; }
+  .plangrid { grid-template-columns: 1fr; }
+  .startnow { height: 52px; }
+  .chips-row { gap: 7px; margin-bottom: 18px; }
+  .answer-chip { font-size: 13.5px; padding: 5px 10px; }
+  .answer-chip span { max-width: 14ch; }
+  /* On a phone the question owns the screen. Ask Urby is one tap away on the
+     landing page and on the recommendation, so it does not need to be here. */
+  .aside-ask { display: none; }
+  .options--tiles { gap: 9px; }
+  .options--tiles .option-card { min-height: 54px; padding: 10px 13px; font-size: 15.5px; gap: 10px; }
+  .options--tiles .option-card__icon { width: 30px; height: 30px; }
+  .ownwords__label { font-size: 14.5px; }
+  .form-grid { grid-template-columns: 1fr; }
+  .alt-grid { grid-template-columns: 1fr; }
+  .options--compact { grid-template-columns: 1fr; gap: 11px; }
+  .cov__upsell { padding: 16px; }
+  .cov__upsell .btn { width: 100%; }
+  /* developer-facing note: keep it off the phone screen, it is on /admin/journeys too */
+  .ai-badge { display: none; }
+  .h-question { margin: 12px 0 18px; }
+  .modal { padding: 34px 24px 28px; }
+  .modal h2 { font-size: 26px; }
+}
+
+@media (max-width: 460px) {
+  .sso-row { gap: 12px; }
+  .sso-btn { font-size: 15.5px; gap: 8px; }
+  .venue-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+
+/* Visible focus for keyboard users everywhere. */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 3px solid #1b4bd8; outline-offset: 2px;
+}
+
+/* --- the app catalogue, next to the venues ------------------------------- */
+/* Real logos, loaded from each app's own domain, with a lettered tile beneath so
+   an offline or blocked request degrades to something deliberate. */
+/* Rule 48: a flex item that cannot shrink cannot let its contents wrap. This holds a
+   row of app chips, so it takes its own line and is allowed to narrow — otherwise the
+   last chips render outside the card they belong to. */
+.appgrid { flex: 1 1 100%; min-width: 0; display: flex; align-items: stretch; gap: 8px; flex-wrap: wrap; }
+.appgrid.is-locked .appcard { opacity: .62; }
+.appcard {
+  display: flex; align-items: center; gap: 9px;
+  background: #fff; border: 1px solid var(--border); border-radius: 999px;
+  padding: 6px 14px 6px 6px; text-align: left; white-space: nowrap;
+}
+.appcard__logo {
+  position: relative; flex: 0 0 auto; display: block; width: 30px; height: 30px;
+  border-radius: 50%; background: var(--yellow-pale); overflow: hidden;
+}
+.appcard__logo b {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  font-size: 14px; font-weight: 800; color: var(--ink);
+}
+.appcard__logo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; padding: 4px; background: #fff; }
+.appcard__text { min-width: 0; display: block; }
+.appcard__name { display: block; font-size: 13px; font-weight: 700; line-height: 1.25; }
+/* The category is what makes the picked four legible as picked — same job the
+   activity line does on a venue card. */
+.appcard__cat { display: block; font-size: 11.5px; line-height: 1.25; color: var(--navy); opacity: .68; }
+/* Why these four, and the way to the rest — the places section's foot, in miniature. */
+.apps__foot {
+  flex: 1 1 100%; min-width: 0; display: flex; align-items: center; justify-content: space-between;
+  gap: 10px 16px; flex-wrap: wrap; font-size: 13px; color: var(--navy);
+}
+.apps__toggle { font-size: 13px; }
+.apps__unlock { flex: 1 1 100%; display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: var(--navy); margin: 2px 0 0; }
+.apps__unlock svg { flex: 0 0 auto; margin-top: 2px; }
+
+@media (max-width: 900px) {
+  .apps { gap: 12px; padding: 13px 14px; }
+  .apps__head { flex: 1 1 100%; }
+}
+
+/* --- "add a place near me": demand we can only collect here ---------------- */
+.partnerask { margin-top: 16px; border-top: 1px solid var(--cream-line); padding-top: 14px; }
+.partnerask > summary {
+  display: flex; align-items: center; gap: 8px; cursor: pointer;
+  font-size: 14.5px; font-weight: 700; color: var(--navy); list-style: none;
+}
+.partnerask > summary::-webkit-details-marker { display: none; }
+.partnerask__form { display: flex; gap: 10px; margin: 12px 0 8px; flex-wrap: wrap; }
+.partnerask__form input {
+  flex: 1 1 240px; min-width: 0; height: 48px; padding: 0 14px;
+  border: 1px solid var(--border); border-radius: var(--radius); background: #fff; font-size: 16px;
+}
+
+/* the app catalogue lives inside the places card, as a strip */
+/* Karim: the catalogue block was "clunky, out of place, too big". It is a bonus, so it
+   reads as one line with the logos inline — a band, not a second venue grid. Same
+   information, about a third of the height. */
+.apps { display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  margin-top: 0; padding: 14px 18px; border: 1px solid var(--cream-line);
+  border-radius: var(--radius); background: var(--cream); }
+/* A claim on one line, with the shelf of logos behind a disclosure. */
+.apps__line {
+  flex: 1 1 100%; min-width: 0; margin: 0;
+  display: flex; align-items: flex-start; gap: 9px;
+  font-size: 14.5px; line-height: 1.5; color: var(--navy);
+}
+.apps__line svg { flex: 0 0 auto; margin-top: 3px; }
+.ask-and-print .apps { margin-top: 18px; }
+
+/* --- the landing, August 13 layout ---------------------------------------- */
+/* Why we ask for the address, and the way past it, on one line. A second button
+   here competed with "Find my fit"; four words do not. */
+.savenote { font-size: 14.5px; color: var(--navy); margin: 10px 0 0; max-width: 560px; }
+.savenote .linkish { font-weight: 600; }
+/* --- the front door asks the first question -------------------------------- */
+/* The panel's job changed on 14 August: it holds the question itself, so it needs a
+   line that says whose question it is, the question, and the three answers. */
+.landing__guide { display: flex; align-items: center; gap: 11px; margin: 36px 0 16px; font-size: 16px; font-weight: 700; color: var(--ink); }
+.landing__q { font-size: clamp(21px, 2vw, 26px); font-weight: 800; letter-spacing: -0.02em; margin: 0 0 18px; }
+
+/* Three across, so the question and its answers are one object rather than a list
+   you scroll. The icon sits above the label here: side by side, three cards in a row
+   left "Try something new" one word per line. */
+.options--door { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 620px; }
+/* These are the call to action, so they have to look like one. A hairline card on a
+   yellow field does not: Karim went straight past three of them to the two outlined
+   links underneath, because the outline was the strongest edge on the page. The cards
+   now carry the black border and the lift, they fill black under the cursor, and the
+   links below gave their outline up. Rule 9 still holds — nothing here is filled black
+   at rest, and there is still exactly one action being offered. */
+.options--door .option-card {
+  flex-direction: column; justify-content: center; text-align: center;
+  gap: 13px; min-height: 124px; padding: 20px 12px; font-size: 16px;
+  border: 1.5px solid var(--ink);
+  box-shadow: 0 3px 14px rgba(8, 9, 10, .10);
+  transition: background .12s ease, color .12s ease, transform .12s ease, box-shadow .12s ease;
+}
+.options--door .option-card__icon { width: 44px; height: 44px; background: var(--yellow-bright); }
+.options--door .option-card__label { flex: 0 0 auto; }
+.options--door .option-card:hover {
+  background: var(--ink); color: #fff; border-color: var(--ink);
+  transform: translateY(-2px); box-shadow: 0 8px 20px rgba(8, 9, 10, .18);
+}
+/* the glyph lives in a yellow circle, so it stays black when the card goes black */
+.options--door .option-card:hover .option-card__icon { color: var(--ink); }
+
+.landing__hint { font-size: 15.5px; color: var(--navy); margin: 15px 0 0; max-width: 560px; }
+
+/* The two ways past the question. They were two sentences stacked under each other,
+   each opening with "Already…", which read as two more questions on a page that had
+   just asked one. One quiet row under a rule instead: same two jobs, a third of the
+   weight, and clearly not the thing to do first. */
+.landing__shortcuts {
+  display: flex; flex-wrap: wrap; gap: 8px 30px;
+  margin-top: 24px; padding-top: 20px; max-width: 620px;
+  border-top: 1px solid rgba(8, 9, 10, .16);
+}
+.shortcut {
+  display: inline-flex; align-items: center; gap: 9px;
+  background: none; border: 0; padding: 0;
+  font: inherit; font-size: 15px; font-weight: 600; color: var(--navy);
+  text-decoration: underline; text-underline-offset: 3px; cursor: pointer;
+}
+.shortcut:hover { color: var(--ink); }
+
+/* Under the photo the panel is one column wide, so the three answers stack and go back
+   to the normal card: icon beside the label, one line each (rule 27). This block has to
+   sit after the rules it overrides, not up with the rest of the landing's phone layout —
+   same specificity, so source order decides and the wide grid won at 390px. */
+@media (max-width: 980px) {
+  .landing__guide { margin: 4px 0 14px; }
+  .options--door { grid-template-columns: 1fr; gap: 10px; max-width: none; }
+  .options--door .option-card {
+    flex-direction: row; text-align: left; gap: 15px;
+    min-height: 64px; padding: 13px 18px; font-size: 17px;
+  }
+  .options--door .option-card__icon { width: 36px; height: 36px; }
+  .options--door .option-card__label { flex: 1 1 auto; }
+  .landing__shortcuts { max-width: none; flex-direction: column; gap: 14px; align-items: flex-start; }
+}
+
+.landing__alt { font-size: 15.5px; color: var(--navy); margin: 22px 0 0; }
+.landing__alt .linkish.strong { display: inline-flex; align-items: center; gap: 8px; text-decoration: underline; }
+.landing__alt--login { margin-top: 12px; }
+
+/* --- a utility role for numbers ------------------------------------------- */
+/* The frontend-design skill's point about typography carrying meaning applies to
+   data as much as to headlines. Every price, count and distance on this page is a
+   figure the visitor is comparing against another figure, so they get tabular
+   numerals: the columns line up, and swapping 75 € for 59 € no longer shifts the
+   words beside it. One family, three roles — display, body, and figures. */
+.plancard__price b, .planbox__price b, .altcard__price, .termpick__opt span,
+.plancard__venues, .planbox__each, .week__each b, .paybar__info span,
+.cov__headline, .stepper__dot, .qprogress__label, .week__venue span,
+.appcard__cat, .savenote__mail, .demo-banner__build {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+/* Prices are the figures people scan hardest, so they get the tighter tracking a
+   number deserves and the currency stays optically attached. */
+.plancard__price b, .planbox__price b { letter-spacing: -.02em; }
+
+@media (max-width: 900px) {
+  /* The end of this page is the part testers said they could not process, so on a
+     phone the seams between its sections are tighter than on desktop. */
+  .ask-and-print { margin-top: 22px; padding-top: 19px; }
+  .ask__examples { gap: 6px; }
+  .why__grid { gap: 9px; }
+}
+
+/* The number lands after the week, not before it: the block opens on your days and
+   your places, and the arithmetic backs it up. */
+.week__each { margin-top: 14px; padding-top: 13px; border-top: 1px solid var(--border); font-size: 15px; color: var(--navy); }
+.week__each b { font-size: 21px; letter-spacing: -.02em; color: var(--ink); font-variant-numeric: tabular-nums; }
+.altcard__neutral { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; color: var(--navy-soft); }
+.altcard__neutral svg { flex: 0 0 auto; }
+
+/* --- the places, first and as a rail ------------------------------------- */
+/* Karim: "what we really like is that I want to see the venues… maybe as a carousel
+   that could be expanded or collapsed." He is right that the page should open on the
+   thing being argued for rather than on the argument. A rail reads as a set you can
+   move through, works identically on a phone, and the same markup expands to a grid
+   when someone wants the whole list. */
+.places__head { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; margin-bottom: 14px; }
+.places__toggle { white-space: nowrap; font-size: 14.5px; }
+
+/* Karim: "the venues should have search in case I want something specific." A field
+   rather than a button to another screen, because what it does is immediate — the list
+   directly under it filters as you type. It sits between the heading and the list so it
+   reads as belonging to that list rather than to the page. */
+.venuesearch {
+  display: flex; align-items: center; gap: 9px; margin: 0 0 13px;
+  height: 46px; padding: 0 13px;
+  background: var(--page); border: 1px solid var(--border); border-radius: var(--radius-lg);
+}
+.venuesearch:focus-within { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(16,32,60,.10); }
+.venuesearch__icon { flex: 0 0 auto; display: flex; color: var(--navy-soft); }
+.venuesearch input {
+  flex: 1 1 auto; min-width: 0; height: 100%;
+  border: 0; background: none; outline: none; -webkit-appearance: none; appearance: none;
+  font: inherit; font-size: 15px; color: var(--navy);
+}
+.venuesearch input::placeholder { color: var(--navy-soft); opacity: .85; }
+/* the browser's own clear cross sits at a different baseline in every engine and does
+   not tell the page it was pressed — ours is a real button next to it */
+.venuesearch input::-webkit-search-cancel-button { -webkit-appearance: none; display: none; }
+.venuesearch__clear { flex: 0 0 auto; font-size: 13.5px; white-space: nowrap; }
+.venue-grid--big.is-rail {
+  /* A fixed track, not minmax(…, 1fr): inside a horizontally scrolling container the
+     1fr resolved against the container rather than the content and collapsed every
+     card to 2px wide, which is why the rail looked like it held four venues. */
+  /* And the explicit three-column template from .venue-grid has to be cleared, or the
+     first three cards land in tracks of minmax(0,1fr) — which is zero inside a
+     scrolling container — while only the implicit tracks get their real width. */
+  display: grid; grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 238px;
+  gap: 14px; overflow-x: auto; overflow-y: hidden;
+  /* proximity, not mandatory. Mandatory re-snaps on every gesture, so a trackpad flick
+     gets yanked to the nearest card and you cannot rest halfway between two — the rail
+     appears to fight the hand moving it. Proximity tidies up a near miss and otherwise
+     leaves the scroll alone. */
+  scroll-snap-type: x proximity; scroll-padding-left: 0;
+  /* And a flick past the last card must not chain outward: on a trackpad that reaches
+     the browser as a back-swipe, which leaves the journey entirely. */
+  overscroll-behavior-x: contain;
+  padding-bottom: 6px; margin-bottom: -6px;
+  scrollbar-width: thin;
+}
+.venue-grid--big.is-rail > * { scroll-snap-align: start; }
+.venue-grid--big.is-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; }
+
+/* Where the places they asked for stop and the rest of the neighbourhood starts. A
+   reviewer counted eight cards under a heading promising swimming and climbing and
+   found "other activities" among them; the heading now counts only the matches, and
+   this is the line they cross. */
+.venue-seam {
+  grid-column: 1 / -1; display: flex; align-items: center; gap: 12px;
+  margin: 8px 0 0; font-size: 13.5px; font-weight: 700; letter-spacing: .01em;
+  color: var(--navy-soft); text-transform: none;
+}
+.venue-seam::after { content: ""; flex: 1 1 auto; height: 1px; background: var(--border); }
+
+/* the reasons, after the evidence and without the card chrome */
+.why__list { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.why__list li { display: flex; align-items: flex-start; gap: 11px; font-size: 15.5px; line-height: 1.45; color: var(--navy); }
+.why__list .why__icon {
+  flex: 0 0 auto; width: 28px; height: 28px; border-radius: 50%;
+  background: var(--yellow-pale); display: grid; place-items: center; margin-top: -1px;
+}
+
+@media (max-width: 900px) {
+  .venue-grid--big.is-rail { grid-auto-columns: 76%; gap: 10px; }
+  .venue-grid--big.is-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .places__head { margin-bottom: 11px; }
+  .why__list li { font-size: 15px; }
+}
+
+/* --- two sections, not six ------------------------------------------------ */
+/* Karim: "I don't know why you made so many containers, I want simplicity." The main
+   column is the story — the places and the week — and it uses headings and space to
+   separate them rather than a border around each one. The plan, why it fits and what
+   it opens are one argument, so they sit together in the column beside it. */
+.sec__title { font-size: 19px; font-weight: 800; letter-spacing: -.02em; margin: 0; }
+.places { margin-top: 4px; }
+.places + .week { margin-top: 34px; }
+/* The app catalogue answers the same question as the places above it — what can I
+   actually use — so it sits with them, and the week keeps its own air below. */
+.places + .apps { margin-top: 18px; }
+.apps + .week { margin-top: 34px; }
+.week + .apps { margin-top: 20px; }
+
+/* The reasoning used to live in the plan card, behind a fold, under an alternative
+   card, under a comparison fold. Karim, 14 Aug: the sidebar was "still a bit too much".
+   All of it moved to one shelf at the foot of the page, where three folds that each
+   looked like a different kind of object now look like three rows of the same one.
+   The card can afford to let it go because it argues in figures (rule 67). */
+.reco-more { margin-top: 30px; padding-top: 26px; border-top: 1px solid var(--border); }
+.reco-more__title { font-size: 19px; font-weight: 800; letter-spacing: -.02em; margin: 0 0 14px; }
+.shelf { border: 1px solid var(--border); border-radius: var(--radius-lg); background: #fff; overflow: hidden; }
+.shelf__row + .shelf__row { border-top: 1px solid var(--border); }
+.shelf__head {
+  display: flex; align-items: center; gap: 12px; cursor: pointer; list-style: none;
+  padding: 16px 18px; font-size: 15.5px; font-weight: 700;
+}
+.shelf__head::-webkit-details-marker { display: none; }
+.shelf__head > :first-child { flex: 0 0 auto; color: var(--navy-soft); }
+.shelf__label { min-width: 0; }
+.shelf__hint { font-size: 13.5px; font-weight: 400; color: var(--navy-soft); margin-left: auto; text-align: right; }
+.shelf__head > svg:last-child { flex: 0 0 auto; margin-left: auto; color: var(--navy-soft); transform: rotate(90deg); transition: transform .16s ease; }
+.shelf__hint + svg { margin-left: 0 !important; }
+.shelf__row[open] > .shelf__head > svg:last-child { transform: rotate(-90deg); }
+.shelf__row[open] > .shelf__head { border-bottom: 1px solid var(--cream-line); }
+.shelf__body { padding: 18px; }
+/* Ask Urby keeps its own insides but gives up its own box: inside the shelf it is a row. */
+.shelf .ask, .shelf .ask--compact { border: 0; background: transparent; padding: 0; margin: 0; border-radius: 0; }
+.reco-why .cov { margin-top: 16px; padding-top: 15px; border-top: 1px solid var(--cream-line); }
+.reco-why .why__foot { margin-top: 14px; }
+@media (max-width: 700px) { .shelf__hint { display: none; } }
+
+/* Every card the same height, and a name that never clips: the rail was showing four
+   cards of four different heights with "Holmes Place Gendarmenmarkt" running off the
+   edge of its own box. */
+/* In a rail the grid row already stretches every card to the tallest one, so an
+   explicit height:100% here made each card as tall as the row it was defining. */
+.venue-grid--big.is-rail { align-items: stretch; grid-auto-rows: max-content; }
+.venue-grid--big.is-rail > .venue-card { height: 100%; }
+.venue-grid--big .venue-card__body { display: flex; flex-direction: column; gap: 3px; flex: 1 1 auto; }
+.venue-grid--big .venue-card__name { overflow-wrap: anywhere; hyphens: auto; }
+.venue-grid--big .venue-card__more { margin-top: auto; padding-top: 6px; }
+
+/* What just changed, said at the moment it changes. Karim's boss played with the days
+   and never realised the plan on the right was following him. */
+.week__changed {
+  display: flex; align-items: flex-start; gap: 8px;
+  margin: 12px 0 0; padding: 11px 13px;
+  background: var(--yellow-pale); border-radius: var(--radius);
+  font-size: 14px; line-height: 1.45; color: var(--ink);
+}
+.week__changed svg { flex: 0 0 auto; margin-top: 2px; }
+.week__days-label span { display: inline; }
+
+/* --- the rail's affordances ------------------------------------------------ */
+/* A horizontal rail with no arrows and an overlay scrollbar is invisible to anyone on
+   a mouse, which reads as broken. Arrows only where there is a pointer; a touch
+   device already knows how to swipe. */
+.places__tools { display: flex; align-items: center; gap: 14px; }
+.railnav { display: none; gap: 6px; }
+.railnav__btn {
+  display: grid; place-items: center; width: 34px; height: 34px;
+  border: 1px solid var(--border); border-radius: 50%; background: #fff; color: var(--ink);
+}
+.railnav__btn:hover { border-color: var(--ink); }
+@media (hover: hover) and (pointer: fine) { .railnav { display: inline-flex; } }
+
+/* how far we looked, as a control rather than a fact */
+/* "How far to look" and "see all of them" answer the same question, so they share one
+   row under the places rather than arriving from two directions around the heading. */
+.places__foot { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 14px; }
+.places__foot .radius { margin-top: 0; }
+.places__count { display: flex; align-items: center; gap: 14px; margin-left: auto; }
+.radius { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+.radius__label { display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 700; color: var(--navy); }
+.radius .chip-sm { font-size: 13px; padding: 5px 11px; }
+.radius .chip-sm.is-current { background: var(--yellow-bright); border-color: var(--ink); font-weight: 700; }
+.radius__count { font-size: 13px; color: var(--navy-soft); font-variant-numeric: tabular-nums; }
+
+@media (max-width: 900px) {
+  .radius { gap: 6px; margin-top: 12px; }
+  .places__foot { gap: 10px; margin-top: 12px; }
+  /* On a phone the count and the toggle take their own row rather than being squeezed
+     onto the end of the distance chips. */
+  .places__count { margin-left: 0; flex: 1 1 100%; justify-content: space-between; }
+}
+
+/* --- the front door's search, and what it comes back with (rules 62–63) -----
+   The landing page used to open with an email field. Four reviewers read it as the
+   price of admission however loudly it said "optional", so the page now opens by
+   offering something instead: the answer to "is my studio on this?". */
+.landing__cta { margin: 0 0 4px; }
+.landing__cta .btn { height: 58px; font-size: 17px; padding: 0 26px; }
+
+/* The search is Urby's, and it says so before it answers: her name above the heading,
+   and one line under the field saying how she read what was typed. */
+.search__guide {
+  display: flex; align-items: center; gap: 10px; margin: 4px 0 12px;
+  font-size: 15px; font-weight: 700; color: var(--ink);
+}
+.search__read {
+  display: flex; align-items: flex-start; gap: 9px; margin: 14px 0 0;
+  font-size: 14.5px; line-height: 1.5; color: var(--navy); max-width: 64ch;
+}
+.search__read svg { flex: 0 0 auto; margin-top: 3px; color: var(--navy-soft); }
+
+/* One result, as a card carrying the venue's own photograph. Somebody typing the name
+   of their studio is asking "is this the place I mean?" as much as "is it on the
+   list?" — a row of type only answers the second. The membership that opens it sits
+   under the picture, on every card, because that join is the whole point (rule 63). */
+.hits {
+  display: grid; gap: 18px; grid-template-columns: repeat(auto-fill, minmax(228px, 1fr));
+  margin: 24px 0 0; padding: 0; list-style: none;
+}
+.hit {
+  display: flex; flex-direction: column; min-width: 0; padding: 0; text-align: left;
+  background: #fff; border: 1px solid var(--cream-line); cursor: pointer;
+}
+.hit:hover { border-color: var(--ink); }
+.hit__media {
+  position: relative; display: grid; place-items: center; overflow: hidden;
+  aspect-ratio: 3 / 2; background: var(--yellow-pale);
+}
+.hit__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.hit__body { display: flex; flex-direction: column; gap: 4px; flex: 1 1 auto; padding: 13px 14px 15px; }
+.hit__name { font-size: 16px; font-weight: 700; line-height: 1.25; color: var(--ink); overflow-wrap: anywhere; }
+.hit:hover .hit__name { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.hit__meta { font-size: 13px; color: var(--navy-soft); font-variant-numeric: tabular-nums; }
+.hit__plan {
+  display: flex; align-items: flex-start; gap: 8px;
+  margin-top: auto; padding-top: 11px; border-top: 1px solid var(--border);
+  font-size: 14px; line-height: 1.35; color: var(--navy);
+}
+.hit__plan svg { flex: 0 0 auto; margin-top: 2px; }
+.hit__plan small { display: block; font-size: 13px; color: var(--navy-soft); font-variant-numeric: tabular-nums; }
+
+/* One hit is the commonest search there is — you typed a name and it exists. A single
+   228px card floating in an 820px column reads as a leftover, so the answer to a
+   one-place question is one wide card: photograph beside the name and the price. */
+@media (min-width: 720px) {
+  .hits--one { grid-template-columns: 1fr; }
+  .hits--one .hit { flex-direction: row; }
+  .hits--one .hit__media { flex: 0 0 42%; aspect-ratio: auto; min-height: 232px; }
+  .hits--one .hit__body { justify-content: center; gap: 6px; padding: 24px 26px; }
+  .hits--one .hit__name { font-size: 24px; letter-spacing: -0.01em; }
+  .hits--one .hit__meta { font-size: 14.5px; }
+  .hits--one .hit__plan { margin-top: 16px; padding-top: 14px; font-size: 15px; }
+}
+
+/* The step from "yes, it's here" to "and this is what it would cost you". */
+.searchnext { margin-top: 26px; padding-top: 22px; border-top: 1px solid var(--border); }
+.searchnext__line {
+  display: flex; align-items: flex-start; gap: 10px; margin: 0 0 18px;
+  font-size: 16px; line-height: 1.5; color: var(--navy); max-width: 58ch;
+}
+.searchnext__line svg { flex: 0 0 auto; margin-top: 3px; }
+.searchnext__line em { font-style: italic; }
+.searchnext .btn { height: 56px; font-size: 17px; padding: 0 26px; }
+
+@media (max-width: 700px) {
+  /* One card across on a phone, and the photograph gets shorter so the name and the
+     membership are both above the fold of the first result. */
+  .hits { grid-template-columns: 1fr; gap: 14px; }
+  .hits .hit__media { aspect-ratio: 16 / 9; }
+  .search__guide { margin: 2px 0 10px; }
+}
+
+/* === the venue page ========================================================
+   Karim's design, 14 August. Browsing is not the checkout, so the page is one wide
+   column with three things in it: a panel that holds every control, a row of real
+   places, and Urby at the foot asking the one thing a list of places cannot tell her.
+   The badge on each photograph is the join a venue directory hasn't got — the cheapest
+   membership that opens the place (rule 63). */
+.venuepage { max-width: 1160px; }
+.venuepage__h1 { margin: 0 0 22px; font-size: clamp(31px, 3.4vw, 46px); line-height: 1.04; }
+
+/* Everything you can do to the list lives in one cream panel, so the page has one
+   place to look rather than controls scattered down it. */
+.findbar {
+  background: var(--cream); border: 1px solid var(--cream-line);
+  border-radius: var(--radius-lg); padding: 18px 20px 20px;
+}
+.findbar__where {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 6px 18px; margin-bottom: 14px;
+}
+.findbar__wheretext {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 15.5px; font-weight: 700; color: var(--ink);
+}
+.findbar__wheretext svg { flex: 0 0 auto; color: var(--navy-soft); }
+.findbar .signup-row { max-width: none; }
+/* The location we assumed, offered as a list you can correct — the same contract the
+   city chip keeps, one level finer (rule 26). */
+.wherepick {
+  background: #fff; border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 14px 16px; margin: 0 0 14px;
+}
+.wherepick__label { font-size: 14px; font-weight: 700; margin-bottom: 10px; }
+.wherepick__grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.wherepick__note {
+  display: flex; align-items: flex-start; gap: 8px; margin: 12px 0 0;
+  font-size: 13px; line-height: 1.45; color: var(--navy-soft);
+}
+.wherepick__note svg { flex: 0 0 auto; margin-top: 2px; }
+
+/* Five shortcuts into the activities answer. Chosen state is the app's own language for
+   chosen — a black rule round it — not a black fill, which is reserved for the one
+   action on the screen (rule 9). */
+.findbar__cats { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+.catchip {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: #fff; border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 9px 15px 9px 10px; font-size: 15px; font-weight: 700; color: var(--ink);
+  min-height: 48px;
+}
+.catchip:hover { border-color: #b9b6ad; }
+.catchip.is-on { border: 2px solid var(--ink); padding: 8px 14px 8px 9px; }
+.catchip__icon {
+  flex: 0 0 auto; width: 32px; height: 32px; border-radius: 50%;
+  background: var(--yellow-pale); display: grid; place-items: center;
+}
+.catchip.is-on .catchip__icon { background: var(--yellow-bright); }
+
+/* The row of places, and its heading, which counts rather than flatters. */
+.placesrow { margin-top: 34px; }
+.placesrow__head {
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 14px 24px;
+  flex-wrap: wrap; margin-bottom: 16px;
+}
+.placesrow__title { min-width: 0; }
+.placesrow__title h2 { font-size: clamp(21px, 1.9vw, 26px); line-height: 1.15; }
+.placesrow__title p { margin: 5px 0 0; font-size: 14.5px; color: var(--navy-soft); }
+.placesrow__tools { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 14px; }
+.placesrow__all { font-size: 14.5px; display: inline-flex; align-items: center; gap: 7px; }
+.placesrow__foot {
+  display: flex; align-items: flex-start; gap: 8px; margin: 14px 0 0;
+  font-size: 13px; line-height: 1.5; color: var(--navy-soft); max-width: 86ch;
+}
+.placesrow__foot svg { flex: 0 0 auto; margin-top: 3px; }
+
+/* A native select wearing a pill. The chevron is ours; the menu is the browser's, which
+   is the one that already works on a phone and with a keyboard. */
+.pillsel {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: #fff; border: 1px solid var(--border); border-radius: 999px;
+  padding: 0 13px 0 14px; height: 44px; cursor: pointer;
+}
+.pillsel:focus-within { border-color: var(--ink); box-shadow: 0 0 0 3px rgba(16,32,60,.10); }
+.pillsel__icon { display: flex; color: var(--navy-soft); }
+.pillsel select {
+  appearance: none; -webkit-appearance: none;
+  border: 0; background: transparent; outline: none; cursor: pointer;
+  font-size: 14.5px; font-weight: 700; color: var(--ink);
+  padding: 0 2px 0 0;
+}
+.pillsel > svg { color: var(--navy-soft); pointer-events: none; }
+
+/* Four across on a desktop. `auto-fill` would leave one card stretched across the row
+   when a filter cuts the list down to three, so the track count is fixed and the last
+   row is simply short. */
+.hits--row { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; margin-top: 0; }
+.hit { border-radius: var(--radius); overflow: hidden; }
+.hit__badge {
+  position: absolute; top: 10px; left: 10px; z-index: 1;
+  background: var(--yellow-pale); border-radius: 999px;
+  padding: 5px 12px; font-size: 12.5px; font-weight: 700; color: var(--ink);
+}
+.hit__view {
+  display: inline-flex; align-items: center; gap: 7px;
+  margin-top: auto; padding-top: 12px;
+  font-size: 14.5px; font-weight: 700; color: var(--ink);
+  text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px;
+}
+.hit__view svg { flex: 0 0 auto; }
+
+/* Urby at the foot. The two filters above answer two of her four questions between
+   them; this asks whichever of the other two is still open, and answering it stays on
+   this page (rule 11 — and nothing is asked twice). */
+.routine {
+  display: grid; grid-template-columns: auto minmax(0,1fr) minmax(260px, 320px);
+  align-items: start; gap: 22px 26px;
+  margin-top: 40px; padding: 24px 26px;
+  background: var(--cream); border: 1px solid var(--cream-line); border-radius: var(--radius-lg);
+}
+.routine__who { display: flex; align-items: center; gap: 10px; font-size: 15px; }
+.routine__mid { min-width: 0; }
+.routine__title { font-size: clamp(20px, 1.8vw, 25px); line-height: 1.15; }
+.routine__q { margin: 12px 0 10px; font-size: 15.5px; font-weight: 700; color: var(--navy); }
+.routine__opts { display: flex; flex-wrap: wrap; gap: 9px; }
+/* A chosen answer, not a call to action: deliberately under the 40px that makes a
+   filled black control read as the action on the screen (rule 9). */
+.pill {
+  background: #fff; border: 1px solid var(--border); border-radius: 999px;
+  padding: 0 17px; height: 38px; font-size: 14.5px; font-weight: 700; color: var(--ink);
+}
+.pill:hover { border-color: var(--ink); }
+.routine__fit {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+  margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--cream-line);
+}
+.routine__fit > svg { flex: 0 0 auto; }
+.routine__fitlabel { font-size: 14.5px; font-weight: 700; margin-right: 2px; }
+.routine__side { display: flex; flex-direction: column; align-items: stretch; gap: 12px; }
+.routine__side .btn { width: 100%; height: 58px; font-size: 17px; }
+.routine__note { margin: -4px 0 0; font-size: 13px; line-height: 1.45; color: var(--navy-soft); }
+.routine__save {
+  display: flex; align-items: flex-start; gap: 12px; text-align: left;
+  background: transparent; border: 0; padding: 8px 0 0; color: var(--ink);
+}
+.routine__save svg { flex: 0 0 auto; margin-top: 2px; color: var(--navy-soft); }
+.routine__save b { display: block; font-size: 15.5px; }
+.routine__save small { display: block; font-size: 13px; color: var(--navy-soft); margin-top: 2px; }
+.routine__save:hover b { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+
+@media (max-width: 1080px) {
+  .hits--row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .routine { grid-template-columns: minmax(0,1fr); }
+  .routine__who { order: -1; }
+  .routine__side { max-width: 420px; }
+}
+@media (max-width: 700px) {
+  /* On a phone the panel is the page: the box, then the shortcuts, then one card at a
+     time. The tools sit under the heading rather than beside it, because a 44px pill and
+     a 26px heading on one line is what makes a heading wrap to three words. */
+  .venuepage__h1 { margin-bottom: 16px; }
+  .findbar { padding: 16px 15px 18px; }
+  .findbar__cats { gap: 8px; }
+  .catchip { font-size: 14px; padding: 8px 12px 8px 8px; min-height: 44px; }
+  .catchip__icon { width: 28px; height: 28px; }
+  .placesrow__head { align-items: flex-start; }
+  .hits--row { grid-template-columns: 1fr; }
+  .routine { padding: 20px 16px; }
+}
+
+/* --- all four plans, in place (rule 64) -------------------------------------
+   Comparison is default behaviour at these prices, so the recommendation contains
+   the alternatives instead of sending anyone to a separate page to find them. A grid
+   with four equal rows, one number per column, so the eye can run down it (rule 34). */
+/* Karim, 14 Aug: "comparing the plans is nice but hidden." It was a 13.5px summary on a
+   closed drawer, below the fold of a sticky column. At these prices comparison is default
+   behaviour, so it is a card of its own with a handle that names it, and it starts open.
+   Closing it is how the column gets shorter, which is the other thing he asked for. */
+.allplans {
+  margin-top: 18px; background: #fff; border: 1px solid var(--border);
+  border-radius: var(--radius-lg); overflow: hidden;
+}
+.allplans__head {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  cursor: pointer; list-style: none; padding: 14px 15px;
+  font-size: 16px; font-weight: 700; letter-spacing: -.01em; color: var(--ink);
+}
+.allplans__head::-webkit-details-marker { display: none; }
+.allplans__head svg { flex: 0 0 auto; color: var(--navy-soft); transform: rotate(90deg); transition: transform .16s ease; }
+.allplans[open] .allplans__head svg { transform: rotate(-90deg); }
+.allplans[open] .allplans__head { padding-bottom: 10px; }
+.allplans__grid { display: grid; gap: 1px; background: var(--border); }
+.allplans__row {
+  display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; align-items: baseline;
+  background: #fff; padding: 11px 15px;
+}
+.allplans__row.is-current { background: var(--cream); }
+.allplans__name { font-size: 16px; font-weight: 700; letter-spacing: -.01em; }
+/* A pill, not a caption: on the row it has to read as a label attached to that plan
+   rather than as a second half of its name. */
+.allplans__tag {
+  display: inline-block; background: var(--yellow-bright); color: var(--ink);
+  font-size: 11.5px; font-weight: 700; letter-spacing: .01em;
+  padding: 3px 8px; border-radius: 999px; margin-left: 8px; vertical-align: 1px;
+}
+.allplans__price { font-size: 16px; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
+.allplans__price small { font-weight: 400; font-size: 12px; color: var(--navy-soft); }
+.allplans__opens { font-size: 13.5px; color: var(--navy-soft); font-variant-numeric: tabular-nums; }
+.allplans__act { text-align: right; font-size: 13.5px; }
+/* Rule 41: an option states what it costs, not only what it saves — on the row itself,
+   so nobody has to hold two numbers in their head to find the catch. */
+.allplans__warn {
+  grid-column: 1 / -1; display: flex; align-items: flex-start; gap: 6px;
+  font-size: 12px; line-height: 1.4; color: #8a5a1a; margin-top: 4px;
+}
+.allplans__warn svg { flex: 0 0 auto; margin-top: 1px; }
+.allplans__foot { text-align: center; font-size: 13.5px; margin: 0; padding: 13px 15px; }
+
+/* What the money opens, on the card that carries the money (rule 14). */
+.planbox__opens {
+  display: flex; align-items: flex-start; gap: 8px; margin-top: 10px;
+  font-size: 14px; line-height: 1.4; color: var(--navy);
+}
+.planbox__opens svg { flex: 0 0 auto; margin-top: 2px; }
+.planbox__opens b { font-variant-numeric: tabular-nums; }
+
+@media (max-width: 980px) {
+  /* The plan card, moved up under the answer sentence by the renderer. It keeps the
+     spacing the stacked aside had, so nothing sits under the sticky price bar. */
+  .planbox-inline { margin: 18px 0 4px; }
+}
+
+/* ===========================================================================
+   The recommendation, to Karim's design of 14 August.
+
+   Four things down the left, in this order: what he asked for said back to him, the
+   week, and then three rows — the places, the apps, the questions. Everything about
+   money is in the column to the right. Rule 14 holds: value before price.
+   =========================================================================== */
+
+/* The answer sentence. Navy rather than black and set at reading size, because it is
+   what we heard rather than what we are claiming — and every part of it is editable in
+   the chips directly underneath. */
+.reco-hero__title { margin: 6px 0 8px; }
+.reco-hero__lede {
+  font-size: clamp(16px, 1.35vw, 19px); line-height: 1.4; color: var(--navy);
+  max-width: 46ch; margin: 0 0 18px;
+}
+.reco-hero__lede + .chips-row { margin-bottom: 20px; }
+/* "You told us" reads as the start of the sentence the chips finish, so it is set like
+   one — not as the small-caps eyebrow the label wears on the question screens. */
+.reco-hero__lede + .chips-row .chips-row__label {
+  text-transform: none; letter-spacing: 0; font-size: 15px; color: var(--navy);
+}
+
+/* --- the week ---------------------------------------------------------------
+   The signature of the whole journey, so it is the one card on the page that is open
+   and coloured: cream body, one white row per session. Rule 18 / 60. */
+.weekcard {
+  background: var(--cream); border: 1px solid var(--cream-line);
+  border-radius: var(--radius-lg); padding: 20px 20px 18px; margin: 0 0 16px;
+}
+.weekcard__head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+.weekcard__title { font-size: clamp(19px, 1.55vw, 23px); font-weight: 800; letter-spacing: -.02em; }
+/* Adjusting the week is a second intention, so it is a link at the far end of the
+   heading rather than a button competing with the one on the right (rule 9). */
+.weekcard__adjust {
+  display: inline-flex; align-items: center; gap: 7px; flex: 0 0 auto;
+  background: none; border: 0; padding: 0; color: var(--navy);
+  font-size: 15px; font-weight: 700; text-decoration: underline; text-underline-offset: 3px;
+}
+.weekcard__adjust:hover { color: var(--ink); }
+.weekcard__list { list-style: none; margin: 14px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+
+/* One row: what it is on the left, where it is in the middle, and what it costs you in
+   plan terms on the right. A locked row says which membership opens it and nothing else —
+   the reasoning for that lives on the card in the other column. */
+.weekrow {
+  display: grid; grid-template-columns: 44px 232px minmax(0, 1fr) auto;
+  align-items: center; gap: 14px;
+  background: #fff; border-radius: var(--radius); padding: 10px 14px 10px 10px;
+}
+.weekrow__icon {
+  flex: 0 0 auto; display: grid; place-items: center; width: 44px; height: 44px;
+  border-radius: 50%; background: var(--yellow-pale); color: #4a4126;
+}
+.weekrow.is-locked .weekrow__icon { background: var(--page-grey); color: var(--navy-soft); }
+.weekrow__meta { display: flex; align-items: baseline; gap: 9px; min-width: 0; }
+.weekrow__day { font-size: 15.5px; color: var(--navy); }
+.weekrow__dot { color: var(--navy-soft); }
+.weekrow__act { font-size: 16px; font-weight: 700; }
+/* The place is a button because tapping it opens the venue sheet, but it must not look
+   like one: a photograph, a name and a distance. */
+.weekrow__place {
+  display: flex; align-items: center; gap: 12px; min-width: 0;
+  background: none; border: 0; padding: 0; text-align: left;
+}
+.weekrow__thumb {
+  flex: 0 0 auto; width: 78px; height: 54px; border-radius: 6px; overflow: hidden;
+  aspect-ratio: auto;
+}
+.weekrow__thumb svg { width: 24px; height: 24px; }
+.weekrow__pname { min-width: 0; font-size: 15.5px; font-weight: 700; line-height: 1.25; }
+.weekrow__pname small { display: block; font-size: 14px; font-weight: 400; color: var(--navy-soft); font-variant-numeric: tabular-nums; }
+.weekrow__place:hover .weekrow__pname { text-decoration: underline; }
+.weekrow__end { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+.weekrow__pill {
+  flex: 0 0 auto; background: var(--yellow-bright); color: var(--ink);
+  font-size: 12.5px; font-weight: 700; padding: 5px 10px; border-radius: 999px; white-space: nowrap;
+}
+/* The published limit for this place on this plan (rule 13). Quiet: it is a fact about
+   the row, not a warning about it. */
+.weekrow__limit { flex: 0 0 auto; font-size: 13px; color: var(--navy-soft); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.weekrow__swap {
+  display: inline-flex; align-items: center; gap: 5px; background: none; border: 0; padding: 0;
+  font-size: 13px; font-weight: 700; color: var(--navy-soft);
+}
+.weekrow__swap:hover { color: var(--ink); text-decoration: underline; }
+/* The one thing the plan on screen cannot carry, said where the gap is visible. */
+.weekcard__adds {
+  display: flex; align-items: flex-start; gap: 10px; margin: 14px 2px 0;
+  font-size: 15px; line-height: 1.45;
+}
+.weekcard__adds svg { flex: 0 0 auto; margin-top: 2px; }
+.weekcard__foot {
+  display: flex; align-items: flex-start; gap: 8px; margin: 12px 2px 0;
+  font-size: 13.5px; line-height: 1.45; color: var(--navy-soft);
+}
+.weekcard__foot svg { flex: 0 0 auto; margin-top: 3px; }
+.weekcard .week__days { border-top-color: var(--cream-line); margin: 16px 2px 0; }
+.weekcard .week__changed { background: #fff; margin: 12px 2px 0; }
+
+/* --- the three rows --------------------------------------------------------
+   Places, apps, questions. The same shape three times: an icon, the claim and the
+   figure that backs it, then what you can do about it. Everything each row can do is
+   behind it, so the page is four things tall instead of nine. */
+.rowcard { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); margin-bottom: 12px; }
+.rowcard__head {
+  display: flex; align-items: center; gap: 14px; cursor: pointer; list-style: none;
+  padding: 16px 18px;
+}
+.rowcard__head::-webkit-details-marker { display: none; }
+.rowcard__icon { flex: 0 0 auto; display: grid; place-items: center; color: var(--navy); }
+.rowcard__text { min-width: 0; }
+.rowcard__text { flex: 0 1 auto; }
+.rowcard__text b { display: block; font-size: 16.5px; font-weight: 700; letter-spacing: -.01em; white-space: nowrap; }
+.rowcard__text small { display: block; font-size: 14px; color: var(--navy-soft); margin-top: 2px; font-variant-numeric: tabular-nums; }
+.rowcard__cta {
+  display: inline-flex; align-items: center; gap: 9px; margin-left: auto; flex: 0 0 auto;
+  font-size: 15px; font-weight: 700; color: var(--navy);
+}
+.rowcard__head:hover .rowcard__cta { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+.rowcard__cta svg { transition: transform .16s ease; }
+.rowcard[open] .rowcard__cta svg { transform: rotate(90deg); }
+.rowcard__body { padding: 0 18px 18px; }
+.rowcard__body--flush { padding: 0 14px 14px; }
+.rowcard[open] > .rowcard__head { padding-bottom: 12px; }
+/* The apps row proves its claim on the handle: four logos, chosen from the answers. */
+.rowcard__chips { display: flex; align-items: center; gap: 8px; margin-left: auto; min-width: 0; overflow: hidden; }
+.appchip {
+  display: inline-flex; align-items: center; gap: 6px; flex: 0 1 auto; min-width: 0;
+  border: 1px solid var(--border); border-radius: 999px; padding: 5px 11px 5px 6px;
+  font-size: 13px; font-weight: 700; white-space: nowrap; background: #fff;
+}
+.appchip img, .appchip svg { width: 20px; height: 20px; border-radius: 4px; flex: 0 0 auto; }
+.appchip > span { overflow: hidden; text-overflow: ellipsis; }
+.rowcard__chips + .rowcard__cta { margin-left: 16px; }
+/* The questions row names what is inside it, and each name is the way straight in. */
+.rowcard__links { display: flex; align-items: center; gap: 9px; margin-left: auto; flex-wrap: wrap; justify-content: flex-end; }
+.rowcard__links > span { color: var(--navy-soft); }
+.rowcard__link {
+  background: none; border: 0; padding: 0; font-size: 15px; font-weight: 700;
+  color: var(--navy); text-decoration: underline; text-underline-offset: 3px;
+}
+.rowcard__link:hover { color: var(--ink); }
+.rowcard__chev { flex: 0 0 auto; color: var(--navy-soft); display: grid; place-items: center; }
+.rowcard__chev svg { transform: rotate(90deg); transition: transform .16s ease; }
+.rowcard--more[open] .rowcard__chev svg { transform: rotate(-90deg); }
+.rowcard--more .shelf { border: 0; }
+.rowcard--more .shelf__row:first-child { border-top: 1px solid var(--border); }
+
+/* --- the cheaper option, in the open beside the recommendation -------------
+   "Is there something cheaper?" is the question everybody asks, so the answer is not
+   behind a fold. What it cannot do is on the card, and if it opens nothing it carries
+   no button at all — rule 32. */
+.altbox { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--cream-line); }
+.altbox__head { font-size: 16px; font-weight: 700; margin-bottom: 12px; }
+.altbox__card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 15px 15px; }
+.altbox__row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.altbox__row b { font-size: 20px; font-weight: 700; letter-spacing: -.02em; }
+.altbox__price { font-size: 18px; font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.altbox__price small { font-weight: 400; font-size: 13px; color: var(--navy-soft); }
+.altbox__meta { font-size: 14px; color: var(--navy-soft); margin-top: 4px; font-variant-numeric: tabular-nums; }
+.altbox__warn {
+  display: flex; align-items: flex-start; gap: 7px; margin: 10px 0 0;
+  font-size: 13.5px; line-height: 1.4; color: #8a5a1a;
+}
+.altbox__warn svg { flex: 0 0 auto; margin-top: 1px; }
+.altbox__card .btn { margin-top: 14px; height: 46px; font-size: 15.5px; }
+
+@media (max-width: 980px) {
+  /* One row per session becomes two: what and when on top, where underneath. A 44px
+     photograph and a plan pill will not share 390px with a day and an activity. */
+  .weekrow { grid-template-columns: 44px minmax(0, 1fr) auto; row-gap: 10px; }
+  .weekrow__place { grid-column: 2 / -1; }
+  .weekrow__end { grid-column: 3; grid-row: 1; }
+  .weekcard { padding: 16px 14px 14px; }
+  /* The rows keep their shape but give up their right-hand end: a claim and a chevron,
+     with the proof inside. */
+  .rowcard__head { flex-wrap: wrap; padding: 14px 15px; }
+  .rowcard__chips { display: none; }
+  .rowcard__cta, .rowcard__links { margin-left: auto; font-size: 14px; }
+  .rowcard__cta span, .rowcard__links { min-width: 0; }
+  .rowcard__body { padding: 0 15px 15px; }
+  .reco-hero__lede { font-size: 16.5px; }
+}
+@media (max-width: 700px) {
+  /* The icon and the claim stay on one line; the action takes the next one whole. It must
+     be allowed to wrap, or a five-word link pushes the layout viewport wider than the
+     phone and takes the fixed price bar off the screen with it. */
+  .rowcard__head { position: relative; padding-right: 40px; flex-wrap: wrap; }
+  .rowcard__text { flex: 1 1 0; min-width: 0; }
+  .rowcard__cta, .rowcard__links {
+    flex: 1 1 100%; min-width: 0; margin: 8px 0 0; flex-wrap: wrap; justify-content: flex-start;
+  }
+  .rowcard__chev { position: absolute; right: 14px; top: 18px; }
+  /* The title and the way to change it stop sharing a line they cannot both fit on. */
+  .weekcard__head { flex-wrap: wrap; gap: 6px 16px; }
+  .weekcard__title { flex: 1 1 100%; }
+}

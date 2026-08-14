@@ -1,0 +1,50 @@
+{
+  "_note": "The Urban Sports Club App Catalog, as published. The important and easily-missed fact is that app access is tied to the LENGTH of the membership, not to the tier: a 12-month membership unlocks one app at a time, a 24-month membership two, and a rolling monthly membership none. Corporate memberships (three at a time, and a much longer catalogue) are out of scope for this B2C journey, so the corporate-only apps are not listed here. Logos are the apps' own, loaded live from their own domains; where we do not hold a domain we draw a lettered tile rather than invent a logo.",
+  "sources": [
+    {
+      "what": "which apps are in the catalogue, and how many you can activate on each membership length",
+      "url": "https://urbansports.zendesk.com/hc/en-us/articles/21689835078802-App-Catalog-your-free-access-to-digital-wellbeing-apps",
+      "checked": "2026-08-12"
+    },
+    {
+      "what": "app categories and descriptions",
+      "url": "https://insights.urbansportsclub.com/attract-more-talent/best-wellbeing-apps/",
+      "checked": "2026-08-12"
+    }
+  ],
+  "activationsByCommitment": {
+    "monthly": 0,
+    "annual": 1,
+    "biennial": 2
+  },
+  "commitmentNote": {
+    "monthly": "The App Catalog comes with a 12- or 24-month membership. On a rolling monthly membership it is not included.",
+    "annual": "One app at a time, switchable, included with your 12-month membership.",
+    "biennial": "Two apps at a time, switchable, included with your 24-month membership."
+  },
+  "apps": [
+    { "id": "yogaeasy",     "name": "YogaEasy",            "category": "Yoga",        "blurb": "Yoga classes and courses for every level, at home.",              "minCommitment": "annual",   "domain": "yogaeasy.de" },
+    { "id": "asana-rebel",  "name": "Asana Rebel",         "category": "Yoga",        "blurb": "Yoga-inspired fitness — movement and mindfulness together.",      "minCommitment": "annual",   "domain": "asanarebel.com" },
+    { "id": "fitnessraum",  "name": "fitnessRAUM",         "category": "Home fitness","blurb": "Online fitness, yoga and pilates classes, live and on demand.",    "minCommitment": "annual",   "domain": "fitnessraum.de" },
+    { "id": "skillyoga",    "name": "SkillYoga",           "category": "Mobility",    "blurb": "Yoga, mobility and recovery training in one plan.",                "minCommitment": "annual",   "domain": "skillyoga.app" },
+    { "id": "fizzup",       "name": "FizzUp",              "category": "Home fitness","blurb": "Guided home workouts and wellbeing programmes.",                   "minCommitment": "annual",   "domain": "fizzup.com" },
+    { "id": "joggo",        "name": "Joggo",               "category": "Running",     "blurb": "A running plan and meal plan built around you.",                   "minCommitment": "annual",   "domain": "joggo.run" },
+    { "id": "runners-high", "name": "RUNNERS HIGH",        "category": "Running",     "blurb": "Music scored to your pace, based on running science.",             "minCommitment": "annual",   "domain": null },
+    { "id": "on-dmnd",      "name": "ON-DMND",             "category": "Fitness",     "blurb": "Women's fitness, nutrition and community in one app.",             "minCommitment": "annual",   "domain": null },
+    { "id": "morla-moves",  "name": "Morla Moves",         "category": "Movement",    "blurb": "Movement analysis and coaching for how you actually move.",        "minCommitment": "annual",   "domain": null },
+    { "id": "medizen",      "name": "medizen",             "category": "Fitness",     "blurb": "Adaptive training that adjusts to the day you're having.",         "minCommitment": "annual",   "domain": null },
+    { "id": "tepy",         "name": "Tepy",                "category": "Recovery",    "blurb": "Recovery coaching between the sessions that count.",               "minCommitment": "annual",   "domain": null },
+
+    { "id": "sleep-cycle",  "name": "Sleep Cycle",         "category": "Sleep",       "blurb": "Sleep tracking, and the habits that improve it.",                  "minCommitment": "biennial", "domain": "sleepcycle.com" },
+    { "id": "endel",        "name": "Endel",               "category": "Focus",       "blurb": "Science-backed soundscapes for focus, rest and sleep.",            "minCommitment": "biennial", "domain": "endel.io" },
+    { "id": "petit-bambou", "name": "Petit BamBou",        "category": "Meditation",  "blurb": "Guided meditation, from first session to daily practice.",         "minCommitment": "biennial", "domain": "petitbambou.com" },
+    { "id": "mindfulness",  "name": "The Mindfulness App", "category": "Meditation",  "blurb": "Three months of guided and silent meditation.",                     "minCommitment": "biennial", "domain": "themindfulnessapp.com" },
+    { "id": "the-essence",  "name": "The Essence",         "category": "Cycle",       "blurb": "Training aligned to your menstrual cycle.",                        "minCommitment": "biennial", "domain": null },
+    { "id": "upfit",        "name": "Upfit",               "category": "Nutrition",   "blurb": "Nutrition plans built around your goal and your kitchen.",         "minCommitment": "biennial", "domain": "upfit.de" },
+    { "id": "noory",        "name": "Noory",               "category": "Nutrition",   "blurb": "A personal guide to eating well without counting everything.",      "minCommitment": "biennial", "domain": null },
+    { "id": "lumiere",      "name": "Lumiere",             "category": "Mental",      "blurb": "Anxiety relief and gratitude practice, in short sessions.",         "minCommitment": "biennial", "domain": null },
+    { "id": "lune",         "name": "Lune",                "category": "Sleep",       "blurb": "Better sleep and wind-down habits.",                               "minCommitment": "biennial", "domain": null },
+    { "id": "sylo",         "name": "SYLO",                "category": "Mental",      "blurb": "Resilience coaching and meditation.",                              "minCommitment": "biennial", "domain": null },
+    { "id": "cardi-health", "name": "Cardi.health",        "category": "Health",      "blurb": "Understand your heart health, week by week.",                       "minCommitment": "biennial", "domain": null }
+  ]
+}
