@@ -990,6 +990,11 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
   display: grid; place-items: center; padding: 24px; z-index: 50;
 }
 .overlay[hidden] { display: none; }
+.sr-only {
+  position: absolute !important; width: 1px !important; height: 1px !important;
+  padding: 0 !important; margin: -1px !important; overflow: hidden !important;
+  clip: rect(0,0,0,0) !important; white-space: nowrap !important; border: 0 !important;
+}
 .modal {
   background: #fff; border-radius: 14px; max-width: 560px; width: 100%;
   padding: 40px 44px 34px; text-align: center; position: relative;
@@ -1007,6 +1012,48 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
 .modal__fine { font-size: 14px; color: var(--navy-soft); margin-top: 6px; }
 .modal__fine a { text-decoration: underline; }
 .modal__tertiary { display: inline-block; margin-top: 16px; background: none; border: 0; color: var(--navy-soft); font-size: 16px; text-decoration: none; }
+.modal--save {
+  max-width: 1120px; padding: 0; overflow: auto; max-height: calc(100vh - 48px);
+  text-align: left; border-radius: 18px;
+}
+.modal--save .modal__close {
+  z-index: 3; top: 14px; right: 16px; width: 40px; height: 40px;
+  border-radius: 50%; background: rgba(255,255,255,.92); font-size: 25px;
+}
+.modal--save .savepanel { border: 0; border-radius: 0; }
+.modal--save .savepanel__recap,
+.modal--save .savepanel__ask { padding-top: 34px; }
+.save-bookmark {
+  margin: 18px 0 0; padding-top: 16px; border-top: 1px solid var(--border);
+  text-align: center; color: var(--navy-soft); font-size: 14px; line-height: 1.45;
+}
+.save-bookmark .linkish { display: inline-flex; align-items: center; gap: 7px; margin-top: 7px; font-weight: 700; color: var(--navy); }
+.saveplan {
+  margin: 18px 0; padding: 16px; background: #fff; border: 1px solid var(--cream-line);
+  border-radius: 12px;
+}
+.saveplan__label { margin: 0 0 11px; font-size: 13px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--navy-soft); }
+.saveplan__rows { display: grid; gap: 8px; }
+.saveplan__row { display: grid; grid-template-columns: 76px minmax(0,1fr); gap: 12px; align-items: center; }
+.saveplan__day { font-size: 14px; font-weight: 800; }
+.saveplan__move { min-width: 0; font-size: 14.5px; line-height: 1.3; }
+.saveplan__move b, .saveplan__move span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.saveplan__move span { margin-top: 2px; color: var(--navy-soft); font-size: 13px; }
+.modal--saved { max-width: 600px; text-align: left; }
+.modal--saved .ula-avatar { margin: 0 0 18px; }
+.modal--saved h2 { margin: 0 0 10px; }
+.modal--saved .modal__sub { line-height: 1.5; }
+.saved-actions { display: flex; gap: 10px; margin-top: 22px; }
+.saved-actions .btn { margin: 0; }
+
+@media (max-width: 760px) {
+  .overlay { padding: 10px; align-items: end; }
+  .modal--save { max-height: calc(100vh - 20px); border-radius: 16px 16px 0 0; }
+  .modal--save .savepanel { grid-template-columns: 1fr; }
+  .modal--save .savepanel__recap { border-right: 0; border-bottom: 1px solid var(--cream-line); }
+  .modal--save .savepanel__recap, .modal--save .savepanel__ask { padding: 24px 18px; }
+  .saved-actions { flex-direction: column; }
+}
 
 /* --- generic content pages ------------------------------------------------ */
 
@@ -2186,8 +2233,9 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 }
 .weekrow.is-locked .weekrow__icon { background: var(--page-grey); color: var(--navy-soft); }
 .weekrow__meta { display: flex; align-items: baseline; gap: 9px; min-width: 0; }
+.weekrow__meta { flex-direction: column; align-items: flex-start; gap: 2px; }
 .weekrow__day { font-size: 15.5px; color: var(--navy); }
-.weekrow__dot { color: var(--navy-soft); }
+.weekrow__dot { display: none; }
 .weekrow__act { font-size: 16px; font-weight: 700; }
 /* The place is a button because tapping it opens the venue sheet, but it must not look
    like one: a photograph, a name and a distance. */
@@ -2242,6 +2290,11 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 }
 .weekcard__search:hover { border-color: var(--ink); color: var(--ink); }
 .weekcard__helper { margin-top: 7px; font-size: 12.5px; color: var(--navy-soft); }
+.sheet__weekadd { margin-top: 18px; padding: 16px; border-radius: 10px; background: var(--cream); border: 1px solid var(--cream-line); }
+.sheet__weekadd-title { margin: 0 0 4px; font-size: 16px; font-weight: 800; }
+.sheet__weekadd-copy { margin: 0 0 12px; font-size: 13.5px; color: var(--navy-soft); }
+.sheet__weekadd-days { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 12px; }
+.sheet__weekadd-days .daybtn { min-width: 48px; }
 
 @media (max-width: 1180px) {
   /* The visit allowance is already stated in the recommendation card. At laptop
@@ -2882,10 +2935,13 @@ function weekPlan(groupIds = [], venues = [], planId = 'classic', frequency = 't
   if (!groups.length) return { sessions:[], perMonth:Math.min(wantedVisits, allowedVisits||wantedVisits), wantedVisits, allowedVisits, overAllowance, note:null };
   const used = new Set();
   const sessions = days.map((day,i) => {
-    const group = groups[i % groups.length];
+    const custom = (S.weekSwap||{})[day];
+    const customVenue = custom && typeof custom === 'object' ? venues.find(v=>v.id===custom.venueId) : null;
+    const customGroup = customVenue && custom.groupId ? groupById(custom.groupId) : null;
+    const group = customGroup || groups[i % groups.length];
     const forGroup = venues.filter(v => venueInGroup(v,group)).sort((a,b)=>a.distanceKm-b.distanceKm);
     const preferred = forGroup.filter(v => includedIn(v,planId));
-    const swapped = (S.weekSwap||{})[day];
+    const swapped = customVenue ? customVenue.id : custom;
     const pick = (swapped && forGroup.find(v=>v.id===swapped))
       || preferred.find(v=>!used.has(v.id)) || preferred[0] || forGroup.find(v=>!used.has(v.id)) || forGroup[0];
     if (!pick) return null;
@@ -3326,6 +3382,14 @@ let CITYPICK=false, CITYWANTED=null, ASKOPEN=false, DAYSOPEN=false, PLACEWANTED=
    comparison of all four memberships, which starts open because the complaint that made
    rule 64 was that comparing them was hidden. */
 let PLACESOPEN=false, MOREOPEN=false, MOREPICK=null, ALTOPEN=null;
+/* Search can be opened as an editor for the recommended week. The selected day stays
+   explicit so choosing a venue never silently replaces a random session. */
+let WEEK_ADD_MODE=false, WEEK_ADD_DAY=null;
+/* Saving is an interruption, not a checkout step. Keep its state outside the route so
+   the modal can open and close without moving the visitor or changing browser history. */
+let SAVE_MODAL_MODE='form';
+const SAVE_IDLE_MS = 15 * 60 * 1000;
+let SAVE_IDLE_TIMER = null;
 /* What has been typed into the search box above the places. It filters what is already
    near you; the full search screen (rule 63) is the fallback when nothing here matches. */
 let VENUEQ='';
@@ -3445,45 +3509,72 @@ function intentBlock() {
   </div>`;
 }
 
-function exitModal() {
-  /* Three different situations, and only one of them is a question. Asking a
-     visitor for an email they already gave — or for a consent decision they
-     already made on the landing page — reads as if nobody was listening. */
-  const identified = Boolean(S.email);
-  const consentSettled = S.marketingAsked;
-  const state = !identified ? 'ask-email' : (consentSettled ? 'nothing-to-ask' : 'ask-consent');
-
-  const heading = state === 'ask-email' ? 'Before you go' : 'Your progress is saved';
-  const sub = state === 'ask-email'
-    ? 'I can save your progress so you don&rsquo;t start over.'
-    : `Saved to <strong>${esc(S.email)}</strong>.`;
-
-  let bodyHtml;
-  if (state === 'ask-email') {
-    bodyHtml = `<p class="modal__body">Give me an email and I&rsquo;ll keep your answers, your venue matches and your recommendation for when you come back.</p>
-      <button class="btn btn--primary" data-exit="save">Save my progress</button>
-      <button class="btn btn--secondary" data-exit="discard">Leave without saving</button>
-      <p class="modal__fine">You can unsubscribe anytime. <button class="linkish" data-go="privacy">Privacy Policy</button></p>`;
-  } else if (state === 'ask-consent') {
-    bodyHtml = `<p class="modal__body">Would you like me to email your venue matches and occasional offers too?</p>
-      <button class="btn btn--primary" data-exit="yes">Yes, email me</button>
-      <button class="btn btn--secondary" data-exit="no">Just save it, no emails</button>
-      <p class="modal__fine">You can unsubscribe anytime. <button class="linkish" data-go="privacy">Privacy Policy</button></p>`;
-  } else {
-    bodyHtml = `${intentBlock()}
-      <p class="modal__body" style="margin-top:18px">Come back any time with your link and pick up exactly here.
-        ${S.marketing ? 'You&rsquo;ll get your matches by email as well.' : 'You asked for no marketing emails, so you&rsquo;ll only get what&rsquo;s needed.'}</p>
-      <button class="btn btn--secondary" data-exit="no">Exit for now</button>
-      <p class="modal__fine">Changed your mind about emails? <button class="linkish" data-exit="yes">Email me my matches</button></p>`;
-  }
-
-  return `<div class="overlay" id="exit-modal" hidden role="dialog" aria-modal="true" aria-labelledby="exit-title">
-    <div class="modal"><button class="modal__close" data-close-exit aria-label="Close">&times;</button>
-    ${ulaAvatar()}<h2 id="exit-title">${heading}</h2>
-    <p class="modal__sub">${sub}</p>
-    ${bodyHtml}
-    <button class="modal__tertiary" data-close-exit>Keep exploring</button></div></div>`;
+function savePanelHtml() {
+  /* The full-page save route remains readable for old browser history, but the live
+     journey reuses its one source of truth inside this modal. */
+  const template = document.createElement('template');
+  template.innerHTML = saveScreen();
+  const panel = template.content.querySelector('.savepanel');
+  if (!panel) return '';
+  const out = panel.outerHTML;
+  return out.replace(
+    '<p class="save-out"><button class="linkish strong" data-skip-save>Continue without saving</button></p>',
+    `<div class="save-bookmark"><span>Prefer not to use email?</span><br>
+      <button class="linkish" type="button" data-copy-resume>${icon('bookmark',16)} Copy a private link to bookmark</button></div>`
+  );
 }
+
+function exitModal() {
+  if (SAVE_MODAL_MODE === 'saved' && S.email && S.saveOptIn) {
+    return `<div class="overlay" id="exit-modal" hidden role="dialog" aria-modal="true" aria-labelledby="exit-title">
+      <div class="modal modal--saved"><button class="modal__close" data-close-exit aria-label="Close">&times;</button>
+        ${ulaAvatar()}<h2 id="exit-title">Saved. Come back any time.</h2>
+        <p class="modal__sub">Your answers, venue matches and recommendation are saved to <strong>${esc(S.email)}</strong>.</p>
+        <div class="notice notice--soft">${icon('checkFill',19)}<span>Your private return link is ready. No payment has been taken.</span></div>
+        <div class="saved-actions"><button class="btn btn--primary" data-copy-resume>Copy my return link</button>
+          <button class="btn btn--secondary" data-close-exit>Keep exploring</button></div>
+      </div></div>`;
+  }
+  return `<div class="overlay" id="exit-modal" hidden role="dialog" aria-modal="true" aria-labelledby="save-modal-title">
+    <div class="modal modal--save"><button class="modal__close" data-close-exit aria-label="Close save dialog">&times;</button>
+      <span class="sr-only" id="save-modal-title">Save your progress</span>${savePanelHtml()}
+    </div></div>`;
+}
+function openSaveModal(mode='form', source='manual') {
+  clearTimeout(SAVE_IDLE_TIMER);
+  SAVE_MODAL_MODE = mode;
+  /* Rebuild only the dialog so its recap always reflects the choices on the page now. */
+  const old = document.getElementById('exit-modal');
+  if (old) old.outerHTML = exitModal();
+  const modal = document.getElementById('exit-modal');
+  if (!modal) return;
+  modal.hidden = false; document.body.style.overflow = 'hidden';
+  log('save_modal_opened', { source, atStep:S.lastStep });
+  (modal.querySelector('input,button') || modal).focus();
+}
+function closeSaveModal(reason='closed') {
+  const modal = document.getElementById('exit-modal');
+  if (modal) modal.hidden = true;
+  document.body.style.overflow = '';
+  log('save_modal_closed', { reason, atStep:S.lastStep });
+  armSaveInactivity();
+}
+function hasSaveableProgress() {
+  return ROUTE !== 'landing' || Object.keys(S.answers||{}).length > 0 || Boolean(SEARCH.q || SEARCH.result);
+}
+function armSaveInactivity() {
+  clearTimeout(SAVE_IDLE_TIMER);
+  if (S.saveOptIn || !hasSaveableProgress()) return;
+  SAVE_IDLE_TIMER = setTimeout(() => {
+    const modal = document.getElementById('exit-modal');
+    if (!modal || !modal.hidden || document.hidden) return;
+    openSaveModal('form','15_minute_inactivity');
+  }, SAVE_IDLE_MS);
+}
+['pointerdown','keydown','input','scroll'].forEach(type => document.addEventListener(type, () => {
+  const modal = document.getElementById('exit-modal');
+  if (!modal || modal.hidden) armSaveInactivity();
+}, { passive:true }));
 function activityIcon(acts=[]) {
   const has=(...l)=>acts.some(a=>l.includes(a));
   if (has('yoga','pilates','meditation','barre')) return 'leaf';
@@ -3562,6 +3653,8 @@ function venueSheet() {
   /* the real per-plan visit limits published on the venue's own page */
   const yours = v.access ? v.access[plan.id] : null;
   const firstAccess = v.access ? PLANS.find(pl=>v.access[pl.id] && !/^not included/i.test(v.access[pl.id])) : firstPlan;
+  const weekDays = (S.weekDays && S.weekDays.length)
+    ? S.weekDays : weekPlan(A().activities||[], match.pool||[], plan.id, A().frequency).sessions.map(x=>x.day);
   return `<div class="sheet" id="venue-sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
     <div class="sheet__panel">
       <button class="sheet__close" data-close-sheet aria-label="Close">&times;</button>
@@ -3588,6 +3681,13 @@ function venueSheet() {
               <span>${included
                 ? `Included in <strong>${esc(plan.name)}</strong> — ${lowerFirst(plan.checkInModel)}.`
                 : `Needs a Plus check-in, which ${esc(plan.name)} doesn&rsquo;t include.`}</span></div>`}
+        ${WEEK_ADD_MODE ? `<div class="sheet__weekadd">
+          <p class="sheet__weekadd-title">Add ${esc(v.name)} to your week</p>
+          <p class="sheet__weekadd-copy">Choose the day this venue should replace. Your membership recommendation will update if needed.</p>
+          <div class="sheet__weekadd-days" role="group" aria-label="Choose a day">${weekDays.map(day=>
+            `<button class="daybtn ${WEEK_ADD_DAY===day?'is-on':''}" type="button" data-add-day="${esc(day)}" aria-pressed="${WEEK_ADD_DAY===day}">${DAY_SHORT[day]}</button>`).join('')}</div>
+          <button class="btn btn--primary btn--block" type="button" data-add-venue="${esc(v.id)}" ${WEEK_ADD_DAY?'':'disabled'}>Add to ${WEEK_ADD_DAY?esc(WEEK_ADD_DAY):'my week'}</button>
+        </div>` : ''}
         <p class="xsmall muted" style="margin-top:16px">Real venue data from ${v.url?`<a href="${esc(v.url)}" target="_blank" rel="noopener" style="text-decoration:underline">this venue&rsquo;s page on urbansportsclub.com</a>`:'urbansportsclub.com'}. Opening this changes nothing about your recommendation.</p>
         <div class="btn-row" style="margin-top:18px"><button class="btn btn--secondary btn--block" data-close-sheet>Back to my fit</button></div>
       </div></div></div>`;
@@ -4075,11 +4175,11 @@ function searchScreen() {
      questions, and browsing gets the row and the panel at the foot. */
   const searched = Boolean(r);
   return `<header class="topbar"><div class="topbar__left"><button class="wordmark linkish" style="text-decoration:none" data-go="landing">Urban Sports Club</button></div><div></div>
-    <div class="topbar__right"><button class="link-plain linkish" data-go="landing">${icon('back',17)} Back</button></div></header>
+    <div class="topbar__right"><button class="link-plain linkish" data-go="${WEEK_ADD_MODE?'recommendation':'landing'}">${icon('back',17)} ${WEEK_ADD_MODE?'Back to my week':'Back'}</button></div></header>
     <main class="content venuepage" id="main">
     <div class="venuepage__intro">
       <div class="search__guide">${ulaAvatar('sm')}<span>Urby &middot; Membership guide</span></div>
-      <h1 class="h-question venuepage__h1" tabindex="-1">${heading}</h1>
+      <h1 class="h-question venuepage__h1" tabindex="-1">${WEEK_ADD_MODE ? (WEEK_ADD_DAY ? `Choose a venue for ${esc(WEEK_ADD_DAY)}` : 'Choose an activity or venue for your week') : heading}</h1>
     </div>
     <div class="venuepage__layout ${searched?'venuepage__layout--searched':''}">
     <div class="venuepage__primary">
@@ -4379,8 +4479,8 @@ function recommendationScreen() {
         ${x.included
           ? (/^(included|not included)/i.test(x.access) ? '' : `<span class="weekrow__limit">${esc(x.access)}</span>`)
           : `<span class="weekrow__pill">${x.needs?esc(x.needs.name):'Not included'} only</span>`}
-        ${x.alternatives>1?`<button class="weekrow__swap" data-swap="${esc(x.day)}"
-          aria-label="Show a different place for ${esc(x.day)}">${icon('refresh',15)} <span>Swap</span></button>`:''}
+        <button class="weekrow__swap" data-change-week="${esc(x.day)}"
+          aria-label="Choose a different activity or venue for ${esc(x.day)}">${icon('refresh',15)} <span>Change</span></button>
       </span>
     </li>`).join('')}</ol>
 
@@ -4393,7 +4493,7 @@ function recommendationScreen() {
         }).join('')}</div>
       <p class="weekcard__helper">Change your days and I&rsquo;ll update the best membership automatically.</p>
       </div>
-      <button class="weekcard__search" type="button" data-go="search">${icon('search',17)} Add a specific activity or venue</button>
+      <button class="weekcard__search" type="button" data-add-week>${icon('search',17)} Add a specific activity or venue</button>
     </div>
 
     <p class="week__changed" role="status">${icon('checkFill',16)} <span>${DAYNOTE || `<b>${esc(plan.name)}</b> fits &mdash; ${plural(wp.perMonth,'visit','visits')} a month.`}</span></p>
@@ -4824,6 +4924,7 @@ function saveScreen() {
   const hasPlan = fitComplete(S.answers) || S.planOverridden;
   const F = hasPlan ? fitSummary() : null;
   const shown = F ? F.included.slice(0,3) : [], more = F ? Math.max(0, F.included.length - shown.length) : 0;
+  const savedWeek = F ? weekPlan(F.groups, F.match.pool||[], F.plan.id, S.answers.frequency).sessions : [];
   const answered = QUESTIONS.filter(q => isAnswered(S.answers[q.id])).length;
 
   /* One activity gets named; two or more and the sentence would have to list them,
@@ -4833,8 +4934,9 @@ function saveScreen() {
   const sub = !hasPlan
     ? (answered ? 'Your answers so far, and the question you stopped on.'
                 : 'Where you stopped, so the link brings you straight back to it.')
-    : shown.length ? `Your ${actWord}places and ${esc(F.plan.name)} membership near ${esc(F.where)}.`
-                   : `Your ${esc(F.plan.name)} membership, and the answers behind it.`;
+    : savedWeek.length ? 'Your personalised week, membership and matching places — ready when you come back.'
+                       : shown.length ? `Your ${actWord}places and ${esc(F.plan.name)} membership near ${esc(F.where)}.`
+                                      : `Your ${esc(F.plan.name)} membership, and the answers behind it.`;
 
   /* Rule 13 and rule 54: counted from the coverage rows, never softened. "Both" and
      "all" are only said when the plan really opens every match near them. */
@@ -4861,8 +4963,15 @@ function saveScreen() {
         <div class="savepanel__guide">${ulaAvatar('sm')}<span>Urby &middot; Membership guide</span></div>
         <h1 class="savepanel__title" tabindex="-1">Here&rsquo;s what you&rsquo;re saving</h1>
         <p class="savepanel__sub">${sub}</p>
-        ${answerChips({ label:'', compact:true })}
+        ${!hasPlan ? answerChips({ label:'', compact:true }) : ''}
         ${hasPlan ? `
+        ${savedWeek.length ? `<div class="saveplan">
+          <p class="saveplan__label">Your week that fits</p>
+          <div class="saveplan__rows">${savedWeek.slice(0,4).map(x=>`<div class="saveplan__row">
+            <span class="saveplan__day">${esc(x.day)}</span>
+            <span class="saveplan__move"><b>${esc(x.activity)}</b><span>${esc(x.venue.name)} &middot; ${x.distanceKm} km</span></span>
+          </div>`).join('')}</div>
+        </div>` : ''}
         <!-- Rule 53: a plan the visitor picked for themselves is never handed back to
              them as Urby's advice. -->
         <div class="savepanel__plabel">${F.isRec?'Your recommended membership':'The membership you chose'}</div>
@@ -5166,7 +5275,10 @@ const SCREENS = {
 };
 
 function render(focus = true) {
-  document.getElementById('app').innerHTML = (SCREENS[ROUTE]||landing)();
+  const screenHtml = (SCREENS[ROUTE]||landing)();
+  /* The save dialog belongs to the journey shell, not to a particular screen. Some
+     older screens already include it; append it only where it is absent. */
+  document.getElementById('app').innerHTML = screenHtml.includes('id="exit-modal"') ? screenHtml : screenHtml + exitModal();
   if (focus) {
     /* focus the heading, so keyboard and screen-reader users land on the content
        rather than tabbing through the header to reach the answers */
@@ -5182,6 +5294,7 @@ function render(focus = true) {
   const sheet = document.getElementById('venue-sheet');
   if (sheet) { document.body.style.overflow='hidden'; (sheet.querySelector('.sheet__close')||sheet).focus(); }
   else document.body.style.overflow='';
+  armSaveInactivity();
 }
 function go(route, opts={}) {
   if (['recommendation'].includes(route) && !fitComplete(S.answers)) route = 'fit';
@@ -5307,7 +5420,7 @@ document.addEventListener('change', e => {
   renderInPlace();
 });
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-change-city],[data-city],[data-unsure],[data-open-ask],[data-rail],[data-radius],[data-toggle-venues],[data-toggle-apps],[data-toggle-week],[data-toggle-places],[data-toggle-more],[data-more],[data-toggle-alt],[data-open-days],[data-day],[data-swap],[data-pick-plan],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula],[data-search-example],[data-venue-clear],[data-venue-search-all],[data-toggle-where],[data-where],[data-cat],[data-see-all],[data-pick]');
+  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-change-city],[data-city],[data-unsure],[data-open-ask],[data-rail],[data-radius],[data-toggle-venues],[data-toggle-apps],[data-toggle-week],[data-toggle-places],[data-toggle-more],[data-more],[data-toggle-alt],[data-open-days],[data-day],[data-swap],[data-change-week],[data-add-week],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula],[data-search-example],[data-venue-clear],[data-venue-search-all],[data-toggle-where],[data-where],[data-cat],[data-see-all],[data-pick]');
   if (!t) return;
 
   /* ---- the venue page. Four controls, and three of them are answers. ---- */
@@ -5352,6 +5465,26 @@ document.addEventListener('click', e => {
   }
 
   if (t.dataset.venueClear !== undefined) { VENUEQ=''; renderVenueFilter(); return; }
+  if (t.dataset.addWeek !== undefined) {
+    WEEK_ADD_MODE=true; WEEK_ADD_DAY=null; SEARCH={q:'',result:null}; go('search'); return;
+  }
+  if (t.dataset.changeWeek) {
+    WEEK_ADD_MODE=true; WEEK_ADD_DAY=t.dataset.changeWeek; SEARCH={q:'',result:null}; go('search'); return;
+  }
+  if (t.dataset.addDay) { WEEK_ADD_DAY=t.dataset.addDay; render(false); return; }
+  if (t.dataset.addVenue) {
+    const venue=VENUES.find(v=>v.id===t.dataset.addVenue);
+    if (!venue || !WEEK_ADD_DAY) return;
+    let group=(A().activities||[]).map(groupById).find(g=>g&&venueInGroup(venue,g));
+    if (!group) group=ACTIVITY_GROUPS.find(g=>venueInGroup(venue,g));
+    if (!group) return;
+    const chosen=(S.answers.activities||[]).filter(x=>x!==SKIP);
+    if (!chosen.includes(group.id)) S.answers.activities=[...chosen,group.id];
+    S.weekSwap=Object.assign({},S.weekSwap,{[WEEK_ADD_DAY]:{venueId:venue.id,groupId:group.id}});
+    S.planOverridden=false; S.chosenPlanId=null;
+    log('week_venue_added',{day:WEEK_ADD_DAY,venue:venue.id,activity:group.id});
+    SHEET=null; WEEK_ADD_MODE=false; WEEK_ADD_DAY=null; go('recommendation'); return;
+  }
   /* Nothing near you matched, so hand the words to the search that can answer for the
      whole pilot — and answers with the cheapest membership that opens the place. */
   if (t.dataset.venueSearchAll !== undefined) { const q=VENUEQ.trim();
@@ -5359,7 +5492,11 @@ document.addEventListener('click', e => {
     log('searched', { query:q, matched:SEARCH.result?SEARCH.result.kind:'none', from:'places' });
     go('search'); return; }
 
-  if (t.dataset.go !== undefined) { e.preventDefault(); go(t.dataset.go); return; }
+  if (t.dataset.go !== undefined) {
+    e.preventDefault();
+    if (t.dataset.go === 'save') { openSaveModal('form', 'save_link'); return; }
+    go(t.dataset.go); return;
+  }
   if (t.dataset.startFit !== undefined) {
     /* Arriving from a search that named an area, we already know the answer to one of
        the four questions, so we do not ask it again (rule 11). It is filled in, not
@@ -5406,7 +5543,7 @@ document.addEventListener('click', e => {
     const wasOpen = WEEKOPEN || Boolean(DAYNOTE);
     WEEKOPEN = !wasOpen; DAYNOTE = null; render(false); return; }
   if (t.dataset.togglePlaces !== undefined) { PLACESOPEN = !PLACESOPEN; render(false); return; }
-  if (t.dataset.toggleAlt !== undefined) { ALTOPEN = !(ALTOPEN===null ? !MOBILE() : ALTOPEN); render(false); return; }
+  if (t.dataset.toggleAlt !== undefined) { e.preventDefault(); ALTOPEN = ALTOPEN !== true; render(false); return; }
   /* "Questions and details" names its three sections on its own handle, and each name is
      the way straight in. Clicking the section that is already open closes it, so this is
      an accordion rather than three drawers that all end up open (rule 16). */
@@ -5496,13 +5633,12 @@ document.addEventListener('click', e => {
     render(false); return;
   }
 
-  if (t.dataset.openExit !== undefined) { const m=document.getElementById('exit-modal');
-    if (m) { m.hidden=false; document.body.style.overflow='hidden'; (m.querySelector('.btn')||m).focus(); } return; }
-  if (t.dataset.closeExit !== undefined) { const m=document.getElementById('exit-modal'); if (m) { m.hidden=true; document.body.style.overflow=''; } return; }
+  if (t.dataset.openExit !== undefined) { openSaveModal('form', 'save_and_exit'); return; }
+  if (t.dataset.closeExit !== undefined) { closeSaveModal('dismissed'); return; }
   if (t.dataset.exit) {
     const v=t.dataset.exit; document.body.style.overflow='';
-    if (v==='save')    { log('exit_intent',{ consent:'save_requested', atStep:S.lastStep }); go('save'); return; }
-    if (v==='discard') { log('exit_intent',{ consent:'declined_save', atStep:S.lastStep }); go('landing'); return; }
+    if (v==='save')    { log('exit_intent',{ consent:'save_requested', atStep:S.lastStep }); openSaveModal('form','legacy_exit'); return; }
+    if (v==='discard') { log('exit_intent',{ consent:'declined_save', atStep:S.lastStep }); closeSaveModal('declined'); return; }
     S.marketing = v==='yes'; S.marketingAsked = true;
     log('exit_intent',{ consent:v, atStep:S.lastStep }); go('left'); return;
   }
@@ -5534,13 +5670,21 @@ document.addEventListener('click', e => {
      you on the details form, because this screen was the gate in front of it. */
   /* Back where they came from, which is not always the recommendation: someone who
      hit "Save and exit" on question two has not seen one yet. */
-  if (t.dataset.skipSave !== undefined) { log('save_declined');
-    go(fitComplete(S.answers) || S.planOverridden ? 'recommendation' : 'fit'); return; }
+  if (t.dataset.skipSave !== undefined) {
+    log('save_declined');
+    if (t.closest('#exit-modal')) { closeSaveModal('continued_without_saving'); return; }
+    go(fitComplete(S.answers) || S.planOverridden ? 'recommendation' : 'fit'); return;
+  }
   if (t.dataset.reset !== undefined) { S = JSON.parse(JSON.stringify(BLANK)); history.replaceState({route:'landing'},'',location.pathname); go('landing',{replace:true}); return; }
   if (t.dataset.toggleFitpanel !== undefined) { PANEL_OPEN = !PANEL_OPEN;
     const c=document.getElementById('fitpanel-contents'); c.classList.toggle('is-open',PANEL_OPEN); t.setAttribute('aria-expanded',String(PANEL_OPEN)); return; }
   if (t.dataset.toggleFreetext !== undefined) { const f=document.querySelector('[data-freetext]'); f.classList.add('is-open'); t.style.display='none'; f.querySelector('input').focus(); return; }
-  if (t.dataset.copyResume !== undefined) { navigator.clipboard?.writeText(resumeUrl()).then(()=>{ t.textContent='Copied — paste it in a new tab'; }); return; }
+  if (t.dataset.copyResume !== undefined) {
+    const done = () => { t.textContent = 'Copied — bookmark or reopen this link'; log('resume_link_copied',{ atStep:S.lastStep, identified:Boolean(S.email) }); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(resumeUrl()).then(done).catch(()=>{});
+    else { const ta=document.createElement('textarea'); ta.value=resumeUrl(); document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); done(); }
+    return;
+  }
 });
 
 /* option cards: reflect selection, and let Enter choose */
@@ -5633,10 +5777,17 @@ document.addEventListener('submit', e => {
     S.marketing = fd.get('marketing') !== null; S.marketingAsked = true;
     if (provider) { S.authMethod = provider; if (!validEmail(email)) email = `demo.${provider}.user@example.com`; }
     else if (!validEmail(email)) { ERRORS.email = 'Please enter a valid email address so we can save your progress.'; FIELDS.email = email;
-      const keep = { ...ERRORS }; render(false); ERRORS = keep; document.getElementById('app').innerHTML = (SCREENS[ROUTE])(); return false; }
+      const keep = { ...ERRORS }, inModal = Boolean(form.closest('#exit-modal'));
+      render(false); ERRORS = keep;
+      if (inModal) openSaveModal('form','validation_error');
+      else document.getElementById('app').innerHTML = (SCREENS[ROUTE])();
+      return false; }
     else S.authMethod = 'email';
     S.email = email; FIELDS.email = '';
     log('identified', { authMethod:S.authMethod, marketing:S.marketing, at:ROUTE });
+    if (dest === 'saved-modal') {
+      S.saveOptIn = true; render(false); openSaveModal('saved','save_completed'); return true;
+    }
     go(dest); return true;
   };
 
@@ -5693,7 +5844,7 @@ document.addEventListener('submit', e => {
   }
   /* Saving ends on the confirmation, not on the details form. Someone who asked to keep
      their fit and leave has not asked to start typing an address. */
-  if (kind === 'save')  { S.saveOptIn = true; identify('left'); return; }
+  if (kind === 'save')  { identify('saved-modal'); return; }
 
   if (kind === 'answer') {
     const qid = form.dataset.qid, q = qById(qid), text = (fd.get('freeText')||'').trim();
