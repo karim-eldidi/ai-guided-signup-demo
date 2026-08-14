@@ -3524,7 +3524,7 @@ let ROUTE='landing', ACKTEXT=null, UNCLEAR=false, NOCHOICE=false, EDITING=null, 
 /* City is "detected" in production (IP or browser location). The pilot only has
    venue data loaded for Berlin, so the chip says so plainly and a Change link
    never lies about coverage — picking another city logs the demand instead. */
-let CITYPICK=false, CITYWANTED=null, ASKOPEN=false, DAYSOPEN=false, PLACEWANTED=null, STALELINK=null, VENUESOPEN=false, APPSOPEN=false, DAYNOTE=null, WEEKOPEN=false;
+let CITYPICK=false, CITYWANTED=null, ASKOPEN=false, DAYSOPEN=false, PLACEWANTED=null, VENUESOPEN=false, APPSOPEN=false, DAYNOTE=null, WEEKOPEN=false;
 /* The three rows at the foot of the recommendation (places, apps, questions) are folds,
    and everything inside them re-renders the page — a radius chip, a search, an answer
    from Urby. So each one's open state is held here rather than left to <details>, which
@@ -4045,7 +4045,6 @@ function landing() {
              alone on the second line (rule 35). "Your way / to move." is even. -->
         <h1 class="h-hero" tabindex="-1">Your way<br>to move.</h1>
         <p class="lede">Find nearby activities and a membership that fits your life.</p>
-        ${STALELINK?`<div class="notice notice--grey" style="max-width:560px">${icon('info',20)}<span>That link points at a step, not at your answers, so I can&rsquo;t bring them back. Four questions and you&rsquo;re there again &mdash; and this time you&rsquo;ll get a link that does carry them.</span></div>`:''}
         ${S.returns?`<div class="notice" style="max-width:560px">${icon('checkThin',20)}<span>Welcome back. Your answers are saved — continue where you left off.</span></div>`:''}
         ${primary}
       </div></div>
@@ -6176,11 +6175,11 @@ document.addEventListener('submit', e => {
       btn.textContent = 'Show'; btn.setAttribute('aria-expanded', 'false');
     }
   } catch (_) {}
-  /* Older builds wrote "#recommendation" and friends into the address bar. Anyone
-     who saved or shared one of those gets told the truth rather than being dropped on
-     the landing page as though they had never been here. */
+  /* Older builds wrote step names into the address bar even though they were not
+     shareable state. Clear those obsolete hashes quietly and show the normal landing
+     page; exposing that implementation detail only distracts from starting again. */
   const stale = location.hash.match(/^#(fit|recommendation|save|details|payment)$/);
-  if (stale) { STALELINK = stale[1]; history.replaceState({ route:'landing' }, '', location.pathname); }
+  if (stale) history.replaceState({ route:'landing' }, '', location.pathname);
   const m = location.hash.match(/^#resume=(.+)$/);
   if (m) {
     try {
