@@ -1405,7 +1405,7 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
   /* On a phone the question owns the screen. Ask Urby is one tap away on the
      landing page and on the recommendation, so it does not need to be here. */
   .aside-ask { display: none; }
-  .options--tiles { gap: 9px; }
+  .options--tiles { grid-template-columns: 1fr; gap: 9px; }
   .options--tiles .option-card { min-height: 54px; padding: 10px 13px; font-size: 15.5px; gap: 10px; }
   .options--tiles .option-card__icon { width: 30px; height: 30px; }
   .ownwords__label { font-size: 14.5px; }

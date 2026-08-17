@@ -41,9 +41,10 @@ with sync_playwright() as p:
         P(f"{label}: own-words is labelled: '{lbl[:44]}'") if 'own words' in lbl else F(f"{label}: unclear label: {lbl[:60]}")
         if pg.locator('[data-toggle-freetext]').count()==0: P(f"{label}: no leftover toggle link")
         else: F(f"{label}: the old toggle link is still there")
-        # choices read as visual tiles, two per row
+        # choices read as visual tiles, two per row on desktop, one on mobile
         cols=pg.evaluate("() => getComputedStyle(document.querySelector('.options')).gridTemplateColumns.split(' ').length")
-        P(f"{label}: options are a {cols}-column visual grid") if cols==2 else F(f"{label}: options are {cols} columns")
+        expected_cols = 1 if (w <= 900 or h >= 1000) else 2
+        P(f"{label}: options are a {cols}-column visual grid") if cols==expected_cols else F(f"{label}: options are {cols} columns, expected {expected_cols}")
 
         # does the question fit without scrolling?
         pg.reload(); pg.wait_for_timeout(400)
