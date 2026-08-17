@@ -1077,48 +1077,70 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 .modal__fine a { text-decoration: underline; }
 .modal__tertiary { display: inline-block; margin-top: 16px; background: none; border: 0; color: var(--navy-soft); font-size: 16px; text-decoration: none; }
 .modal--save {
-  max-width: 1120px; padding: 0; overflow: auto; max-height: calc(100vh - 48px);
-  text-align: left; border-radius: 18px;
+  max-width: 540px; padding: 28px 28px 24px; overflow-y: auto; max-height: calc(100vh - 48px);
+  text-align: left; border-radius: 18px; background: #fff;
 }
 .modal--save .modal__close {
-  z-index: 3; top: 14px; right: 16px; width: 40px; height: 40px;
-  border-radius: 50%; background: rgba(255,255,255,.92); font-size: 25px;
+  z-index: 3; top: 16px; right: 18px; width: 36px; height: 36px;
+  border-radius: 50%; background: var(--cream); font-size: 22px; display: flex; align-items: center; justify-content: center;
 }
-.modal--save .savepanel { border: 0; border-radius: 0; }
-.modal--save .savepanel__recap,
-.modal--save .savepanel__ask { padding-top: 34px; }
-.modal--save .savepanel__guide .ula-avatar {
-  width: 34px; height: 34px; margin: 0;
+.modal--save .savepanel {
+  display: flex; flex-direction: column; background: transparent; border: 0; padding: 0;
 }
-.save-bookmark {
-  margin: 18px 0 0; padding-top: 16px; border-top: 1px solid var(--border);
-  text-align: center; color: var(--navy-soft); font-size: 14px; line-height: 1.45;
+.savepanel__guide {
+  display: flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 700; color: var(--navy); margin-bottom: 8px;
 }
-.save-bookmark .linkish { display: inline-flex; align-items: center; gap: 7px; margin-top: 7px; font-weight: 700; color: var(--navy); }
-.saveplan {
-  margin: 18px 0; padding: 16px; background: #fff; border: 1px solid var(--cream-line);
-  border-radius: 12px;
+.savepanel__guide .ula-avatar {
+  width: 26px; height: 26px; margin: 0;
 }
-.saveplan__label { margin: 0 0 11px; font-size: 13px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--navy-soft); }
-.saveplan__rows { display: grid; gap: 8px; }
-.saveplan__row { display: grid; grid-template-columns: 76px minmax(0,1fr); gap: 12px; align-items: center; }
-.saveplan__day { font-size: 14px; font-weight: 800; }
-.saveplan__move { min-width: 0; font-size: 14.5px; line-height: 1.3; }
-.saveplan__move b, .saveplan__move span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.saveplan__move span { margin-top: 2px; color: var(--navy-soft); font-size: 13px; }
-.modal--saved { max-width: 600px; text-align: left; }
-.modal--saved .ula-avatar { margin: 0 0 18px; }
-.modal--saved h2 { margin: 0 0 10px; }
-.modal--saved .modal__sub { line-height: 1.5; }
-.saved-actions { display: flex; gap: 10px; margin-top: 22px; }
+.savepanel__title {
+  font-size: 26px; font-weight: 800; letter-spacing: -.02em; margin: 0 0 6px; color: var(--ink);
+}
+.savepanel__sub {
+  font-size: 14.5px; color: var(--navy-soft); line-height: 1.4; margin: 0 0 12px;
+}
+.save-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--cream); border: 1px solid var(--cream-line);
+  border-radius: 999px; padding: 6px 14px; font-size: 13px; font-weight: 600;
+  color: var(--ink); margin-bottom: 18px; align-self: flex-start;
+}
+.save-pill svg { color: var(--navy-soft); flex-shrink: 0; }
+.savefield__label {
+  display: block; font-size: 13.5px; font-weight: 700; color: var(--ink); margin-bottom: 6px;
+}
+.savefield {
+  width: 100%; height: 48px; padding: 0 14px; border: 1.5px solid var(--border);
+  border-radius: var(--radius); font-size: 15px; margin-bottom: 12px;
+}
+.savefield:focus { border-color: var(--ink); }
+.savepanel .btn--primary {
+  height: 50px; font-size: 16px; font-weight: 700; border-radius: var(--radius);
+}
+.savepanel .orline {
+  display: flex; align-items: center; gap: 12px; margin: 14px 0 12px;
+  color: var(--navy-soft); font-size: 12.5px;
+}
+.savepanel .orline::before, .savepanel .orline::after {
+  content: ""; flex: 1; height: 1px; background: var(--border);
+}
+.save-out { text-align: center; margin-top: 14px; font-size: 14px; }
+.modal--saved { max-width: 540px; text-align: left; padding: 32px 28px 28px; }
+.modal--saved .ula-avatar { margin: 0 0 16px; }
+.modal--saved h2 { margin: 0 0 8px; font-size: 24px; }
+.modal--saved .modal__sub { line-height: 1.5; font-size: 15px; }
+.saved-actions { display: flex; gap: 10px; margin-top: 20px; }
 .saved-actions .btn { margin: 0; }
 
-@media (max-width: 760px) {
-  .overlay { padding: 10px; align-items: end; }
-  .modal--save { max-height: calc(100vh - 20px); border-radius: 16px 16px 0 0; }
-  .modal--save .savepanel { grid-template-columns: 1fr; }
-  .modal--save .savepanel__recap { border-right: 0; border-bottom: 1px solid var(--cream-line); }
-  .modal--save .savepanel__recap, .modal--save .savepanel__ask { padding: 24px 18px; }
+@media (max-width: 600px) {
+  .overlay { padding: 12px; }
+  .modal--save {
+    padding: 22px 18px 18px;
+    max-height: calc(100vh - 24px);
+    border-radius: 16px;
+  }
+  .savepanel__title { font-size: 22px; }
+  .savepanel__sub { font-size: 13.5px; }
   .saved-actions { flex-direction: column; }
 }
 

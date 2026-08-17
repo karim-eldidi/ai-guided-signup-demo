@@ -2871,91 +2871,37 @@ const saveVenue = v => `<div class="savevenue"><div class="savevenue__media">${v
 function saveScreen() {
   const hasPlan = fitComplete(S.answers) || S.planOverridden;
   const F = hasPlan ? fitSummary() : null;
-  const shown = F ? F.included.slice(0,3) : [], more = F ? Math.max(0, F.included.length - shown.length) : 0;
-  const savedWeek = F ? weekPlan(F.groups, F.match.pool||[], F.plan.id, S.answers.frequency).sessions : [];
   const answered = QUESTIONS.filter(q => isAnswered(S.answers[q.id])).length;
 
-  /* One activity gets named; two or more and the sentence would have to list them,
-     so it stays "places". The word is only ever the visitor's own answer. */
-  const oneAct = F && F.groups.length === 1 ? (groupById(F.groups[0])||{}).label : null;
-  const actWord = oneAct ? oneAct.toLowerCase() + ' ' : '';
-  const sub = !hasPlan
-    ? (answered ? 'Your answers so far, and the question you stopped on.'
-                : 'Where you stopped, so the link brings you straight back to it.')
-    : savedWeek.length ? 'Your personalised week, membership and matching places — ready when you come back.'
-                       : shown.length ? `Your ${actWord}places and ${esc(F.plan.name)} membership near ${esc(F.where)}.`
-                                      : `Your ${esc(F.plan.name)} membership, and the answers behind it.`;
-
-  /* Rule 13 and rule 54: counted from the coverage rows, never softened. "Both" and
-     "all" are only said when the plan really opens every match near them. */
-  const t = F && F.totals;
-  const noun = t ? `${actWord}${t.nearby===1?'place':'places'}` : '';
-  const opensLine = !t || !t.nearby ? ''
-    : t.included >= t.nearby
-      ? `Includes ${t.nearby===1 ? 'your matching' : t.nearby===2 ? 'both of your matching' : `all ${t.nearby} of your matching`} ${noun}`
-      : `Includes ${t.included} of your ${t.nearby} matching ${noun}`;
-
-  const keeps = !hasPlan ? 'Your answers and where you stopped will be saved.'
-    : shown.length ? 'Your answers, membership and places will all be saved.'
-                   : 'Your answers and membership will both be saved.';
+  const progressBadge = !hasPlan
+    ? `<div class="save-pill">${icon('info', 16)} <span>Saved at question ${Math.min(answered + 1, QUESTIONS.length)} of ${QUESTIONS.length} &middot; nothing to answer twice</span></div>`
+    : `<div class="save-pill">${icon('sparkle', 16)} <span>${esc(F.plan.name)} (${F.price} €/mo) &middot; ${F.totals ? F.totals.included + ' matching places' : 'routine saved'}</span></div>`;
 
   return `${topbar(1,{ stepper:false, savedNote:Boolean(S.email&&S.saveOptIn),
                        back: hasPlan ? { route:'recommendation', label:'Back to recommendation' }
                                      : { route:'fit', label:'Back to your questions' } })}
-  <!-- Two panels of equal weight, not a form with a footnote beside it: what is being
-       kept is half the screen, because it is the reason to hand over an address at all
-       (rule 14). On a phone they stack in this order, so the recap still comes first. -->
   <main class="savewrap" id="main">
     <div class="savepanel">
-      <section class="savepanel__recap">
-        <div class="savepanel__guide">${ulaAvatar('sm')}<span>Urby &middot; Membership guide</span></div>
-        <h1 class="savepanel__title" tabindex="-1">Here&rsquo;s what you&rsquo;re saving</h1>
-        <p class="savepanel__sub">${sub}</p>
-        ${!hasPlan ? answerChips({ label:'', compact:true }) : ''}
-        ${hasPlan ? `
-        ${savedWeek.length ? `<div class="saveplan">
-          <p class="saveplan__label">Your week that fits</p>
-          <div class="saveplan__rows">${savedWeek.slice(0,4).map(x=>`<div class="saveplan__row">
-            <span class="saveplan__day">${esc(x.day)}</span>
-            <span class="saveplan__move"><b>${esc(x.activity)}</b><span>${esc(x.venue.name)} &middot; ${x.distanceKm} km</span></span>
-          </div>`).join('')}</div>
-        </div>` : ''}
-        <!-- Rule 53: a plan the visitor picked for themselves is never handed back to
-             them as Urby's advice. -->
-        <div class="savepanel__plabel">${F.isRec?'Your recommended membership':'The membership you chose'}</div>
-        <div class="savepanel__idrow">
-          <div class="savepanel__name">${esc(F.plan.name)}</div>
-          <div class="savepanel__price"><b>${F.price} €</b><span>/ month</span></div>
-        </div>
-        <div class="savepanel__term">${esc(F.commitment.label)}</div>
-        ${opensLine?`<p class="savepanel__opens">${icon('checkFill',22)}<span>${opensLine}</span></p>`:''}
-        ${shown.length?`<div class="savevenues">${shown.map(saveVenue).join('')}</div>
-          ${more?`<p class="savepanel__more">+${more} more ${more===1?'place':'places'} near you</p>`:''}`:''}`
-        : `<p class="savepanel__where">${icon('info',19)}<span>You&rsquo;re on question ${Math.min(answered+1, QUESTIONS.length)}
-             of ${QUESTIONS.length}. The link brings you back to exactly this point &mdash; nothing to answer twice.</span></p>`}
-        <p class="savepanel__foot">${icon('shield',20)}<span>${keeps}</span></p>
-      </section>
+      <div class="savepanel__guide">${ulaAvatar('sm')}<span>Urby &middot; Membership guide</span></div>
+      <h1 class="savepanel__title" tabindex="-1">Save your progress</h1>
+      <p class="savepanel__sub">We&rsquo;ll email you a private link to pick up right where you left off.</p>
+      ${progressBadge}
 
-      <section class="savepanel__ask">
-        <h2 class="savepanel__asktitle">Keep your fit for later</h2>
-        <p class="savepanel__asksub">Email yourself a secure link and continue anytime, on any device.</p>
-        <form data-form="save" novalidate class="saveform">
-          <label class="savefield__label" for="save-email">Email address</label>
-          <input id="save-email" class="savefield" type="email" name="email" placeholder="Your email address" value="${esc(FIELDS.email||'')}">
-          ${ERRORS.email?`<p class="field-error" role="alert">${esc(ERRORS.email)}</p>`:''}
-          <button class="btn btn--primary btn--block" type="submit">Email my link</button>
-          <div class="orline"><span>or continue with</span></div>
-          <div class="sso-row" style="max-width:none">
-            <button class="sso-btn" type="submit" name="provider" value="google" aria-label="Save with Google">${GOOGLE} Google</button>
-            <button class="sso-btn" type="submit" name="provider" value="apple" aria-label="Save with Apple">${APPLE} Apple</button></div>
-          <div class="consent-row" style="max-width:none;margin:20px 0 16px"><label class="checkbox"><input type="checkbox" name="marketing" id="marketing" ${S.marketing?'checked':''}><span></span></label>
-            <label class="consent-label" for="marketing">Send me occasional offers and activity inspiration.<br><span class="muted">Optional</span></label></div>
-          <div class="notice notice--soft">${icon('lock',19)}<span><b>No payment will be taken.</b></span></div>
-          <p class="terms-line" style="margin-top:14px">By continuing, you agree to our <button class="linkish" data-go="terms">Terms</button> and <button class="linkish" data-go="privacy">Privacy Policy</button>.
-            ${icon('info',14)} Demo only — Google and Apple are simulated here and create a clearly-marked test identity.</p>
-        </form>
-        <p class="save-out"><button class="linkish strong" data-skip-save>Continue without saving</button></p>
-      </section>
+      <form data-form="save" novalidate class="saveform">
+        <label class="savefield__label" for="save-email">Email address</label>
+        <input id="save-email" class="savefield" type="email" name="email" placeholder="Your email address" value="${esc(FIELDS.email||'')}">
+        ${ERRORS.email?`<p class="field-error" role="alert">${esc(ERRORS.email)}</p>`:''}
+        <button class="btn btn--primary btn--block" type="submit">Save my progress</button>
+        <div class="orline"><span>or continue with</span></div>
+        <div class="sso-row" style="max-width:none">
+          <button class="sso-btn" type="submit" name="provider" value="google" aria-label="Save with Google">${GOOGLE} Google</button>
+          <button class="sso-btn" type="submit" name="provider" value="apple" aria-label="Save with Apple">${APPLE} Apple</button></div>
+        <div class="consent-row" style="max-width:none;margin:16px 0 12px"><label class="checkbox"><input type="checkbox" name="marketing" id="marketing" ${S.marketing?'checked':''}><span></span></label>
+          <label class="consent-label" for="marketing">Send me occasional offers and activity inspiration.<br><span class="muted">Optional</span></label></div>
+        <div class="notice notice--soft">${icon('lock',18)}<span><b>No payment will be taken.</b> Private return link.</span></div>
+        <p class="terms-line" style="margin-top:12px">By continuing, you agree to our <button class="linkish" data-go="terms">Terms</button> and <button class="linkish" data-go="privacy">Privacy Policy</button>.</p>
+      </form>
+      <p class="save-out"><button class="linkish strong" data-skip-save>Continue without saving</button></p>
     </div>
     <p class="savefoot"><button class="linkish" data-go="terms">Terms</button>
       <button class="linkish" data-go="privacy">Privacy</button>

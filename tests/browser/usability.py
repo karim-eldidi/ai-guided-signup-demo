@@ -121,7 +121,7 @@ with sync_playwright() as p:
     # now actually save: it ends on the saved confirmation, with the link back
     pg.locator('[data-go="save"]').first.click(); pg.wait_for_timeout(500)
     pg.fill('input[name="email"]','alex@example.com'); pg.check('#marketing')
-    pg.locator('button[type="submit"]:has-text("Email my link")').click(); pg.wait_for_timeout(700)
+    pg.locator('form[data-form="save"] button[type="submit"]').click(); pg.wait_for_timeout(700)
     good(f"Saving with an email lands on '{h1(pg)}'")
     if pg.locator('#exit-modal [data-copy-resume]').count(): good("and the private return link is right there")
     else: bad("no return link after saving")
