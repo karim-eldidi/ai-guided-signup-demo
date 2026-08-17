@@ -26,7 +26,7 @@ npm start                       # local app at http://localhost:3000
 npm run verify -- --units       # fast unit-only check
 npm run verify                  # build + unit + browser verification
 npm run verify -- reco          # browser suites whose names contain "reco"
-npm run build                   # rebuild standalone/usc-ula-demo.html
+npm run build                   # rebuild standalone/ai-guided-signup-demo.html
 npm run reset:db                # delete local pilot database
 ```
 

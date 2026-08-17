@@ -13,7 +13,7 @@ consent with no address, and a radius named rather than measured.
 import os, re
 from playwright.sync_api import sync_playwright
 
-U = os.environ.get("DEMO_URL", "file:///mnt/user-data/outputs/usc-ula-demo.html")
+U = os.environ.get("DEMO_URL", "file:///mnt/user-data/outputs/ai-guided-signup-demo.html")
 OUT = os.path.join(os.environ.get("SHOT_DIR", os.path.join(os.path.dirname(__file__), "..", "..", ".build", "shots")), "shots19")
 os.makedirs(OUT, exist_ok=True)
 

@@ -1,9 +1,9 @@
 {
-  "name": "usc-urby-pilot",
+  "name": "ai-guided-signup-demo",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Urban Sports Club — AI-guided signup MVP (Urby). Pilot only: real published plan and venue data, simulated payment.",
+  "description": "Urban Sports Club — AI-guided signup demo (powered by Urby). Pilot only: real published plan and venue data, simulated payment.",
   "engines": {
     "node": ">=22.5.0"
   },

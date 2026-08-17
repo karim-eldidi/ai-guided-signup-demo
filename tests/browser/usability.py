@@ -1,7 +1,7 @@
 import os
 from playwright.sync_api import sync_playwright
 OUT=os.path.join(os.environ.get("SHOT_DIR", "/home/claude"), "shots3"); os.makedirs(OUT, exist_ok=True)
-URL=os.environ.get("DEMO_URL", "file:///mnt/user-data/outputs/usc-ula-demo.html")
+URL=os.environ.get("DEMO_URL", "file:///mnt/user-data/outputs/ai-guided-signup-demo.html")
 errs=[]; ok=[]
 def good(t): ok.append(t); print("PASS", t)
 def bad(t): errs.append(t); print("FAIL", t)

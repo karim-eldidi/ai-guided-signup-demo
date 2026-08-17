@@ -36,13 +36,13 @@ const line = (s) => process.stdout.write(s + '\n');
 if (!unitsOnly) {
   execFileSync('python3', ['standalone/build.py'], { cwd: ROOT, stdio: 'pipe' });
   if (!existsSync(OUT)) mkdirSync(OUT, { recursive: true });
-  for (const name of ['usc-ula-demo.html', 'index.html']) {
-    copyFileSync(path.join(ROOT, 'standalone/usc-ula-demo.html'), path.join(OUT, name));
+  for (const name of ['ai-guided-signup-demo.html', 'index.html']) {
+    copyFileSync(path.join(ROOT, 'standalone/ai-guided-signup-demo.html'), path.join(OUT, name));
   }
   /* index.html at the repo root is the copy that gets published to GitHub Pages, so it is
      refreshed here too — a stale one there is a demo that shows yesterday's work. */
-  copyFileSync(path.join(ROOT, 'standalone/usc-ula-demo.html'), path.join(ROOT, 'index.html'));
-  line('built and staged  standalone/usc-ula-demo.html -> .build/ and index.html');
+  copyFileSync(path.join(ROOT, 'standalone/ai-guided-signup-demo.html'), path.join(ROOT, 'index.html'));
+  line('built and staged  standalone/ai-guided-signup-demo.html -> .build/ and index.html');
 }
 
 /* The browser suites need Playwright. It is not part of this project's zero-dependency
@@ -92,7 +92,7 @@ if (!unitsOnly && havePlaywright) {
       try {
         const { stdout } = await run('python3', [`tests/browser/${file}`], {
           cwd: ROOT, maxBuffer: 1 << 24, timeout: 180000,
-          env: { ...process.env, DEMO_URL: `file://${path.join(OUT, 'usc-ula-demo.html')}`, SHOT_DIR: path.join(OUT, 'shots') }
+          env: { ...process.env, DEMO_URL: `file://${path.join(OUT, 'ai-guided-signup-demo.html')}`, SHOT_DIR: path.join(OUT, 'shots') }
         });
         const m = stdout.match(/=== (\d+) passed, (\d+) failed ===/);
         const detail = stdout.split('\n').filter((l) => l.startsWith('  !')).slice(0, 6);

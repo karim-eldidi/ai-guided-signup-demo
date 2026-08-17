@@ -3,7 +3,7 @@ import os
 import datetime
 from playwright.sync_api import sync_playwright
 _TODAY = datetime.date.today().isoformat()
-U=os.environ.get("DEMO_URL", "file:///mnt/user-data/outputs/usc-ula-demo.html")
+U=os.environ.get("DEMO_URL", "file:///mnt/user-data/outputs/ai-guided-signup-demo.html")
 OUT=os.path.join(os.environ.get("SHOT_DIR", os.path.join(os.path.dirname(__file__), "..", "..", ".build", "shots")), "shots18"); os.makedirs(OUT, exist_ok=True)
 ok=[];bad=[]
 def P(t): ok.append(t); print("PASS",t)

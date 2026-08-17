@@ -4,7 +4,7 @@ Build the self-contained demo: one HTML file with everything inlined.
 
     python3 standalone/build.py
 
-Writes standalone/usc-ula-demo.html — a single file you can double-click, or email
+Writes standalone/ai-guided-signup-demo.html — a single file you can double-click, or email
 to anyone. No server, no install, no accounts.
 
 It inlines:
@@ -73,7 +73,7 @@ def main():
         .replace("/*__BUILD__*/", build_stamp())
     )
 
-    out = os.path.join(HERE, "usc-ula-demo.html")
+    out = os.path.join(HERE, "ai-guided-signup-demo.html")
     with open(out, "w", encoding="utf-8") as fh:
         fh.write(html)
     print(f"built {out} ({round(len(html) / 1024)} KB)")
