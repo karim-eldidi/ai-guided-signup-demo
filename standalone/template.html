@@ -2576,32 +2576,27 @@ function recommendationScreen() {
     ? `${hereT.included===hereT.nearby ? 'All ' + hereT.nearby : hereT.included + ' of ' + hereT.nearby} with ${esc(plan.name)}`
     : `Within ${match.radiusKm?match.radiusKm+' km':'reach'} of ${esc(where)}`;
 
-  const placesSection = `<section class="places">
-    <details class="rowcard places__fold"${PLACESOPEN || nq ?' open':''}>
-      <summary class="rowcard__head" data-toggle-places>
-        <span class="rowcard__icon">${icon('pin',20)}</span>
-        <span class="rowcard__text"><b>${placesTitle}</b><small>${placesSub}</small></span>
-        <span class="rowcard__cta">Explore & search ${icon('chevron',18)}</span>
-      </summary>
-      <div class="rowcard__body">
-        <form class="venuesearch" data-form="venue-filter" novalidate style="margin: 4px 0 14px">
-          <span class="venuesearch__icon">${icon('search',17)}</span>
-          <input type="search" name="vq" value="${esc(VENUEQ)}" autocomplete="off"
-            placeholder="Search these places &mdash; a name or an activity" aria-label="Search the places near you">
-          ${nq?`<button type="button" class="venuesearch__clear linkish strong" data-venue-clear>Clear</button>`:''}
-        </form>
-        ${hits && !hits.length ? `<div class="notice notice--grey">${icon('info',19)}<span>Nothing within this radius matches
-          &ldquo;${esc(VENUEQ.trim())}&rdquo;. Try a wider radius below, or
-          <button class="linkish strong" type="button" data-venue-search-all>search all ${VENUES.length} venues in the pilot</button>.</span></div>` : ''}
-        <div class="venue-grid venue-grid--big is-grid">${allVenues.map(v=>venueCard(v)).join('')}</div>
-        <div class="places__foot" style="margin-top:14px">
-          <div class="radius" role="group" aria-label="How far to look">
-            <span class="radius__label">${icon('pin',15)} Within</span>
-            ${RADII.map(r=>`<button type="button" class="chip-sm ${(S.radiusKm||'auto')===r.id?'is-current':''}" data-radius="${esc(r.id)}">${esc(r.label)}</button>`).join('')}
-          </div>
-        </div>
+  const placesSection = `<section class="places-tray">
+    <div class="places-tray__head">
+      <div>
+        <h3 class="places-tray__title">Studios &amp; places unlocked in ${esc(where)}</h3>
+        <p class="places-tray__sub">${placesSub} &middot; <span style="font-weight:700;color:var(--ink)">Drag any studio onto a day above</span></p>
       </div>
-    </details>
+      <form class="venuesearch places-tray__search" data-form="venue-filter" novalidate>
+        <span class="venuesearch__icon">${icon('search',15)}</span>
+        <input type="search" name="vq" value="${esc(VENUEQ)}" autocomplete="off"
+          placeholder="Filter studios..." aria-label="Search places">
+        ${nq?`<button type="button" class="venuesearch__clear linkish strong" data-venue-clear>Clear</button>`:''}
+      </form>
+    </div>
+    ${hits && !hits.length ? `<div class="notice notice--grey">${icon('info',19)}<span>Nothing within this radius matches &ldquo;${esc(VENUEQ.trim())}&rdquo;. Try a wider radius below.</span></div>` : ''}
+    <div class="venue-grid venue-grid--big is-grid">${allVenues.map(v=>venueCard(v)).join('')}</div>
+    <div class="places__foot" style="margin-top:14px">
+      <div class="radius" role="group" aria-label="How far to look">
+        <span class="radius__label">${icon('pin',15)} Within</span>
+        ${RADII.map(r=>`<button type="button" class="chip-sm ${(S.radiusKm||'auto')===r.id?'is-current':''}" data-radius="${esc(r.id)}">${esc(r.label)}</button>`).join('')}
+      </div>
+    </div>
   </section>`;
 
   /* The order of this column depends on the shape of the screen, which is why it is
@@ -3531,9 +3526,35 @@ document.addEventListener('click', e => {
     const chosen=(S.answers.activities||[]).filter(x=>x!==SKIP);
     if (!chosen.includes(group.id)) S.answers.activities=[...chosen,group.id];
     S.weekSwap=Object.assign({},S.weekSwap,{[WEEK_ADD_DAY]:{venueId:venue.id,groupId:group.id}});
-    S.planOverridden=false; S.chosenPlanId=null;
+    
+    const curDays = new Set(S.weekDays && S.weekDays.length ? S.weekDays : weekPlan(A().activities||[], matchVenues(A()).pool||[], currentPlan().id, S.answers.frequency).sessions.map(x=>x.day));
+    curDays.add(WEEK_ADD_DAY);
+    S.weekDays = DAY_ORDER.filter(d => curDays.has(d));
+    const newFreq = freqForDays(S.weekDays.length);
+    if (newFreq !== S.answers.frequency) {
+      S.answers.frequency = newFreq;
+    }
+
+    const wasPlan = currentPlan();
+    const firstPlan = firstPlanWithAccess(venue);
+    if (firstPlan && firstPlan.rank > wasPlan.rank) {
+      S.chosenPlanId = firstPlan.id;
+      S.planOverridden = false;
+      DAYNOTE = `Added <b>${esc(venue.name)}</b> to ${WEEK_ADD_DAY} &mdash; upgraded your plan to <b>${esc(firstPlan.name)}</b> to cover it.`;
+    } else {
+      S.planOverridden = false;
+      S.chosenPlanId = null;
+      const nowPlan = currentPlan();
+      if (nowPlan.id !== wasPlan.id) {
+        DAYNOTE = `Added <b>${esc(venue.name)}</b> to ${WEEK_ADD_DAY} &mdash; updated your recommendation to <b>${esc(nowPlan.name)}</b>.`;
+      } else {
+        DAYNOTE = `Added <b>${esc(venue.name)}</b> to ${WEEK_ADD_DAY}`;
+      }
+    }
+    
     log('week_venue_added',{day:WEEK_ADD_DAY,venue:venue.id,activity:group.id});
-    SHEET=null; WEEK_ADD_MODE=false; WEEK_ADD_DAY=null; go('recommendation'); return;
+    SHEET=null; WEEK_ADD_MODE=false; WEEK_ADD_DAY=null; document.body.style.overflow = '';
+    render(false); return;
   }
   /* Nothing near you matched, so hand the words to the search that can answer for the
      whole pilot — and answers with the cheapest membership that opens the place. */
@@ -3872,9 +3893,32 @@ document.addEventListener('drop', e => {
   if (!chosen.includes(group.id)) S.answers.activities = [...chosen, group.id];
 
   S.weekSwap = Object.assign({}, S.weekSwap, { [targetDay]: { venueId: venue.id, groupId: group.id } });
-  S.planOverridden = false;
-  S.chosenPlanId = null;
-  DAYNOTE = `Added ${venue.name} to ${targetDay}`;
+
+  const curDays = new Set(S.weekDays && S.weekDays.length ? S.weekDays : weekPlan(A().activities||[], matchVenues(A()).pool||[], currentPlan().id, S.answers.frequency).sessions.map(x=>x.day));
+  curDays.add(targetDay);
+  S.weekDays = DAY_ORDER.filter(d => curDays.has(d));
+  const newFreq = freqForDays(S.weekDays.length);
+  if (newFreq !== S.answers.frequency) {
+    S.answers.frequency = newFreq;
+  }
+
+  const wasPlan = currentPlan();
+  const firstPlan = firstPlanWithAccess(venue);
+  if (firstPlan && firstPlan.rank > wasPlan.rank) {
+    S.chosenPlanId = firstPlan.id;
+    S.planOverridden = false;
+    DAYNOTE = `Added <b>${esc(venue.name)}</b> to ${targetDay} &mdash; upgraded your plan to <b>${esc(firstPlan.name)}</b> to cover it.`;
+  } else {
+    S.planOverridden = false;
+    S.chosenPlanId = null;
+    const nowPlan = currentPlan();
+    if (nowPlan.id !== wasPlan.id) {
+      DAYNOTE = `Added <b>${esc(venue.name)}</b> to ${targetDay} &mdash; updated your recommendation to <b>${esc(nowPlan.name)}</b>.`;
+    } else {
+      DAYNOTE = `Added <b>${esc(venue.name)}</b> to ${targetDay}`;
+    }
+  }
+
   log('venue_drag_dropped_on_week', { day: targetDay, venue: venue.id });
   render(false);
 });
