@@ -2686,44 +2686,13 @@ function recommendationScreen() {
     </div>
   </details>`;
 
-  const routineSnapshot = `<section class="routine-snapshot">
-    <div class="routine-snapshot__head">
-      <div>
-        <h2 class="routine-snapshot__title">Your sports &amp; studios</h2>
-        <p class="routine-snapshot__sub">${groups.length} sports &middot; ${wp.sessions.length} sessions a week</p>
-      </div>
-      <button class="btn-pill btn-pill--sm" type="button" data-toggle-routine-customizer>
-        ${CUSTOMIZER_OPEN ? 'Close customizer ↑' : 'Customize →'}
-      </button>
-    </div>
-    <div class="routine-snapshot__list">
-      ${groups.map(g => {
-        const grp = groupById(g.id || g);
-        if (!grp) return '';
-        const v = pool.find(pv => venueInGroup(pv, grp));
-        const tier = v && v.tier ? (v.tier === 'premium' ? 'Premium' : v.tier === 'plus' ? 'Plus' : 'Standard') : '';
-        const tierBadge = tier ? `<span class="tier-tag tier-tag--${v.tier}">${tier}</span>` : '';
-        const areaLabel = v && v.nearestArea ? v.nearestArea.name : (v ? (AREAS.find(a=>a.id===v.area)||{}).name : '');
-        const distLabel = areaLabel ? `${v.distanceKm} km from ${esc(areaLabel)}` : `${v.distanceKm} km away`;
-        return `<div class="routine-snapshot__row">
-          <div class="routine-snapshot__sport">
-            <span class="routine-snapshot__icon">${icon(grp.icon, 16)}</span>
-            <b>${esc(grp.label)}</b>
-          </div>
-          ${v ? `<div class="routine-snapshot__venue">
-            <span class="routine-snapshot__vname">${esc(v.name)}</span>
-            ${tierBadge}
-            <span class="routine-snapshot__dist">${distLabel}</span>
-          </div>` : `<span class="muted">Any partner studio</span>`}
-        </div>`;
-      }).join('')}
-    </div>
-  </section>`;
-
   return `${topbar(1)}<div class="two-col two-col--reco"><main class="two-col__main" id="main">
-    ${MOBILE()
-      ? `${heroBlock}${chipsBlock}<div class="planbox-mobile">${planAside}</div>${routineSnapshot}${CUSTOMIZER_OPEN ? `<div class="routine-customizer-drawer">${viewSwitcher}${RECO_VIEW==='pillars' ? pillarsBlock : weekBlock}</div>` : ''}${placesSection}${appsBlock()}${moreRow}`
-      : `${story}${viewSwitcher}${RECO_VIEW==='pillars' ? pillarsBlock : weekBlock}${placesSection}${appsBlock()}${moreRow}`}
+    ${story}
+    ${viewSwitcher}
+    ${RECO_VIEW==='pillars' ? pillarsBlock : weekBlock}
+    ${placesSection}
+    ${appsBlock()}
+    ${moreRow}
   </main>
   ${MOBILE()?'':`<aside class="two-col__aside two-col__aside--sticky">
     ${planAside}
