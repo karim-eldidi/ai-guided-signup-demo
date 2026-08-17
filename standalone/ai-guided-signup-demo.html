@@ -1493,9 +1493,8 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 .demo-banner__short { display: none; }
 .demo-banner.is-collapsed .demo-banner__short { display: inline; }
 
-/* A save dialog is a screen in its own right. Hide the covered page from visual
-   checks as well as pointer/keyboard input so it cannot expose a second primary CTA. */
-body.save-modal-open #app > :not(#exit-modal) { visibility: hidden; }
+/* A save dialog is a screen in its own right with fixed backdrop */
+body.save-modal-open { overflow: hidden; }
 
 .sticky-cta { display: none; }
 
@@ -3158,7 +3157,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 17 Aug 15:55 UTC</span>
+  <span class="demo-banner__build">build 17 Aug 16:06 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -4078,7 +4077,7 @@ function topbar(step, opts={}) {
   return `<header class="topbar">
     <div class="topbar__left"><button class="wordmark linkish" style="text-decoration:none" data-go="landing">Urban Sports Club</button>${note}</div>
     <div class="topbar__center"><div class="stepper">${dots}</div></div>
-    <div class="topbar__right">${saveExit?`<button class="link-plain" data-open-exit>Save and exit</button>`:''}</div></header>
+    <div class="topbar__right">${saveExit?`<button class="link-plain" data-open-exit>Save for later</button>`:''}</div></header>
   <div class="mobile-progress"><div class="mobile-progress__label">${step} of 3 · ${steps[step-1].l}</div>
     <div class="mobile-progress__track"><div class="mobile-progress__fill" style="width:${barPct}%"></div></div>
     ${savedNote?`<div class="saved-note saved-note--mobile">${icon('checkThin',16)} Saved — your progress is safe.</div>`:''}</div>`;
@@ -6279,6 +6278,7 @@ function go(route, opts={}) {
      screen, reached by someone who wants to leave. */
   ROUTE = route; EDITING = null; SHEET = null; CITYPICK = false; CITYWANTED = null; ASKOPEN = false; DAYSOPEN = false; PLACEWANTED = null; VENUESOPEN = false; APPSOPEN = false; DAYNOTE = null; WEEKOPEN = false; VENUEQ = '';
   PLACESOPEN = false; MOREOPEN = false; MOREPICK = null; ALTOPEN = null; PLANPLUS = null; PLANASK = false; PLANDETAILS_OPEN = false; WHEREPICK = false; SEEALL = false; FREETEXT_OPEN = false;
+  document.body.classList.remove('save-modal-open'); document.body.style.overflow = '';
   /* A reviewer saw the save screen's "enter a valid email" error appear under the
      details form's own email field. Errors belong to the screen that produced them. */
   ERRORS = {}; FIELDS = {}; NOCHOICE = false; UNCLEAR = false;
@@ -6295,6 +6295,12 @@ window.addEventListener('popstate', e => {
   const r = (e.state && e.state.route) || 'landing';
   if (SHEET) { SHEET=null; render(); return; }
   ROUTE = r; EDITING=null; render();
+});
+window.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    const modal = document.getElementById('exit-modal');
+    if (modal && !modal.hidden) closeSaveModal('esc_key');
+  }
 });
 
 /* Rule 65: the recommendation is ordered differently on a phone — the plan leads and
@@ -6712,7 +6718,7 @@ document.addEventListener('click', e => {
   }
 
   if (t.dataset.openExit !== undefined) { openSaveModal('form', 'save_and_exit'); return; }
-  if (t.dataset.closeExit !== undefined) { closeSaveModal('dismissed'); return; }
+  if (t.dataset.closeExit !== undefined || (e.target && e.target.id === 'exit-modal')) { closeSaveModal('dismissed'); return; }
   if (t.dataset.exit) {
     const v=t.dataset.exit; document.body.style.overflow='';
     if (v==='save')    { log('exit_intent',{ consent:'save_requested', atStep:S.lastStep }); openSaveModal('form','legacy_exit'); return; }
