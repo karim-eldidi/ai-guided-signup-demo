@@ -2790,68 +2790,62 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 
 /* Recommendation View Switcher */
 .reco-switcher {
-  display: flex; gap: 8px; background: var(--cream); border: 1px solid var(--cream-line);
-  padding: 4px; border-radius: 12px; margin-bottom: 18px; width: fit-content; max-width: 100%;
+  display: inline-flex; gap: 4px; background: rgba(0,0,0,0.04);
+  padding: 4px; border-radius: 9999px; margin-bottom: 22px; max-width: 100%;
 }
 .reco-switcher__tab {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: transparent; border: 0; padding: 8px 16px; border-radius: 9px;
-  font-size: 13.5px; font-weight: 700; color: var(--navy); cursor: pointer; transition: all .15s ease;
+  display: inline-flex; align-items: center; gap: 7px;
+  background: transparent; border: 0; padding: 7px 16px; border-radius: 9999px;
+  font-size: 13px; font-weight: 700; color: var(--navy-soft); cursor: pointer; transition: all .15s ease;
 }
 .reco-switcher__tab:hover { color: var(--ink); }
 .reco-switcher__tab.is-active {
-  background: #fff; color: var(--ink); box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  background: #fff; color: var(--ink); box-shadow: 0 1px 4px rgba(0,0,0,0.08); font-weight: 800;
 }
 
 /* Activity Freedom Pillars */
 .pillars-section {
-  margin-bottom: 20px;
-}
-.pillars-section__head {
-  margin-bottom: 14px;
-}
-.pillars-section__title {
-  font-size: clamp(19px, 1.5vw, 23px); font-weight: 800; letter-spacing: -.02em; margin: 0 0 4px; color: var(--ink);
-}
-.pillars-section__sub {
-  font-size: 14px; color: var(--navy-soft); margin: 0;
+  margin-bottom: 22px;
 }
 .pillars-list {
-  display: flex; flex-direction: column; gap: 14px;
+  display: flex; flex-direction: column; gap: 12px;
 }
 .pillar-card {
-  background: var(--cream); border: 1px solid var(--cream-line);
-  border-radius: var(--radius-lg); padding: 18px 18px 16px;
+  background: #fff; border: 1px solid rgba(0,0,0,0.07);
+  border-radius: var(--radius-lg); padding: 16px 18px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
 }
 .pillar-card__head {
-  display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
+  display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
 }
 .pillar-card__icon {
-  flex: 0 0 auto; width: 40px; height: 40px; border-radius: 50%;
-  background: #fff; display: grid; place-items: center; color: var(--ink);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  flex: 0 0 auto; width: 32px; height: 32px; border-radius: 50%;
+  background: var(--yellow-pale); display: grid; place-items: center; color: var(--ink);
 }
-.pillar-card__titlebox { min-width: 0; }
+.pillar-card__titlebox {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex: 1 1 auto;
+}
 .pillar-card__title {
-  font-size: 16.5px; font-weight: 800; margin: 0; color: var(--ink);
+  font-size: 15.5px; font-weight: 800; margin: 0; color: var(--ink);
 }
-.pillar-card__meta {
-  font-size: 12.5px; color: var(--navy-soft); margin: 2px 0 0;
+.pillar-card__allowance {
+  font-size: 12.5px; color: var(--navy-soft); font-weight: 600;
 }
 .pillar-card__venues {
-  display: flex; flex-direction: column; gap: 8px;
+  display: flex; flex-direction: column; gap: 6px;
 }
 .pillar-venue {
-  display: flex; align-items: center; justify-content: space-between; gap: 14px;
-  background: #fff; border-radius: var(--radius); padding: 10px 14px;
-  border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  background: var(--page-grey); border-radius: 10px; padding: 8px 12px;
+  transition: background .15s ease;
 }
-.pillar-venue.is-locked { opacity: 0.85; }
+.pillar-venue:hover { background: #f0f2f5; }
+.pillar-venue.is-locked { opacity: 0.8; }
 .pillar-venue__media-btn {
   background: none; border: 0; padding: 0; cursor: pointer; flex: 0 0 auto;
 }
 .pillar-venue .venue-card__media {
-  width: 58px; height: 42px; border-radius: 6px; overflow: hidden;
+  width: 52px; height: 38px; border-radius: 6px; overflow: hidden;
   position: relative; background: var(--yellow-pale); display: grid; place-items: center;
 }
 .pillar-venue .venue-card__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
@@ -2862,17 +2856,17 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
 }
 .pillar-venue__name {
-  background: none; border: 0; padding: 0; font-size: 14.5px; font-weight: 700;
+  background: none; border: 0; padding: 0; font-size: 14px; font-weight: 700;
   color: var(--ink); text-align: left; cursor: pointer;
 }
 .pillar-venue__name:hover { text-decoration: underline; }
 .pillar-venue__sub {
-  font-size: 12.5px; color: var(--navy-soft); margin-top: 2px;
+  font-size: 12px; color: var(--navy-soft); margin-top: 1px;
 }
-.pillar-venue__access { color: var(--ink); font-weight: 600; }
+.pillar-venue__needs { color: #8a5a1a; font-weight: 600; }
 .pillar-venue__action { flex: 0 0 auto; }
 .pillars-section__foot {
-  margin-top: 14px; text-align: center;
+  margin-top: 14px; text-align: center; font-size: 13px;
 }
 
 /* Tier Badges */
@@ -3473,7 +3467,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 17 Aug 23:11 UTC</span>
+  <span class="demo-banner__build">build 17 Aug 23:19 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -5717,10 +5711,6 @@ function recommendationScreen() {
   </section>` : '';
 
   const pillarsBlock = groups.length ? `<section class="pillars-section">
-    <div class="pillars-section__head">
-      <h2 class="pillars-section__title">Your activities & lifestyle freedom</h2>
-      <p class="pillars-section__sub">See how ${esc(plan.name)} unlocks every sport you love across top Berlin studios, on your own terms.</p>
-    </div>
     <div class="pillars-list">
       ${groups.map(g => {
         const grp = groupById(g.id || g);
@@ -5728,10 +5718,10 @@ function recommendationScreen() {
         const grpVenues = pool.filter(v => venueInGroup(v, grp)).slice(0, 2);
         return `<div class="pillar-card">
           <div class="pillar-card__head">
-            <span class="pillar-card__icon">${icon(grp.icon, 20)}</span>
+            <span class="pillar-card__icon">${icon(grp.icon, 18)}</span>
             <div class="pillar-card__titlebox">
               <h3 class="pillar-card__title">${esc(grp.label)}</h3>
-              <p class="pillar-card__meta">${esc(grp.blurb || 'Included across top studios in Berlin')}</p>
+              <span class="pillar-card__allowance">4 visits / mo on ${esc(plan.name)}</span>
             </div>
           </div>
           <div class="pillar-card__venues">
@@ -5739,7 +5729,6 @@ function recommendationScreen() {
               const inPlan = includedIn(v, plan.id);
               const tier = v.tier ? (v.tier === 'premium' ? 'Premium' : v.tier === 'plus' ? 'Plus' : 'Standard') : '';
               const tierBadge = tier ? `<span class="tier-tag tier-tag--${v.tier}">${tier}</span>` : '';
-              const accessText = (v.access && v.access[plan.id]) ? v.access[plan.id] : (inPlan ? 'Included on ' + plan.name : 'Needs upgrade');
               return `<div class="pillar-venue ${inPlan ? '' : 'is-locked'}">
                 <button class="pillar-venue__media-btn" data-venue="${esc(v.id)}" aria-label="Details about ${esc(v.name)}">
                   <span class="venue-card__media">${venueMedia(v)}</span>
@@ -5749,11 +5738,11 @@ function recommendationScreen() {
                     <button class="pillar-venue__name" data-venue="${esc(v.id)}"><b>${esc(v.name)}</b></button>
                     ${tierBadge}
                   </div>
-                  <div class="pillar-venue__sub">${v.distanceKm} km away &middot; <span class="pillar-venue__access">${esc(accessText)}</span></div>
+                  <div class="pillar-venue__sub">${v.distanceKm} km away &middot; ${inPlan ? 'Included' : `<span class="pillar-venue__needs">Needs upgrade</span>`}</div>
                 </div>
                 <div class="pillar-venue__action">
                   <button class="btn-pill btn-pill--sm" data-open-add-venue="${esc(v.id)}">
-                    ${icon('plus', 11)} <span>Add to schedule</span>
+                    ${icon('plus', 11)} <span>Add to week</span>
                   </button>
                 </div>
               </div>`;
@@ -5763,7 +5752,7 @@ function recommendationScreen() {
       }).join('')}
     </div>
     <div class="pillars-section__foot">
-      <button class="linkish strong" type="button" data-set-reco-view="week">${icon('calendar', 15)} <span>Prefer a scheduled day-by-day calendar? View your week &rarr;</span></button>
+      <button class="linkish strong" type="button" data-set-reco-view="week">${icon('calendar', 14)} <span>Prefer a scheduled day-by-day calendar? Switch to Week Schedule &rarr;</span></button>
     </div>
   </section>` : '';
 
@@ -5772,7 +5761,7 @@ function recommendationScreen() {
       ${icon('sparkle',15)} <span>Activities & Freedom</span>
     </button>
     <button class="reco-switcher__tab ${RECO_VIEW==='week'?'is-active':''}" type="button" data-set-reco-view="week" aria-selected="${RECO_VIEW==='week'}">
-      ${icon('calendar',15)} <span>Day-by-Day Schedule</span>
+      ${icon('calendar',15)} <span>Week Schedule</span>
     </button>
   </div>`;
 
@@ -5789,32 +5778,7 @@ function recommendationScreen() {
     <div class="shelf__body">${whyBody}</div>
   </details>`;
 
-  /* One comparison, visible, instead of three ways of saying the same thing. The card
-     used to carry a single "cheaper option" beside it, a fold called "Compare all four
-     plans", and a fold called "Why this plan" — three separate answers to "which
-     membership?", stacked. Karim, 14 Aug: "comparing the plans is nice but hidden", and
-     the sidebar was "still a bit too much". So the alternative and the fold merged into
-     one open table, and the reasoning moved out of the card entirely — see the shelf at
-     the foot of the page.
-
-     Singling out one alternative was what made rule 32 necessary: a cheaper plan offered
-     as *the* option while opening nothing was a trap. A table is not an offer. Every
-     plan states what it opens near this visitor and where its allowance cannot carry
-     their week, so the honest comparison is the default rather than a guard against a
-     dishonest one. Rules 32 / 41 / 64. */
-  /* Karim's design, 14 Aug: the comparison is a card of its own with a handle that names
-     it, and each row states three things — the price, how many visits its allowance
-     permits against the week they asked for, and how many of the places they asked for it
-     opens. Rule 36: the allowance is the last word, so it is on the row, not in a
-     footnote. It starts open, because the complaint that made rule 64 was that comparing
-     the plans was hidden; it can be closed to shorten the column.
-
-     Singling out one alternative is what made rule 32 necessary: a cheaper plan offered as
-     *the* option while opening nothing was a trap. So a plan that opens none of what they
-     asked for keeps its numbers and its warning and loses its Switch — it is information,
-     never an offer. Rules 32 / 41 / 64. */
   const opensNothing = t => Boolean(t && t.nearby && !t.included);
-  /* Collapsed by default; click to expand and compare all four memberships. */
   const altOpen = Boolean(ALTOPEN);
   const allPlans = `<details class="allplans"${altOpen?' open':''}>
     <summary class="allplans__head" data-toggle-alt>
@@ -5823,9 +5787,7 @@ function recommendationScreen() {
     <div class="allplans__grid">
       ${PLANS.slice().sort((x,y)=>x.rank-y.rank).map(pl => {
         const p = priceFor(pl, S.commitmentId), t = totalsFor(pl), here = pl.id === plan.id;
-        /* Rule 53: a plan the visitor picked is labelled as theirs, never as advice. */
         const tag = here ? (isRec ? 'Recommended' : 'Your choice') : (pl.id===rec.planId ? 'Urby&rsquo;s pick' : '');
-        /* Rule 41: say what an option costs, not only what it saves. */
         const short = a.frequency && !carriesFrequency(pl, a.frequency)
           ? `Not enough for your ${visitsWanted(a.frequency)}-visit routine` : '';
         const fewer = !here && t && hereT && t.nearby && t.included < hereT.included
@@ -5845,11 +5807,6 @@ function recommendationScreen() {
     <p class="allplans__foot"><button class="linkish" type="button" data-go="plans">See everything each plan includes</button></p>
   </details>`;
 
-  /* One cheaper option in the open beside the recommendation, because "is there something
-     cheaper?" is the question everybody asks and the answer should not be behind a fold.
-     What it cannot do is on the card, twice if twice is true: the allowance it runs out of
-     and the places it does not open. And if it opens none of them it carries no button —
-     rule 32 — because a button is an offer and that offer would be a trap. */
   const altBox = cheaperPlan ? (() => {
     const p = priceFor(cheaperPlan, S.commitmentId);
     const short = a.frequency && !carriesFrequency(cheaperPlan, a.frequency)
@@ -5870,22 +5827,9 @@ function recommendationScreen() {
     </div>`;
   })() : '';
 
-  /* Karim: "make this side bar smaller vertically", then "still a bit too much". Rows
-     were merged rather than shrunk, and then whole rows left. Gone: the benefits list
-     (generic, and the small print already carries it), the separate alternative card,
-     the "why" fold, and two lines saying what the three facts below now say once. What
-     stayed is the argument in numbers — what the money permits, what it opens, what a
-     session costs — because a card that argues in figures is what earns the right to
-     fold the reasoning at all (rule 67).
-
-     The way back to Urby's own pick stays here and stays outside any fold: a closed
-     drawer cannot offer it. */
   const planAside = `<div class="planbox">
     <div class="planbox__head">
       <div class="planbox__badge">${isRec?'Recommended for you':'Your choice'}</div>
-      <!-- The name and the price share a baseline, which means they must share a row of
-           their own: with the badge in the same flex row the tall price aligned to the
-           name's box and floated between the two lines instead. -->
       <div class="planbox__idrow">
         <div class="planbox__name">${esc(plan.name)}</div>
         <div class="planbox__price"><b>${price} €</b><span>/mo</span></div>
@@ -5898,10 +5842,6 @@ function recommendationScreen() {
           aria-pressed="${c.id===S.commitmentId}"><b>${c.minimumTermMonths===1?'Monthly':c.minimumTermMonths+' months'}</b><span>${p} €/mo</span></button>`;
       }).join('')}
     </div>
-    <!-- Three facts, all of them numbers, all recomputed from the plan selected now
-         (rule 52). This is the whole argument: what the allowance permits, what the
-         money opens near them, what one session costs. Rule 14 — value before price,
-         and where the two share a card they share it in that order. -->
     <div class="planbox__factshead">Why this fits you</div>
     <ul class="planbox__facts">
       ${groups.length ? `<li>${icon('checkThin',16)}<span>Covers your <b>${esc(groups.map(g=>g.label).join(' & '))}</b> routine</span></li>` : ''}
@@ -5931,23 +5871,6 @@ function recommendationScreen() {
     ${S.email?'':`<button class="linkish plan-summary__save" data-go="save">Save this and come back later</button>`}
   </div>` : '';
 
-  /* Two sections in this column, not six. Karim: "I don't know why you made so many
-     containers, I want simplicity." The places and the week are the story, and they
-     are the only things that live here. The plan, why it fits, and what it opens
-     are one argument, so they live together in the column beside it — which also
-     killed the two blocks that ran into each other at the seam.
-
-     On a phone the places fold. Rule 65: the reviewer who called this "overwhelming,
-     especially on mobile" met a full-bleed rail of twelve venues before anything told
-     them what a membership costs, and a phone has no second column to put the answer
-     in. So the heading becomes the handle, the count stays on it — a fold has to say
-     what it is hiding or it reads as an empty section — and the whole thing is open on
-     a desktop, where the room exists. */
-  /* Karim's design, 14 Aug: the places are one row, not a section. The row is the answer
-     — how many places near them do what they asked, and how many of those each plan
-     opens — and everything you can do about it (the search, the distance, the twelve
-     cards) is behind it. Three counts, one match, still (rule 54): the count on the
-     handle only ever counts places doing what they asked for. */
   const placeCount = hereT && hereT.nearby ? hereT.nearby : wanted.length;
   const placesTitle = hits
     ? `${plural(hits.length,'place','places')} matching &ldquo;${esc(VENUEQ.trim())}&rdquo;`
@@ -5957,35 +5880,33 @@ function recommendationScreen() {
   const placesSub = (hereT && hereT.nearby)
     ? `${hereT.included===hereT.nearby ? 'All ' + hereT.nearby : hereT.included + ' of ' + hereT.nearby} with ${esc(plan.name)}`
     : `Within ${match.radiusKm?match.radiusKm+' km':'reach'} of ${esc(where)}`;
-  const placesSection = `<section class="places-showcase">
-    <div class="places-showcase__head">
-      <div>
-        <h2 class="places-showcase__title">Places unlocked near ${esc(where)}</h2>
-        <p class="places-showcase__sub">${placesSub}</p>
-      </div>
-      <button class="places-showcase__explore linkish strong" type="button" data-toggle-places>
-        ${PLACESOPEN ? 'Hide extra places' : `Explore all ${placeCount} places &rarr;`}
-      </button>
-    </div>
-    <div class="places-showcase__grid">
-      ${allVenues.slice(0, 3).map(v => venueCard(v)).join('')}
-    </div>
-    ${PLACESOPEN ? `
-    <div class="places-showcase__drawer">
-      <form class="venuesearch" data-form="venue-filter" novalidate style="margin: 14px 0 10px">
-        <span class="venuesearch__icon">${icon('search',17)}</span>
-        <input type="search" name="vq" value="${esc(VENUEQ)}" autocomplete="off"
-          placeholder="Search these places &mdash; a name or an activity" aria-label="Search the places near you">
-        ${nq?`<button type="button" class="venuesearch__clear linkish strong" data-venue-clear>Clear</button>`:''}
-      </form>
-      <div class="venue-grid venue-grid--big is-grid">${allVenues.map(v=>venueCard(v)).join('')}</div>
-      <div class="places__foot" style="margin-top:12px">
-        <div class="radius" role="group" aria-label="How far to look">
-          <span class="radius__label">${icon('pin',15)} Within</span>
-          ${RADII.map(r=>`<button type="button" class="chip-sm ${(S.radiusKm||'auto')===r.id?'is-current':''}" data-radius="${esc(r.id)}">${esc(r.label)}</button>`).join('')}
+
+  const placesSection = `<section class="places">
+    <details class="rowcard places__fold"${PLACESOPEN || nq ?' open':''}>
+      <summary class="rowcard__head" data-toggle-places>
+        <span class="rowcard__icon">${icon('pin',20)}</span>
+        <span class="rowcard__text"><b>${placesTitle}</b><small>${placesSub}</small></span>
+        <span class="rowcard__cta">Explore & search ${icon('chevron',18)}</span>
+      </summary>
+      <div class="rowcard__body">
+        <form class="venuesearch" data-form="venue-filter" novalidate style="margin: 4px 0 14px">
+          <span class="venuesearch__icon">${icon('search',17)}</span>
+          <input type="search" name="vq" value="${esc(VENUEQ)}" autocomplete="off"
+            placeholder="Search these places &mdash; a name or an activity" aria-label="Search the places near you">
+          ${nq?`<button type="button" class="venuesearch__clear linkish strong" data-venue-clear>Clear</button>`:''}
+        </form>
+        ${hits && !hits.length ? `<div class="notice notice--grey">${icon('info',19)}<span>Nothing within this radius matches
+          &ldquo;${esc(VENUEQ.trim())}&rdquo;. Try a wider radius below, or
+          <button class="linkish strong" type="button" data-venue-search-all>search all ${VENUES.length} venues in the pilot</button>.</span></div>` : ''}
+        <div class="venue-grid venue-grid--big is-grid">${allVenues.map(v=>venueCard(v)).join('')}</div>
+        <div class="places__foot" style="margin-top:14px">
+          <div class="radius" role="group" aria-label="How far to look">
+            <span class="radius__label">${icon('pin',15)} Within</span>
+            ${RADII.map(r=>`<button type="button" class="chip-sm ${(S.radiusKm||'auto')===r.id?'is-current':''}" data-radius="${esc(r.id)}">${esc(r.label)}</button>`).join('')}
+          </div>
         </div>
       </div>
-    </div>` : ''}
+    </details>
   </section>`;
 
   /* The order of this column depends on the shape of the screen, which is why it is
