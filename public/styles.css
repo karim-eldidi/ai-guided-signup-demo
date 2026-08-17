@@ -2855,6 +2855,34 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   margin-top: 14px; text-align: center; font-size: 13px;
 }
 
+/* Drag and Drop Routine Builder */
+[draggable="true"] { cursor: grab; -webkit-user-drag: element; }
+[draggable="true"]:active { cursor: grabbing; }
+.is-dragging { opacity: 0.4; transform: scale(0.96); }
+
+[data-drop-day] { transition: all .16s ease; }
+[data-drop-day].is-drop-active {
+  outline: 2px dashed #d5d8de; outline-offset: 2px;
+}
+[data-drop-day].is-dragover {
+  outline: 2.5px solid var(--ink) !important;
+  background: #fffdf0 !important;
+  transform: scale(1.02);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.09) !important;
+}
+
+.weekrow__dropbadge {
+  display: none; font-size: 11.5px; font-weight: 700; color: var(--ink);
+  background: var(--yellow-bright); padding: 4px 9px; border-radius: 999px;
+}
+.weekrow.is-dragover .weekrow__dropbadge { display: inline-flex; align-items: center; gap: 4px; }
+.weekrow.is-dragover .weekrow__actions { display: none; }
+
+.venue-card__draghint, .pillar-venue__draghint {
+  display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700;
+  color: var(--navy-soft); background: rgba(0,0,0,0.04); padding: 4px 8px; border-radius: 9999px;
+}
+
 /* Tier Badges */
 .tier-tag {
   display: inline-flex; align-items: center; font-size: 10.5px; font-weight: 800;

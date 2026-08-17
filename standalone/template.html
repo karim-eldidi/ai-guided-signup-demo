@@ -1246,7 +1246,7 @@ const venueCard = (v, tappable=true) => {
   const tierBadge = tier ? `<span class="tier-tag tier-tag--${v.tier}">${tier}</span>` : '';
   const chosen = (A().activities||[]).filter(x=>x!==SKIP).map(groupById).filter(Boolean);
   const hits = chosen.filter(g=>venueInGroup(v,g)).map(g=>g.label.toLowerCase());
-  return `<div class="venue-card ${inPlan?'':'is-locked'}">
+  return `<div class="venue-card ${inPlan?'':'is-locked'}" draggable="true" data-drag-venue="${esc(v.id)}" data-drag-name="${esc(v.name)}">
   <button class="venue-card__media-btn" data-venue="${esc(v.id)}" aria-label="More about ${esc(v.name)}">
     <div class="venue-card__media">${venueMedia(v)}${inPlan?'':`<span class="venue-card__lock">${icon('lock',13)} ${needs?esc(needs.name):'not included'}</span>`}</div>
   </button>
@@ -1257,8 +1257,8 @@ const venueCard = (v, tappable=true) => {
     </div>
     <div class="venue-card__meta">${v.distanceKm} km away${chosen.length?` · ${hits.length?`for ${esc(hits.join(', '))}`:'other activities'}`:''}</div>
     <div class="venue-card__foot">
-      <button class="btn-pill btn-pill--sm" data-open-add-venue="${esc(v.id)}">${icon('plus',11)} <span>Add to week</span></button>
-      <button class="linkish venue-card__more" data-venue="${esc(v.id)}">Details</button>
+      <span class="venue-card__draghint">${icon('sparkle',11)} Drag to week</span>
+      <button class="btn-pill btn-pill--sm" data-open-add-venue="${esc(v.id)}">${icon('plus',11)} <span>Add</span></button>
     </div>
   </div></div>`;
 };
@@ -2363,7 +2363,7 @@ function recommendationScreen() {
     <ol class="weekcard__list">${wp.sessions.map(x=>{
       const tier = x.venue ? (x.venue.tier === 'premium' ? 'Premium' : x.venue.tier === 'plus' ? 'Plus' : '') : '';
       const tierBadge = tier ? `<span class="tier-tag tier-tag--${x.venue.tier}">${tier}</span>` : '';
-      return `<li class="weekrow ${x.included?'':'is-locked'}">
+      return `<li class="weekrow ${x.included?'':'is-locked'}" data-drop-day="${esc(x.day)}">
       <div class="weekrow__lead">
         <span class="weekrow__icon">${icon(x.icon,18)}</span>
         <div class="weekrow__meta">
@@ -2384,17 +2384,18 @@ function recommendationScreen() {
         <button class="weekrow__swap" data-change-week="${esc(x.day)}"
           aria-label="Change activity or venue for ${esc(x.day)}">${icon('refresh',12)} <span>Swap</span></button>
       </div>
+      <div class="weekrow__dropbadge">${icon('sparkle',12)} Drop studio here</div>
     </li>`;
     }).join('')}</ol>
 
     <div class="weekcard__controls">
       <div class="week__days">
-      <div class="week__days-label" id="week-days-label">Choose your days</div>
+      <div class="week__days-label" id="week-days-label">Choose your days <small style="font-weight:400;color:var(--navy-soft)">&middot; drag any studio above onto a day</small></div>
       <div class="week__days-row" role="group" aria-labelledby="week-days-label">${DAY_ORDER.map(d=>{
           const on = wp.sessions.some(x=>x.day===d);
-          return `<button class="daybtn ${on?'is-on':''}" data-day="${esc(d)}" aria-pressed="${on}">${DAY_SHORT[d]}</button>`;
+          return `<button class="daybtn ${on?'is-on':''}" data-day="${esc(d)}" aria-pressed="${on}" data-drop-day="${esc(d)}">${DAY_SHORT[d]}</button>`;
         }).join('')}</div>
-      <p class="weekcard__helper">Change your days and I&rsquo;ll update the best membership automatically.</p>
+      <p class="weekcard__helper">Change your days or drag places to customize your routine.</p>
       </div>
     </div>
 
@@ -2422,7 +2423,7 @@ function recommendationScreen() {
               const inPlan = includedIn(v, plan.id);
               const tier = v.tier ? (v.tier === 'premium' ? 'Premium' : v.tier === 'plus' ? 'Plus' : 'Standard') : '';
               const tierBadge = tier ? `<span class="tier-tag tier-tag--${v.tier}">${tier}</span>` : '';
-              return `<div class="pillar-venue ${inPlan ? '' : 'is-locked'}">
+              return `<div class="pillar-venue ${inPlan ? '' : 'is-locked'}" draggable="true" data-drag-venue="${esc(v.id)}" data-drag-name="${esc(v.name)}">
                 <button class="pillar-venue__media-btn" data-venue="${esc(v.id)}" aria-label="Details about ${esc(v.name)}">
                   <span class="venue-card__media">${venueMedia(v)}</span>
                 </button>
@@ -2434,8 +2435,9 @@ function recommendationScreen() {
                   <div class="pillar-venue__sub">${v.distanceKm} km away &middot; ${inPlan ? 'Included' : `<span class="pillar-venue__needs">Needs upgrade</span>`}</div>
                 </div>
                 <div class="pillar-venue__action">
+                  <span class="pillar-venue__draghint">${icon('sparkle', 11)} Drag</span>
                   <button class="btn-pill btn-pill--sm" data-open-add-venue="${esc(v.id)}">
-                    ${icon('plus', 11)} <span>Add to week</span>
+                    ${icon('plus', 11)} <span>Add</span>
                   </button>
                 </div>
               </div>`;
@@ -3804,6 +3806,77 @@ document.addEventListener('click', e => { /* click the backdrop to dismiss */
   if (e.target.id === 'venue-sheet') { SHEET=null; render(false); }
   if (e.target.id === 'plus-sheet') { PLANPLUS=null; render(false); }
   if (e.target.id === 'exit-modal') { e.target.hidden = true; document.body.style.overflow=''; }
+});
+
+/* --- HTML5 Drag and Drop for Routine Builder --- */
+let DRAGGED_VENUE = null;
+
+document.addEventListener('dragstart', e => {
+  const card = e.target.closest('[data-drag-venue]');
+  if (!card) return;
+  DRAGGED_VENUE = {
+    id: card.dataset.dragVenue,
+    name: card.dataset.dragName || ''
+  };
+  try {
+    e.dataTransfer.setData('text/plain', card.dataset.dragVenue);
+    e.dataTransfer.effectAllowed = 'copyMove';
+  } catch (_) {}
+  card.classList.add('is-dragging');
+  document.querySelectorAll('[data-drop-day]').forEach(el => el.classList.add('is-drop-active'));
+});
+
+document.addEventListener('dragend', e => {
+  const card = e.target.closest('[data-drag-venue]');
+  if (card) card.classList.remove('is-dragging');
+  document.querySelectorAll('[data-drop-day]').forEach(el => {
+    el.classList.remove('is-drop-active', 'is-dragover');
+  });
+  DRAGGED_VENUE = null;
+});
+
+document.addEventListener('dragover', e => {
+  const dropzone = e.target.closest('[data-drop-day]');
+  if (!dropzone) return;
+  e.preventDefault();
+  try { e.dataTransfer.dropEffect = 'copy'; } catch (_) {}
+  dropzone.classList.add('is-dragover');
+});
+
+document.addEventListener('dragleave', e => {
+  const dropzone = e.target.closest('[data-drop-day]');
+  if (dropzone && !dropzone.contains(e.relatedTarget)) {
+    dropzone.classList.remove('is-dragover');
+  }
+});
+
+document.addEventListener('drop', e => {
+  const dropzone = e.target.closest('[data-drop-day]');
+  if (!dropzone) return;
+  e.preventDefault();
+  dropzone.classList.remove('is-dragover', 'is-drop-active');
+  let venueId = null;
+  try { venueId = e.dataTransfer.getData('text/plain'); } catch (_) {}
+  if (!venueId && DRAGGED_VENUE) venueId = DRAGGED_VENUE.id;
+  const targetDay = dropzone.dataset.dropDay;
+  if (!venueId || !targetDay) return;
+
+  const venue = VENUES.find(v => v.id === venueId);
+  if (!venue) return;
+
+  let group = (A().activities || []).map(groupById).find(g => g && venueInGroup(venue, g));
+  if (!group) group = ACTIVITY_GROUPS.find(g => venueInGroup(venue, g));
+  if (!group) return;
+
+  const chosen = (S.answers.activities || []).filter(x => x !== SKIP);
+  if (!chosen.includes(group.id)) S.answers.activities = [...chosen, group.id];
+
+  S.weekSwap = Object.assign({}, S.weekSwap, { [targetDay]: { venueId: venue.id, groupId: group.id } });
+  S.planOverridden = false;
+  S.chosenPlanId = null;
+  DAYNOTE = `Added ${venue.name} to ${targetDay}`;
+  log('venue_drag_dropped_on_week', { day: targetDay, venue: venue.id });
+  render(false);
 });
 
 /* keep the card's selected state in step with its checkbox, without re-rendering
