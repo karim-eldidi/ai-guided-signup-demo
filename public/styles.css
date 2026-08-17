@@ -1353,12 +1353,25 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 .ordercard__price b { font-size: 22px; font-weight: 800; }
 .ordercard__price span { font-size: 13px; color: var(--navy-soft); margin-left: 3px; }
 .ordercard__term { font-size: 13.5px; color: var(--navy-soft); margin-top: 3px; }
-.ordercard__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 11px; }
-.ordercard__list li { display: flex; align-items: center; gap: 11px; font-size: 15px; }
-.ordercard__list svg { flex: 0 0 auto; color: var(--navy-soft); }
+.ordercard__highlights {
+  display: flex; flex-direction: column; gap: 10px;
+  margin: 16px 0; padding: 14px 0;
+  border-top: 1px solid var(--cream-line); border-bottom: 1px solid var(--cream-line);
+}
+.ordercard__item {
+  display: flex; align-items: flex-start; gap: 9px;
+  font-size: 13px; line-height: 1.35; color: var(--navy);
+}
+.ordercard__item svg { flex: 0 0 auto; margin-top: 2px; color: var(--ink); }
+.ordercard__trust {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 12.5px; color: var(--navy-soft);
+  margin-top: 10px;
+}
+.ordercard__trust svg { color: var(--navy-soft); }
 .ordercard__links {
   display: flex; flex-direction: column; align-items: flex-start; gap: 12px;
-  margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--cream-line);
+  margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--cream-line);
 }
 .ordercard__links .linkish { display: flex; align-items: center; gap: 9px; font-size: 15px; }
 .ordercard__links svg { color: var(--navy-soft); }
@@ -1800,24 +1813,71 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 /* the glyph lives in a yellow circle, so it stays black when the card goes black */
 .options--door .option-card:hover .option-card__icon { color: var(--ink); }
 
-.landing__hint { font-size: 15.5px; color: var(--navy); margin: 15px 0 0; max-width: 560px; }
+.landing-intents {
+  display: flex; flex-direction: column; gap: 12px;
+  max-width: 560px; margin: 20px 0 16px;
+}
+.intent-card {
+  display: flex; flex-direction: column; text-align: left;
+  background: #fff; border: 1.5px solid var(--border); border-radius: var(--radius-lg);
+  padding: 16px 18px; cursor: pointer;
+  transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+  position: relative;
+}
+.intent-card:hover {
+  border-color: var(--ink); transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.intent-card--primary {
+  border: 2px solid var(--ink); padding: 18px 20px;
+}
+.intent-card__badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--yellow-bright); color: var(--ink);
+  font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em;
+  padding: 3px 8px; border-radius: 99px; margin-bottom: 10px; align-self: flex-start;
+}
+.intent-card__badge span { line-height: 1; }
+.intent-card__title {
+  font-size: 17px; font-weight: 800; color: var(--ink); line-height: 1.25;
+}
+.intent-card__desc {
+  font-size: 13px; color: var(--navy-soft); line-height: 1.4; margin-top: 4px;
+}
+.intent-card__cta {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 14px; font-size: 14px; font-weight: 800; color: var(--ink);
+}
+.intent-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+}
+.intent-card--secondary {
+  padding: 14px 16px;
+}
+.intent-card--secondary .intent-card__icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: var(--cream); display: flex; align-items: center; justify-content: center;
+  margin-bottom: 10px; color: var(--ink);
+}
+.intent-card--secondary .intent-card__title {
+  font-size: 14.5px;
+}
+.intent-card--secondary .intent-card__desc {
+  font-size: 12px;
+}
 
-/* The two ways past the question. They were two sentences stacked under each other,
-   each opening with "Already…", which read as two more questions on a page that had
-   just asked one. One quiet row under a rule instead: same two jobs, a third of the
-   weight, and clearly not the thing to do first. */
-.landing__shortcuts {
-  display: flex; flex-wrap: wrap; gap: 8px 30px;
-  margin-top: 24px; padding-top: 20px; max-width: 620px;
-  border-top: 1px solid rgba(8, 9, 10, .16);
+.landing__hint {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 13.5px; color: var(--navy-soft); margin: 6px 0 0; max-width: 560px;
 }
-.shortcut {
-  display: inline-flex; align-items: center; gap: 9px;
-  background: none; border: 0; padding: 0;
-  font: inherit; font-size: 15px; font-weight: 600; color: var(--navy);
-  text-decoration: underline; text-underline-offset: 3px; cursor: pointer;
+.landing__hint svg { color: var(--navy-soft); flex: 0 0 auto; }
+
+@media (max-width: 700px) {
+  .intent-grid { grid-template-columns: 1fr; gap: 8px; }
+  .intent-card--primary { padding: 16px 16px; }
+  .intent-card__title { font-size: 16px; }
+  .intent-card__desc { font-size: 12.5px; }
 }
-.shortcut:hover { color: var(--ink); }
 
 /* Under the photo the panel is one column wide, so the three answers stack and go back
    to the normal card: icon beside the label, one line each (rule 27). This block has to

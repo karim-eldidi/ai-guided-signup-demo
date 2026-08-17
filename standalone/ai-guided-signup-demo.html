@@ -1367,12 +1367,25 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 .ordercard__price b { font-size: 22px; font-weight: 800; }
 .ordercard__price span { font-size: 13px; color: var(--navy-soft); margin-left: 3px; }
 .ordercard__term { font-size: 13.5px; color: var(--navy-soft); margin-top: 3px; }
-.ordercard__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 11px; }
-.ordercard__list li { display: flex; align-items: center; gap: 11px; font-size: 15px; }
-.ordercard__list svg { flex: 0 0 auto; color: var(--navy-soft); }
+.ordercard__highlights {
+  display: flex; flex-direction: column; gap: 10px;
+  margin: 16px 0; padding: 14px 0;
+  border-top: 1px solid var(--cream-line); border-bottom: 1px solid var(--cream-line);
+}
+.ordercard__item {
+  display: flex; align-items: flex-start; gap: 9px;
+  font-size: 13px; line-height: 1.35; color: var(--navy);
+}
+.ordercard__item svg { flex: 0 0 auto; margin-top: 2px; color: var(--ink); }
+.ordercard__trust {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 12.5px; color: var(--navy-soft);
+  margin-top: 10px;
+}
+.ordercard__trust svg { color: var(--navy-soft); }
 .ordercard__links {
   display: flex; flex-direction: column; align-items: flex-start; gap: 12px;
-  margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--cream-line);
+  margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--cream-line);
 }
 .ordercard__links .linkish { display: flex; align-items: center; gap: 9px; font-size: 15px; }
 .ordercard__links svg { color: var(--navy-soft); }
@@ -1814,24 +1827,71 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 /* the glyph lives in a yellow circle, so it stays black when the card goes black */
 .options--door .option-card:hover .option-card__icon { color: var(--ink); }
 
-.landing__hint { font-size: 15.5px; color: var(--navy); margin: 15px 0 0; max-width: 560px; }
+.landing-intents {
+  display: flex; flex-direction: column; gap: 12px;
+  max-width: 560px; margin: 20px 0 16px;
+}
+.intent-card {
+  display: flex; flex-direction: column; text-align: left;
+  background: #fff; border: 1.5px solid var(--border); border-radius: var(--radius-lg);
+  padding: 16px 18px; cursor: pointer;
+  transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+  position: relative;
+}
+.intent-card:hover {
+  border-color: var(--ink); transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+.intent-card--primary {
+  border: 2px solid var(--ink); padding: 18px 20px;
+}
+.intent-card__badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--yellow-bright); color: var(--ink);
+  font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em;
+  padding: 3px 8px; border-radius: 99px; margin-bottom: 10px; align-self: flex-start;
+}
+.intent-card__badge span { line-height: 1; }
+.intent-card__title {
+  font-size: 17px; font-weight: 800; color: var(--ink); line-height: 1.25;
+}
+.intent-card__desc {
+  font-size: 13px; color: var(--navy-soft); line-height: 1.4; margin-top: 4px;
+}
+.intent-card__cta {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 14px; font-size: 14px; font-weight: 800; color: var(--ink);
+}
+.intent-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+}
+.intent-card--secondary {
+  padding: 14px 16px;
+}
+.intent-card--secondary .intent-card__icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: var(--cream); display: flex; align-items: center; justify-content: center;
+  margin-bottom: 10px; color: var(--ink);
+}
+.intent-card--secondary .intent-card__title {
+  font-size: 14.5px;
+}
+.intent-card--secondary .intent-card__desc {
+  font-size: 12px;
+}
 
-/* The two ways past the question. They were two sentences stacked under each other,
-   each opening with "Already…", which read as two more questions on a page that had
-   just asked one. One quiet row under a rule instead: same two jobs, a third of the
-   weight, and clearly not the thing to do first. */
-.landing__shortcuts {
-  display: flex; flex-wrap: wrap; gap: 8px 30px;
-  margin-top: 24px; padding-top: 20px; max-width: 620px;
-  border-top: 1px solid rgba(8, 9, 10, .16);
+.landing__hint {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 13.5px; color: var(--navy-soft); margin: 6px 0 0; max-width: 560px;
 }
-.shortcut {
-  display: inline-flex; align-items: center; gap: 9px;
-  background: none; border: 0; padding: 0;
-  font: inherit; font-size: 15px; font-weight: 600; color: var(--navy);
-  text-decoration: underline; text-underline-offset: 3px; cursor: pointer;
+.landing__hint svg { color: var(--navy-soft); flex: 0 0 auto; }
+
+@media (max-width: 700px) {
+  .intent-grid { grid-template-columns: 1fr; gap: 8px; }
+  .intent-card--primary { padding: 16px 16px; }
+  .intent-card__title { font-size: 16px; }
+  .intent-card__desc { font-size: 12.5px; }
 }
-.shortcut:hover { color: var(--ink); }
 
 /* Under the photo the panel is one column wide, so the three answers stack and go back
    to the normal card: icon beside the label, one line each (rule 27). This block has to
@@ -3076,7 +3136,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 17 Aug 15:17 UTC</span>
+  <span class="demo-banner__build">build 17 Aug 15:20 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -4396,32 +4456,44 @@ function landing() {
      The front door now asks one thing, and the two ways past it are two small pills
      under a rule, not two sentences beginning "Already…". Rule 66.
 
-     The three cards are the first question, not a menu of pages: choosing one answers
-     it and lands on the second (rule 11). The way in for anyone who is none of those
-     three is the link on the hint line, which opens the same question with its own
-     words field — one control, still one route into the four questions. */
-  const guideFirst = `<div class="landing__guide">${ulaAvatar('sm')}<span>Urby &middot; Membership guide</span></div>
-      <h2 class="landing__q">${QUESTIONS[0].prompt}</h2>
-      <div class="options options--door">
-        ${QUESTIONS[0].options.map(o=>`<button class="option-card" data-begin="${esc(o.id)}">
-          <span class="option-card__icon">${icon(o.icon,20)}</span><span class="option-card__label">${o.label}</span></button>`).join('')}
+     The three cards are the first  const guideFirst = `
+    <div class="landing-intents">
+      <button class="intent-card intent-card--primary" type="button" data-start-fit>
+        <div class="intent-card__badge">${ulaAvatar('xs')}<span>Recommended</span></div>
+        <div class="intent-card__main">
+          <div class="intent-card__title">Build my personalized routine</div>
+          <div class="intent-card__desc">Answer 4 quick questions to match your sports, nearby studios, and the best membership price.</div>
+        </div>
+        <span class="intent-card__cta">Start guide ${icon('arrowRight',17)}</span>
+      </button>
+
+      <div class="intent-grid">
+        <button class="intent-card intent-card--secondary" type="button" data-go="search">
+          <div class="intent-card__icon">${icon('search',18)}</div>
+          <div class="intent-card__main">
+            <div class="intent-card__title">Check a specific venue</div>
+            <div class="intent-card__desc">Search studios and see which plan opens each one.</div>
+          </div>
+        </button>
+
+        <button class="intent-card intent-card--secondary" type="button" data-go="plans">
+          <div class="intent-card__icon">${icon('grid',18)}</div>
+          <div class="intent-card__main">
+            <div class="intent-card__title">Compare all 4 plans</div>
+            <div class="intent-card__desc">View Essential, Classic, Premium, and Max pricing.</div>
+          </div>
+        </button>
       </div>
-      <p class="landing__hint">Choose one to start &mdash; no email needed. Or <button class="linkish" type="button" data-start-fit>answer in your own words</button>.</p>
-      <div class="landing__shortcuts">
-        <button class="shortcut" type="button" data-go="search">${icon('search',17)}<span>Search for a venue</span></button>
-        <button class="shortcut" type="button" data-go="plans">${icon('grid',17)}<span>Compare all four plans</span></button>
-      </div>`;
+    </div>
+    <p class="landing__hint">${icon('sparkle',15)} <span>Takes about 2 minutes &middot; No account or email needed to start</span></p>`;
   const primary = VARIANT === 'email-first' ? emailFirst : guideFirst;
   return `<main class="landing" id="main">
     <div class="landing__panel">
       <div class="landing__panelbar"><button class="wordmark linkish" style="text-decoration:none" data-go="landing">Urban Sports Club</button>
         <button class="login-link login-link--mobile linkish" data-go="login">Log in</button></div>
       <div class="landing__body">
-        <!-- Karim, 14 Aug: two lines, not one. The break is written rather than left to
-             the measure, because the measure would break it after "to" and leave "move."
-             alone on the second line (rule 35). "Your way / to move." is even. -->
-        <h1 class="h-hero" tabindex="-1">Your way<br>to move.</h1>
-        <p class="lede">Find nearby activities and a membership that fits your life.</p>
+        <h1 class="h-hero" tabindex="-1">Find your way<br>to move.</h1>
+        <p class="lede">Choose how you&rsquo;d like to start today.</p>
         ${S.returns?`<div class="notice" style="max-width:560px">${icon('checkThin',20)}<span>Welcome back. Your answers are saved — continue where you left off.</span></div>`:''}
         ${primary}
       </div></div>
@@ -5866,21 +5938,28 @@ function detailsScreen() {
       ? { i:'calendar', l:answerLabel('frequency', S.answers.frequency) } : null
   ].filter(Boolean);
   /* Rule 51: the column caps at the viewport and scrolls itself, or a short window puts
-     "Change membership" somewhere you can only reach by scrolling past the whole form. */
   const aside = `<div class="ordercard">
-    <div class="fitpanel__label">Your membership</div>
-    <div class="ordercard__idrow"><div class="ordercard__name">${esc(plan.name)}</div>
-      <div class="ordercard__price"><b>${F.price} €</b><span>/ month</span></div></div>
-    <div class="ordercard__term">${esc(commitment.label)}</div>
-    ${chosenFor.length?`<div class="fitpanel__label" style="margin-top:20px">Chosen for</div>
-      <ul class="ordercard__list">${chosenFor.map(x=>`<li>${icon(x.i,18)}<span>${esc(x.l)}</span></li>`).join('')}</ul>`:''}
-    ${shown.length?`<div class="fitpanel__label" style="margin-top:20px">Included near you</div>
-      <div class="asidevenues">${shown.map(asideVenue).join('')}</div>
-      ${more?`<button class="btn btn--secondary btn--block ordercard__more" data-go="recommendation">+${more} more ${more===1?'place':'places'}</button>`:''}`:''}
+    <div class="fitpanel__label">Order summary</div>
+    <div class="ordercard__idrow">
+      <div class="ordercard__name">${esc(plan.name)}</div>
+      <div class="ordercard__price"><b>${F.price} €</b><span>/ month</span></div>
+    </div>
+    <div class="ordercard__term">${esc(commitment.label)} &middot; Cancel anytime</div>
+    
+    <div class="ordercard__highlights">
+      <div class="ordercard__item">${icon('checkThin',16)}<span>${esc(plan.venueCount)} venues across Germany &amp; Europe</span></div>
+      <div class="ordercard__item">${icon('checkThin',16)}<span>${plan.dailyCheckIn?'Daily check-ins (up to 1 visit/day)':'4 check-ins each month'}</span></div>
+      ${plan.plusCheckIns?`<div class="ordercard__item">${icon('checkThin',16)}<span>${plan.plusCheckIns} Plus check-ins / month (${plan.id==='max'?'2 massages':'1 massage'})</span></div>`:''}
+    </div>
+
+    <div class="ordercard__trust">
+      ${icon('lock',15)} <span>Secure checkout &middot; Simulated pilot</span>
+    </div>
+
     <div class="ordercard__links">
-      <button class="linkish" data-go="recommendation">${icon('pencil',16)} Change membership</button>
-      <button class="linkish" data-go="recommendation">${icon('grid',16)} Review matched venues</button>
-    </div></div>`;
+      <button class="linkish font-medium" type="button" data-go="plans">${icon('pencil',14)} Change plan</button>
+    </div>
+  </div>`;
   return `${topbar(2)}<div class="two-col two-col--form">
     <main class="two-col__main" id="main">
       <h1 class="details-title" tabindex="-1">Your details</h1>

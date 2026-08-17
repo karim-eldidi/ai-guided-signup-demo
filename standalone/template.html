@@ -1480,32 +1480,44 @@ function landing() {
      The front door now asks one thing, and the two ways past it are two small pills
      under a rule, not two sentences beginning "Already…". Rule 66.
 
-     The three cards are the first question, not a menu of pages: choosing one answers
-     it and lands on the second (rule 11). The way in for anyone who is none of those
-     three is the link on the hint line, which opens the same question with its own
-     words field — one control, still one route into the four questions. */
-  const guideFirst = `<div class="landing__guide">${ulaAvatar('sm')}<span>Urby &middot; Membership guide</span></div>
-      <h2 class="landing__q">${QUESTIONS[0].prompt}</h2>
-      <div class="options options--door">
-        ${QUESTIONS[0].options.map(o=>`<button class="option-card" data-begin="${esc(o.id)}">
-          <span class="option-card__icon">${icon(o.icon,20)}</span><span class="option-card__label">${o.label}</span></button>`).join('')}
+     The three cards are the first  const guideFirst = `
+    <div class="landing-intents">
+      <button class="intent-card intent-card--primary" type="button" data-start-fit>
+        <div class="intent-card__badge">${ulaAvatar('xs')}<span>Recommended</span></div>
+        <div class="intent-card__main">
+          <div class="intent-card__title">Build my personalized routine</div>
+          <div class="intent-card__desc">Answer 4 quick questions to match your sports, nearby studios, and the best membership price.</div>
+        </div>
+        <span class="intent-card__cta">Start guide ${icon('arrowRight',17)}</span>
+      </button>
+
+      <div class="intent-grid">
+        <button class="intent-card intent-card--secondary" type="button" data-go="search">
+          <div class="intent-card__icon">${icon('search',18)}</div>
+          <div class="intent-card__main">
+            <div class="intent-card__title">Check a specific venue</div>
+            <div class="intent-card__desc">Search studios and see which plan opens each one.</div>
+          </div>
+        </button>
+
+        <button class="intent-card intent-card--secondary" type="button" data-go="plans">
+          <div class="intent-card__icon">${icon('grid',18)}</div>
+          <div class="intent-card__main">
+            <div class="intent-card__title">Compare all 4 plans</div>
+            <div class="intent-card__desc">View Essential, Classic, Premium, and Max pricing.</div>
+          </div>
+        </button>
       </div>
-      <p class="landing__hint">Choose one to start &mdash; no email needed. Or <button class="linkish" type="button" data-start-fit>answer in your own words</button>.</p>
-      <div class="landing__shortcuts">
-        <button class="shortcut" type="button" data-go="search">${icon('search',17)}<span>Search for a venue</span></button>
-        <button class="shortcut" type="button" data-go="plans">${icon('grid',17)}<span>Compare all four plans</span></button>
-      </div>`;
+    </div>
+    <p class="landing__hint">${icon('sparkle',15)} <span>Takes about 2 minutes &middot; No account or email needed to start</span></p>`;
   const primary = VARIANT === 'email-first' ? emailFirst : guideFirst;
   return `<main class="landing" id="main">
     <div class="landing__panel">
       <div class="landing__panelbar"><button class="wordmark linkish" style="text-decoration:none" data-go="landing">Urban Sports Club</button>
         <button class="login-link login-link--mobile linkish" data-go="login">Log in</button></div>
       <div class="landing__body">
-        <!-- Karim, 14 Aug: two lines, not one. The break is written rather than left to
-             the measure, because the measure would break it after "to" and leave "move."
-             alone on the second line (rule 35). "Your way / to move." is even. -->
-        <h1 class="h-hero" tabindex="-1">Your way<br>to move.</h1>
-        <p class="lede">Find nearby activities and a membership that fits your life.</p>
+        <h1 class="h-hero" tabindex="-1">Find your way<br>to move.</h1>
+        <p class="lede">Choose how you&rsquo;d like to start today.</p>
         ${S.returns?`<div class="notice" style="max-width:560px">${icon('checkThin',20)}<span>Welcome back. Your answers are saved — continue where you left off.</span></div>`:''}
         ${primary}
       </div></div>
@@ -2950,21 +2962,28 @@ function detailsScreen() {
       ? { i:'calendar', l:answerLabel('frequency', S.answers.frequency) } : null
   ].filter(Boolean);
   /* Rule 51: the column caps at the viewport and scrolls itself, or a short window puts
-     "Change membership" somewhere you can only reach by scrolling past the whole form. */
   const aside = `<div class="ordercard">
-    <div class="fitpanel__label">Your membership</div>
-    <div class="ordercard__idrow"><div class="ordercard__name">${esc(plan.name)}</div>
-      <div class="ordercard__price"><b>${F.price} €</b><span>/ month</span></div></div>
-    <div class="ordercard__term">${esc(commitment.label)}</div>
-    ${chosenFor.length?`<div class="fitpanel__label" style="margin-top:20px">Chosen for</div>
-      <ul class="ordercard__list">${chosenFor.map(x=>`<li>${icon(x.i,18)}<span>${esc(x.l)}</span></li>`).join('')}</ul>`:''}
-    ${shown.length?`<div class="fitpanel__label" style="margin-top:20px">Included near you</div>
-      <div class="asidevenues">${shown.map(asideVenue).join('')}</div>
-      ${more?`<button class="btn btn--secondary btn--block ordercard__more" data-go="recommendation">+${more} more ${more===1?'place':'places'}</button>`:''}`:''}
+    <div class="fitpanel__label">Order summary</div>
+    <div class="ordercard__idrow">
+      <div class="ordercard__name">${esc(plan.name)}</div>
+      <div class="ordercard__price"><b>${F.price} €</b><span>/ month</span></div>
+    </div>
+    <div class="ordercard__term">${esc(commitment.label)} &middot; Cancel anytime</div>
+    
+    <div class="ordercard__highlights">
+      <div class="ordercard__item">${icon('checkThin',16)}<span>${esc(plan.venueCount)} venues across Germany &amp; Europe</span></div>
+      <div class="ordercard__item">${icon('checkThin',16)}<span>${plan.dailyCheckIn?'Daily check-ins (up to 1 visit/day)':'4 check-ins each month'}</span></div>
+      ${plan.plusCheckIns?`<div class="ordercard__item">${icon('checkThin',16)}<span>${plan.plusCheckIns} Plus check-ins / month (${plan.id==='max'?'2 massages':'1 massage'})</span></div>`:''}
+    </div>
+
+    <div class="ordercard__trust">
+      ${icon('lock',15)} <span>Secure checkout &middot; Simulated pilot</span>
+    </div>
+
     <div class="ordercard__links">
-      <button class="linkish" data-go="recommendation">${icon('pencil',16)} Change membership</button>
-      <button class="linkish" data-go="recommendation">${icon('grid',16)} Review matched venues</button>
-    </div></div>`;
+      <button class="linkish font-medium" type="button" data-go="plans">${icon('pencil',14)} Change plan</button>
+    </div>
+  </div>`;
   return `${topbar(2)}<div class="two-col two-col--form">
     <main class="two-col__main" id="main">
       <h1 class="details-title" tabindex="-1">Your details</h1>
