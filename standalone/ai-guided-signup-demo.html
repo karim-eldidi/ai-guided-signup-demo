@@ -2755,7 +2755,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 17 Aug 14:08 UTC</span>
+  <span class="demo-banner__build">build 17 Aug 14:11 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -5014,19 +5014,10 @@ function recommendationScreen() {
      the sentence is recomputed from the week actually on screen (rule 52) — change a day
      and "three times a week" changes with it. */
   const GOAL_TITLE  = { move_more:'moving more', unwind:'moving and unwinding', try_new:'trying something new' };
-  const GOAL_CLAUSE = { move_more:'building a regular habit', unwind:'keeping time for recovery',
-                        try_new:'trying things you haven&rsquo;t done before' };
-  const GOAL_ECHO   = { move_more:'move more', unwind:'unwind', try_new:'try something new' };
-  const TIMES = ['','once','twice','three times','four times','five times','six times','seven times'];
-  const weekPhrase = TIMES[wp.sessions.length] ? `train ${TIMES[wp.sessions.length]} a week` : '';
-  const lede = weekPhrase ? `You want to ${weekPhrase}, near ${esc(where)}.`
-    : GOAL_ECHO[a.goal] ? `You want to ${GOAL_ECHO[a.goal]}, near ${esc(where)}.`
-    : `Everything below is near ${esc(where)}.`;
   const heroBlock = `${ulaRow()}
     <h1 class="h-question reco-hero__title" tabindex="-1">${MOBILE()
       ? 'Your week, made to fit'
       : (GOAL_TITLE[a.goal] ? `Your plan for ${GOAL_TITLE[a.goal]}` : `Your plan near ${esc(where)}`)}</h1>
-    <p class="reco-hero__lede">${MOBILE()?'Based on what you told us, here&rsquo;s a routine you could actually keep.':lede}</p>
     ${match.reachedFurther?`<div class="notice notice--grey">${icon('info',19)}<span>Nothing in this pilot&rsquo;s venue set does ${esc(groupWords(groups))} right by ${esc(where)}, so I looked across the city. The distances below are real.</span></div>`:''}`;
   const chipsBlock = answerChips({ label:'You told us' });
   const story = `${heroBlock}${chipsBlock}`;

@@ -35,9 +35,9 @@ with sync_playwright() as p:
     # line under it is their four answers written back as one sentence.
     if h1.lower().startswith('your plan'): P(f"the page opens with value: '{h1}'")
     else: F(f"the page opens with something else: '{h1}'")
-    lede=pg.locator('.reco-hero__lede').inner_text()
-    if 'you want to' in lede.lower(): P(f"and says back what it heard: '{lede}'")
-    else: F(f"the answer sentence is missing: {lede!r}")
+    chips=pg.locator('.chips-row')
+    if chips.count(): P("and shows the answers as editable chips")
+    else: F("answer chips are missing")
     if not re.search(r'\d+\s*€', h1): P("no price in the headline")
     else: F(f"the headline still leads with a price: {h1}")
 
