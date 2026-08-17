@@ -1086,13 +1086,23 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
   font-size: 22px; display: flex; align-items: center; justify-content: center;
 }
 .modal--save .savepanel {
-  display: grid; grid-template-columns: 1.05fr 1fr; background: transparent; border: 0; padding: 0;
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  grid-template-rows: auto 1fr;
+  background: transparent; border: 0; padding: 0;
 }
-.savepanel__left {
-  background: var(--cream); padding: 32px 28px 28px;
+.savepanel__head-block {
+  grid-column: 1; grid-row: 1;
+  background: var(--cream); padding: 32px 28px 12px;
   border-right: 1px solid var(--cream-line);
 }
-.savepanel__right {
+.savepanel__details-block {
+  grid-column: 1; grid-row: 2;
+  background: var(--cream); padding: 0 28px 28px;
+  border-right: 1px solid var(--cream-line);
+}
+.savepanel__form-block {
+  grid-column: 2; grid-row: 1 / span 2;
   background: #fff; padding: 32px 28px 28px;
 }
 .savepanel__guide {
@@ -1211,17 +1221,32 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
     max-height: calc(100vh - 24px);
   }
   .modal--save .savepanel {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
   }
-  .savepanel__left {
-    padding: 24px 20px 18px;
-    border-right: 0; border-bottom: 1px solid var(--cream-line);
+  .savepanel__head-block {
+    order: 1;
+    background: var(--cream);
+    padding: 22px 18px 14px;
+    border-right: 0;
+    border-bottom: 1px solid var(--cream-line);
   }
-  .savepanel__right {
-    padding: 20px 20px 22px;
+  .savepanel__form-block {
+    order: 2;
+    background: #fff;
+    padding: 20px 18px 18px;
+    border-bottom: 1px solid var(--cream-line);
   }
-  .savepanel__title { font-size: 20px; }
-  .savepanel__asktitle { font-size: 20px; }
+  .savepanel__details-block {
+    order: 3;
+    background: var(--cream);
+    padding: 16px 18px 20px;
+    border-right: 0;
+  }
+  .savepanel__title { font-size: 20px; margin-bottom: 4px; }
+  .savepanel__sub { font-size: 13.5px; margin-bottom: 12px; }
+  .savepanel__asktitle { display: none; }
+  .savepanel__asksub { display: none; }
   .saverecap__venue-grid {
     grid-template-columns: repeat(3, 1fr);
   }

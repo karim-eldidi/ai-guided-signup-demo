@@ -2876,17 +2876,28 @@ function saveScreen() {
   const moreVenues = F ? Math.max(0, F.included.length - shownVenues.length) : 0;
   const savedWeek = F ? weekPlan(F.groups, F.match.pool||[], F.plan.id, S.answers.frequency).sessions : [];
 
-  const recapSection = hasPlan ? `
-    <div class="saverecap">
-      <div class="saverecap__head">
-        <span class="saverecap__tag">${F.isRec ? 'Recommended routine' : 'Your chosen routine'}</span>
-        <div class="saverecap__plan">
-          <b>${esc(F.plan.name)}</b>
-          <span>${F.price} €<small>/mo</small></span>
-        </div>
-        <div class="saverecap__meta">${esc(F.commitment.label)} &middot; ${plural(monthlyAllowance(F.plan),'visit','visits')}/mo</div>
+  const recapHead = hasPlan ? `
+    <div class="saverecap__head">
+      <span class="saverecap__tag">${F.isRec ? 'Recommended routine' : 'Your chosen routine'}</span>
+      <div class="saverecap__plan">
+        <b>${esc(F.plan.name)}</b>
+        <span>${F.price} €<small>/mo</small></span>
       </div>
+      <div class="saverecap__meta">${esc(F.commitment.label)} &middot; ${plural(monthlyAllowance(F.plan),'visit','visits')}/mo</div>
+    </div>
+  ` : `
+    <div class="saverecap__head">
+      <span class="saverecap__tag">Your progress so far</span>
+      <div class="saverecap__plan"><b>Question ${Math.min(answered + 1, QUESTIONS.length)} of ${QUESTIONS.length}</b></div>
+      <div class="saverecap__meta">We'll save every answer you've given so far.</div>
+    </div>
+    <div class="saverecap__chips" style="margin-top:10px">
+      ${answerChips({ label:'', compact:true })}
+    </div>
+  `;
 
+  const recapDetails = hasPlan ? `
+    <div class="saverecap__details">
       ${savedWeek.length ? `
       <div class="saverecap__week">
         <div class="saverecap__label">Your planned week</div>
@@ -2914,32 +2925,25 @@ function saveScreen() {
         ${moreVenues ? `<div class="saverecap__more">+${moreVenues} more matching ${plural(moreVenues,'place','places')}</div>` : ''}
       </div>` : ''}
     </div>
-  ` : `
-    <div class="saverecap">
-      <div class="saverecap__head">
-        <span class="saverecap__tag">Your progress so far</span>
-        <div class="saverecap__plan"><b>Question ${Math.min(answered + 1, QUESTIONS.length)} of ${QUESTIONS.length}</b></div>
-        <div class="saverecap__meta">We'll save every answer you've given so far.</div>
-      </div>
-      <div class="saverecap__chips">
-        ${answerChips({ label:'', compact:true })}
-      </div>
-    </div>
-  `;
+  ` : '';
 
   return `${topbar(1,{ stepper:false, savedNote:Boolean(S.email&&S.saveOptIn),
                        back: hasPlan ? { route:'recommendation', label:'Back to recommendation' }
                                      : { route:'fit', label:'Back to your questions' } })}
   <main class="savewrap" id="main">
     <div class="savepanel">
-      <div class="savepanel__left">
+      <div class="savepanel__head-block">
         <div class="savepanel__guide">${ulaAvatar('sm')}<span>Urby &middot; Membership guide</span></div>
         <h1 class="savepanel__title" tabindex="-1">Here&rsquo;s what you&rsquo;re saving</h1>
         <p class="savepanel__sub">${hasPlan ? 'Your custom routine, matching studios, and membership plan.' : 'Your answers and progress so far.'}</p>
-        ${recapSection}
+        ${recapHead}
       </div>
 
-      <div class="savepanel__right">
+      <div class="savepanel__details-block">
+        ${recapDetails}
+      </div>
+
+      <div class="savepanel__form-block">
         <h2 class="savepanel__asktitle">Keep your progress</h2>
         <p class="savepanel__asksub">Email yourself a secure link to pick up right where you left off.</p>
 

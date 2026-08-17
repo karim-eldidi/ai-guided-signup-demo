@@ -1100,13 +1100,23 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
   font-size: 22px; display: flex; align-items: center; justify-content: center;
 }
 .modal--save .savepanel {
-  display: grid; grid-template-columns: 1.05fr 1fr; background: transparent; border: 0; padding: 0;
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  grid-template-rows: auto 1fr;
+  background: transparent; border: 0; padding: 0;
 }
-.savepanel__left {
-  background: var(--cream); padding: 32px 28px 28px;
+.savepanel__head-block {
+  grid-column: 1; grid-row: 1;
+  background: var(--cream); padding: 32px 28px 12px;
   border-right: 1px solid var(--cream-line);
 }
-.savepanel__right {
+.savepanel__details-block {
+  grid-column: 1; grid-row: 2;
+  background: var(--cream); padding: 0 28px 28px;
+  border-right: 1px solid var(--cream-line);
+}
+.savepanel__form-block {
+  grid-column: 2; grid-row: 1 / span 2;
   background: #fff; padding: 32px 28px 28px;
 }
 .savepanel__guide {
@@ -1225,17 +1235,32 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
     max-height: calc(100vh - 24px);
   }
   .modal--save .savepanel {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
   }
-  .savepanel__left {
-    padding: 24px 20px 18px;
-    border-right: 0; border-bottom: 1px solid var(--cream-line);
+  .savepanel__head-block {
+    order: 1;
+    background: var(--cream);
+    padding: 22px 18px 14px;
+    border-right: 0;
+    border-bottom: 1px solid var(--cream-line);
   }
-  .savepanel__right {
-    padding: 20px 20px 22px;
+  .savepanel__form-block {
+    order: 2;
+    background: #fff;
+    padding: 20px 18px 18px;
+    border-bottom: 1px solid var(--cream-line);
   }
-  .savepanel__title { font-size: 20px; }
-  .savepanel__asktitle { font-size: 20px; }
+  .savepanel__details-block {
+    order: 3;
+    background: var(--cream);
+    padding: 16px 18px 20px;
+    border-right: 0;
+  }
+  .savepanel__title { font-size: 20px; margin-bottom: 4px; }
+  .savepanel__sub { font-size: 13.5px; margin-bottom: 12px; }
+  .savepanel__asktitle { display: none; }
+  .savepanel__asksub { display: none; }
   .saverecap__venue-grid {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -3299,7 +3324,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 17 Aug 16:25 UTC</span>
+  <span class="demo-banner__build">build 17 Aug 16:28 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -6015,17 +6040,28 @@ function saveScreen() {
   const moreVenues = F ? Math.max(0, F.included.length - shownVenues.length) : 0;
   const savedWeek = F ? weekPlan(F.groups, F.match.pool||[], F.plan.id, S.answers.frequency).sessions : [];
 
-  const recapSection = hasPlan ? `
-    <div class="saverecap">
-      <div class="saverecap__head">
-        <span class="saverecap__tag">${F.isRec ? 'Recommended routine' : 'Your chosen routine'}</span>
-        <div class="saverecap__plan">
-          <b>${esc(F.plan.name)}</b>
-          <span>${F.price} €<small>/mo</small></span>
-        </div>
-        <div class="saverecap__meta">${esc(F.commitment.label)} &middot; ${plural(monthlyAllowance(F.plan),'visit','visits')}/mo</div>
+  const recapHead = hasPlan ? `
+    <div class="saverecap__head">
+      <span class="saverecap__tag">${F.isRec ? 'Recommended routine' : 'Your chosen routine'}</span>
+      <div class="saverecap__plan">
+        <b>${esc(F.plan.name)}</b>
+        <span>${F.price} €<small>/mo</small></span>
       </div>
+      <div class="saverecap__meta">${esc(F.commitment.label)} &middot; ${plural(monthlyAllowance(F.plan),'visit','visits')}/mo</div>
+    </div>
+  ` : `
+    <div class="saverecap__head">
+      <span class="saverecap__tag">Your progress so far</span>
+      <div class="saverecap__plan"><b>Question ${Math.min(answered + 1, QUESTIONS.length)} of ${QUESTIONS.length}</b></div>
+      <div class="saverecap__meta">We'll save every answer you've given so far.</div>
+    </div>
+    <div class="saverecap__chips" style="margin-top:10px">
+      ${answerChips({ label:'', compact:true })}
+    </div>
+  `;
 
+  const recapDetails = hasPlan ? `
+    <div class="saverecap__details">
       ${savedWeek.length ? `
       <div class="saverecap__week">
         <div class="saverecap__label">Your planned week</div>
@@ -6053,32 +6089,25 @@ function saveScreen() {
         ${moreVenues ? `<div class="saverecap__more">+${moreVenues} more matching ${plural(moreVenues,'place','places')}</div>` : ''}
       </div>` : ''}
     </div>
-  ` : `
-    <div class="saverecap">
-      <div class="saverecap__head">
-        <span class="saverecap__tag">Your progress so far</span>
-        <div class="saverecap__plan"><b>Question ${Math.min(answered + 1, QUESTIONS.length)} of ${QUESTIONS.length}</b></div>
-        <div class="saverecap__meta">We'll save every answer you've given so far.</div>
-      </div>
-      <div class="saverecap__chips">
-        ${answerChips({ label:'', compact:true })}
-      </div>
-    </div>
-  `;
+  ` : '';
 
   return `${topbar(1,{ stepper:false, savedNote:Boolean(S.email&&S.saveOptIn),
                        back: hasPlan ? { route:'recommendation', label:'Back to recommendation' }
                                      : { route:'fit', label:'Back to your questions' } })}
   <main class="savewrap" id="main">
     <div class="savepanel">
-      <div class="savepanel__left">
+      <div class="savepanel__head-block">
         <div class="savepanel__guide">${ulaAvatar('sm')}<span>Urby &middot; Membership guide</span></div>
         <h1 class="savepanel__title" tabindex="-1">Here&rsquo;s what you&rsquo;re saving</h1>
         <p class="savepanel__sub">${hasPlan ? 'Your custom routine, matching studios, and membership plan.' : 'Your answers and progress so far.'}</p>
-        ${recapSection}
+        ${recapHead}
       </div>
 
-      <div class="savepanel__right">
+      <div class="savepanel__details-block">
+        ${recapDetails}
+      </div>
+
+      <div class="savepanel__form-block">
         <h2 class="savepanel__asktitle">Keep your progress</h2>
         <p class="savepanel__asksub">Email yourself a secure link to pick up right where you left off.</p>
 
