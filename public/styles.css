@@ -2774,6 +2774,128 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   text-transform: none; letter-spacing: 0; font-size: 15px; color: var(--navy);
 }
 
+/* Recommendation View Switcher */
+.reco-switcher {
+  display: flex; gap: 8px; background: var(--cream); border: 1px solid var(--cream-line);
+  padding: 4px; border-radius: 12px; margin-bottom: 18px; width: fit-content; max-width: 100%;
+}
+.reco-switcher__tab {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: transparent; border: 0; padding: 8px 16px; border-radius: 9px;
+  font-size: 13.5px; font-weight: 700; color: var(--navy); cursor: pointer; transition: all .15s ease;
+}
+.reco-switcher__tab:hover { color: var(--ink); }
+.reco-switcher__tab.is-active {
+  background: #fff; color: var(--ink); box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+/* Activity Freedom Pillars */
+.pillars-section {
+  margin-bottom: 20px;
+}
+.pillars-section__head {
+  margin-bottom: 14px;
+}
+.pillars-section__title {
+  font-size: clamp(19px, 1.5vw, 23px); font-weight: 800; letter-spacing: -.02em; margin: 0 0 4px; color: var(--ink);
+}
+.pillars-section__sub {
+  font-size: 14px; color: var(--navy-soft); margin: 0;
+}
+.pillars-list {
+  display: flex; flex-direction: column; gap: 14px;
+}
+.pillar-card {
+  background: var(--cream); border: 1px solid var(--cream-line);
+  border-radius: var(--radius-lg); padding: 18px 18px 16px;
+}
+.pillar-card__head {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
+}
+.pillar-card__icon {
+  flex: 0 0 auto; width: 40px; height: 40px; border-radius: 50%;
+  background: #fff; display: grid; place-items: center; color: var(--ink);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.pillar-card__titlebox { min-width: 0; }
+.pillar-card__title {
+  font-size: 16.5px; font-weight: 800; margin: 0; color: var(--ink);
+}
+.pillar-card__meta {
+  font-size: 12.5px; color: var(--navy-soft); margin: 2px 0 0;
+}
+.pillar-card__venues {
+  display: flex; flex-direction: column; gap: 8px;
+}
+.pillar-venue {
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  background: #fff; border-radius: var(--radius); padding: 10px 14px;
+  border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+.pillar-venue.is-locked { opacity: 0.85; }
+.pillar-venue__media-btn {
+  background: none; border: 0; padding: 0; cursor: pointer; flex: 0 0 auto;
+}
+.pillar-venue .venue-card__media {
+  width: 58px; height: 42px; border-radius: 6px; overflow: hidden;
+  position: relative; background: var(--yellow-pale); display: grid; place-items: center;
+}
+.pillar-venue .venue-card__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.pillar-venue__info {
+  flex: 1 1 auto; min-width: 0; text-align: left;
+}
+.pillar-venue__top {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.pillar-venue__name {
+  background: none; border: 0; padding: 0; font-size: 14.5px; font-weight: 700;
+  color: var(--ink); text-align: left; cursor: pointer;
+}
+.pillar-venue__name:hover { text-decoration: underline; }
+.pillar-venue__sub {
+  font-size: 12.5px; color: var(--navy-soft); margin-top: 2px;
+}
+.pillar-venue__access { color: var(--ink); font-weight: 600; }
+.pillar-venue__action { flex: 0 0 auto; }
+.pillars-section__foot {
+  margin-top: 14px; text-align: center;
+}
+
+/* Tier Badges */
+.tier-tag {
+  display: inline-flex; align-items: center; font-size: 10.5px; font-weight: 800;
+  padding: 2px 7px; border-radius: 4px; line-height: 1.2; text-transform: uppercase; letter-spacing: .04em;
+}
+.tier-tag--premium { background: #fdf3cf; color: #855800; border: 1px solid #ebd999; }
+.tier-tag--plus { background: #e3effd; color: #0c4a80; border: 1px solid #c2dbfa; }
+.tier-tag--standard { background: #e6f4ea; color: #137333; border: 1px solid #b7e1cd; }
+
+/* Pill Buttons */
+.btn-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--yellow-pale); border: 1px solid var(--cream-line); border-radius: 9999px;
+  padding: 6px 12px; font-size: 12px; font-weight: 700; color: var(--ink); cursor: pointer;
+  transition: all .15s ease;
+}
+.btn-pill:hover { background: var(--yellow-bright); border-color: var(--ink); }
+.btn-pill--sm { padding: 5px 10px; font-size: 11.5px; }
+
+/* Venue Card Headrow & Foot */
+.venue-card__media-btn {
+  background: none; border: 0; padding: 0; width: 100%; text-align: left; cursor: pointer;
+}
+.venue-card__headrow {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 2px;
+}
+.venue-card__name {
+  background: none; border: 0; padding: 0; font-size: 14.5px; font-weight: 700;
+  color: var(--ink); text-align: left; cursor: pointer; line-height: 1.25;
+}
+.venue-card__name:hover { text-decoration: underline; }
+.venue-card__foot {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(0,0,0,0.06);
+}
+
 /* --- the week ---------------------------------------------------------------
    The signature of the whole journey, so it is the one card on the page that is open
    and coloured: cream body, one white row per session. Rule 18 / 60. */

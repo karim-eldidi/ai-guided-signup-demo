@@ -1024,6 +1024,7 @@ let VENUEQ='';
 /* The venue page. WHEREPICK is its location picker, SEEALL is whether the row of places
    has been opened out into the full list. Neither is an answer, so neither lives in S. */
 let WHEREPICK=false, SEEALL=false;
+let RECO_VIEW='pillars'; /* 'pillars' (activity & freedom) or 'week' (day-by-day schedule) */
 /* In production the neighbourhood comes from the browser or the IP. The pilot has no map
    service, so the page starts from one real Berlin area and says out loud that it guessed
    — the same contract the city chip already keeps (rules 6 and 26). It is never written
@@ -1238,22 +1239,28 @@ const venueMedia = (v, acts) => {
     + (v.photo ? `<img src="${esc(v.photo)}" alt="${esc(v.name)}" loading="lazy" decoding="async" onerror="this.remove()">` : '');
 };
 const venueCard = (v, tappable=true) => {
-  /* Say plainly whether this place is on the plan in front of them. A greyed-out
-     card with "needs Premium" is honest; a card that looks available and isn't
-     is the thing that makes people cancel in week two. */
   const plan = currentPlan();
   const inPlan = includedIn(v, plan.id);
   const needs = inPlan ? null : firstPlanWithAccess(v);
-  /* Name the match. A reviewer saw a bouldering hall in a list for "gym and
-     swimming" and could not tell why — it does have a gym floor, but the card
-     never said so. */
+  const tier = v.tier ? (v.tier === 'premium' ? 'Premium' : v.tier === 'plus' ? 'Plus' : 'Standard') : '';
+  const tierBadge = tier ? `<span class="tier-tag tier-tag--${v.tier}">${tier}</span>` : '';
   const chosen = (A().activities||[]).filter(x=>x!==SKIP).map(groupById).filter(Boolean);
   const hits = chosen.filter(g=>venueInGroup(v,g)).map(g=>g.label.toLowerCase());
-  return `<${tappable?'button':'div'} class="venue-card ${inPlan?'':'is-locked'}" ${tappable?`data-venue="${esc(v.id)}" aria-label="More about ${esc(v.name)}"`:''}>
-  <div class="venue-card__media">${venueMedia(v)}${inPlan?'':`<span class="venue-card__lock">${icon('lock',13)} ${needs?esc(needs.name):'not included'}</span>`}</div>
-  <div class="venue-card__body"><div class="venue-card__name">${esc(v.name)}</div>
+  return `<div class="venue-card ${inPlan?'':'is-locked'}">
+  <button class="venue-card__media-btn" data-venue="${esc(v.id)}" aria-label="More about ${esc(v.name)}">
+    <div class="venue-card__media">${venueMedia(v)}${inPlan?'':`<span class="venue-card__lock">${icon('lock',13)} ${needs?esc(needs.name):'not included'}</span>`}</div>
+  </button>
+  <div class="venue-card__body">
+    <div class="venue-card__headrow">
+      <button class="venue-card__name" data-venue="${esc(v.id)}">${esc(v.name)}</button>
+      ${tierBadge}
+    </div>
     <div class="venue-card__meta">${v.distanceKm} km away${chosen.length?` · ${hits.length?`for ${esc(hits.join(', '))}`:'other activities'}`:''}</div>
-    ${tappable?`<span class="venue-card__more">More</span>`:''}</div></${tappable?'button':'div'}>`;
+    <div class="venue-card__foot">
+      <button class="btn-pill btn-pill--sm" data-open-add-venue="${esc(v.id)}">${icon('plus',11)} <span>Add to week</span></button>
+      <button class="linkish venue-card__more" data-venue="${esc(v.id)}">Details</button>
+    </div>
+  </div></div>`;
 };
 
 /* venue sheet — opens over the page so exploring never costs you your place */
@@ -2396,6 +2403,66 @@ function recommendationScreen() {
       &mdash; the ${esc(gap.activity.toLowerCase())} option that completes your week.</span></p>`:''}
   </section>` : '';
 
+  const pillarsBlock = groups.length ? `<section class="pillars-section">
+    <div class="pillars-section__head">
+      <h2 class="pillars-section__title">Your activities & lifestyle freedom</h2>
+      <p class="pillars-section__sub">See how ${esc(plan.name)} unlocks every sport you love across top Berlin studios, on your own terms.</p>
+    </div>
+    <div class="pillars-list">
+      ${groups.map(g => {
+        const grp = groupById(g.id || g);
+        if (!grp) return '';
+        const grpVenues = pool.filter(v => venueInGroup(v, grp)).slice(0, 2);
+        return `<div class="pillar-card">
+          <div class="pillar-card__head">
+            <span class="pillar-card__icon">${icon(grp.icon, 20)}</span>
+            <div class="pillar-card__titlebox">
+              <h3 class="pillar-card__title">${esc(grp.label)}</h3>
+              <p class="pillar-card__meta">${esc(grp.blurb || 'Included across top studios in Berlin')}</p>
+            </div>
+          </div>
+          <div class="pillar-card__venues">
+            ${grpVenues.map(v => {
+              const inPlan = includedIn(v, plan.id);
+              const tier = v.tier ? (v.tier === 'premium' ? 'Premium' : v.tier === 'plus' ? 'Plus' : 'Standard') : '';
+              const tierBadge = tier ? `<span class="tier-tag tier-tag--${v.tier}">${tier}</span>` : '';
+              const accessText = (v.access && v.access[plan.id]) ? v.access[plan.id] : (inPlan ? 'Included on ' + plan.name : 'Needs upgrade');
+              return `<div class="pillar-venue ${inPlan ? '' : 'is-locked'}">
+                <button class="pillar-venue__media-btn" data-venue="${esc(v.id)}" aria-label="Details about ${esc(v.name)}">
+                  <span class="venue-card__media">${venueMedia(v)}</span>
+                </button>
+                <div class="pillar-venue__info">
+                  <div class="pillar-venue__top">
+                    <button class="pillar-venue__name" data-venue="${esc(v.id)}"><b>${esc(v.name)}</b></button>
+                    ${tierBadge}
+                  </div>
+                  <div class="pillar-venue__sub">${v.distanceKm} km away &middot; <span class="pillar-venue__access">${esc(accessText)}</span></div>
+                </div>
+                <div class="pillar-venue__action">
+                  <button class="btn-pill btn-pill--sm" data-open-add-venue="${esc(v.id)}">
+                    ${icon('plus', 11)} <span>Add to schedule</span>
+                  </button>
+                </div>
+              </div>`;
+            }).join('')}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div class="pillars-section__foot">
+      <button class="linkish strong" type="button" data-set-reco-view="week">${icon('calendar', 15)} <span>Prefer a scheduled day-by-day calendar? View your week &rarr;</span></button>
+    </div>
+  </section>` : '';
+
+  const viewSwitcher = `<div class="reco-switcher" role="tablist" aria-label="Recommendation view format">
+    <button class="reco-switcher__tab ${RECO_VIEW==='pillars'?'is-active':''}" type="button" data-set-reco-view="pillars" aria-selected="${RECO_VIEW==='pillars'}">
+      ${icon('sparkle',15)} <span>Activities & Freedom</span>
+    </button>
+    <button class="reco-switcher__tab ${RECO_VIEW==='week'?'is-active':''}" type="button" data-set-reco-view="week" aria-selected="${RECO_VIEW==='week'}">
+      ${icon('calendar',15)} <span>Day-by-Day Schedule</span>
+    </button>
+  </div>`;
+
   /* ---- the plan, on the side, as a consequence of the above ---- */
   /* ---- why this plan: the whole argument, folded behind its own heading ---- */
   const covHtml = coverageBlock(rec, match, plan);
@@ -2676,8 +2743,8 @@ function recommendationScreen() {
      65: the plan leads, and the week follows it. */
   return `${topbar(1)}<div class="two-col two-col--reco"><main class="two-col__main" id="main">
     ${MOBILE()
-      ? `${heroBlock}${weekBlock}${chipsBlock}${planSummary}${PLANDETAILS_OPEN?`<div class="planbox-inline">${planAside}</div>`:''}${placesSection}${appsBlock()}${moreRow}`
-      : `${story}${weekBlock}${placesSection}${appsBlock()}${moreRow}`}
+      ? `${heroBlock}${viewSwitcher}${RECO_VIEW==='pillars' ? pillarsBlock : weekBlock}${chipsBlock}${planSummary}${PLANDETAILS_OPEN?`<div class="planbox-inline">${planAside}</div>`:''}${placesSection}${appsBlock()}${moreRow}`
+      : `${story}${viewSwitcher}${RECO_VIEW==='pillars' ? pillarsBlock : weekBlock}${placesSection}${appsBlock()}${moreRow}`}
   </main>
   ${MOBILE()?'':`<aside class="two-col__aside two-col__aside--sticky">
     ${planAside}
@@ -3369,7 +3436,7 @@ document.addEventListener('change', e => {
   renderInPlace();
 });
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-change-city],[data-city],[data-unsure],[data-open-ask],[data-rail],[data-radius],[data-toggle-venues],[data-toggle-apps],[data-toggle-week],[data-toggle-places],[data-toggle-more],[data-more],[data-toggle-alt],[data-toggle-plan-details],[data-open-days],[data-day],[data-swap],[data-change-week],[data-add-week],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula],[data-search-example],[data-venue-clear],[data-venue-search-all],[data-toggle-where],[data-where],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap]');
+  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-change-city],[data-city],[data-unsure],[data-open-ask],[data-rail],[data-radius],[data-toggle-venues],[data-toggle-apps],[data-toggle-week],[data-toggle-places],[data-toggle-more],[data-more],[data-toggle-alt],[data-toggle-plan-details],[data-open-days],[data-day],[data-swap],[data-change-week],[data-add-week],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula],[data-search-example],[data-venue-clear],[data-venue-search-all],[data-toggle-where],[data-where],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue]');
   if (!t) return;
 
   if (t.dataset.plusOpen) { PLANPLUS=t.dataset.plusOpen; log('plus_explainer_opened',{planId:PLANPLUS}); render(false); return; }
@@ -3575,8 +3642,21 @@ document.addEventListener('click', e => {
     sourceLabel:null, sourceUrl:null }; render(false); return; }
   if (t.dataset.begin) { S.answers.goal = t.dataset.begin; log('started_conversation', { variant:VARIANT, from:'ula_section' });
     log('answer_given', { question:'goal', value:t.dataset.begin, mode:'landing_section' }); ACKTEXT = ackFor('goal', t.dataset.begin); go('fit'); return; }
-  if (t.dataset.variant) { location.search = t.dataset.variant === 'email-first' ? '?variant=email-first' : ''; return; }
-
+  if (t.dataset.setRecoView) {
+    RECO_VIEW = t.dataset.setRecoView;
+    log('reco_view_changed', { mode: RECO_VIEW });
+    render(false);
+    return;
+  }
+  if (t.dataset.openAddVenue) {
+    SHEET = t.dataset.openAddVenue;
+    WEEK_ADD_MODE = true;
+    log('venue_add_opened', { venue: SHEET });
+    render(false);
+    const s = document.getElementById('venue-sheet');
+    if (s) { document.body.style.overflow = 'hidden'; s.querySelector('.sheet__close')?.focus(); }
+    return;
+  }
   if (t.dataset.venue) { SHEET = t.dataset.venue; log('venue_opened', { venue:SHEET }); render(false);
     const s=document.getElementById('venue-sheet'); if(s){ document.body.style.overflow='hidden'; s.querySelector('.sheet__close').focus(); } return; }
   if (t.dataset.closeSheet !== undefined) { SHEET=null; render(false); return; }
