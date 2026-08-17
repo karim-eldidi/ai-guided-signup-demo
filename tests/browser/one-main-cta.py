@@ -47,7 +47,7 @@ with sync_playwright() as p:
         pg.go_back(); pg.wait_for_timeout(600)
         pg.evaluate("() => { const a = document.querySelector('.two-col__aside'); if (a) a.scrollTop = 0; window.scrollTo(0, document.body.scrollHeight) }"); pg.wait_for_timeout(250)
         pg.locator('[data-go="save"]:visible').first.click(force=True); pg.wait_for_timeout(600); check("save")
-        pg.locator('[data-skip-save]').click(); pg.wait_for_timeout(600)
+        pg.locator('[data-close-exit]:visible').first.click(); pg.wait_for_timeout(600)
         pg.locator('.planbox__cta button:visible, .paybar button:visible').first.click(force=True); pg.wait_for_timeout(600)
         for f,v in [('#firstName','Alex'),('#lastName','T'),('#email','a@b.com'),('#birthDate','1992-04-18'),('#street','W 42'),('#postcode','12045'),('#city','Berlin')]: pg.fill(f,v)
         pg.locator('button:has-text("Continue to payment")').click(); pg.wait_for_timeout(700); check("payment")

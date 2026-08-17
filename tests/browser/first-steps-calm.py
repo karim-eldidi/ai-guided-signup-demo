@@ -31,7 +31,7 @@ with sync_playwright() as p:
         else: F(f"{label} Q1: the Ask box is open on the first question")
         if pg.locator('[data-open-ask]').count()==0: P(f"{label} Q1: no Ask entry point competing with the question either")
         else: F(f"{label} Q1: the Ask link is back on the question")
-        if pg.locator('.answer-chip').count()==0: P(f"{label} Q1: no answer chips before there are answers")
+        if pg.locator('.answer-chip:visible').count()==0: P(f"{label} Q1: no answer chips before there are answers")
         else: F(f"{label} Q1: chips shown with nothing answered")
         blocks=pg.evaluate("() => document.querySelectorAll('#main > *').length")
         P(f"{label} Q1: {blocks} blocks on screen") if blocks<=6 else F(f"{label} Q1: {blocks} blocks is still busy")
@@ -42,7 +42,7 @@ with sync_playwright() as p:
 
         # 2. answers are visible and editable from the next question on
         answer(pg,'Unwind')
-        chips=pg.locator('.answer-chip')
+        chips=pg.locator('.answer-chip:visible')
         if chips.count()==1 and 'Unwind' in chips.first.inner_text(): P(f"{label} Q2: the answer you gave is on screen as a chip")
         else: F(f"{label} Q2: {chips.count()} chips, expected 1 saying Unwind")
         chips.first.click(); pg.wait_for_timeout(800)
@@ -53,17 +53,17 @@ with sync_playwright() as p:
         else: F(f"{label}: went back to an empty question")
         pg.locator('.option-card:has-text("Move more")').first.click()
         pg.locator('[data-continue]:visible').first.click(); pg.wait_for_timeout(900)
-        if 'Move more' in pg.locator('.answer-chip').first.inner_text(): P(f"{label}: the change stuck")
+        if 'Move more' in pg.locator('.answer-chip:visible').first.inner_text(): P(f"{label}: the change stuck")
         else: F(f"{label}: the change was lost")
 
         answer(pg,'Sauna & spa'); answer(pg,'Kreuzberg')
-        n=pg.locator('.answer-chip').count()
+        n=pg.locator('.answer-chip:visible').count()
         P(f"{label} Q4: all {n} answers so far are editable") if n==3 else F(f"{label} Q4: {n} chips, expected 3")
         pg.screenshot(path=f"{OUT}/{label}-q4.png")
         answer(pg,'Twice a week')
 
         # 3. the end screen is processable
-        chips=pg.locator('.answer-chip').count()
+        chips=pg.locator('.answer-chip:visible').count()
         P(f"{label} end: answers are editable here too ({chips})") if chips==4 else F(f"{label} end: {chips} chips")
         open_details=pg.evaluate("() => document.querySelectorAll('#main details[open]').length")
         P(f"{label} end: {open_details} section open by default") if open_details<=1 else F(f"{label} end: {open_details} sections open at once")

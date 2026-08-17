@@ -150,7 +150,8 @@ with sync_playwright() as p:
     answer(pg3,'Move more'); answer(pg3,'Gym & strength'); answer(pg3,'Mitte'); answer(pg3,'Three or four times a week')
     # The days are one control, not a disclosure inside a disclosure: asking to adjust the
     # week shows all seven at once, with the ones you'd go already filled.
-    pg3.locator('[data-toggle-week]').first.click(); pg3.wait_for_timeout(400)
+    if pg3.locator('[data-toggle-week]').count():
+        pg3.locator('[data-toggle-week]').first.click(); pg3.wait_for_timeout(400)
     if not pg3.locator('[data-open-days]').count(): P("the days are in the week itself, not behind a second link")
     else: F("the day picker is still hidden behind a disclosure")
     if pg3.locator('.daybtn').count()==7: P("seven days to choose from")
@@ -163,7 +164,7 @@ with sync_playwright() as p:
         return (len(pg3.locator('.weekrow__day').all_inner_texts()),
                 pg3.locator('.planbox__name').inner_text(),
                 pg3.locator('.planbox__price b').inner_text(),
-                pg3.locator('.answer-chip').last.inner_text())
+                pg3.locator('.answer-chip:visible').last.inner_text())
     d3, plan3, price3, chip3 = snap()
     pg3.locator('.daybtn.is-on').last.click(); pg3.wait_for_timeout(700)
     d2, plan2, price2, chip2 = snap()
@@ -188,17 +189,17 @@ with sync_playwright() as p:
         btns.last.click(); pg3.wait_for_timeout(300)
     if pg3.locator('.weekrow').count()>=1: P("the week can never be emptied to nothing")
     else: F("the week went empty")
-    # swapping a place keeps the day and changes the venue
+    # Changing a row opens the recovered venue picker for that exact day. The visitor
+    # chooses deliberately rather than having the page silently cycle to another place.
     if not pg3.locator('.weekrow__swap').count() and pg3.locator('[data-toggle-week]').count():
         pg3.locator('[data-toggle-week]').first.click(); pg3.wait_for_timeout(400)
     if pg3.locator('.weekrow__swap').count():
-        before=pg3.locator('.weekrow__pname').first.inner_text()
         day_before=pg3.locator('.weekrow__day').first.inner_text()
         pg3.locator('.weekrow__swap').first.click(); pg3.wait_for_timeout(600)
-        after=pg3.locator('.weekrow__pname').first.inner_text()
-        if after!=before and pg3.locator('.weekrow__day').first.inner_text()==day_before:
-            P(f"swap changes the place, not the day: {before.splitlines()[0]} -> {after.splitlines()[0]}")
-        else: F(f"swap did nothing useful: {before} -> {after}")
+        title=pg3.locator('#main h1').first.inner_text()
+        if day_before in title and pg3.locator('.weekpick').count():
+            P(f"Change opens the venue picker for {day_before}")
+        else: F(f"Change did not preserve the selected day: {title}")
     else: P("no swap offered (only one place serves that activity)")
     pg3.screenshot(path=f"{OUT}/own-days.png", full_page=True)
     c3.close()

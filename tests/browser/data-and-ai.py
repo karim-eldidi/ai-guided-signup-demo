@@ -241,7 +241,8 @@ with sync_playwright() as p:
     # payment terms tell the truth about pausing an annual plan
     pg.locator('.termpick__opt[data-commit="annual"]').click(); pg.wait_for_timeout(500)
     pg.evaluate("() => { const a = document.querySelector('.two-col__aside'); if (a) a.scrollTop = 0; window.scrollTo(0, document.body.scrollHeight) }"); pg.wait_for_timeout(250); pg.locator('.planbox__cta button:visible, .paybar button:visible').first.click(force=True); pg.wait_for_timeout(500)
-    if pg.locator('[data-skip-save]').count(): pg.locator('[data-skip-save]').click(); pg.wait_for_timeout(500)
+    if pg.locator('[data-skip-save]:visible').count(): pg.locator('[data-skip-save]:visible').click(); pg.wait_for_timeout(500)
+    elif pg.locator('[data-close-exit]:visible').count(): pg.locator('[data-close-exit]:visible').first.click(); pg.wait_for_timeout(500)
     pg.fill('#firstName','Alex'); pg.fill('#lastName','Tester'); pg.fill('#email','a@b.com'); pg.fill('#birthDate','1992-04-18')
     pg.fill('#street','Weserstr 42'); pg.fill('#postcode','12045'); pg.fill('#city','Berlin')
     pg.locator('button:has-text("Continue to payment")').click(); pg.wait_for_timeout(700)

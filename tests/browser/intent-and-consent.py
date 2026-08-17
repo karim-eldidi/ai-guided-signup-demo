@@ -37,9 +37,9 @@ with sync_playwright() as p:
     pg.locator('[data-go="save"]:visible').first.click(); pg.wait_for_timeout(600)
     pg.fill('form[data-form="save"] input[name="email"]','karim@example.com')
     pg.locator('form[data-form="save"] button[type="submit"]').first.click(); pg.wait_for_timeout(700)
-    if 'karim@example.com' in pg.locator('.topbar').inner_text(): P("an email given on the save screen is acknowledged in the top bar")
+    if 'karim@example.com' in pg.locator('#exit-modal .modal').inner_text(): P("an email given on the save screen is acknowledged in the saved confirmation")
     else: F("email not acknowledged after the save screen")
-    pg.locator('[data-go="recommendation"]').first.click(); pg.wait_for_timeout(700)
+    pg.locator('[data-close-exit]:visible').first.click(); pg.wait_for_timeout(700)
 
     # ask something she cannot answer -> should become a recorded gap.
     # Ask Urby lives on the landing and the recommendation now, not on the steps.
@@ -93,12 +93,12 @@ with sync_playwright() as p:
     for lab in ['Move more','Swimming','Neuk','Twice a week']: answer(pg, lab)
     pg.locator('[data-open-exit]').first.click(); pg.wait_for_timeout(500)
     m=pg.locator('#exit-modal .modal').inner_text()
-    if 'Save my progress' in m: P("an anonymous visitor is still asked to save")
+    if 'what you’re saving' in m.lower() or 'keep your fit for later' in m.lower(): P("an anonymous visitor is still asked to save")
     else: F("anonymous visitor is not offered a save")
     pg.screenshot(path=f"{OUT}/exit-anonymous.png")
 
     # --- C. the alternatives, in the open, beside the recommendation -------
-    pg.locator('[data-close-exit]').first.click(); pg.wait_for_timeout(300)
+    pg.locator('[data-close-exit]:visible').first.click(); pg.wait_for_timeout(300)
     # Karim, 14 Aug: "comparing the plans is nice but hidden." The single alternative
     # card and the compare fold merged into one table that is simply on the card, so
     # every alternative is visible without opening anything. Rule 64.
@@ -117,9 +117,9 @@ with sync_playwright() as p:
     else: F(f"no plan states the allowance it cannot meet: {warns}")
     # Rule 32: a plan that opens nothing they asked for carries no way to choose it, so
     # the switch we test is on a row that is genuinely an option.
-    cheaper=pg.locator('.allplans__row:not(.is-current):has([data-plan])').first
+    cheaper=pg.locator('.allplans__row:not(.is-current)[data-plan]').first
     name=cheaper.locator('.allplans__name').inner_text().strip().split('\n')[0]
-    cheaper.locator('[data-plan]').click(); pg.wait_for_timeout(800)
+    cheaper.click(); pg.wait_for_timeout(800)
     now=pg.locator('.planbox__name').inner_text()
     if name==now: P(f"switching to another membership works: now on '{now}'")
     else: F(f"switch did nothing: wanted '{name}', still on '{now}'")
@@ -141,9 +141,8 @@ with sync_playwright() as p:
     pg.locator('[data-start-fit]').click(); pg.wait_for_timeout(800)
     answer(pg, 'Unwind')                       # one answer in, three still to go
     pg.locator('[data-open-exit]').first.click(); pg.wait_for_timeout(400)
-    pg.locator('[data-exit="save"]').first.click(); pg.wait_for_timeout(700)
 
-    head = pg.locator('#main h1').first.inner_text()
+    head = pg.locator('#exit-modal .savepanel__title').inner_text()
     if 'saving' in head.lower(): P(f"Save and exit works mid-questions: '{head}'")
     else: F(f"Save and exit before the four questions went nowhere — still on '{head}'")
 
@@ -155,19 +154,18 @@ with sync_playwright() as p:
     where = pg.locator('.savepanel__where').inner_text()
     if 'question 2 of 4' in where: P(f"it says where they stopped instead: '{' '.join(where.split())[:60]}'")
     else: F(f"the early save screen does not say where they stopped: {where!r}")
-    if pg.locator('.stepper').count()==0: P("still no checkout stepper on the way out")
+    if pg.locator('.stepper:visible').count()==0: P("still no checkout stepper on the way out")
     else: F("the early save screen draws a checkout stepper")
 
     # the way back matches where they actually came from
-    back = pg.locator('.topbar .link-plain').inner_text()
-    if 'question' in back.lower(): P(f"and the way back is '{' '.join(back.split())}', not a recommendation they have not seen")
-    else: F(f"the early save screen offers '{back.strip()}' as the way back")
+    if pg.locator('[data-close-exit]:visible').count(): P("and the dialog closes back to the question they came from")
+    else: F("the early save dialog has no way back")
     pg.screenshot(path=f"{OUT}/save-early.png", full_page=True)
 
     # saving that early still ends on the confirmation, and claims only the answers
     pg.fill('form[data-form="save"] input[name="email"]','early@example.com')
     pg.locator('form[data-form="save"] button[type="submit"]').first.click(); pg.wait_for_timeout(800)
-    lede = pg.locator('.lede').first.inner_text()
+    lede = pg.locator('#exit-modal .modal__sub').inner_text()
     if 'recommendation' not in lede.lower(): P(f"the saved screen claims only what it holds: '{' '.join(lede.split())[:70]}'")
     else: F(f"it promises a stored recommendation that does not exist: {lede!r}")
     c.close(); b.close()

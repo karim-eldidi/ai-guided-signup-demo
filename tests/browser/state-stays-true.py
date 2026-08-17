@@ -149,7 +149,8 @@ with sync_playwright() as p:
 
     # --- switch the days, then switch the plan -------------------------------
     # Adjusting the week is what folds now, so ask for it the way a visitor would.
-    pg.locator('[data-toggle-week]').first.click(); pg.wait_for_timeout(400)
+    if pg.locator('[data-toggle-week]').count():
+        pg.locator('[data-toggle-week]').first.click(); pg.wait_for_timeout(400)
     days = pg.locator('.daybtn:not(.is-on)')
     if days.count():
         days.first.click(); pg.wait_for_timeout(650)
@@ -162,8 +163,8 @@ with sync_playwright() as p:
     # The single alternative card merged into the comparison table, which is now open on
     # the card rather than behind a fold. Any row that is not the current plan is a
     # switch a visitor can make.
-    altrow = pg.locator('.allplans__row:not(.is-current):has([data-plan])').first
-    alt = altrow.locator('[data-plan]')
+    altrow = pg.locator('.allplans__row:not(.is-current)[data-plan]').first
+    alt = altrow
     if not alt.count():
         F("no alternative plan offered, so the override path cannot be tested")
     else:

@@ -75,8 +75,10 @@ with sync_playwright() as p:
 
     # 1. guest who declines to save is never told it was saved
     pg.evaluate("() => { const a = document.querySelector('.two-col__aside'); if (a) a.scrollTop = 0; window.scrollTo(0, document.body.scrollHeight) }"); pg.wait_for_timeout(250); pg.locator('.planbox__cta button:visible, .paybar button:visible').first.click(force=True); pg.wait_for_timeout(600)
-    if pg.locator('[data-skip-save]').count():
-        pg.locator('[data-skip-save]').click(); pg.wait_for_timeout(600)
+    if pg.locator('[data-skip-save]:visible').count():
+        pg.locator('[data-skip-save]:visible').click(); pg.wait_for_timeout(600)
+    elif pg.locator('[data-close-exit]:visible').count():
+        pg.locator('[data-close-exit]:visible').first.click(); pg.wait_for_timeout(600)
     top=pg.locator('.topbar').inner_text()
     if 'Saved to' not in top: P("after declining to save, the top bar does not claim it saved")
     else: F(f"top bar claims: '{top}'")
@@ -136,6 +138,7 @@ with sync_playwright() as p:
     pg2.locator('[data-go="save"]:visible').first.click(); pg2.wait_for_timeout(600)
     pg2.fill('form[data-form="save"] input[name="email"]','karim@example.com')
     pg2.locator('form[data-form="save"] button[type="submit"]').first.click(); pg2.wait_for_timeout(700)
+    pg2.locator('[data-close-exit]:visible').first.click(); pg2.wait_for_timeout(400)
     # A receipt, not a headline: the note shrank to "Saved · <address>" because a
     # long address in the top-left was pulling the eye off the question.
     note = pg2.locator('.topbar .saved-note')
