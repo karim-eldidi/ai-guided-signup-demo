@@ -1628,9 +1628,7 @@ function findBar() {
 
   return `<section class="findbar">
     <div class="findbar__where">
-      <span class="findbar__wheretext">${icon('pin',16)}<span>${b.mine
-        ? `Showing places ${esc(b.label)}`
-        : `Showing near ${esc(b.label)}`}</span></span>
+      <span class="findbar__wheretext">${icon('pin',16)}<span>Showing places ${esc(b.label)}</span></span>
       <button class="linkish strong findbar__wherechange" type="button" data-toggle-where aria-expanded="${WHEREPICK}">${WHEREPICK?'Close':'Change location'}</button>
     </div>
     ${WHEREPICK ? `<div class="wherepick">
@@ -1640,11 +1638,11 @@ function findBar() {
       <p class="wherepick__note">${icon('info',16)} <span>This is one of Urby&rsquo;s four questions, so picking here means she won&rsquo;t ask it again.</span></p>
     </div>` : ''}
     <form data-form="search" novalidate class="findbar__searchform">
-      <div class="signup-row signup-row--search">
-        <span class="search-input-icon" aria-hidden="true">${icon('search',17)}</span>
+      <div class="findsearch">
+        <span class="findsearch__icon" aria-hidden="true">${icon('search',18)}</span>
         <input type="search" name="q" value="${esc(SEARCH.q||'')}"
           placeholder="Venue, activity or address" aria-label="Search for a place, an activity or an address" autocomplete="off">
-        <button type="submit" class="search-submit-btn">Search</button>
+        <button type="submit" class="findsearch__btn">Search</button>
       </div>
     </form>
     <div class="findbar__cats" role="group" aria-label="Common activities">

@@ -52,7 +52,8 @@ with sync_playwright() as p:
         for f,v in [('#firstName','Alex'),('#lastName','T'),('#email','a@b.com'),('#birthDate','1992-04-18'),('#street','W 42'),('#postcode','12045'),('#city','Berlin')]: pg.fill(f,v)
         # on a phone the details CTA lives in the paybar, same as the recommendation's
         pg.locator('.details-form__actions button:visible, .paybar button:visible').first.click(force=True); pg.wait_for_timeout(700); check("payment")
-        pg.locator('button:has-text("Confirm and start")').click(); pg.wait_for_timeout(900); check("confirmation")
+        # on a phone the confirm CTA lives in the paybar, same as the earlier screens
+        pg.locator('.btn-row button[type=submit]:visible, .paybar button[type=submit]:visible').first.click(force=True); pg.wait_for_timeout(900); check("confirmation")
         c.close()
     b.close()
 print(f"\n=== {len(ok)} passed, {len(bad)} failed ===")
