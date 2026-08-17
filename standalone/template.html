@@ -2533,6 +2533,7 @@ function recommendationScreen() {
     <div class="planbox__cta desktop-cta"><button class="btn btn--primary btn--block" data-go="details">Continue with ${esc(plan.name)}</button></div>
     <div class="planbox__foot">
       <p class="planbox__fine">${esc(commitment.label)} &middot; no payment yet</p>
+      ${S.email?'':`<button class="linkish planbox__save" type="button" data-go="save">Save this and come back later</button>`}
     </div>
     ${altBox}
     ${allPlans}

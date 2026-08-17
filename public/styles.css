@@ -731,10 +731,12 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 .planbox__cta { margin-top: 20px; }
 .planbox__cta .btn { height: 50px; font-size: 16px; font-weight: 700; border-radius: 12px; }
 .planbox__foot {
-  display: flex; align-items: center; justify-content: center;
-  margin-top: 10px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  margin-top: 10px; gap: 4px;
 }
 .planbox__fine { font-size: 12.5px; color: var(--navy-soft); text-align: center; margin: 0; }
+.planbox__save { font-size: 13px; color: var(--navy-soft); text-decoration: underline; background: none; border: 0; cursor: pointer; }
+.planbox__save:hover { color: var(--ink); }
 .planbox__back { font-size: 13.5px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--cream-line); }
 .termpick {
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 14px;

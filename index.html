@@ -745,10 +745,12 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 .planbox__cta { margin-top: 20px; }
 .planbox__cta .btn { height: 50px; font-size: 16px; font-weight: 700; border-radius: 12px; }
 .planbox__foot {
-  display: flex; align-items: center; justify-content: center;
-  margin-top: 10px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  margin-top: 10px; gap: 4px;
 }
 .planbox__fine { font-size: 12.5px; color: var(--navy-soft); text-align: center; margin: 0; }
+.planbox__save { font-size: 13px; color: var(--navy-soft); text-decoration: underline; background: none; border: 0; cursor: pointer; }
+.planbox__save:hover { color: var(--ink); }
 .planbox__back { font-size: 13.5px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--cream-line); }
 .termpick {
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 14px;
@@ -3332,7 +3334,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 17 Aug 16:39 UTC</span>
+  <span class="demo-banner__build">build 17 Aug 22:54 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -5705,6 +5707,7 @@ function recommendationScreen() {
     <div class="planbox__cta desktop-cta"><button class="btn btn--primary btn--block" data-go="details">Continue with ${esc(plan.name)}</button></div>
     <div class="planbox__foot">
       <p class="planbox__fine">${esc(commitment.label)} &middot; no payment yet</p>
+      ${S.email?'':`<button class="linkish planbox__save" type="button" data-go="save">Save this and come back later</button>`}
     </div>
     ${altBox}
     ${allPlans}
