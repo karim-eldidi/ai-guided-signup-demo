@@ -564,6 +564,7 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 .plans-selection__copy b { display:block; font-size:15px; }
 .plans-selection__copy span { display:block; margin-top:2px; font-size:12.5px; color:var(--navy-soft); }
 .plans-selection .btn { flex:0 0 auto; height:48px; padding:0 20px; font-size:14.5px; }
+.plans-sticky-bar { display: none; }
 .plans-shared { display:flex; align-items:center; flex-wrap:wrap; gap:7px 16px; padding:13px 14px; margin-top:14px; border:1px solid var(--border); border-radius:var(--radius); font-size:13px; }
 .plans-shared svg { flex:0 0 auto; }
 .plans-shared__ask { margin-left:auto; min-height:40px; padding:0 16px; border:1px solid var(--ink); border-radius:6px; background:#fff; color:var(--ink); font-size:13.5px; font-weight:700; }
@@ -1589,8 +1590,45 @@ body.save-modal-open #app > :not(#exit-modal) { visibility: hidden; }
   .venue-grid--big { grid-template-columns: 1fr 1fr; }
   .one-col__main { padding-bottom: 110px; }
   .found .venue-strip { grid-template-columns: 1fr 1fr; }
-  .why__grid { grid-template-columns: 1fr; }
-  .plangrid { grid-template-columns: 1fr; }
+  .plans-page { padding-bottom: 120px; }
+  .plangrid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 12px;
+    margin: 0 -16px;
+    padding: 4px 16px 14px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .plangrid::-webkit-scrollbar { display: none; }
+  .plancard {
+    flex: 0 0 82vw;
+    max-width: 320px;
+    scroll-snap-align: center;
+    border-radius: 14px;
+    padding: 16px 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    cursor: pointer;
+  }
+  .plancard.is-selected {
+    border: 2px solid var(--ink);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  }
+  .plancard.is-selected .plancard__cta {
+    background: var(--ink); color: #fff; border-color: var(--ink);
+  }
+  .plans-sticky-bar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+    background: #fff; border-top: 1px solid var(--border);
+    padding: 12px 18px calc(12px + env(safe-area-inset-bottom));
+    display: flex; align-items: center; justify-content: space-between; gap: 14px;
+    box-shadow: 0 -4px 14px rgba(0,0,0,0.07);
+  }
+  .plans-sticky-bar__left { flex: 1 1 auto; min-width: 0; }
+  .plans-sticky-bar__name { font-size: 15.5px; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .plans-sticky-bar__sub { font-size: 12.5px; color: var(--navy-soft); margin-top: 2px; }
+  .plans-sticky-bar__cta { flex: 0 0 auto; height: 48px; padding: 0 20px; font-size: 14.5px; }
   .startnow { height: 52px; }
   .chips-row { gap: 7px; margin-bottom: 18px; }
   .answer-chip { font-size: 13.5px; padding: 5px 10px; }

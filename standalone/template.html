@@ -2733,16 +2733,19 @@ function plusSheet() {
 
 function plansScreen() {
   const maxVenues=17800;
+  const selectedPlanId = S.chosenPlanId || (PLANS.find(pl=>pl.mostPopular)||PLANS[1]).id;
+  const selectedPlan = PLANS.find(pl=>pl.id===selectedPlanId) || PLANS[1];
+
   const cards = PLANS.map(pl=>{
     const price=priceFor(pl,S.commitmentId), venues=parseInt(String(pl.venueCount).replace(/\D/g,''),10)||0;
     const access=Math.max(5,Math.min(100,venues/maxVenues*100));
-    const daily=Boolean(pl.dailyCheckIn), plus=pl.plusCheckIns||0, selected=S.chosenPlanId===pl.id;
+    const daily=Boolean(pl.dailyCheckIn), plus=pl.plusCheckIns||0, selected=selectedPlan.id===pl.id;
     const best={essential:'Trying a few activities',classic:'A regular weekly routine',premium:'Studios and recovery',max:'Frequent premium access'}[pl.id]||pl.bestFor;
     const plusCopy=plus ? `<button class="plancard__plus" type="button" data-plus-open="${esc(pl.id)}" aria-label="Explain Plus check-ins on ${esc(pl.name)}">
         <b>${plus} Plus check-ins / month</b><span>For premium studios, spas and EMS</span>
         <em>Includes ${pl.id==='max'?'2 massages':'1 massage'}</em><u>What are Plus check-ins?</u></button>`
       : `<div class="plancard__locked">${icon('lock',13)}<span>Not included</span></div>`;
-    return `<article class="plancard ${pl.mostPopular?'is-popular':''} ${selected?'is-selected':''}" ${selected?'aria-current="true"':''}>
+    return `<article class="plancard ${pl.mostPopular?'is-popular':''} ${selected?'is-selected':''}" data-pick-plan="${esc(pl.id)}" role="button" tabindex="0" ${selected?'aria-current="true"':''}>
       <div class="plancard__top">
         ${pl.mostPopular?`<span class="badge plancard__badge">Most popular</span>`:''}
         <div class="plancard__name">${esc(pl.name)}</div>
@@ -2756,15 +2759,26 @@ function plansScreen() {
         <span class="plancard__check-sub">${daily?'up to one each day':'about once a week'}</span>${planWeekDots(daily)}</div>
       <div class="plancard__section"><span class="plancard__label">Plus &amp; recovery</span>${plusCopy}</div>
       <div class="plancard__section plancard__best"><span class="plancard__label">Best for</span>${esc(best)}</div>
-      <button class="btn btn--secondary btn--block plancard__cta" data-pick-plan="${esc(pl.id)}" aria-pressed="${selected?'true':'false'}">${selected?`${icon('checkThin',17)} Selected`:`Choose ${esc(pl.name)}`}</button>
+      <button class="btn btn--secondary btn--block plancard__cta" type="button" data-pick-plan="${esc(pl.id)}" aria-pressed="${selected?'true':'false'}">${selected?`${icon('checkThin',17)} Selected`:`Choose ${esc(pl.name)}`}</button>
     </article>`;
   }).join('');
-  const selectedPlan=PLANS.find(pl=>pl.id===S.chosenPlanId);
-  const selection=selectedPlan?`<div class="plans-selection" role="status">
+
+  const selection = `<div class="plans-selection desktop-cta" role="status">
     <div class="plans-selection__copy"><b>${esc(selectedPlan.name)} selected · ${priceFor(selectedPlan,S.commitmentId)} € /mo</b>
       <span>You can keep comparing. Nothing moves forward until you continue.</span></div>
     <button class="btn btn--primary" type="button" data-go="details">Continue with ${esc(selectedPlan.name)} ${icon('arrowRight',17)}</button>
-  </div>`:'';
+  </div>`;
+
+  const stickyBar = `<div class="plans-sticky-bar">
+    <div class="plans-sticky-bar__left">
+      <div class="plans-sticky-bar__name"><b>${esc(selectedPlan.name)}</b> &middot; ${priceFor(selectedPlan,S.commitmentId)} €/mo</div>
+      <div class="plans-sticky-bar__sub">${S.commitmentId==='annual'?'12-month commitment':'Monthly · Cancel anytime'}</div>
+    </div>
+    <button class="btn btn--primary plans-sticky-bar__cta" type="button" data-go="details">
+      Continue with ${esc(selectedPlan.name)} ${icon('arrowRight',16)}
+    </button>
+  </div>`;
+
   const journeyRoute=fitComplete(S.answers)?'recommendation':'fit';
   const guide=`<aside class="plans-guide" aria-label="Get help choosing a membership">
     <div class="plans-guide__brand">${ulaAvatar('sm')}<span>Urby</span></div>
@@ -2778,6 +2792,7 @@ function plansScreen() {
     <button class="btn btn--primary" type="button" data-go="${journeyRoute}">Continue my journey ${icon('arrowRight',17)}</button>
     <span class="plans-guide__note">About 2 minutes · no email needed</span>
   </aside>`;
+
   return `${topbar(1,{savedNote:Boolean(S.email&&S.saveOptIn)})}<main class="content plans-page" id="main">
     <div class="plans-layout"><div class="plans-main">
       <div class="plans-kicker">${ulaAvatar('sm')}<span><strong>Urby</strong> · Membership guide</span></div>
@@ -2790,7 +2805,7 @@ function plansScreen() {
         <button class="plans-shared__ask" type="button" data-plan-ask>Ask Urby</button></div>
       ${PLANASK?`<div class="plans-ask">${askBlock(true,false)}</div>`:''}
     </div>${guide}</div>
-  </main>${plusSheet()}${exitModal()}`;
+  </main>${stickyBar}${plusSheet()}${exitModal()}`;
 }
 
 /* Saving and signing up are two different intentions, so they are two different screens.
