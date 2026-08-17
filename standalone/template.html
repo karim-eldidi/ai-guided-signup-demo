@@ -1489,14 +1489,8 @@ function landing() {
         <p class="terms-line">By continuing, you agree to our <button class="linkish" data-go="terms">Terms</button> and <button class="linkish" data-go="privacy">Privacy Policy</button>.</p>
         <p class="landing__alt">Already know what you want? <button class="linkish strong" type="button" data-go="plans">View memberships ${icon('arrowRight',17)}</button></p></form>`;
 
-  /* 14 August. The panel used to hold a search box, then a paragraph explaining the
-     guide, then a button to start it — three things between arriving and doing
-     anything, and the question itself a screen below the fold. So the question came
-     up into the panel and everything that was standing in front of it went behind it.
-     The front door now asks one thing, and the two ways past it are two small pills
-     under a rule, not two sentences beginning "Already…". Rule 66.
-
-     The three cards are the first  const guideFirst = `
+  /* 3-Intent front door */
+  const guideFirst = `
     <div class="landing-intents">
       <button class="intent-card intent-card--primary" type="button" data-start-fit>
         <div class="intent-card__badge">${ulaAvatar('xs')}<span>Recommended</span></div>
@@ -2977,7 +2971,6 @@ function detailsScreen() {
     isAnswered(S.answers.frequency) && S.answers.frequency !== SKIP
       ? { i:'calendar', l:answerLabel('frequency', S.answers.frequency) } : null
   ].filter(Boolean);
-  /* Rule 51: the column caps at the viewport and scrolls itself, or a short window puts
   const aside = `<div class="ordercard">
     <div class="fitpanel__label">Order summary</div>
     <div class="ordercard__idrow">
