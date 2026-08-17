@@ -2882,7 +2882,35 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   font-size: 12px; color: var(--navy-soft); margin-top: 1px;
 }
 .pillar-venue__needs { color: #8a5a1a; font-weight: 600; }
-.pillar-venue__action { flex: 0 0 auto; }
+.pillar-venue__action { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; }
+
+.pillar-card__trash {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: transparent; border: 1px solid rgba(0,0,0,0.08); border-radius: 6px;
+  padding: 3px 8px; font-size: 11.5px; font-weight: 700; color: var(--navy-soft);
+  cursor: pointer; transition: all .15s ease;
+}
+.pillar-card__trash:hover {
+  background: #fee2e2; border-color: #fca5a5; color: #dc2626;
+}
+
+.pillar-venue__trash {
+  background: transparent; border: 0; padding: 4px 6px; border-radius: 4px;
+  color: var(--navy-soft); cursor: pointer; display: inline-grid; place-items: center;
+  transition: all .15s ease;
+}
+.pillar-venue__trash:hover {
+  background: #fee2e2; color: #dc2626;
+}
+
+.weekrow__trash {
+  background: transparent; border: 0; padding: 4px 6px; border-radius: 4px;
+  color: var(--navy-soft); cursor: pointer; display: inline-grid; place-items: center;
+  transition: all .15s ease; margin-left: 4px;
+}
+.weekrow__trash:hover {
+  background: #fee2e2; color: #dc2626;
+}
 
 .pillar-card__foot {
   margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(0,0,0,0.04); text-align: center;
@@ -3623,7 +3651,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 17 Aug 23:52 UTC</span>
+  <span class="demo-banner__build">build 17 Aug 23:54 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -3697,7 +3725,8 @@ const ICONS = {
   checkFill:'<circle cx="12" cy="12" r="9" fill="#1f9d55" stroke="none"/><path d="M7.8 12.3 10.7 15l5.5-5.7" stroke="#fff" stroke-width="2.1"/>',
   radioChecked:'<circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8" fill="none"/><circle cx="12" cy="12" r="4.2" fill="currentColor" stroke="none"/>',
   radioUnchecked:'<circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8" fill="none"/>',
-  adjust:'<path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/>'
+  adjust:'<path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/>',
+  trash:'<path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"/>'
 };
 const icon = (n, s = 22) => svg(ICONS[n] || ICONS.info, s);
 const ulaAvatar = (size='md') => {
@@ -5848,6 +5877,9 @@ function recommendationScreen() {
           : `<span class="weekrow__pill">${x.needs?esc(x.needs.name):'Not included'}</span>`}
         <button class="weekrow__swap" data-change-week="${esc(x.day)}"
           aria-label="Change activity or venue for ${esc(x.day)}">${icon('refresh',12)} <span>Swap</span></button>
+        <button class="weekrow__trash" data-remove-day="${esc(x.day)}" aria-label="Remove ${esc(x.day)}" title="Remove this day from schedule">
+          ${icon('trash',13)}
+        </button>
       </div>
       <div class="weekrow__dropbadge">${icon('sparkle',12)} Drop studio here</div>
     </li>`;
@@ -5887,14 +5919,14 @@ function recommendationScreen() {
         const isExp = Boolean(EXPANDED_PILLARS[grp.id]);
         const grpVenues = isExp ? grpAllVenues.slice(0, 6) : grpAllVenues.slice(0, 2);
         const moreCount = grpAllVenues.length - 2;
-        return `<div class="pillar-card" data-activity-id="${esc(grp.id)}" draggable="true" data-drag-pillar="${esc(grp.id)}" title="Drag away or click ✕ to remove this sport">
+        return `<div class="pillar-card" data-activity-id="${esc(grp.id)}" draggable="true" data-drag-pillar="${esc(grp.id)}" title="Drag away or click 🗑️ to remove this sport">
           <div class="pillar-card__head">
             <span class="pillar-card__icon">${icon(grp.icon, 18)}</span>
             <div class="pillar-card__titlebox">
               <h3 class="pillar-card__title">${esc(grp.label)}</h3>
               <span class="pillar-card__allowance">4 visits / mo per venue &middot; Included in ${esc(plan.name)}</span>
             </div>
-            ${groups.length > 1 ? `<button class="pillar-card__remove" type="button" data-remove-activity="${esc(grp.id)}" aria-label="Remove ${esc(grp.label)}" title="Remove this activity">✕</button>` : ''}
+            ${groups.length > 1 ? `<button class="pillar-card__trash" type="button" data-remove-activity="${esc(grp.id)}" aria-label="Remove ${esc(grp.label)}" title="Remove this sport from plan">${icon('trash', 14)} <span>Remove</span></button>` : ''}
           </div>
           <div class="pillar-card__venues">
             ${grpVenues.map(v => {
@@ -5924,9 +5956,10 @@ function recommendationScreen() {
                   <div class="pillar-venue__sub">${distLabel} &middot; ${accessText}</div>
                 </div>
                 <div class="pillar-venue__action">
-                  <button class="btn-pill btn-pill--sm" data-open-add-venue="${esc(v.id)}">
+                  <button class="btn-pill btn-pill--sm" data-open-add-venue="${esc(v.id)}" title="Add to week">
                     ${icon('plus', 11)} <span>Add</span>
                   </button>
+                  ${groups.length > 1 ? `<button class="pillar-venue__trash" type="button" data-remove-activity="${esc(grp.id)}" aria-label="Remove this sport" title="Remove ${esc(grp.label)} from routine">${icon('trash', 13)}</button>` : ''}
                 </div>
               </div>`;
             }).join('')}
@@ -6862,7 +6895,7 @@ document.addEventListener('change', e => {
   renderInPlace();
 });
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-change-city],[data-city],[data-unsure],[data-open-ask],[data-rail],[data-radius],[data-toggle-venues],[data-toggle-apps],[data-toggle-week],[data-toggle-places],[data-toggle-more],[data-more],[data-toggle-alt],[data-toggle-plan-details],[data-open-days],[data-day],[data-swap],[data-change-week],[data-add-week],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula],[data-search-example],[data-venue-clear],[data-venue-search-all],[data-toggle-where],[data-where],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-add-activity],[data-remove-activity],[data-expand-pillar],[data-toggle-routine-customizer]');
+  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-change-city],[data-city],[data-unsure],[data-open-ask],[data-rail],[data-radius],[data-toggle-venues],[data-toggle-apps],[data-toggle-week],[data-toggle-places],[data-toggle-more],[data-more],[data-toggle-alt],[data-toggle-plan-details],[data-open-days],[data-day],[data-swap],[data-change-week],[data-add-week],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula],[data-search-example],[data-venue-clear],[data-venue-search-all],[data-toggle-where],[data-where],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-add-activity],[data-remove-activity],[data-expand-pillar],[data-toggle-routine-customizer],[data-remove-day]');
   if (!t) return;
 
   if (t.dataset.toggleRoutineCustomizer !== undefined) {
@@ -7141,6 +7174,21 @@ document.addEventListener('click', e => {
     EXPANDED_PILLARS[pId] = !EXPANDED_PILLARS[pId];
     log('pillar_expanded', { pillar: pId, expanded: EXPANDED_PILLARS[pId] });
     render(false);
+    return;
+  }
+  if (t.dataset.removeDay) {
+    const day = t.dataset.removeDay;
+    const curDays = (S.weekDays && S.weekDays.length ? S.weekDays : DAY_ORDER.filter((_, i) => i < 3)).filter(d => d !== day);
+    if (curDays.length > 0) {
+      S.weekDays = curDays;
+      if (S.weekSwap) delete S.weekSwap[day];
+      const newFreq = freqForDays(S.weekDays.length);
+      if (newFreq !== S.answers.frequency) S.answers.frequency = newFreq;
+      S.planOverridden = false;
+      S.chosenPlanId = null;
+      log('day_removed_from_schedule', { day });
+      render(false);
+    }
     return;
   }
   if (t.dataset.openAddVenue) {
