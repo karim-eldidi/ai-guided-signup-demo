@@ -1098,66 +1098,62 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
   font-size: 24px; font-weight: 800; letter-spacing: -.02em; margin: 0 0 10px; color: var(--ink);
 }
 
-/* Unified Compact Saved Routine Card */
-.saverecap__head {
+/* Unified Visual Saved Routine Card */
+.saverecap__visual-card {
   background: var(--cream); border: 1px solid var(--cream-line); border-radius: 14px;
-  padding: 14px 14px 12px; margin-bottom: 16px;
+  padding: 14px; margin-bottom: 16px;
 }
-.saverecap__tag-row {
-  display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px;
+.saverecap__top {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px;
+}
+.saverecap__plan-badge {
+  display: flex; align-items: center; gap: 8px;
+}
+.saverecap__plan-badge b {
+  font-size: 18px; font-weight: 800; color: var(--ink);
 }
 .saverecap__tag {
   display: inline-block; background: var(--yellow-bright); color: var(--ink);
   font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em;
   padding: 3px 8px; border-radius: 99px;
 }
-.saverecap__price {
-  font-size: 17px; font-weight: 800; color: var(--ink);
+.saverecap__price b {
+  font-size: 18px; font-weight: 800; color: var(--ink);
 }
 .saverecap__price small {
   font-size: 12px; color: var(--navy-soft); font-weight: 500;
 }
-.saverecap__plan-title {
-  font-size: 16px; color: var(--ink); font-weight: 800;
-}
-.saverecap__plan-title span {
-  font-size: 13px; font-weight: 500; color: var(--navy-soft);
-}
 
-.saverecap__squished-week {
-  margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--cream-line);
-  display: flex; flex-direction: column; gap: 4px;
+/* 3-card photo gallery (3:2 aspect ratio photography) */
+.saverecap__gallery {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px;
 }
-.saverecap__mini-row {
-  display: flex; align-items: baseline; gap: 8px; font-size: 13px; color: var(--navy);
+.saverecap__venue-card {
+  background: #fff; border: 1px solid var(--cream-line); border-radius: 8px;
+  overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.03);
 }
-.saverecap__mini-day {
-  font-weight: 800; color: var(--ink); width: 34px; flex-shrink: 0;
+.saverecap__venue-img {
+  width: 100%; aspect-ratio: 3 / 2; overflow: hidden; background: #e6e2da;
 }
-.saverecap__mini-text {
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;
-}
-.saverecap__mini-text b { font-weight: 700; color: var(--ink); }
-
-.saverecap__mini-venues {
-  display: flex; align-items: center; gap: 6px; margin-top: 8px; padding-top: 8px;
-  border-top: 1px solid var(--cream-line); overflow-x: auto; scrollbar-width: none;
-}
-.saverecap__mini-venues::-webkit-scrollbar { display: none; }
-.saverecap__mini-vchip {
-  display: flex; align-items: center; gap: 6px; background: #fff; border: 1px solid var(--cream-line);
-  border-radius: 6px; padding: 2px 7px 2px 3px; font-size: 11.5px; font-weight: 700;
-  color: var(--ink); white-space: nowrap; flex-shrink: 0;
-}
-.saverecap__mini-vthumb {
-  width: 22px; height: 22px; border-radius: 4px; overflow: hidden; background: #ddd; flex-shrink: 0;
-}
-.saverecap__mini-vthumb img, .saverecap__mini-vthumb picture {
+.saverecap__venue-img img, .saverecap__venue-img picture {
   width: 100%; height: 100%; object-fit: cover;
 }
-.saverecap__mini-more {
-  font-size: 11px; font-weight: 700; color: var(--navy-soft); flex-shrink: 0; margin-left: 2px;
+.saverecap__venue-info {
+  padding: 5px 6px 4px;
 }
+.saverecap__venue-title {
+  display: block; font-size: 11px; font-weight: 700; color: var(--ink);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2;
+}
+.saverecap__venue-dist {
+  display: block; font-size: 10px; color: var(--navy-soft); font-weight: 500; margin-top: 1px;
+}
+
+.saverecap__chips-row {
+  display: flex; align-items: center; overflow-x: auto; scrollbar-width: none;
+}
+.saverecap__chips-row::-webkit-scrollbar { display: none; }
+.saverecap__chips-row .chips-row { margin: 0; padding: 0; }
 
 .savefield__label {
   display: block; font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 5px;

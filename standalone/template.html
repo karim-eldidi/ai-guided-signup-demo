@@ -2878,47 +2878,41 @@ function saveScreen() {
   const savedWeek = F ? weekPlan(F.groups, F.match.pool||[], F.plan.id, S.answers.frequency).sessions : [];
 
   const recapCard = hasPlan ? `
-    <div class="saverecap__head">
-      <div class="saverecap__tag-row">
-        <span class="saverecap__tag">${F.isRec ? 'Recommended routine' : 'Your chosen routine'}</span>
-        <span class="saverecap__price">${F.price} €<small>/mo</small></span>
+    <div class="saverecap__visual-card">
+      <div class="saverecap__top">
+        <div class="saverecap__plan-badge">
+          <span class="saverecap__tag">${F.isRec ? 'Recommended' : 'Selected'}</span>
+          <b>${esc(F.plan.name)}</b>
+        </div>
+        <div class="saverecap__price"><b>${F.price} €</b><small>/mo</small></div>
       </div>
-      <div class="saverecap__plan-title">
-        <b>${esc(F.plan.name)}</b>
-        <span>&middot; ${esc(F.commitment.label)} &middot; ${plural(monthlyAllowance(F.plan),'visit','visits')}/mo</span>
-      </div>
-
-      ${savedWeek.length ? `
-      <div class="saverecap__squished-week">
-        ${savedWeek.slice(0, 3).map(s => `
-          <div class="saverecap__mini-row">
-            <span class="saverecap__mini-day">${esc(s.day.slice(0,3))}</span>
-            <span class="saverecap__mini-text"><b>${esc(s.activity)}</b> at ${esc(s.venue.name)}</span>
-          </div>
-        `).join('')}
-      </div>` : ''}
 
       ${shownVenues.length ? `
-      <div class="saverecap__mini-venues">
+      <div class="saverecap__gallery">
         ${shownVenues.map(v => `
-          <div class="saverecap__mini-vchip">
-            <div class="saverecap__mini-vthumb">${venueMedia(v)}</div>
-            <span>${esc(v.name)}</span>
+          <div class="saverecap__venue-card">
+            <div class="saverecap__venue-img">${venueMedia(v)}</div>
+            <div class="saverecap__venue-info">
+              <span class="saverecap__venue-title">${esc(v.name)}</span>
+              <span class="saverecap__venue-dist">${v.distanceKm} km</span>
+            </div>
           </div>
         `).join('')}
-        ${moreVenues ? `<span class="saverecap__mini-more">+${moreVenues} more</span>` : ''}
       </div>` : ''}
+
+      <div class="saverecap__chips-row">
+        ${answerChips({ label:'', compact:true })}
+      </div>
     </div>
   ` : `
-    <div class="saverecap__head">
-      <div class="saverecap__tag-row">
-        <span class="saverecap__tag">Your progress so far</span>
+    <div class="saverecap__visual-card">
+      <div class="saverecap__top">
+        <div class="saverecap__plan-badge">
+          <span class="saverecap__tag">In progress</span>
+          <b>Question ${Math.min(answered + 1, QUESTIONS.length)} of ${QUESTIONS.length}</b>
+        </div>
       </div>
-      <div class="saverecap__plan-title">
-        <b>Question ${Math.min(answered + 1, QUESTIONS.length)} of ${QUESTIONS.length}</b>
-        <span>&middot; We'll save every answer you've given</span>
-      </div>
-      <div class="saverecap__chips" style="margin-top:10px">
+      <div class="saverecap__chips-row" style="margin-top:10px">
         ${answerChips({ label:'', compact:true })}
       </div>
     </div>
