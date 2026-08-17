@@ -1520,7 +1520,7 @@ body.save-modal-open #app > :not(#exit-modal) { visibility: hidden; }
   .two-col__aside { margin: 0 20px 132px; }
   /* the details form has no sticky bar under it, so it needs no room for one */
   .two-col--form .two-col__aside { margin-bottom: 44px; }
-  .content { padding-bottom: 60px; }
+  .content { padding-bottom: 100px; }
   .btn--wide { min-width: 0; width: 100%; }
 
   .fitpanel { padding: 0; background: transparent; }
@@ -2755,7 +2755,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 17 Aug 14:05 UTC</span>
+  <span class="demo-banner__build">build 17 Aug 14:08 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -5399,6 +5399,7 @@ function detailsScreen() {
 
 function paymentScreen() {
   const plan = currentPlan(), commitment = commitmentById(S.commitmentId), price = priceFor(plan,S.commitmentId);
+  const each = perSession(price, S.answers.frequency, plan);
   const renewal = commitment.renewal;
   const method = FIELDS.method||'sepa';
   return `${topbar(3)}<main class="content" id="main">
@@ -5421,7 +5422,7 @@ function paymentScreen() {
           <span class="option-card__icon">${icon('card',21)}<span class="option-card__check">${icon('checkThin',17)}</span></span>
           <span class="option-card__label">Card <span class="xsmall muted" style="display:block;font-weight:400">Visa, Mastercard</span></span></label></div>
       <p class="xsmall muted" style="margin-top:16px">${icon('lock',14)} In production this is where the existing Adyen drop-in would be embedded. Deliberately left out of the pilot.</p></div>
-      <details class="disclosure" open><summary>Cancellation, pause and renewal</summary>
+      <details class="disclosure"><summary>Cancellation, pause and renewal</summary>
         <div class="disclosure__body"><ul class="reasons">
           <li>${icon('checkThin',19)}<span>${esc(renewal)}</span></li>
           <li>${icon('checkThin',19)}<span>${esc(RULES.cancellationNotice)}</span></li>
@@ -5429,9 +5430,15 @@ function paymentScreen() {
           <li>${icon(commitment.canPause?'checkThin':'info',19)}<span>${commitment.canPause?'This membership can be paused for 1 to 6 full months at no cost.':'<strong>This membership cannot be paused.</strong> Only monthly memberships can be paused.'}</span></li>
           <li>${icon('info',19)}<span>${esc(RULES.downgrade)}</span></li></ul>
         <p class="xsmall muted" style="margin-top:14px">Real published Urban Sports Club terms, retrieved ${esc(DATA.faqs.retrieved)}. Final wording still comes from Legal before any live test.</p></div></details>
-      <div class="btn-row"><button class="btn btn--primary" type="submit">Confirm and start membership</button>
-        <button class="btn btn--secondary" type="button" data-go="details">Back</button></div>
+      <div class="btn-row desktop-cta">
+        <button class="btn btn--primary" type="submit">Confirm and start membership</button>
+        <button class="btn btn--secondary" type="button" data-go="details">Back</button>
+      </div>
       <p class="xsmall muted" style="margin-top:16px">By confirming you accept the Terms and the cancellation conditions above.</p>
+      <div class="paybar">
+        <div class="paybar__info"><b>${esc(plan.name)}</b><span>${price} € / month${each?` · ≈ ${each} € a session`:''}</span></div>
+        <button class="btn btn--primary" type="submit">Confirm & start</button>
+      </div>
     </form></main>${exitModal()}`;
 }
 

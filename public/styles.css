@@ -1506,7 +1506,7 @@ body.save-modal-open #app > :not(#exit-modal) { visibility: hidden; }
   .two-col__aside { margin: 0 20px 132px; }
   /* the details form has no sticky bar under it, so it needs no room for one */
   .two-col--form .two-col__aside { margin-bottom: 44px; }
-  .content { padding-bottom: 60px; }
+  .content { padding-bottom: 100px; }
   .btn--wide { min-width: 0; width: 100%; }
 
   .fitpanel { padding: 0; background: transparent; }
