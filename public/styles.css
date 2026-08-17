@@ -1579,6 +1579,7 @@ body.save-modal-open #app > :not(#exit-modal) { visibility: hidden; }
   .form-grid { grid-template-columns: 1fr; }
   .alt-grid { grid-template-columns: 1fr; }
   .options--compact { grid-template-columns: 1fr; gap: 11px; }
+  .options--stack-mobile { grid-template-columns: 1fr !important; }
   .cov__upsell { padding: 16px; }
   .cov__upsell .btn { width: 100%; }
   /* developer-facing note: keep it off the phone screen, it is on /admin/journeys too */
