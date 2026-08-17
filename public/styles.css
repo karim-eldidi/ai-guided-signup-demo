@@ -179,18 +179,22 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
   content: ""; flex: 1 1 auto; height: 1px; background: rgba(16,32,60,.22);
 }
 
-.sso-row { display: flex; gap: 18px; max-width: 560px; }
+.sso-row { display: flex; gap: 12px; max-width: 560px; }
 .sso-btn {
-  flex: 1 1 0;
-  display: flex; align-items: center; justify-content: center; gap: 12px;
-  height: 58px;
-  border: 1px solid rgba(8,9,10,.85);
-  border-radius: var(--radius-sm);
-  background: transparent;
-  font-size: 17px; font-weight: 600;
+  flex: 1 1 auto;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  height: 48px; min-height: 48px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: #fff;
+  font-size: 15px; font-weight: 600;
+  color: var(--ink);
   text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  transition: border-color .15s ease, background-color .15s ease;
 }
-.sso-btn:hover { background: rgba(255,255,255,.35); }
+.sso-btn:hover { border-color: var(--ink); background: #fafafa; }
 
 .consent-row { display: flex; align-items: flex-start; gap: 13px; margin: 30px 0 22px; max-width: 560px; }
 /* `display: flex` beats the [hidden] attribute's own display:none, so hiding the consent
@@ -1297,7 +1301,12 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 .details-sso__copy b { font-size: 16px; }
 .details-sso__copy span { margin-top: 4px; color: var(--navy-soft); font-size: 14px; }
 .details-sso .sso-row { width: 100%; max-width: none; gap: 12px; margin-top: 12px; }
-.details-sso .sso-btn { flex: 1; height: 50px; padding: 0 14px; background: #fff; font-size: 15px; gap: 9px; }
+.details-sso .sso-btn {
+  flex: 1 1 0; height: 48px; min-height: 48px; padding: 0 16px;
+  background: #fff; font-size: 14.5px; gap: 10px;
+  border: 1.5px solid var(--border); border-radius: var(--radius);
+}
+.details-sso .sso-btn:hover { border-color: var(--ink); }
 .details-divider { display: flex; align-items: center; gap: 12px; margin: 20px 0 16px; color: var(--navy-soft); font-size: 13px; }
 .details-divider::before, .details-divider::after { content: ""; flex: 1; height: 1px; background: var(--border); }
 .details-section { margin-top: 18px; }
@@ -1346,7 +1355,8 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 
 @media (max-width: 620px) {
   .details-title { font-size: 30px; }
-  .details-sso .sso-row { flex-direction: column; }
+  .details-sso .sso-row { flex-direction: column; gap: 10px; }
+  .details-sso .sso-btn { width: 100%; flex: 0 0 50px; height: 50px; min-height: 50px; }
   .details-grid--person, .details-grid--contact, .details-grid--address { grid-template-columns: 1fr; }
   .details-grid--person .field:last-child { grid-column: auto; }
 }
