@@ -1025,6 +1025,7 @@ let VENUEQ='';
    has been opened out into the full list. Neither is an answer, so neither lives in S. */
 let WHEREPICK=false, SEEALL=false;
 let RECO_VIEW='pillars'; /* 'pillars' (activity & freedom) or 'week' (day-by-day schedule) */
+let EXPANDED_PILLARS={};
 /* In production the neighbourhood comes from the browser or the IP. The pilot has no map
    service, so the page starts from one real Berlin area and says out loud that it guessed
    — the same contract the city chip already keeps (rules 6 and 26). It is never written
@@ -1244,9 +1245,9 @@ const venueCard = (v, tappable=true) => {
   const needs = inPlan ? null : firstPlanWithAccess(v);
   const tier = v.tier ? (v.tier === 'premium' ? 'Premium' : v.tier === 'plus' ? 'Plus' : 'Standard') : '';
   const tierBadge = tier ? `<span class="tier-tag tier-tag--${v.tier}">${tier}</span>` : '';
-  const chosen = (A().activities||[]).filter(x=>x!==SKIP).map(groupById).filter(Boolean);
-  const hits = chosen.filter(g=>venueInGroup(v,g)).map(g=>g.label.toLowerCase());
-  return `<div class="venue-card ${inPlan?'':'is-locked'}" draggable="true" data-drag-venue="${esc(v.id)}" data-drag-name="${esc(v.name)}">
+  const areaLabel = v.nearestArea ? v.nearestArea.name : (AREAS.find(a=>a.id===v.area)||{}).name || '';
+  const distLabel = areaLabel ? `${v.distanceKm} km from ${esc(areaLabel)}` : `${v.distanceKm} km away`;
+  return `<div class="venue-card ${inPlan?'':'is-locked'}" draggable="true" data-drag-venue="${esc(v.id)}" data-drag-name="${esc(v.name)}" title="Drag onto your week or click to add">
   <button class="venue-card__media-btn" data-venue="${esc(v.id)}" aria-label="More about ${esc(v.name)}">
     <div class="venue-card__media">${venueMedia(v)}${inPlan?'':`<span class="venue-card__lock">${icon('lock',13)} ${needs?esc(needs.name):'not included'}</span>`}</div>
   </button>
@@ -1255,6 +1256,7 @@ const venueCard = (v, tappable=true) => {
       <button class="venue-card__name" data-venue="${esc(v.id)}">${esc(v.name)}</button>
       ${tierBadge}
     </div>
+    <div class="venue-card__meta">${distLabel}</div>
     <div class="venue-card__foot">
       <button class="btn-pill btn-pill--sm" data-open-add-venue="${esc(v.id)}">${icon('plus',11)} <span>Add</span></button>
       <button class="linkish venue-card__more" data-venue="${esc(v.id)}">Details</button>
@@ -2416,7 +2418,10 @@ function recommendationScreen() {
       ${groups.map(g => {
         const grp = groupById(g.id || g);
         if (!grp) return '';
-        const grpVenues = pool.filter(v => venueInGroup(v, grp)).slice(0, 2);
+        const grpAllVenues = pool.filter(v => venueInGroup(v, grp));
+        const isExp = Boolean(EXPANDED_PILLARS[grp.id]);
+        const grpVenues = isExp ? grpAllVenues.slice(0, 6) : grpAllVenues.slice(0, 2);
+        const moreCount = grpAllVenues.length - 2;
         return `<div class="pillar-card">
           <div class="pillar-card__head">
             <span class="pillar-card__icon">${icon(grp.icon, 18)}</span>
@@ -2431,6 +2436,8 @@ function recommendationScreen() {
               const inPlan = includedIn(v, plan.id);
               const tier = v.tier ? (v.tier === 'premium' ? 'Premium' : v.tier === 'plus' ? 'Plus' : 'Standard') : '';
               const tierBadge = tier ? `<span class="tier-tag tier-tag--${v.tier}">${tier}</span>` : '';
+              const areaLabel = v.nearestArea ? v.nearestArea.name : (AREAS.find(a=>a.id===v.area)||{}).name || '';
+              const distLabel = areaLabel ? `${v.distanceKm} km from ${esc(areaLabel)}` : `${v.distanceKm} km away`;
               return `<div class="pillar-venue ${inPlan ? '' : 'is-locked'}" draggable="true" data-drag-venue="${esc(v.id)}" data-drag-name="${esc(v.name)}" title="Drag onto your week or click to add">
                 <button class="pillar-venue__media-btn" data-venue="${esc(v.id)}" aria-label="Details about ${esc(v.name)}">
                   <span class="venue-card__media">${venueMedia(v)}</span>
@@ -2440,7 +2447,7 @@ function recommendationScreen() {
                     <button class="pillar-venue__name" data-venue="${esc(v.id)}"><b>${esc(v.name)}</b></button>
                     ${tierBadge}
                   </div>
-                  <div class="pillar-venue__sub">${v.distanceKm} km away &middot; ${inPlan ? 'Included' : `<span class="pillar-venue__needs">Needs upgrade</span>`}</div>
+                  <div class="pillar-venue__sub">${distLabel} &middot; ${inPlan ? 'Included' : `<span class="pillar-venue__needs">Needs upgrade</span>`}</div>
                 </div>
                 <div class="pillar-venue__action">
                   <button class="btn-pill btn-pill--sm" data-open-add-venue="${esc(v.id)}">
@@ -2450,6 +2457,13 @@ function recommendationScreen() {
               </div>`;
             }).join('')}
           </div>
+          ${(!isExp && moreCount > 0) ? `
+          <div class="pillar-card__foot">
+            <button class="pillar-card__expand linkish strong" type="button" data-expand-pillar="${esc(grp.id)}">See ${moreCount} more ${esc(grp.label.toLowerCase())} places &rarr;</button>
+          </div>` : (isExp && moreCount > 0 ? `
+          <div class="pillar-card__foot">
+            <button class="pillar-card__expand linkish strong" type="button" data-expand-pillar="${esc(grp.id)}">Show fewer places &uarr;</button>
+          </div>` : '')}
         </div>`;
       }).join('')}
     </div>
@@ -3373,7 +3387,7 @@ document.addEventListener('change', e => {
   renderInPlace();
 });
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-change-city],[data-city],[data-unsure],[data-open-ask],[data-rail],[data-radius],[data-toggle-venues],[data-toggle-apps],[data-toggle-week],[data-toggle-places],[data-toggle-more],[data-more],[data-toggle-alt],[data-toggle-plan-details],[data-open-days],[data-day],[data-swap],[data-change-week],[data-add-week],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula],[data-search-example],[data-venue-clear],[data-venue-search-all],[data-toggle-where],[data-where],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue]');
+  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-change-city],[data-city],[data-unsure],[data-open-ask],[data-rail],[data-radius],[data-toggle-venues],[data-toggle-apps],[data-toggle-week],[data-toggle-places],[data-toggle-more],[data-more],[data-toggle-alt],[data-toggle-plan-details],[data-open-days],[data-day],[data-swap],[data-change-week],[data-add-week],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula],[data-search-example],[data-venue-clear],[data-venue-search-all],[data-toggle-where],[data-where],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-add-activity],[data-remove-activity],[data-expand-pillar]');
   if (!t) return;
 
   if (t.dataset.plusOpen) { PLANPLUS=t.dataset.plusOpen; log('plus_explainer_opened',{planId:PLANPLUS}); render(false); return; }
@@ -3638,6 +3652,13 @@ document.addEventListener('click', e => {
       log('activity_removed_from_reco', { activity: actId });
       render(false);
     }
+    return;
+  }
+  if (t.dataset.expandPillar) {
+    const pId = t.dataset.expandPillar;
+    EXPANDED_PILLARS[pId] = !EXPANDED_PILLARS[pId];
+    log('pillar_expanded', { pillar: pId, expanded: EXPANDED_PILLARS[pId] });
+    render(false);
     return;
   }
   if (t.dataset.openAddVenue) {
