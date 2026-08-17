@@ -1758,6 +1758,11 @@ body.save-modal-open { overflow: hidden; }
   .one-col__main { padding-bottom: 110px; }
   .found .venue-strip { grid-template-columns: 1fr 1fr; }
   .plans-page { padding-bottom: 120px; }
+  .plangrid-hint {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    font-size: 13px; font-weight: 700; color: var(--navy-soft);
+    margin: 10px 0 6px; text-align: center;
+  }
   .plangrid {
     display: flex;
     overflow-x: auto;

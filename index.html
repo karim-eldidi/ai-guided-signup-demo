@@ -1772,6 +1772,11 @@ body.save-modal-open { overflow: hidden; }
   .one-col__main { padding-bottom: 110px; }
   .found .venue-strip { grid-template-columns: 1fr 1fr; }
   .plans-page { padding-bottom: 120px; }
+  .plangrid-hint {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    font-size: 13px; font-weight: 700; color: var(--navy-soft);
+    margin: 10px 0 6px; text-align: center;
+  }
   .plangrid {
     display: flex;
     overflow-x: auto;
@@ -3324,7 +3329,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 17 Aug 16:28 UTC</span>
+  <span class="demo-banner__build">build 17 Aug 16:30 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -4703,7 +4708,7 @@ function landing() {
         ${primary}
       </div></div>
     <div class="landing__media"><button class="login-link login-link--desktop linkish" data-go="login">Log in</button>
-      <img src="${IMG['/images/hero-climber.jpg']}" alt="A climber resting and smiling at a bouldering gym in Berlin" decoding="async"></div>
+      <img src="${IMG['/images/hero-climber.jpg']}" width="800" height="900" fetchpriority="high" alt="A climber resting and smiling at a bouldering gym in Berlin" decoding="async"></div>
   </main>
   <section class="ula-section"><div class="ula-section__inner">
     <!-- The question used to be asked twice on this page: once here, under a heading and a
@@ -5983,6 +5988,7 @@ function plansScreen() {
       <div class="plans-head"><h1 class="h-question" tabindex="-1">Compare memberships</h1>
         <p class="reco-lede">See how venue access, visit frequency and premium benefits change with each plan.</p></div>
       <div class="commit-row">${COMMITMENTS.map(c=>`<button class="chip-sm ${c.id===S.commitmentId?'is-current':''}" data-commit="${esc(c.id)}">${esc(c.minimumTermMonths===1?'Monthly':c.minimumTermMonths+' months')}</button>`).join('')}</div>
+      <div class="plangrid-hint"><span>Swipe to compare all 4 plans &rarr;</span></div>
       <div class="plangrid">${cards}</div>${selection}
       <div class="plans-shared">${icon('checkThin',17)}<span>Every membership includes video on demand, wellbeing apps and online classes.</span>
         <button class="linkish" type="button" data-go="terms">Membership terms</button>
