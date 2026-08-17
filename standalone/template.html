@@ -359,7 +359,11 @@ const answerLabel = (qid,v) => {
 const compactAnswerLabel = (qid,v) => {
   if (!isAnswered(v)) return null;
   if (qid==='frequency') {
-    const map={about_once:'1x / wk',twice:'2x / wk',three_four:'3–4x / wk',five_plus:'5+x / wk'};
+    const map={once:'1x / wk',about_once:'1x / wk',twice:'2x / wk',often:'3–4x / wk',three_four:'3–4x / wk',daily:'5+x / wk',five_plus:'5+x / wk'};
+    return map[v]||answerLabel(qid,v);
+  }
+  if (qid==='goal') {
+    const map={move_more:'Move more',unwind:'Unwind',try_new:'Try new sports'};
     return map[v]||answerLabel(qid,v);
   }
   if (Array.isArray(v)) { if (v.includes(SKIP)) return 'Not sure';
@@ -2516,19 +2520,13 @@ function recommendationScreen() {
          and where the two share a card they share it in that order. -->
     <div class="planbox__factshead">Fits your routine</div>
     <ul class="planbox__facts">
-      ${wp.perMonth?`<li>${icon('checkThin',16)}<span>Supports ${plural(wp.perMonth,'visit','visits')} a month</span></li>`:''}
-      ${hereT&&hereT.nearby?`<li>${icon('checkThin',16)}<span>Opens <b>${hereT.included} of the ${hereT.nearby}</b> ${hereT.nearby===1?'place':'places'} for ${esc(groupWords(groups))} near ${esc(where)}</span></li>`:''}
-      ${each?`<li>${icon('checkThin',16)}<span>About ${each} € a session</span></li>`:''}
+      ${wp.perMonth?`<li>${icon('checkThin',16)}<span>Supports <b>${plural(wp.perMonth,'visit','visits')} a month</b></span></li>`:''}
+      ${hereT&&hereT.nearby?`<li>${icon('checkThin',16)}<span>Opens <b>${hereT.included===hereT.nearby ? 'all '+hereT.nearby : hereT.included+' of '+hereT.nearby}</b> matching places near you</span></li>`:''}
+      ${each?`<li>${icon('checkThin',16)}<span>About <b>${each} €</b> a session</span></li>`:''}
     </ul>
-    <!-- One tap to the details form, whether or not we know who they are. Pressing this
-         means "I want this membership", and an email screen in the way of that is the toll
-         gate rule 25 exists to stop, reintroduced one screen later. The quiet link under it
-         is the other intention — keep this and come back — and it is a link, not a second
-         button, because this screen's one filled thing is the way forward (rule 9). -->
     <div class="planbox__cta desktop-cta"><button class="btn btn--primary btn--block" data-go="details">Continue with ${esc(plan.name)}</button></div>
     <div class="planbox__foot">
       <p class="planbox__fine">${esc(commitment.label)} &middot; no payment yet</p>
-      ${S.email?'':`<button class="linkish planbox__save" data-go="save">Save this and come back later</button>`}
     </div>
     ${altBox}
     ${allPlans}

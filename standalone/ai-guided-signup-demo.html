@@ -716,66 +716,56 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
    so at any normal window height there is one scroll area, not two. */
 
 .planbox {
-  background: var(--cream); border: 1px solid var(--cream-line);
-  border-radius: var(--radius-lg); padding: 22px 22px 24px;
+  background: #fff; border: 1.5px solid var(--border);
+  border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
 }
-/* Karim: "make this side bar smaller vertically — more compact in terms of design, not
-   just make everything smaller." Four separate rows (name, price, term, per-session)
-   became two paired ones. Nothing was dropped and nothing shrank to fine print. */
 .planbox__badge {
   display: inline-block; background: var(--yellow-bright); color: var(--ink);
-  font-size: 12px; font-weight: 700; letter-spacing: .02em;
+  font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
   padding: 4px 10px; border-radius: 999px;
 }
-/* Baseline, not box bottom: the price is a third taller than the name, so aligning boxes
-   left it hanging above the name's baseline and level with nothing. */
 .planbox__idrow {
   display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
-  gap: 0 12px; margin-top: 10px;
+  gap: 0 12px; margin-top: 12px;
 }
-.planbox__name { font-size: 27px; font-weight: 700; letter-spacing: -.025em; line-height: 1.05; min-width: 0; }
+.planbox__name { font-size: 28px; font-weight: 800; letter-spacing: -.03em; line-height: 1.05; min-width: 0; }
 .planbox__price { display: flex; align-items: baseline; gap: 4px; white-space: nowrap; }
-.planbox__price b { font-size: 33px; letter-spacing: -.03em; line-height: 1.05; }
-.planbox__price span { font-size: 14.5px; color: var(--navy); }
-/* The term the price is on, and what a session costs on it: one line, two ends. */
+.planbox__price b { font-size: 34px; font-weight: 800; letter-spacing: -.03em; line-height: 1.05; }
+.planbox__price span { font-size: 14.5px; color: var(--navy-soft); font-weight: 500; }
 .planbox__meta {
   display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
   gap: 6px 14px; margin-top: 12px;
 }
 .planbox__term { font-size: 13.5px; color: var(--navy-soft); }
 .planbox__each { font-size: 13.5px; color: var(--navy); font-weight: 600; }
-/* Three facts, all of them numbers. They replaced the plan's generic benefit list,
-   which said nothing this visitor could not have read on the pricing page — and they
-   absorbed the two lines above the old list that said the same things in prose. */
-.planbox__factshead { font-size: 14.5px; font-weight: 700; margin-top: 20px; }
-.planbox__facts { list-style: none; margin: 11px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
-.planbox__facts li { display: flex; gap: 10px; font-size: 15px; line-height: 1.4; }
-.planbox__facts svg { flex: 0 0 auto; margin-top: 2px; }
+.planbox__factshead { font-size: 14px; font-weight: 800; letter-spacing: -.01em; margin-top: 20px; color: var(--ink); }
+.planbox__facts { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.planbox__facts li { display: flex; gap: 10px; font-size: 14.5px; line-height: 1.35; color: var(--ink); }
+.planbox__facts svg { flex: 0 0 auto; margin-top: 2px; color: #1f9d55; }
 .planbox__cta { margin-top: 20px; }
-/* The one filled button on this screen (rule 9) earns its size, but it does not need
-   the full-page 62px inside a 400px column. */
-.planbox__cta .btn { height: 54px; font-size: 17px; }
-/* The reassurance and the way out to the other plans are both one short line, so they
-   share one. */
+.planbox__cta .btn { height: 50px; font-size: 16px; font-weight: 700; border-radius: 12px; }
 .planbox__foot {
-  display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center;
-  gap: 2px 8px; margin-top: 12px;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 10px;
 }
 .planbox__fine { font-size: 12.5px; color: var(--navy-soft); text-align: center; margin: 0; }
-/* Rule 67: the way back to Urby's own pick never folds — a closed drawer cannot
-   offer it — so it stays on the card even though the reasoning left. */
 .planbox__back { font-size: 13.5px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--cream-line); }
-/* Commitment changes the headline price, so it sits next to the headline price
-   instead of inside the small print, which is where the PM session found it. */
-.termpick { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 12px; }
-.termpick__opt {
-  display: flex; flex-direction: column; align-items: center; gap: 1px;
-  background: #fff; border: 1px solid var(--border); border-radius: 6px;
-  padding: 6px 4px; line-height: 1.2; cursor: pointer;
+.termpick {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 14px;
+  background: var(--cream); padding: 4px; border-radius: 10px; border: 1px solid var(--cream-line);
 }
-.termpick__opt b { font-size: 12.5px; font-weight: 700; }
-.termpick__opt span { font-size: 12px; color: var(--navy); }
-.termpick__opt.is-on { border: 2px solid var(--ink); padding: 5px 3px; }
+.termpick__opt {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  background: transparent; border: 0; border-radius: 7px;
+  padding: 7px 4px; line-height: 1.2; cursor: pointer; transition: all .15s ease;
+}
+.termpick__opt b { font-size: 12.5px; font-weight: 700; color: var(--ink); }
+.termpick__opt span { font-size: 11.5px; color: var(--navy-soft); }
+.termpick__opt.is-on {
+  background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+.termpick__opt.is-on b { font-weight: 800; }
+.termpick__opt.is-on span { color: var(--ink); font-weight: 600; }
 .planbox__seeall { text-align: center; margin: 0; font-size: 12.5px; }
 .planbox__seeall::before { content: "·"; color: var(--navy-soft); margin-right: 8px; }
 .planbox__alt { margin-top: 20px; padding-top: 17px; border-top: 1px solid var(--cream-line); }
@@ -870,17 +860,12 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 .daybtn {
   display: flex; align-items: center; justify-content: center;
   min-width: 0; padding: 10px 2px;
-  border: 1px solid var(--border); border-radius: 8px; background: #fff;
-  font-size: 13px; font-weight: 700; letter-spacing: .01em; text-transform: uppercase;
-  color: var(--navy); cursor: pointer;
+  border: 1.5px solid var(--border); border-radius: 10px; background: #fff;
+  font-size: 12.5px; font-weight: 700; letter-spacing: .02em; text-transform: uppercase;
+  color: var(--navy); cursor: pointer; transition: all .15s ease;
 }
 .daybtn:hover { border-color: var(--ink); }
-/* Brand yellow, not filled black: a black chip here counted as a main CTA — the
-   one-CTA check caught two of them sitting above "Continue with Classic" — and the
-   yellow says "chosen" without competing with the one button that matters. */
-/* Chosen, not shouted: the yellow fill plus a 2px black border was heavier than the
-   thing it sits under. A pale fill and an ink border is enough to read as chosen. */
-.daybtn.is-on { background: var(--yellow-pale); border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); color: var(--ink); }
+.daybtn.is-on { background: var(--yellow-bright); border-color: var(--ink); color: var(--ink); font-weight: 800; }
 .week__days-note { display: flex; align-items: flex-start; gap: 7px; font-size: 13px; line-height: 1.4; color: var(--navy); margin: 9px 0 0; }
 .week__days-note svg { flex: 0 0 auto; margin-top: 3px; }
 
@@ -2686,9 +2671,10 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
    plan terms on the right. A locked row says which membership opens it and nothing else —
    the reasoning for that lives on the card in the other column. */
 .weekrow {
-  display: grid; grid-template-columns: 44px 110px minmax(0, 1fr) 112px 118px;
-  align-items: center; gap: 10px;
-  background: #fff; border-radius: var(--radius); padding: 10px 14px 10px 10px;
+  display: grid; grid-template-columns: 44px 110px minmax(0, 1fr) 112px 105px;
+  align-items: center; gap: 12px;
+  background: #fff; border-radius: var(--radius); padding: 12px 16px;
+  border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 1px 3px rgba(0,0,0,0.02);
 }
 .weekrow__icon {
   flex: 0 0 auto; display: grid; place-items: center; width: 44px; height: 44px;
@@ -3207,7 +3193,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 17 Aug 16:13 UTC</span>
+  <span class="demo-banner__build">build 17 Aug 16:16 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -3406,7 +3392,11 @@ const answerLabel = (qid,v) => {
 const compactAnswerLabel = (qid,v) => {
   if (!isAnswered(v)) return null;
   if (qid==='frequency') {
-    const map={about_once:'1x / wk',twice:'2x / wk',three_four:'3–4x / wk',five_plus:'5+x / wk'};
+    const map={once:'1x / wk',about_once:'1x / wk',twice:'2x / wk',often:'3–4x / wk',three_four:'3–4x / wk',daily:'5+x / wk',five_plus:'5+x / wk'};
+    return map[v]||answerLabel(qid,v);
+  }
+  if (qid==='goal') {
+    const map={move_more:'Move more',unwind:'Unwind',try_new:'Try new sports'};
     return map[v]||answerLabel(qid,v);
   }
   if (Array.isArray(v)) { if (v.includes(SKIP)) return 'Not sure';
@@ -5563,19 +5553,13 @@ function recommendationScreen() {
          and where the two share a card they share it in that order. -->
     <div class="planbox__factshead">Fits your routine</div>
     <ul class="planbox__facts">
-      ${wp.perMonth?`<li>${icon('checkThin',16)}<span>Supports ${plural(wp.perMonth,'visit','visits')} a month</span></li>`:''}
-      ${hereT&&hereT.nearby?`<li>${icon('checkThin',16)}<span>Opens <b>${hereT.included} of the ${hereT.nearby}</b> ${hereT.nearby===1?'place':'places'} for ${esc(groupWords(groups))} near ${esc(where)}</span></li>`:''}
-      ${each?`<li>${icon('checkThin',16)}<span>About ${each} € a session</span></li>`:''}
+      ${wp.perMonth?`<li>${icon('checkThin',16)}<span>Supports <b>${plural(wp.perMonth,'visit','visits')} a month</b></span></li>`:''}
+      ${hereT&&hereT.nearby?`<li>${icon('checkThin',16)}<span>Opens <b>${hereT.included===hereT.nearby ? 'all '+hereT.nearby : hereT.included+' of '+hereT.nearby}</b> matching places near you</span></li>`:''}
+      ${each?`<li>${icon('checkThin',16)}<span>About <b>${each} €</b> a session</span></li>`:''}
     </ul>
-    <!-- One tap to the details form, whether or not we know who they are. Pressing this
-         means "I want this membership", and an email screen in the way of that is the toll
-         gate rule 25 exists to stop, reintroduced one screen later. The quiet link under it
-         is the other intention — keep this and come back — and it is a link, not a second
-         button, because this screen's one filled thing is the way forward (rule 9). -->
     <div class="planbox__cta desktop-cta"><button class="btn btn--primary btn--block" data-go="details">Continue with ${esc(plan.name)}</button></div>
     <div class="planbox__foot">
       <p class="planbox__fine">${esc(commitment.label)} &middot; no payment yet</p>
-      ${S.email?'':`<button class="linkish planbox__save" data-go="save">Save this and come back later</button>`}
     </div>
     ${altBox}
     ${allPlans}
