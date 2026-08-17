@@ -240,7 +240,7 @@ const QUESTIONS = [
   { id:'area', prompt:'Where should we search?', hint:'Pick one or two &mdash; home and work, if they differ.',
     summaryLabel:'Area', icon:'pin', multi:true, maxPick:2, placeholder:'Postcode or neighbourhood…', optionsFrom:'areas' },
   { id:'frequency', prompt:'How often would you realistically like to go?', summaryLabel:'Frequency', icon:'calendar', placeholder:'Or tell Urby in your own words…', skip:true,
-    options:[{id:'once',label:'About once a week',echo:'About once a week',icon:'one'},{id:'twice',label:'Twice a week',echo:'Twice a week',icon:'two'},{id:'often',label:'Three or four times a week',echo:'Three or four times a week',icon:'three'},{id:'daily',label:'Five times a week or more',echo:'Five times a week or more',icon:'four'}] }
+    options:[{id:'once',label:'About once a week',echo:'About once a week',icon:'one'},{id:'twice',label:'Twice a week',echo:'Twice a week',icon:'two'},{id:'often',label:'Three or four times a week',echo:'Three or four times a week',icon:'three'},{id:'daily',label:'Five times a week or more',echo:'Five times a week or more',icon:'four'},{id:SKIP,label:'I'm not sure yet',echo:'I'm not sure yet',icon:'question'}] }
 ];
 const AREAS = DATA.venues.areas, VENUES = DATA.venues.venues, PLANS = DATA.plans.plans, COMMITMENTS = DATA.plans.commitments;
 const RULES = DATA.plans.rules, SOURCES = DATA.plans.sources, KB = DATA.faqs.faqs;
@@ -1786,7 +1786,7 @@ function fitScreen() {
       <h1 class="h-question" tabindex="-1">${esc(q.prompt)}</h1>
       ${q.hint?`<p class="qhint">${q.hint}</p>`:''}
       ${q.id==='area'?cityChip():''}
-      <div class="options ${opts.length>6?'options--compact':opts.length>4?'options--chips':'options--tiles'}"${q.maxPick?` data-maxpick="${q.maxPick}"`:''}>${cards}</div>
+      <div class="options ${q.id==='frequency'?'options--rows':opts.length>6?'options--compact':opts.length>4?'options--chips':'options--tiles'}"${q.maxPick?` data-maxpick="${q.maxPick}"`:''}>${cards}</div>
       ${NOCHOICE?`<p class="field-error" role="alert">${q.multi?'Pick at least one, or tell Urby in your own words.':'Pick one of the options, or tell Urby in your own words.'}</p>`:''}
       ${q.multi&&q.id!=='area'?`<p class="small muted" style="margin:14px 0 0"><button class="linkish" type="button" data-unsure="${esc(q.id)}">I&rsquo;m not sure yet &mdash; surprise me</button></p>`:''}
       <div class="btn-row desktop-cta">

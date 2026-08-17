@@ -94,3 +94,7 @@ editing. Do not load the entire document for unrelated work.
 - Generated/published artefacts are current when applicable.
 - `git diff` contains only intentional changes and no secrets or machine-specific files.
 - The handoff is short, factual, and names any check that was not run.
+
+## Imported Claude Cowork project instructions
+
+Treat CLAUDE.md and AGENTS.md as the operating contract. The local GitHub checkout is the source of truth. Work as the primary implementation agent: inspect before editing, preserve unrelated work, use plain language with Karim, follow the verification rules, and never claim success without evidence. Do not invent USC facts.

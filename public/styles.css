@@ -415,6 +415,18 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
 .options--tiles .option-card.is-selected { padding: 10px 15px; }
 .options--tiles .option-card__icon { width: 34px; height: 34px; }
 
+/* --- choices as rows (mobile) or tiles (desktop) ----------------------------- */
+/* On desktop: 2x3 grid like other multi-option questions.
+   On mobile: single column full-width rows. Unselected state is clean: white
+   background, subtle grey border. Selected state is prominent: strong black
+   border with black circular check indicator overlaid on icon. */
+.options--rows { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.options--rows .option-card {
+  min-height: 58px; padding: 11px 16px; font-size: 16.5px; gap: 13px;
+}
+.options--rows .option-card.is-selected { padding: 10px 15px; }
+.options--rows .option-card__icon { width: 34px; height: 34px; }
+
 /* --- answering in your own words ----------------------------------------- */
 /* Was a link that opened a field. It is the whole point of a guide you can
    talk to, so it is visible, labelled, and sits directly under the options. */
@@ -1408,6 +1420,9 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
   .options--tiles { gap: 9px; }
   .options--tiles .option-card { min-height: 54px; padding: 10px 13px; font-size: 15.5px; gap: 10px; }
   .options--tiles .option-card__icon { width: 30px; height: 30px; }
+  .options--rows { grid-template-columns: 1fr; gap: 9px; }
+  .options--rows .option-card { min-height: 54px; padding: 10px 13px; font-size: 15.5px; gap: 10px; }
+  .options--rows .option-card__icon { width: 30px; height: 30px; }
   .ownwords__label { font-size: 14.5px; }
   .form-grid { grid-template-columns: 1fr; }
   .alt-grid { grid-template-columns: 1fr; }

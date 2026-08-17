@@ -429,6 +429,22 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
 .options--tiles .option-card.is-selected { padding: 10px 15px; }
 .options--tiles .option-card__icon { width: 34px; height: 34px; }
 
+/* --- choices as full-width rows ------------------------------------------- */
+/* Single-column layout for frequency and similar linear questions. Each option
+   is a full-width row with consistent height and spacing. Unselected state is
+   clean: white background, subtle grey border. Selected state is prominent:
+   strong black border with black circular check indicator overlaid on icon. */
+.options--rows { display: flex; flex-direction: column; gap: 11px; }
+.options--rows .option-card {
+  min-height: 56px; padding: 13px 20px; font-size: 17px; gap: 16px;
+  border: 1px solid var(--border); background: #fff;
+}
+.options--rows .option-card:hover { border-color: #b9b6ad; }
+.options--rows .option-card.is-selected {
+  border: 2px solid var(--ink); padding: 12px 19px;
+}
+.options--rows .option-card__icon { width: 36px; height: 36px; }
+
 /* --- answering in your own words ----------------------------------------- */
 /* Was a link that opened a field. It is the whole point of a guide you can
    talk to, so it is visible, labelled, and sits directly under the options. */
@@ -1422,6 +1438,10 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
   .options--tiles { gap: 9px; }
   .options--tiles .option-card { min-height: 54px; padding: 10px 13px; font-size: 15.5px; gap: 10px; }
   .options--tiles .option-card__icon { width: 30px; height: 30px; }
+  .options--rows { gap: 9px; }
+  .options--rows .option-card { min-height: 52px; padding: 11px 16px; font-size: 15.5px; gap: 12px; }
+  .options--rows .option-card.is-selected { padding: 10px 15px; }
+  .options--rows .option-card__icon { width: 32px; height: 32px; }
   .ownwords__label { font-size: 14.5px; }
   .form-grid { grid-template-columns: 1fr; }
   .alt-grid { grid-template-columns: 1fr; }
@@ -2477,7 +2497,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 17 Aug 10:01 UTC</span>
+  <span class="demo-banner__build">build 17 Aug 12:25 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -2573,7 +2593,7 @@ const QUESTIONS = [
   { id:'area', prompt:'Where should we search?', hint:'Pick one or two &mdash; home and work, if they differ.',
     summaryLabel:'Area', icon:'pin', multi:true, maxPick:2, placeholder:'Postcode or neighbourhood…', optionsFrom:'areas' },
   { id:'frequency', prompt:'How often would you realistically like to go?', summaryLabel:'Frequency', icon:'calendar', placeholder:'Or tell Urby in your own words…', skip:true,
-    options:[{id:'once',label:'About once a week',echo:'About once a week',icon:'one'},{id:'twice',label:'Twice a week',echo:'Twice a week',icon:'two'},{id:'often',label:'Three or four times a week',echo:'Three or four times a week',icon:'three'},{id:'daily',label:'Five times a week or more',echo:'Five times a week or more',icon:'four'}] }
+    options:[{id:'once',label:'About once a week',echo:'About once a week',icon:'one'},{id:'twice',label:'Twice a week',echo:'Twice a week',icon:'two'},{id:'often',label:'Three or four times a week',echo:'Three or four times a week',icon:'three'},{id:'daily',label:'Five times a week or more',echo:'Five times a week or more',icon:'four'},{id:SKIP,label:'I'm not sure yet',echo:'I'm not sure yet',icon:'question'}] }
 ];
 const AREAS = DATA.venues.areas, VENUES = DATA.venues.venues, PLANS = DATA.plans.plans, COMMITMENTS = DATA.plans.commitments;
 const RULES = DATA.plans.rules, SOURCES = DATA.plans.sources, KB = DATA.faqs.faqs;
@@ -4119,7 +4139,7 @@ function fitScreen() {
       <h1 class="h-question" tabindex="-1">${esc(q.prompt)}</h1>
       ${q.hint?`<p class="qhint">${q.hint}</p>`:''}
       ${q.id==='area'?cityChip():''}
-      <div class="options ${opts.length>6?'options--compact':opts.length>4?'options--chips':'options--tiles'}"${q.maxPick?` data-maxpick="${q.maxPick}"`:''}>${cards}</div>
+      <div class="options ${q.id==='frequency'?'options--rows':opts.length>6?'options--compact':opts.length>4?'options--chips':'options--tiles'}"${q.maxPick?` data-maxpick="${q.maxPick}"`:''}>${cards}</div>
       ${NOCHOICE?`<p class="field-error" role="alert">${q.multi?'Pick at least one, or tell Urby in your own words.':'Pick one of the options, or tell Urby in your own words.'}</p>`:''}
       ${q.multi&&q.id!=='area'?`<p class="small muted" style="margin:14px 0 0"><button class="linkish" type="button" data-unsure="${esc(q.id)}">I&rsquo;m not sure yet &mdash; surprise me</button></p>`:''}
       <div class="btn-row desktop-cta">
