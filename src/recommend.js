@@ -1,7 +1,7 @@
 /**
  * Plan recommendation — clear, testable product rules.
  *
- * This file owns the recommendation. The AI layer (src/ula.js) never chooses a plan,
+ * This file owns the recommendation. The AI layer (src/urby.js) never chooses a plan,
  * never invents a price and never overrides a rule; it only rephrases the explanation
  * this function produces. That is what keeps Urby credible and keeps the journey working
  * when the AI service is unavailable.

@@ -31,7 +31,7 @@ porting/nextjs-sections/
 ├── hero-signup/
 │   ├── HeroSignup.tsx
 │   └── domain/types.ts
-└── ula-guide/
+└── urby-guide/
     ├── UrbyGuide.tsx
     └── domain/types.ts
 ```

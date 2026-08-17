@@ -1593,6 +1593,7 @@ body.save-modal-open #app > :not(#exit-modal) { visibility: hidden; }
   .form-grid { grid-template-columns: 1fr; }
   .alt-grid { grid-template-columns: 1fr; }
   .options--compact { grid-template-columns: 1fr; gap: 11px; }
+  .options--stack-mobile { grid-template-columns: 1fr !important; }
   .cov__upsell { padding: 16px; }
   .cov__upsell .btn { width: 100%; }
   /* developer-facing note: keep it off the phone screen, it is on /admin/journeys too */
@@ -2754,7 +2755,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 17 Aug 13:27 UTC</span>
+  <span class="demo-banner__build">build 17 Aug 13:45 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -2813,6 +2814,10 @@ const ICONS = {
   spa:'<path d="M12 20c0-4.5 2.8-8.5 7-10-1 5-3.3 8.4-7 10Z"/><path d="M12 20c0-4.5-2.8-8.5-7-10 1 5 3.3 8.4 7 10Z"/>',
   one:'<path d="M10 8.5 12.5 7v10"/><path d="M10 17h5"/>', two:'<path d="M9.5 8.6A2.9 2.9 0 0 1 15 10c0 2.4-5.5 4.4-5.5 7H15"/>',
   three:'<path d="M9.6 8.2a2.8 2.8 0 1 1 2.6 4.3 2.9 2.9 0 1 1-2.7 4.2"/>', four:'<path d="M14 6.5 9.2 14.4h6.2"/><path d="M14 11v6.5"/>',
+  level1:'<rect x="3" y="14.5" width="3.4" height="5" rx="1" fill="currentColor" stroke="none"/><rect x="8.4" y="10.5" width="3.4" height="9" rx="1"/><rect x="13.8" y="6.5" width="3.4" height="13" rx="1"/><rect x="19.2" y="2.5" width="3.4" height="17" rx="1"/>',
+  level2:'<rect x="3" y="14.5" width="3.4" height="5" rx="1" fill="currentColor" stroke="none"/><rect x="8.4" y="10.5" width="3.4" height="9" rx="1" fill="currentColor" stroke="none"/><rect x="13.8" y="6.5" width="3.4" height="13" rx="1"/><rect x="19.2" y="2.5" width="3.4" height="17" rx="1"/>',
+  level3:'<rect x="3" y="14.5" width="3.4" height="5" rx="1" fill="currentColor" stroke="none"/><rect x="8.4" y="10.5" width="3.4" height="9" rx="1" fill="currentColor" stroke="none"/><rect x="13.8" y="6.5" width="3.4" height="13" rx="1" fill="currentColor" stroke="none"/><rect x="19.2" y="2.5" width="3.4" height="17" rx="1"/>',
+  level4:'<rect x="3" y="14.5" width="3.4" height="5" rx="1" fill="currentColor" stroke="none"/><rect x="8.4" y="10.5" width="3.4" height="9" rx="1" fill="currentColor" stroke="none"/><rect x="13.8" y="6.5" width="3.4" height="13" rx="1" fill="currentColor" stroke="none"/><rect x="19.2" y="2.5" width="3.4" height="17" rx="1" fill="currentColor" stroke="none"/>',
   city:'<path d="M3 20.5h18M5 20.5V8.5l5-3v15M14 20.5V11h5v9.5M7.4 11h1.2M7.4 14h1.2M16 14h1.4"/>',
   shield:'<path d="M12 3.2 5 6v6c0 4.2 3 7.4 7 8.8 4-1.4 7-4.6 7-8.8V6Z"/>',
   /* The app catalogue's row on the recommendation: apps arrive on a phone. */
@@ -2850,7 +2855,7 @@ const QUESTIONS = [
   { id:'area', prompt:'Where should we search?', hint:'Pick one or two &mdash; home and work, if they differ.',
     summaryLabel:'Area', icon:'pin', multi:true, maxPick:2, placeholder:'Postcode or neighbourhood…', optionsFrom:'areas' },
   { id:'frequency', prompt:'How often would you realistically like to go?', summaryLabel:'Frequency', icon:'calendar', placeholder:'Or tell Urby in your own words…', skip:true,
-    options:[{id:'once',label:'About once a week',echo:'About once a week',icon:'one'},{id:'twice',label:'Twice a week',echo:'Twice a week',icon:'two'},{id:'often',label:'Three or four times a week',echo:'Three or four times a week',icon:'three'},{id:'daily',label:'Five times a week or more',echo:'Five times a week or more',icon:'four'},{id:SKIP,label:'I\u2019m not sure yet',echo:'I\u2019m not sure yet',icon:'question'}] }
+    options:[{id:'once',label:'About once a week',echo:'About once a week',icon:'level1'},{id:'twice',label:'Twice a week',echo:'Twice a week',icon:'level2'},{id:'often',label:'Three or four times a week',echo:'Three or four times a week',icon:'level3'},{id:'daily',label:'Five times a week or more',echo:'Five times a week or more',icon:'level4'}] }
 ];
 const AREAS = DATA.venues.areas, VENUES = DATA.venues.venues, PLANS = DATA.plans.plans, COMMITMENTS = DATA.plans.commitments;
 const RULES = DATA.plans.rules, SOURCES = DATA.plans.sources, KB = DATA.faqs.faqs;
@@ -3302,7 +3307,7 @@ function provisionalPlan(answers, match) {
   return { planId:r.planId, planName:r.planName, price:r.price, shortReason: planById(r.planId).shortReason };
 }
 
-/* ---------------- free-text interpretation (ported from src/ula.js) ---------------- */
+/* ---------------- free-text interpretation (ported from src/urby.js) ---------------- */
 const KEYWORDS = {
   goal:{ move_more:['move','fit','fitter','strong','strength','cardio','active','shape','weight','run','gym','muscle','energy'],
          unwind:['unwind','relax','stress','calm','sleep','yoga','stretch','recover','sauna','swim','quiet','mind','burnout'],
@@ -4475,7 +4480,7 @@ function fitScreen() {
       <h1 class="h-question" tabindex="-1">${esc(q.prompt)}</h1>
       ${q.hint?`<p class="qhint">${q.hint}</p>`:''}
       ${q.id==='area'?cityChip():''}
-      <div class="options ${q.id==='frequency'?'options--rows':opts.length>6?'options--compact':opts.length>4?'options--chips':'options--tiles'}"${q.maxPick?` data-maxpick="${q.maxPick}"`:''}>${cards}</div>
+      <div class="options ${opts.length>6?'options--compact':opts.length>4?'options--chips':'options--tiles'}${q.id==='frequency'?' options--stack-mobile':''}"${q.maxPick?` data-maxpick="${q.maxPick}"`:''}>${cards}</div>
       ${NOCHOICE?`<p class="field-error" role="alert">${q.multi?'Pick at least one, or tell Urby in your own words.':'Pick one of the options, or tell Urby in your own words.'}</p>`:''}
       ${q.multi&&q.id!=='area'?`<p class="small muted" style="margin:14px 0 0"><button class="linkish" type="button" data-unsure="${esc(q.id)}">I&rsquo;m not sure yet &mdash; surprise me</button></p>`:''}
       <div class="btn-row desktop-cta">

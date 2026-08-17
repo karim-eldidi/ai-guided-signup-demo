@@ -14,7 +14,7 @@ It inlines:
 
 The journey logic lives in standalone/template.html and is a direct port of
 src/recommend.js, src/venues.js, src/questions.js and the keyword fallbacks in
-src/ula.js. If you change a rule in src/, change it there too — or better, run the
+src/urby.js. If you change a rule in src/, change it there too — or better, run the
 full app, which is the source of truth.
 
 Differences from the full app, by design:

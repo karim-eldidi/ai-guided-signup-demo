@@ -20,7 +20,7 @@ import { recommend } from '../src/recommend.js';
 import { matchVenues, distanceKm, AREAS } from '../src/venues.js';
 import { coverage, upsell, downsell } from '../src/coverage.js';
 import { weekPlan, perSession, SESSIONS } from '../src/weekplan.js';
-import { interpretFallback } from '../src/ula.js';
+import { interpretFallback } from '../src/urby.js';
 import { nextQuestion, isFitComplete, QUESTIONS } from '../src/questions.js';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');

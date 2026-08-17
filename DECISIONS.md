@@ -10,7 +10,7 @@ Numbering matches `CLAUDE.md`. Nothing here is a suggestion.
 ---
 
 1. **The rules choose the plan, never the model.** `src/recommend.js` owns the recommendation. The
-   AI layer in `src/ula.js` may only acknowledge a free-text answer and rephrase an explanation the
+   AI layer in `src/urby.js` may only acknowledge a free-text answer and rephrase an explanation the
    rules already produced. It must never introduce a number, price, plan name or venue name — there
    is an output guard that rejects this, and it should stay.
 2. **The journey works with no AI.** With no `ANTHROPIC_API_KEY` everything functions on rules and

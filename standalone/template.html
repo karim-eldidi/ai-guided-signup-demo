@@ -712,7 +712,7 @@ function provisionalPlan(answers, match) {
   return { planId:r.planId, planName:r.planName, price:r.price, shortReason: planById(r.planId).shortReason };
 }
 
-/* ---------------- free-text interpretation (ported from src/ula.js) ---------------- */
+/* ---------------- free-text interpretation (ported from src/urby.js) ---------------- */
 const KEYWORDS = {
   goal:{ move_more:['move','fit','fitter','strong','strength','cardio','active','shape','weight','run','gym','muscle','energy'],
          unwind:['unwind','relax','stress','calm','sleep','yoga','stretch','recover','sauna','swim','quiet','mind','burnout'],

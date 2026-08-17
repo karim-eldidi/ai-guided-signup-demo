@@ -41,7 +41,7 @@ the cost. Never expose or commit secrets. Preserve unrelated user changes.
 - `data/*.json`: plans, prices, venues, apps, FAQs and their source notes.
 - `src/recommend.js`: deterministic membership choice. A model never chooses the plan.
 - `src/plans.js`, `src/coverage.js`, `src/weekplan.js`, `src/venues.js`: product rules and math.
-- `src/ula.js`: optional wording layer with deterministic fallbacks.
+- `src/urby.js`: optional wording layer with deterministic fallbacks.
 - `scripts/verify.mjs`: authoritative verification command.
 - `DECISIONS.md`: detailed product rationale; read on demand, not at every session start.
 - `PORTING.md`: production integration guidance.

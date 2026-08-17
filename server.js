@@ -35,7 +35,7 @@ import {
 import { QUESTIONS, questionById, nextQuestion, isFitComplete, optionsFor } from './src/questions.js';
 import { AREAS, matchVenues } from './src/venues.js';
 import { recommend, provisionalPlan, planById, commitmentById } from './src/recommend.js';
-import { acknowledge, interpretFreeText, phraseExplanation, aiState } from './src/ula.js';
+import { acknowledge, interpretFreeText, phraseExplanation, aiState } from './src/urby.js';
 
 import { landingPage } from './src/views/landing.js';
 import { fitPage } from './src/views/fit.js';

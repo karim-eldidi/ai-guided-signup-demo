@@ -73,7 +73,7 @@ set, prices, check-in limits and limitations all come from `data/plans.json`.
 **The AI layer is optional and narrow.** With no API key the journey is fully functional. Set
 `ANTHROPIC_API_KEY` and Urby additionally (a) acknowledges free-text answers in her own words and
 (b) rephrases the explanation the rules produced. She may not add a number, a price, a plan name
-or a venue name — `src/ula.js` rejects the model's output if it tries. Calls time out after
+or a venue name — `src/urby.js` rejects the model's output if it tries. Calls time out after
 3.5 seconds and fall back to the rules, so the demo cannot hang in front of an audience.
 
 ```bash
@@ -94,7 +94,7 @@ tell what someone means, she says so and asks them to pick the closest option ra
 | Urby's questions, options, order | `src/questions.js` |
 | The recommendation rules | `src/recommend.js` |
 | Venue matching and distances | `src/venues.js` |
-| Urby's fallback wording | `src/ula.js` |
+| Urby's fallback wording | `src/urby.js` |
 | Colours, type, spacing | the `:root` block in `public/styles.css` |
 | Any screen's markup | `src/views/` |
 
@@ -126,7 +126,7 @@ data/venues.json           SAMPLE Berlin venues and areas
 src/questions.js           Urby's question set
 src/venues.js              venue matching, distances
 src/recommend.js           the recommendation rules  ← owns the plan choice
-src/ula.js                 optional AI wording layer, with deterministic fallbacks
+src/urby.js                optional AI wording layer, with deterministic fallbacks
 src/db.js                  SQLite storage
 src/views/                 one file per screen, plus shared layout, icons and the fit panel
 public/styles.css          design tokens and all styling

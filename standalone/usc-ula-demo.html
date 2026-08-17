@@ -2755,7 +2755,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 17 Aug 13:42 UTC</span>
+  <span class="demo-banner__build">build 17 Aug 13:45 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -3307,7 +3307,7 @@ function provisionalPlan(answers, match) {
   return { planId:r.planId, planName:r.planName, price:r.price, shortReason: planById(r.planId).shortReason };
 }
 
-/* ---------------- free-text interpretation (ported from src/ula.js) ---------------- */
+/* ---------------- free-text interpretation (ported from src/urby.js) ---------------- */
 const KEYWORDS = {
   goal:{ move_more:['move','fit','fitter','strong','strength','cardio','active','shape','weight','run','gym','muscle','energy'],
          unwind:['unwind','relax','stress','calm','sleep','yoga','stretch','recover','sauna','swim','quiet','mind','burnout'],

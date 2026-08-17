@@ -1,6 +1,6 @@
 # Start here
 
-This folder is the project. It lives on your Desktop at `~/Desktop/usc-urby-pilot`, so it
+This folder is the project. It lives on your Desktop at `~/Desktop/ai-guided-signup-demo`, so it
 does not disappear when a session ends and you never have to attach anything.
 
 ---
@@ -8,7 +8,7 @@ does not disappear when a session ends and you never have to attach anything.
 ## Every new session, do this
 
 1. Start a new Cowork task.
-2. Connect this folder — `Desktop/usc-urby-pilot` — when it asks which folder to use.
+2. Connect this folder — `Desktop/ai-guided-signup-demo` — when it asks which folder to use.
 3. Paste this, with your changes in the list:
 
 > Read `CLAUDE.md` in this folder, then make these changes. Run `npm run verify` at the
@@ -70,7 +70,7 @@ One command, not eleven — that alone was costing about ten times what it neede
 `git push` is blocked in the sandbox, so the live copy goes up through the GitHub web UI.
 
 1. `npm run verify` — this also writes a fresh `index.html` to the session's outputs
-2. github.com/karim-eldidi/usc-ula-demo → **Add file** → **Upload files**
+2. github.com/karim-eldidi/ai-guided-signup-demo → **Add file** → **Upload files**
 3. Drop `index.html`, commit to `main`
 4. Pages redeploys; the CDN caches about ten minutes
 

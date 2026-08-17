@@ -6,15 +6,15 @@ Written for you, Karim. Follow it top to bottom once; after that you only ever d
 
 ## 1. Get the project onto your Mac
 
-1. In our chat, find the file **`usc-ula-pilot.zip`** and download it.
-2. It lands in **Downloads**. Double-click it — you get a folder called **`usc-ula-pilot`**.
-3. Drag that folder somewhere you'll find it again. **Documents** is fine.
+1. In our chat, find the project archive and download it.
+2. Double-click it — you get a folder called **`ai-guided-signup-demo`**.
+3. Drag that folder somewhere you'll find it again. **Desktop** or **Documents** is fine.
 
 ---
 
 ## 2. Open it in VS Code
 
-Open VS Code → menu **File → Open Folder…** → select the **`usc-ula-pilot`** folder → **Open**.
+Open VS Code → menu **File → Open Folder…** → select the **`ai-guided-signup-demo`** folder → **Open**.
 
 If VS Code asks *"Do you trust the authors of the files in this folder?"* → **Yes, I trust the authors.**
 
@@ -58,13 +58,13 @@ This is 4 clicks, no terminal.
    (third icon down usually).
 2. Click **Publish to GitHub**.
 3. VS Code asks you to sign in to GitHub → do that in the browser window it opens.
-4. It asks for a repository name (`usc-ula-pilot` is fine) and whether it should be **private** —
+4. It asks for a repository name (`ai-guided-signup-demo` is fine) and whether it should be **private** —
    choose **private**.
 
 Done. Your project is now on GitHub, and every future change can be saved with a message.
 
 **From then on**, to save your work: Source Control panel → type a short message like
-"made Ula's questions shorter" in the box → click **Commit** → click **Sync Changes**.
+"made Urby's questions shorter" in the box → click **Commit** → click **Sync Changes**.
 
 Or just ask Claude Code: *"save my changes to GitHub with a sensible message."*
 
@@ -77,7 +77,7 @@ this works and what it must not break. So you can describe outcomes, not code.
 
 Things that work well:
 
-> The recommendation feels too pushy. Make Ula sound more like she's helping me decide than selling.
+> The recommendation feels too pushy. Make Urby sound more like he's helping me decide than selling.
 
 > Add a fifth question asking what time of day they usually train, and use it in the recommendation.
 
@@ -114,7 +114,7 @@ combination — that page is the thing that turns the concept into a measurable 
 ## The demo path worth rehearsing
 
 1. Landing page → tick the marketing box → any email → **Find my fit**
-2. Answer Ula's four questions. On one of them, type instead of clicking — try
+2. Answer Urby's four questions. On one of them, type instead of clicking — try
    *"realistically about twice a week"* — so people see it handles real language.
 3. On the recommendation, press **Change** on the frequency answer and let them watch the
    recommendation update. This is the moment that lands.
