@@ -2356,7 +2356,7 @@ function recommendationScreen() {
       </div>
     </div>
 
-    <p class="week__changed" role="status">${icon('checkFill',16)} <span>${DAYNOTE || `<b>${esc(plan.name)}</b> fits &mdash; ${plural(wp.perMonth,'visit','visits')} a month.`}</span></p>
+    ${DAYNOTE ? `<p class="week__changed" role="status">${icon('checkFill',16)} <span>${DAYNOTE}</span></p>` : ''}
     ${gap?`<p class="weekcard__adds">${icon('sparkle',17)} <span><b>${esc(gap.needs.name)}</b> adds ${esc(gap.venue.name)}
       &mdash; the ${esc(gap.activity.toLowerCase())} option that completes your week.</span></p>`:''}
   </section>` : '';
@@ -2503,8 +2503,6 @@ function recommendationScreen() {
       <p class="planbox__fine">${esc(commitment.label)} &middot; no payment yet</p>
       ${S.email?'':`<button class="linkish planbox__save" data-go="save">Save this and come back later</button>`}
     </div>
-    ${!isRec?`<p class="why__note planbox__back">${icon('info',15)} <span>Urby would have picked <b>${esc(rec.planName)}</b>.
-      <button class="linkish strong" data-plan="${esc(rec.planId)}">See that instead</button></span></p>`:''}
     ${altBox}
     ${allPlans}
   </div>`;
