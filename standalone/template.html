@@ -2428,7 +2428,7 @@ function recommendationScreen() {
             <span class="pillar-card__icon">${icon(grp.icon, 18)}</span>
             <div class="pillar-card__titlebox">
               <h3 class="pillar-card__title">${esc(grp.label)}</h3>
-              <span class="pillar-card__allowance">4 visits / mo on ${esc(plan.name)}</span>
+              <span class="pillar-card__allowance">4 visits / mo per venue &middot; Included in ${esc(plan.name)}</span>
             </div>
             ${groups.length > 1 ? `<button class="pillar-card__remove" type="button" data-remove-activity="${esc(grp.id)}" aria-label="Remove ${esc(grp.label)}" title="Remove this activity">✕</button>` : ''}
           </div>
@@ -2439,6 +2439,15 @@ function recommendationScreen() {
               const tierBadge = tier ? `<span class="tier-tag tier-tag--${v.tier}">${tier}</span>` : '';
               const areaLabel = v.nearestArea ? v.nearestArea.name : (AREAS.find(a=>a.id===v.area)||{}).name || '';
               const distLabel = areaLabel ? `${v.distanceKm} km from ${esc(areaLabel)}` : `${v.distanceKm} km away`;
+              let accessText = '';
+              if (!inPlan) {
+                const needs = firstPlanWithAccess(v);
+                accessText = `<span class="pillar-venue__needs">Needs ${needs ? esc(needs.name) : 'upgrade'}</span>`;
+              } else if (v.tier === 'plus' || v.tier === 'premium') {
+                accessText = `<span class="pillar-venue__plus-tag">Included &middot; 1 of ${plan.plusCheckIns || 4} Plus visits</span>`;
+              } else {
+                accessText = `Included &middot; Regular check-in`;
+              }
               return `<div class="pillar-venue ${inPlan ? '' : 'is-locked'}" draggable="true" data-drag-venue="${esc(v.id)}" data-drag-name="${esc(v.name)}" title="Drag onto your week or click to add">
                 <button class="pillar-venue__media-btn" data-venue="${esc(v.id)}" aria-label="Details about ${esc(v.name)}">
                   <span class="venue-card__media">${venueMedia(v)}</span>
@@ -2448,7 +2457,7 @@ function recommendationScreen() {
                     <button class="pillar-venue__name" data-venue="${esc(v.id)}"><b>${esc(v.name)}</b></button>
                     ${tierBadge}
                   </div>
-                  <div class="pillar-venue__sub">${distLabel} &middot; ${inPlan ? 'Included' : `<span class="pillar-venue__needs">Needs upgrade</span>`}</div>
+                  <div class="pillar-venue__sub">${distLabel} &middot; ${accessText}</div>
                 </div>
                 <div class="pillar-venue__action">
                   <button class="btn-pill btn-pill--sm" data-open-add-venue="${esc(v.id)}">
@@ -2471,7 +2480,12 @@ function recommendationScreen() {
     ${addSportsShelf}
   </section>` : '';
 
-  const viewSwitcher = `<div class="reco-switcher" role="tablist" aria-label="Recommendation view format">
+  const viewSwitcher = `
+  <div class="reco-freedom-reassurance">
+    <span class="reco-freedom-reassurance__tag">Sample Plan</span>
+    <span>Examples of what <b>${esc(plan.name)}</b> unlocks near you. You can visit any partner studio in Berlin anytime.</span>
+  </div>
+  <div class="reco-switcher" role="tablist" aria-label="Recommendation view format">
     <button class="reco-switcher__tab ${RECO_VIEW==='pillars'?'is-active':''}" type="button" data-set-reco-view="pillars" aria-selected="${RECO_VIEW==='pillars'}">
       ${icon('sparkle',16)} <span>Activity Freedom</span>
     </button>
