@@ -1573,12 +1573,13 @@ function browsePlaces() {
 function placeCard(v, opts = {}) {
   const { known = true, from = null, focus = null, priced = false } = opts;
   const lowest = firstPlanWithAccess(v);
+  const tierClass = lowest ? (lowest.id === 'plus' ? 'hit__badge--plus' : lowest.id === 'premium' ? 'hit__badge--premium' : 'hit__badge--standard') : '';
   const acts = v.activities.slice(0,3).map(a => ACTIVITY_LABELS[a]||a).join(', ');
   /* Browsing, the place we measured from is named once under the row rather than on all
      four cards (rule 33); a single searched result has no such line, so it carries it. */
   const where = known ? `${v.distanceKm} km${from?` from ${esc(from)}`:''}` : 'in Berlin';
   const content = `<span class="hit__media">${venueMedia(v, focus ? [focus] : null)}${priced || !lowest ? ''
-      : `<span class="hit__badge">${esc(lowest.name)}</span>`}</span>
+      : `<span class="hit__badge ${tierClass}">${esc(lowest.name)}</span>`}</span>
     <span class="hit__body">
       <span class="hit__name">${esc(v.name)}</span>
       <span class="hit__meta">${esc(acts)} &middot; ${where}</span>
@@ -1619,20 +1620,18 @@ function weekPickBar() {
    nearby places or the answer to something typed. */
 function findBar() {
   const b = browsePlaces();
-  /* The five commonest activities as one-tap shortcuts, plus anything they have already
-     chosen that is not among them — the row must always be able to show its own state.
-     These are not a menu: tapping one answers the activities question (rule 66), which
-     is why the fit line at the foot can name it back to them. */
   const shortcuts = ['gym','yoga','swim','climb','spa'];
   const cats = availableGroups()
     .filter(g => shortcuts.includes(g.id) || b.groups.some(x=>x.id===g.id))
     .sort((x,y) => (shortcuts.indexOf(x.id)+1||99) - (shortcuts.indexOf(y.id)+1||99));
+  const isAll = !b.groups.length;
+
   return `<section class="findbar">
     <div class="findbar__where">
-      <span class="findbar__wheretext">${icon('pin',17)}<span>${b.mine
+      <span class="findbar__wheretext">${icon('pin',16)}<span>${b.mine
         ? `Showing places ${esc(b.label)}`
-        : `Looks like you&rsquo;re ${esc(b.label)}, Berlin`}</span></span>
-      <button class="linkish strong" type="button" data-toggle-where aria-expanded="${WHEREPICK}">${WHEREPICK?'Close':'Change location'}</button>
+        : `Showing near ${esc(b.label)}`}</span></span>
+      <button class="linkish strong findbar__wherechange" type="button" data-toggle-where aria-expanded="${WHEREPICK}">${WHEREPICK?'Close':'Change location'}</button>
     </div>
     ${WHEREPICK ? `<div class="wherepick">
       <div class="wherepick__label">Where should we look?</div>
@@ -1640,15 +1639,20 @@ function findBar() {
         areaIds(S.answers.area).includes(o.id)?'is-current':''}" type="button" data-where="${esc(o.id)}">${esc(o.label)}</button>`).join('')}</div>
       <p class="wherepick__note">${icon('info',16)} <span>This is one of Urby&rsquo;s four questions, so picking here means she won&rsquo;t ask it again.</span></p>
     </div>` : ''}
-    <form data-form="search" novalidate>
-      <div class="signup-row signup-row--search"><input type="search" name="q" value="${esc(SEARCH.q||'')}"
+    <form data-form="search" novalidate class="findbar__searchform">
+      <div class="signup-row signup-row--search">
+        <span class="search-input-icon" aria-hidden="true">${icon('search',17)}</span>
+        <input type="search" name="q" value="${esc(SEARCH.q||'')}"
           placeholder="Venue, activity or address" aria-label="Search for a place, an activity or an address" autocomplete="off">
-        <button type="submit">Search</button></div>
+        <button type="submit" class="search-submit-btn">Search</button>
+      </div>
     </form>
     <div class="findbar__cats" role="group" aria-label="Common activities">
+      <button class="catchip ${isAll ? 'is-on' : ''}" type="button" data-cat-all aria-pressed="${isAll}">
+        <span class="catchip__icon">${icon('sparkle',16)}</span><span>All</span></button>
       ${cats.map(g=>`<button class="catchip ${b.groups.some(x=>x.id===g.id)?'is-on':''}" type="button"
         data-cat="${esc(g.id)}" aria-pressed="${b.groups.some(x=>x.id===g.id)}">
-        <span class="catchip__icon">${icon(g.icon,18)}</span><span>${g.label}</span></button>`).join('')}
+        <span class="catchip__icon">${icon(g.icon,17)}</span><span>${g.label}</span></button>`).join('')}
     </div>
   </section>`;
 }
@@ -3013,8 +3017,10 @@ function paymentScreen() {
   const method = FIELDS.method||'sepa';
   return `${topbar(3)}<main class="content" id="main">
     <h1 class="h-question" style="margin-top:14px" tabindex="-1">Review and pay</h1>
-    ${ulaNote('Everything you&rsquo;re agreeing to is on this screen. Nothing is hidden and nothing happens after you confirm that isn&rsquo;t listed here.')}
-    <div class="notice">${icon('info',19)}<span><strong>Simulated payment.</strong> This pilot never collects card details and nothing is charged.</span></div>
+    <div class="pay-preamble">
+      ${ulaNote('Everything you&rsquo;re agreeing to is on this screen. Nothing is hidden and nothing happens after you confirm that isn&rsquo;t listed here.')}
+      <div class="notice">${icon('info',19)}<span><strong>Simulated payment.</strong> This pilot never collects card details and nothing is charged.</span></div>
+    </div>
     <div class="card"><div class="fitpanel__label">Your order</div><dl class="summary-list">
       <div class="summary-row"><dt>Membership</dt><dd>${esc(plan.name)}</dd></div>
       <div class="summary-row"><dt>Billing frequency</dt><dd>Monthly</dd></div>
@@ -3046,7 +3052,7 @@ function paymentScreen() {
       <p class="xsmall muted" style="margin-top:16px">By confirming you accept the Terms and the cancellation conditions above.</p>
       <div class="paybar">
         <div class="paybar__info"><b>${esc(plan.name)}</b><span>${price} € / month${each?` · ≈ ${each} € a session`:''}</span></div>
-        <button class="btn btn--primary" type="submit">Confirm & start</button>
+        <button class="btn btn--primary" type="submit">Confirm and pay</button>
       </div>
     </form></main>${exitModal()}`;
 }
@@ -3344,7 +3350,7 @@ document.addEventListener('change', e => {
   renderInPlace();
 });
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-change-city],[data-city],[data-unsure],[data-open-ask],[data-rail],[data-radius],[data-toggle-venues],[data-toggle-apps],[data-toggle-week],[data-toggle-places],[data-toggle-more],[data-more],[data-toggle-alt],[data-toggle-plan-details],[data-open-days],[data-day],[data-swap],[data-change-week],[data-add-week],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula],[data-search-example],[data-venue-clear],[data-venue-search-all],[data-toggle-where],[data-where],[data-cat],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap]');
+  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-change-city],[data-city],[data-unsure],[data-open-ask],[data-rail],[data-radius],[data-toggle-venues],[data-toggle-apps],[data-toggle-week],[data-toggle-places],[data-toggle-more],[data-more],[data-toggle-alt],[data-toggle-plan-details],[data-open-days],[data-day],[data-swap],[data-change-week],[data-add-week],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula],[data-search-example],[data-venue-clear],[data-venue-search-all],[data-toggle-where],[data-where],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap]');
   if (!t) return;
 
   if (t.dataset.plusOpen) { PLANPLUS=t.dataset.plusOpen; log('plus_explainer_opened',{planId:PLANPLUS}); render(false); return; }
@@ -3370,6 +3376,14 @@ document.addEventListener('click', e => {
     /* A result on screen was measured from the old place, so it is re-run rather than
        left standing next to a location line that now says something else. */
     if (SEARCH.q) SEARCH.result = searchPlaces(SEARCH.q);
+    renderInPlace(); return;
+  }
+  if (t.dataset.catAll !== undefined) {
+    delete S.answers.activities;
+    S.weekDays = []; S.weekSwap = {};
+    if (!S.planOverridden) S.chosenPlanId = null;
+    SEARCH = { q:'', result:null }; SEEALL = false;
+    log('answer_cleared', { question:'activities', value:[], mode:'venue_page' });
     renderInPlace(); return;
   }
   if (t.dataset.cat) {

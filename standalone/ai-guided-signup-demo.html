@@ -1316,7 +1316,11 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
   }
   .details-title { margin-top: 4px; }
   .details-lede { margin-bottom: 14px; }
-  .details-section { margin-top: 24px; }
+  .details-section { margin-top: 26px; }
+  /* stacked, a section heading and a field label were the same bold 14px two lines
+     apart, so the groups stopped reading as groups */
+  .details-section .fitpanel__label { font-size: 17px; letter-spacing: -.2px; margin-bottom: 12px; }
+  .details-grid { gap: 15px; }
   .details-form .field input, .details-form .field select { height: 50px; font-size: 16px; }
   .details-form .field label { font-size: 14px; }
   /* the inline button is hidden here, so this only carries the honesty line */
@@ -1536,8 +1540,11 @@ body.save-modal-open #app > :not(#exit-modal) { visibility: hidden; }
   .two-col__main { padding: 10px 20px 4px; max-width: none; }
   /* room for the sticky Continue bar, so nothing sits underneath it */
   .two-col__aside { margin: 0 20px 132px; }
-  /* the details form ends in a paybar too, so its recap needs the same clearance */
-  .two-col--form .two-col__aside { margin-bottom: 116px; }
+  /* the details form ends in a paybar too, so its recap needs the same clearance. The
+     desktop padding under the form held it off the page edge below its own button;
+     stacked it only left a dead band between the form and the recap below it. */
+  .two-col--form .two-col__main { padding-bottom: 0; }
+  .two-col--form .two-col__aside { margin: 26px 20px 116px; }
   .content { padding-bottom: 100px; }
   .btn--wide { min-width: 0; width: 100%; }
 
@@ -1562,6 +1569,11 @@ body.save-modal-open #app > :not(#exit-modal) { visibility: hidden; }
   .sticky-cta .btn--primary { flex: 1 1 auto; }
   .sticky-cta .btn--secondary { flex: 0 0 auto; padding: 0 18px; }
   .desktop-cta { display: none; }
+  /* On a phone the review screen has to get to the order and the terms fast. Both
+     reassurances above it are already carried elsewhere — the pilot banner names the
+     simulated payment, and the order, method and cancellation blocks are the proof
+     that nothing is hidden — so on this width they only push the decision down. */
+  .pay-preamble { display: none; }
 
   .decision-pair { grid-template-columns: 1fr; }
   /* and it must stop being a clipped, self-scrolling box: on a phone the plan column
@@ -2118,23 +2130,37 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .venuepage__primary { min-width: 0; }
 .venuepage__aside { min-width: 0; }
 
-/* Everything you can do to the list lives in one cream panel, so the page has one
-   place to look rather than controls scattered down it. */
+/* Integrated findbar controls */
 .findbar {
   background: var(--cream); border: 1px solid var(--cream-line);
   border-radius: var(--radius-lg); padding: 18px 20px 20px;
 }
 .findbar__where {
-  display: flex; align-items: center; flex-wrap: wrap; gap: 6px 18px; margin-bottom: 14px;
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px 14px; margin-bottom: 12px;
 }
 .findbar__wheretext {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-size: 15.5px; font-weight: 700; color: var(--ink);
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 14.5px; font-weight: 700; color: var(--ink);
 }
 .findbar__wheretext svg { flex: 0 0 auto; color: var(--navy-soft); }
-.findbar .signup-row { max-width: none; }
-/* The location we assumed, offered as a list you can correct — the same contract the
-   city chip keeps, one level finer (rule 26). */
+.findbar__wherechange { font-size: 13.5px; }
+.signup-row--search {
+  position: relative; display: flex; align-items: center; max-width: none;
+}
+.search-input-icon {
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  color: var(--navy-soft); pointer-events: none; display: flex; z-index: 2;
+}
+.signup-row--search input[type="search"] {
+  padding-left: 40px; padding-right: 90px; width: 100%; height: 48px; border-radius: 10px;
+}
+.search-submit-btn {
+  position: absolute; right: 5px; top: 5px; bottom: 5px;
+  background: var(--ink); color: #fff; border: 0; border-radius: 8px;
+  padding: 0 16px; font-size: 13.5px; font-weight: 700; cursor: pointer;
+}
+.search-submit-btn:hover { background: var(--navy); }
+
 .wherepick {
   background: #fff; border: 1px solid var(--border); border-radius: var(--radius);
   padding: 14px 16px; margin: 0 0 14px;
@@ -2147,23 +2173,20 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 }
 .wherepick__note svg { flex: 0 0 auto; margin-top: 2px; }
 
-/* Five shortcuts into the activities answer. Chosen state is the app's own language for
-   chosen — a black rule round it — not a black fill, which is reserved for the one
-   action on the screen (rule 9). */
-.findbar__cats { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+.findbar__cats { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .catchip {
-  display: inline-flex; align-items: center; gap: 10px;
-  background: #fff; border: 1px solid var(--border); border-radius: var(--radius);
-  padding: 9px 15px 9px 10px; font-size: 15px; font-weight: 700; color: var(--ink);
-  min-height: 48px;
+  display: inline-flex; align-items: center; gap: 8px;
+  background: #fff; border: 1px solid var(--border); border-radius: 9999px;
+  padding: 6px 14px 6px 8px; font-size: 13.5px; font-weight: 700; color: var(--ink);
+  min-height: 40px; cursor: pointer; transition: all .15s ease;
 }
 .catchip:hover { border-color: #b9b6ad; }
-.catchip.is-on { border: 2px solid var(--ink); padding: 8px 14px 8px 9px; }
+.catchip.is-on { background: #fefce8; border-color: #fde047; color: #855800; }
 .catchip__icon {
-  flex: 0 0 auto; width: 32px; height: 32px; border-radius: 50%;
+  flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%;
   background: var(--yellow-pale); display: grid; place-items: center;
 }
-.catchip.is-on .catchip__icon { background: var(--yellow-bright); }
+.catchip.is-on .catchip__icon { background: #fef08a; }
 
 /* The row of places, and its heading, which counts rather than flatters. */
 .placesrow { margin-top: 34px; }
@@ -2205,10 +2228,14 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .hits--row { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; margin-top: 0; }
 .hit { border-radius: var(--radius); overflow: hidden; }
 .hit__badge {
-  position: absolute; top: 10px; left: 10px; z-index: 1;
-  background: var(--yellow-pale); border-radius: 999px;
-  padding: 5px 12px; font-size: 12.5px; font-weight: 700; color: var(--ink);
+  position: absolute; top: 10px; left: 10px; z-index: 2;
+  border-radius: 6px; padding: 3px 8px; font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .02em;
 }
+.hit__badge--premium { background: #fdf3cf; color: #855800; }
+.hit__badge--plus { background: #e3effd; color: #0c4a80; }
+.hit__badge--standard { background: #e6f4ea; color: #137333; }
+
 .hit__view {
   display: inline-flex; align-items: center; gap: 7px;
   margin-top: auto; padding-top: 12px;
@@ -2264,17 +2291,46 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   .hits--row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 700px) {
-  /* On a phone the panel is the page: the box, then the shortcuts, then one card at a
-     time. The tools sit under the heading rather than beside it, because a 44px pill and
-     a 26px heading on one line is what makes a heading wrap to three words. */
-  .venuepage__h1 { margin-bottom: 16px; }
-  .findbar { padding: 16px 15px 18px; }
-  .findbar__cats { gap: 8px; }
-  .catchip { font-size: 14px; padding: 8px 12px 8px 8px; min-height: 44px; }
-  .catchip__icon { width: 28px; height: 28px; }
-  .placesrow__head { align-items: flex-start; }
+  .venuepage { padding: 12px 14px 100px; }
+  .venuepage__intro { margin-bottom: 8px; }
+  .venuepage__h1 { font-size: 21px; line-height: 1.25; margin: 4px 0 8px; }
+  .search__guide { margin-bottom: 2px; font-size: 13px; }
+  
+  .findbar { padding: 12px 12px 14px; border-radius: 12px; }
+  .findbar__where { margin-bottom: 8px; gap: 4px 10px; }
+  .findbar__wheretext { font-size: 13px; }
+  .findbar__wherechange { font-size: 12.5px; }
+  
+  .signup-row--search input[type="search"] { height: 42px; font-size: 13.5px; padding-left: 36px; padding-right: 80px; }
+  .search-input-icon { left: 11px; }
+  .search-submit-btn { height: auto; padding: 0 12px; font-size: 12.5px; right: 4px; top: 4px; bottom: 4px; border-radius: 6px; }
+
+  .findbar__cats {
+    display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 7px;
+    margin-top: 10px; padding-bottom: 2px; -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .findbar__cats::-webkit-scrollbar { display: none; }
+  .catchip {
+    flex: 0 0 auto; min-height: 34px; height: 34px; padding: 0 11px 0 6px;
+    font-size: 12.5px; gap: 5px;
+  }
+  .catchip__icon { width: 22px; height: 22px; }
+
+  .placesrow { margin-top: 16px; }
+  .placesrow__head {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 8px; margin-bottom: 10px;
+  }
+  .placesrow__title h2 { font-size: 17px; font-weight: 700; line-height: 1.25; }
+  .placesrow__title p { font-size: 12.5px; margin-top: 2px; }
+  .placesrow__tools { display: flex; gap: 8px; width: 100%; overflow-x: auto; }
+  .pillsel { height: 34px; padding: 0 10px; font-size: 12.5px; }
+  .pillsel select { font-size: 12.5px; }
+
+  .hits { margin-top: 10px; gap: 14px; }
   .hits--row { grid-template-columns: 1fr; }
-  .routine { padding: 20px 16px; }
+  .hit__name { font-size: 16px; }
+  .routine { padding: 18px 14px; }
 }
 
 /* --- all four plans, in place (rule 64) -------------------------------------
@@ -2914,7 +2970,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 17 Aug 14:21 UTC</span>
+  <span class="demo-banner__build">build 17 Aug 14:27 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -4327,12 +4383,13 @@ function browsePlaces() {
 function placeCard(v, opts = {}) {
   const { known = true, from = null, focus = null, priced = false } = opts;
   const lowest = firstPlanWithAccess(v);
+  const tierClass = lowest ? (lowest.id === 'plus' ? 'hit__badge--plus' : lowest.id === 'premium' ? 'hit__badge--premium' : 'hit__badge--standard') : '';
   const acts = v.activities.slice(0,3).map(a => ACTIVITY_LABELS[a]||a).join(', ');
   /* Browsing, the place we measured from is named once under the row rather than on all
      four cards (rule 33); a single searched result has no such line, so it carries it. */
   const where = known ? `${v.distanceKm} km${from?` from ${esc(from)}`:''}` : 'in Berlin';
   const content = `<span class="hit__media">${venueMedia(v, focus ? [focus] : null)}${priced || !lowest ? ''
-      : `<span class="hit__badge">${esc(lowest.name)}</span>`}</span>
+      : `<span class="hit__badge ${tierClass}">${esc(lowest.name)}</span>`}</span>
     <span class="hit__body">
       <span class="hit__name">${esc(v.name)}</span>
       <span class="hit__meta">${esc(acts)} &middot; ${where}</span>
@@ -4373,20 +4430,18 @@ function weekPickBar() {
    nearby places or the answer to something typed. */
 function findBar() {
   const b = browsePlaces();
-  /* The five commonest activities as one-tap shortcuts, plus anything they have already
-     chosen that is not among them — the row must always be able to show its own state.
-     These are not a menu: tapping one answers the activities question (rule 66), which
-     is why the fit line at the foot can name it back to them. */
   const shortcuts = ['gym','yoga','swim','climb','spa'];
   const cats = availableGroups()
     .filter(g => shortcuts.includes(g.id) || b.groups.some(x=>x.id===g.id))
     .sort((x,y) => (shortcuts.indexOf(x.id)+1||99) - (shortcuts.indexOf(y.id)+1||99));
+  const isAll = !b.groups.length;
+
   return `<section class="findbar">
     <div class="findbar__where">
-      <span class="findbar__wheretext">${icon('pin',17)}<span>${b.mine
+      <span class="findbar__wheretext">${icon('pin',16)}<span>${b.mine
         ? `Showing places ${esc(b.label)}`
-        : `Looks like you&rsquo;re ${esc(b.label)}, Berlin`}</span></span>
-      <button class="linkish strong" type="button" data-toggle-where aria-expanded="${WHEREPICK}">${WHEREPICK?'Close':'Change location'}</button>
+        : `Showing near ${esc(b.label)}`}</span></span>
+      <button class="linkish strong findbar__wherechange" type="button" data-toggle-where aria-expanded="${WHEREPICK}">${WHEREPICK?'Close':'Change location'}</button>
     </div>
     ${WHEREPICK ? `<div class="wherepick">
       <div class="wherepick__label">Where should we look?</div>
@@ -4394,15 +4449,20 @@ function findBar() {
         areaIds(S.answers.area).includes(o.id)?'is-current':''}" type="button" data-where="${esc(o.id)}">${esc(o.label)}</button>`).join('')}</div>
       <p class="wherepick__note">${icon('info',16)} <span>This is one of Urby&rsquo;s four questions, so picking here means she won&rsquo;t ask it again.</span></p>
     </div>` : ''}
-    <form data-form="search" novalidate>
-      <div class="signup-row signup-row--search"><input type="search" name="q" value="${esc(SEARCH.q||'')}"
+    <form data-form="search" novalidate class="findbar__searchform">
+      <div class="signup-row signup-row--search">
+        <span class="search-input-icon" aria-hidden="true">${icon('search',17)}</span>
+        <input type="search" name="q" value="${esc(SEARCH.q||'')}"
           placeholder="Venue, activity or address" aria-label="Search for a place, an activity or an address" autocomplete="off">
-        <button type="submit">Search</button></div>
+        <button type="submit" class="search-submit-btn">Search</button>
+      </div>
     </form>
     <div class="findbar__cats" role="group" aria-label="Common activities">
+      <button class="catchip ${isAll ? 'is-on' : ''}" type="button" data-cat-all aria-pressed="${isAll}">
+        <span class="catchip__icon">${icon('sparkle',16)}</span><span>All</span></button>
       ${cats.map(g=>`<button class="catchip ${b.groups.some(x=>x.id===g.id)?'is-on':''}" type="button"
         data-cat="${esc(g.id)}" aria-pressed="${b.groups.some(x=>x.id===g.id)}">
-        <span class="catchip__icon">${icon(g.icon,18)}</span><span>${g.label}</span></button>`).join('')}
+        <span class="catchip__icon">${icon(g.icon,17)}</span><span>${g.label}</span></button>`).join('')}
     </div>
   </section>`;
 }
@@ -5767,8 +5827,10 @@ function paymentScreen() {
   const method = FIELDS.method||'sepa';
   return `${topbar(3)}<main class="content" id="main">
     <h1 class="h-question" style="margin-top:14px" tabindex="-1">Review and pay</h1>
-    ${ulaNote('Everything you&rsquo;re agreeing to is on this screen. Nothing is hidden and nothing happens after you confirm that isn&rsquo;t listed here.')}
-    <div class="notice">${icon('info',19)}<span><strong>Simulated payment.</strong> This pilot never collects card details and nothing is charged.</span></div>
+    <div class="pay-preamble">
+      ${ulaNote('Everything you&rsquo;re agreeing to is on this screen. Nothing is hidden and nothing happens after you confirm that isn&rsquo;t listed here.')}
+      <div class="notice">${icon('info',19)}<span><strong>Simulated payment.</strong> This pilot never collects card details and nothing is charged.</span></div>
+    </div>
     <div class="card"><div class="fitpanel__label">Your order</div><dl class="summary-list">
       <div class="summary-row"><dt>Membership</dt><dd>${esc(plan.name)}</dd></div>
       <div class="summary-row"><dt>Billing frequency</dt><dd>Monthly</dd></div>
@@ -5800,7 +5862,7 @@ function paymentScreen() {
       <p class="xsmall muted" style="margin-top:16px">By confirming you accept the Terms and the cancellation conditions above.</p>
       <div class="paybar">
         <div class="paybar__info"><b>${esc(plan.name)}</b><span>${price} € / month${each?` · ≈ ${each} € a session`:''}</span></div>
-        <button class="btn btn--primary" type="submit">Confirm & start</button>
+        <button class="btn btn--primary" type="submit">Confirm and pay</button>
       </div>
     </form></main>${exitModal()}`;
 }
@@ -6098,7 +6160,7 @@ document.addEventListener('change', e => {
   renderInPlace();
 });
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-change-city],[data-city],[data-unsure],[data-open-ask],[data-rail],[data-radius],[data-toggle-venues],[data-toggle-apps],[data-toggle-week],[data-toggle-places],[data-toggle-more],[data-more],[data-toggle-alt],[data-toggle-plan-details],[data-open-days],[data-day],[data-swap],[data-change-week],[data-add-week],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula],[data-search-example],[data-venue-clear],[data-venue-search-all],[data-toggle-where],[data-where],[data-cat],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap]');
+  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-change-city],[data-city],[data-unsure],[data-open-ask],[data-rail],[data-radius],[data-toggle-venues],[data-toggle-apps],[data-toggle-week],[data-toggle-places],[data-toggle-more],[data-more],[data-toggle-alt],[data-toggle-plan-details],[data-open-days],[data-day],[data-swap],[data-change-week],[data-add-week],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula],[data-search-example],[data-venue-clear],[data-venue-search-all],[data-toggle-where],[data-where],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap]');
   if (!t) return;
 
   if (t.dataset.plusOpen) { PLANPLUS=t.dataset.plusOpen; log('plus_explainer_opened',{planId:PLANPLUS}); render(false); return; }
@@ -6124,6 +6186,14 @@ document.addEventListener('click', e => {
     /* A result on screen was measured from the old place, so it is re-run rather than
        left standing next to a location line that now says something else. */
     if (SEARCH.q) SEARCH.result = searchPlaces(SEARCH.q);
+    renderInPlace(); return;
+  }
+  if (t.dataset.catAll !== undefined) {
+    delete S.answers.activities;
+    S.weekDays = []; S.weekSwap = {};
+    if (!S.planOverridden) S.chosenPlanId = null;
+    SEARCH = { q:'', result:null }; SEEALL = false;
+    log('answer_cleared', { question:'activities', value:[], mode:'venue_page' });
     renderInPlace(); return;
   }
   if (t.dataset.cat) {
