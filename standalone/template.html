@@ -231,7 +231,10 @@ const ICONS = {
   bookmark:'<path d="M6.5 3.5h11v17l-5.5-4-5.5 4Z"/>',
   /* A filled tick, for the one line that states a fact already counted rather than
      an item in a list. It carries its own colour, so it survives on cream. */
-  checkFill:'<circle cx="12" cy="12" r="9" fill="#1f9d55" stroke="none"/><path d="M7.8 12.3 10.7 15l5.5-5.7" stroke="#fff" stroke-width="2.1"/>'
+  checkFill:'<circle cx="12" cy="12" r="9" fill="#1f9d55" stroke="none"/><path d="M7.8 12.3 10.7 15l5.5-5.7" stroke="#fff" stroke-width="2.1"/>',
+  radioChecked:'<circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8" fill="none"/><circle cx="12" cy="12" r="4.2" fill="currentColor" stroke="none"/>',
+  radioUnchecked:'<circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8" fill="none"/>',
+  adjust:'<path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/>'
 };
 const icon = (n, s = 22) => svg(ICONS[n] || ICONS.info, s);
 const ulaAvatar = (size='md') => {
@@ -988,9 +991,7 @@ let CITYPICK=false, CITYWANTED=null, ASKOPEN=false, DAYSOPEN=false, PLACEWANTED=
    comparison of all four memberships, which starts open because the complaint that made
    rule 64 was that comparing them was hidden. */
 let PLACESOPEN=false, MOREOPEN=false, MOREPICK=null, ALTOPEN=null, PLANPLUS=null, PLANASK=false, PLANDETAILS_OPEN=false;
-/* Search can be opened as an editor for the recommended week. The selected day stays
-   explicit so choosing a venue never silently replaces a random session. */
-let WEEK_ADD_MODE=false, WEEK_ADD_DAY=null;
+let WEEK_ADD_MODE=false, WEEK_ADD_DAY=null, WEEK_SWAP_DAY=null, WEEK_SWAP_GROUP=null, WEEK_SWAP_VENUE_ID=null, WEEK_SWAP_OPTION_ID=null, WEEK_SWAP_OPTION_TITLE=null, WEEK_SWAP_FILTER='nearby', WEEK_SWAP_PICKING_DAY=false, WEEK_SWAP_PICKING_ACT=false;
 /* Saving is an interruption, not a checkout step. Keep its state outside the route so
    the modal can open and close without moving the visitor or changing browser history. */
 let SAVE_MODAL_MODE='form';
@@ -1740,7 +1741,209 @@ function routinePanel() {
    journey knows that a venue list does not (rule 63). The row never claims a
    distance we cannot measure: with no area to measure from it says "in Berlin"
    rather than a number counted from the middle of the city (rule 6). */
+function venueOptions(v, group, day) {
+  const gId = group ? group.id : ((v.activities && v.activities[0]) || 'gym');
+  if (gId === 'swim' || (v.activities && v.activities.includes('swimming'))) {
+    return [
+      { id: 'opt_1', title: 'Open swimming', time: 'All day' },
+      { id: 'opt_2', title: 'Aqua fitness', time: '18:30' },
+      { id: 'opt_3', title: 'Swim training', time: '20:00' }
+    ];
+  }
+  if (gId === 'yoga' || (v.activities && v.activities.includes('yoga'))) {
+    return [
+      { id: 'opt_1', title: 'Vinyasa flow', time: '18:00' },
+      { id: 'opt_2', title: 'Hatha yoga', time: '19:30' },
+      { id: 'opt_3', title: 'Yin yoga', time: '20:45' }
+    ];
+  }
+  if (gId === 'climb' || (v.activities && (v.activities.includes('bouldering') || v.activities.includes('climbing')))) {
+    return [
+      { id: 'opt_1', title: 'Open bouldering', time: 'All day' },
+      { id: 'opt_2', title: 'Bouldering intro', time: '18:30' },
+      { id: 'opt_3', title: 'Technique workshop', time: '20:00' }
+    ];
+  }
+  if (gId === 'fight' || (v.activities && (v.activities.includes('boxing') || v.activities.includes('martial_arts')))) {
+    return [
+      { id: 'opt_1', title: 'Boxing conditioning', time: '18:00' },
+      { id: 'opt_2', title: 'Kickboxing basics', time: '19:15' },
+      { id: 'opt_3', title: 'Open gym & bags', time: 'All day' }
+    ];
+  }
+  if (gId === 'dance' || (v.activities && v.activities.includes('dance'))) {
+    return [
+      { id: 'opt_1', title: 'Contemporary dance', time: '18:30' },
+      { id: 'opt_2', title: 'Hip hop', time: '19:45' },
+      { id: 'opt_3', title: 'Open practice', time: 'All day' }
+    ];
+  }
+  if (gId === 'cycle' || (v.activities && v.activities.includes('cycling'))) {
+    return [
+      { id: 'opt_1', title: 'Interval ride', time: '18:00' },
+      { id: 'opt_2', title: 'Power cycle', time: '19:15' },
+      { id: 'opt_3', title: 'Endurance ride', time: '20:15' }
+    ];
+  }
+  if (gId === 'spa' || (v.activities && (v.activities.includes('spa') || v.activities.includes('sauna')))) {
+    return [
+      { id: 'opt_1', title: 'Day pass & sauna', time: 'All day' },
+      { id: 'opt_2', title: 'Evening wellness session', time: '18:00' }
+    ];
+  }
+  return [
+    { id: 'opt_1', title: 'Open gym', time: 'All day' },
+    { id: 'opt_2', title: 'HIIT training', time: '18:00' },
+    { id: 'opt_3', title: 'Strength & conditioning', time: '19:00' }
+  ];
+}
+
+function changeWeekScreen() {
+  const day = WEEK_SWAP_DAY || WEEK_ADD_DAY || 'Monday';
+  const match = matchVenues(A());
+  const wp = weekPlan(A().activities || [], match.pool || [], currentPlan().id, A().frequency);
+  const scheduledSession = wp.sessions.find(s => s.day === day) || wp.sessions[0];
+  const group = groupById(WEEK_SWAP_GROUP || (scheduledSession ? scheduledSession.groupId : (A().activities || [])[0] || 'gym')) || ACTIVITY_GROUPS[0];
+  const prevVenue = (scheduledSession && scheduledSession.venue) || null;
+  const whereAreas = whereName(match);
+
+  let venuesForGroup = (match.pool && match.pool.length ? match.pool : VENUES)
+    .filter(v => venueInGroup(v, group))
+    .sort((a, b) => (a.distanceKm || 99) - (b.distanceKm || 99));
+
+  if (WEEK_SWAP_FILTER === 'classes') {
+    venuesForGroup = venuesForGroup.filter(v => (v.goodToKnow && /class|session|timetable/i.test(v.goodToKnow)) || v.tier === 'plus' || v.tier === 'premium');
+  } else if (WEEK_SWAP_FILTER === 'premium') {
+    venuesForGroup = venuesForGroup.filter(v => v.tier === 'premium' || v.tier === 'plus');
+  }
+
+  const selectedVenue = (WEEK_SWAP_VENUE_ID && VENUES.find(v => v.id === WEEK_SWAP_VENUE_ID)) || venuesForGroup[0] || VENUES[0];
+  const selectedVenueId = selectedVenue ? selectedVenue.id : null;
+  const opts = selectedVenue ? venueOptions(selectedVenue, group, day) : [];
+  const selectedOptId = WEEK_SWAP_OPTION_ID || (opts[0] ? opts[0].id : 'opt_1');
+  const activeOpt = opts.find(o => o.id === selectedOptId) || opts[0];
+  const selectedOptTitle = activeOpt ? `${activeOpt.title} · ${activeOpt.time}` : 'All day';
+
+  const daysList = (S.weekDays && S.weekDays.length) ? S.weekDays : wp.sessions.map(x => x.day);
+
+  return `
+    <header class="topbar change-week-topbar">
+      <div class="topbar__left">
+        <button class="icon-btn linkish" type="button" data-go="recommendation" aria-label="Back to recommendation">
+          ${icon('back', 19)}
+        </button>
+      </div>
+      <div class="topbar__center font-semibold"><b>Change ${esc(day)}</b></div>
+      <div class="topbar__right">
+        <button class="linkish change-cancel-btn" type="button" data-go="recommendation">Cancel</button>
+      </div>
+    </header>
+
+    <main class="content change-week-page" id="main">
+      <div class="change-week-head">
+        <h1 class="h-question change-week-title" tabindex="-1">Change ${esc(day)}’s ${esc(group.label.toLowerCase())}</h1>
+        ${prevVenue ? `<div class="change-replacing-banner">Replacing ${esc(prevVenue.name)}</div>` : ''}
+      </div>
+
+      <div class="change-selector-card">
+        <div class="change-selector-row" data-toggle-swap-day role="button" tabindex="0">
+          <div class="change-selector-icon">${icon('calendar', 22)}</div>
+          <div class="change-selector-text">
+            <div class="change-selector-label">Day</div>
+            <div class="change-selector-val">${esc(day)}</div>
+          </div>
+          <button class="change-selector-action linkish strong" type="button" data-toggle-swap-day>Change</button>
+        </div>
+        ${WEEK_SWAP_PICKING_DAY ? `
+          <div class="change-picker-drawer">
+            <div class="change-picker-pills">
+              ${daysList.map(d => `<button class="chip-sm ${d === day ? 'is-current' : ''}" type="button" data-select-swap-day="${esc(d)}">${esc(d)}</button>`).join('')}
+            </div>
+          </div>
+        ` : ''}
+        <div class="change-selector-divider"></div>
+        <div class="change-selector-row" data-toggle-swap-act role="button" tabindex="0">
+          <div class="change-selector-icon">${icon(group.icon || 'waves', 22)}</div>
+          <div class="change-selector-text">
+            <div class="change-selector-label">Activity</div>
+            <div class="change-selector-val">${esc(group.label)}</div>
+          </div>
+          <button class="change-selector-action linkish strong" type="button" data-toggle-swap-act>Change</button>
+        </div>
+        ${WEEK_SWAP_PICKING_ACT ? `
+          <div class="change-picker-drawer">
+            <div class="change-picker-pills">
+              ${ACTIVITY_GROUPS.map(g => `<button class="chip-sm ${g.id === group.id ? 'is-current' : ''}" type="button" data-select-swap-group="${esc(g.id)}">${icon(g.icon, 15)} <span>${esc(g.label)}</span></button>`).join('')}
+            </div>
+          </div>
+        ` : ''}
+      </div>
+
+      <div class="change-places-head">
+        <h2 class="change-places-title">Places that work on ${esc(day)}</h2>
+        <p class="change-places-sub">Near ${esc(whereAreas)}</p>
+      </div>
+
+      <div class="change-filters-row">
+        <button class="filter-chip ${WEEK_SWAP_FILTER==='nearby'?'is-active':''}" type="button" data-swap-filter="nearby">Nearby</button>
+        <button class="filter-chip ${WEEK_SWAP_FILTER==='classes'?'is-active':''}" type="button" data-swap-filter="classes">Has classes</button>
+        <button class="filter-chip ${WEEK_SWAP_FILTER==='premium'?'is-active':''}" type="button" data-swap-filter="premium">Premium</button>
+        <button class="filter-chip filter-chip--icon ${WEEK_SWAP_FILTER==='all'?'is-active':''}" type="button" data-swap-filter="all" aria-label="All filters">${icon('adjust', 17)}</button>
+      </div>
+
+      <div class="change-venues-list">
+        ${venuesForGroup.length ? venuesForGroup.map(v => {
+          const isSelected = v.id === selectedVenueId;
+          const vOpts = venueOptions(v, group, day);
+          const tierLabel = v.tier === 'premium' ? 'Premium' : v.tier === 'plus' ? 'Plus' : 'Standard';
+          return `
+            <div class="venue-class-card ${isSelected ? 'is-selected-venue' : ''}">
+              <div class="venue-class-card__media">
+                <span class="venue-class-card__badge ${v.tier==='premium'?'badge--premium':v.tier==='plus'?'badge--plus':'badge--standard'}">${tierLabel}</span>
+                ${venueMedia(v, group.activities)}
+              </div>
+              <div class="venue-class-card__body">
+                <h3 class="venue-class-card__name">${esc(v.name)}</h3>
+                <p class="venue-class-card__meta">${v.distanceKm || '0.9'} km &middot; ${esc(AREAS.find(a=>a.id===v.area)?.name || v.area || 'Berlin')}</p>
+                <div class="venue-class-card__options-label">Choose a ${esc(day)} option</div>
+                <div class="venue-class-card__options-list">
+                  ${vOpts.map((opt, idx) => {
+                    const isOptChosen = (isSelected && selectedOptId === opt.id) || (isSelected && !WEEK_SWAP_OPTION_ID && idx === 0);
+                    return `
+                      <label class="venue-opt-item ${isOptChosen ? 'is-chosen' : ''}" data-select-swap-opt="${esc(v.id)}" data-opt-id="${esc(opt.id)}" data-opt-title="${esc(opt.title)}" data-opt-time="${esc(opt.time)}">
+                        <input type="radio" name="venue_opt_${esc(v.id)}" value="${esc(opt.id)}" ${isOptChosen ? 'checked' : ''}>
+                        <span class="venue-opt-radio">${icon(isOptChosen ? 'radioChecked' : 'radioUnchecked', 19)}</span>
+                        <span class="venue-opt-title">${esc(opt.title)}</span>
+                        <span class="venue-opt-time">${esc(opt.time)}</span>
+                      </label>
+                    `;
+                  }).join('')}
+                </div>
+                <button class="linkish strong venue-class-card__details-link" type="button" data-venue="${esc(v.id)}">View venue details</button>
+              </div>
+            </div>
+          `;
+        }).join('') : `
+          <div class="notice notice--grey" style="margin-top:20px">${icon('info',19)}<span>No venues found for ${esc(group.label)} with this filter near ${esc(whereAreas)}.</span></div>
+        `}
+      </div>
+    </main>
+
+    <div class="change-sticky-bar">
+      <div class="change-sticky-bar__left">
+        <div class="change-sticky-bar__dayact"><b>${esc(day)} &middot; ${esc(group.label)}</b></div>
+        <div class="change-sticky-bar__sub">${esc(selectedVenue ? selectedVenue.name : 'Selected place')} &middot; ${esc(selectedOptTitle)}</div>
+      </div>
+      <button class="btn btn--primary change-sticky-bar__cta" type="button" data-confirm-week-swap>
+        Update my week
+      </button>
+    </div>
+    ${venueSheet()}
+  `;
+}
+
 function searchScreen() {
+  if (WEEK_ADD_MODE) return changeWeekScreen();
   const r = SEARCH.result;
   const from = r ? r.from : ANYWHERE, known = Boolean(r && r.known);
   /* The typed examples that used to sit under the box are gone: the five activity chips
@@ -3131,7 +3334,7 @@ document.addEventListener('change', e => {
   renderInPlace();
 });
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-change-city],[data-city],[data-unsure],[data-open-ask],[data-rail],[data-radius],[data-toggle-venues],[data-toggle-apps],[data-toggle-week],[data-toggle-places],[data-toggle-more],[data-more],[data-toggle-alt],[data-toggle-plan-details],[data-open-days],[data-day],[data-swap],[data-change-week],[data-add-week],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula],[data-search-example],[data-venue-clear],[data-venue-search-all],[data-toggle-where],[data-where],[data-cat],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask]');
+  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-change-city],[data-city],[data-unsure],[data-open-ask],[data-rail],[data-radius],[data-toggle-venues],[data-toggle-apps],[data-toggle-week],[data-toggle-places],[data-toggle-more],[data-more],[data-toggle-alt],[data-toggle-plan-details],[data-open-days],[data-day],[data-swap],[data-change-week],[data-add-week],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula],[data-search-example],[data-venue-clear],[data-venue-search-all],[data-toggle-where],[data-where],[data-cat],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap]');
   if (!t) return;
 
   if (t.dataset.plusOpen) { PLANPLUS=t.dataset.plusOpen; log('plus_explainer_opened',{planId:PLANPLUS}); render(false); return; }
@@ -3186,10 +3389,98 @@ document.addEventListener('click', e => {
   if (t.dataset.venueClear !== undefined) { VENUEQ=''; renderVenueFilter(); return; }
   if (t.dataset.addWeek !== undefined) {
     const m=matchVenues(A()), sessions=weekPlan(A().activities||[],m.pool||[],currentPlan().id,A().frequency).sessions;
-    WEEK_ADD_MODE=true; WEEK_ADD_DAY=sessions[0]?.day||null; SEARCH={q:'',result:null}; go('search'); return;
+    const day = sessions[0]?.day || 'Monday';
+    WEEK_ADD_MODE=true; WEEK_ADD_DAY=day; WEEK_SWAP_DAY=day;
+    WEEK_SWAP_GROUP = (A().activities||[])[0] || 'gym';
+    const group = groupById(WEEK_SWAP_GROUP);
+    const pool = (m.pool && m.pool.length ? m.pool : VENUES).filter(v => group && venueInGroup(v, group));
+    const initialVenue = pool[0] || VENUES[0];
+    WEEK_SWAP_VENUE_ID = initialVenue ? initialVenue.id : null;
+    const opts = venueOptions(initialVenue, group, day);
+    WEEK_SWAP_OPTION_ID = opts[0]?.id || 'opt_1';
+    WEEK_SWAP_OPTION_TITLE = opts[0] ? `${opts[0].title} · ${opts[0].time}` : 'All day';
+    WEEK_SWAP_FILTER = 'nearby';
+    WEEK_SWAP_PICKING_DAY = false;
+    WEEK_SWAP_PICKING_ACT = false;
+    SEARCH={q:'',result:null}; go('search'); return;
   }
   if (t.dataset.changeWeek) {
-    WEEK_ADD_MODE=true; WEEK_ADD_DAY=t.dataset.changeWeek; SEARCH={q:'',result:null}; go('search'); return;
+    const day = t.dataset.changeWeek;
+    WEEK_ADD_MODE=true; WEEK_ADD_DAY=day; WEEK_SWAP_DAY=day;
+    const match = matchVenues(A());
+    const wp = weekPlan(A().activities||[], match.pool||[], currentPlan().id, A().frequency);
+    const existing = wp.sessions.find(s => s.day === day) || wp.sessions[0];
+    WEEK_SWAP_GROUP = existing ? existing.groupId : ((A().activities||[])[0] || 'gym');
+    const group = groupById(WEEK_SWAP_GROUP);
+    const pool = (match.pool && match.pool.length ? match.pool : VENUES).filter(v => group && venueInGroup(v, group));
+    const initialVenue = (existing && existing.venue) || pool[0] || VENUES[0];
+    WEEK_SWAP_VENUE_ID = initialVenue ? initialVenue.id : null;
+    const opts = venueOptions(initialVenue, group, day);
+    WEEK_SWAP_OPTION_ID = opts[0]?.id || 'opt_1';
+    WEEK_SWAP_OPTION_TITLE = opts[0] ? `${opts[0].title} · ${opts[0].time}` : 'All day';
+    WEEK_SWAP_FILTER = 'nearby';
+    WEEK_SWAP_PICKING_DAY = false;
+    WEEK_SWAP_PICKING_ACT = false;
+    SEARCH={q:'',result:null}; go('search'); return;
+  }
+  if (t.dataset.toggleSwapDay !== undefined) { WEEK_SWAP_PICKING_DAY = !WEEK_SWAP_PICKING_DAY; renderInPlace(); return; }
+  if (t.dataset.selectSwapDay) {
+    WEEK_SWAP_DAY = t.dataset.selectSwapDay;
+    WEEK_ADD_DAY = WEEK_SWAP_DAY;
+    WEEK_SWAP_PICKING_DAY = false;
+    renderInPlace();
+    return;
+  }
+  if (t.dataset.toggleSwapAct !== undefined) { WEEK_SWAP_PICKING_ACT = !WEEK_SWAP_PICKING_ACT; renderInPlace(); return; }
+  if (t.dataset.selectSwapGroup) {
+    WEEK_SWAP_GROUP = t.dataset.selectSwapGroup;
+    WEEK_SWAP_PICKING_ACT = false;
+    const group = groupById(WEEK_SWAP_GROUP);
+    const match = matchVenues(A());
+    const pool = (match.pool && match.pool.length ? match.pool : VENUES).filter(v => group && venueInGroup(v, group));
+    if (pool.length && !pool.some(v => v.id === WEEK_SWAP_VENUE_ID)) {
+      WEEK_SWAP_VENUE_ID = pool[0].id;
+      const opts = venueOptions(pool[0], group, WEEK_SWAP_DAY || 'Monday');
+      WEEK_SWAP_OPTION_ID = opts[0]?.id || 'opt_1';
+      WEEK_SWAP_OPTION_TITLE = opts[0] ? `${opts[0].title} · ${opts[0].time}` : 'All day';
+    }
+    renderInPlace();
+    return;
+  }
+  if (t.dataset.swapFilter) {
+    WEEK_SWAP_FILTER = t.dataset.swapFilter;
+    renderInPlace();
+    return;
+  }
+  if (t.dataset.selectSwapOpt) {
+    WEEK_SWAP_VENUE_ID = t.dataset.selectSwapOpt;
+    WEEK_SWAP_OPTION_ID = t.dataset.optId;
+    WEEK_SWAP_OPTION_TITLE = `${t.dataset.optTitle} · ${t.dataset.optTime}`;
+    renderInPlace();
+    return;
+  }
+  if (t.dataset.confirmWeekSwap !== undefined) {
+    const venue = VENUES.find(v => v.id === WEEK_SWAP_VENUE_ID);
+    const group = groupById(WEEK_SWAP_GROUP);
+    const day = WEEK_SWAP_DAY || WEEK_ADD_DAY || 'Monday';
+    if (venue && group && day) {
+      const chosen = (S.answers.activities || []).filter(x => x !== SKIP);
+      if (!chosen.includes(group.id)) S.answers.activities = [...chosen, group.id];
+      S.weekSwap = Object.assign({}, S.weekSwap, {
+        [day]: {
+          venueId: venue.id,
+          groupId: group.id,
+          option: WEEK_SWAP_OPTION_TITLE || 'All day'
+        }
+      });
+      S.planOverridden = false;
+      S.chosenPlanId = null;
+      log('week_venue_added', { day, venue: venue.id, activity: group.id, option: WEEK_SWAP_OPTION_TITLE });
+      WEEK_ADD_MODE = false;
+      WEEK_ADD_DAY = null;
+      go('recommendation');
+      return;
+    }
   }
   if (t.dataset.addDay) { WEEK_ADD_DAY=t.dataset.addDay; render(false); return; }
   if (t.dataset.addVenue) {

@@ -2593,3 +2593,133 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   .weekcard__head { flex-wrap: wrap; gap: 6px 16px; }
   .weekcard__title { flex: 1 1 100%; }
 }
+
+/* --- Change Week / Venue & Class Selection ---------------- */
+.change-week-topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--border); padding: 12px 18px;
+  background: #fff;
+}
+.change-week-topbar .topbar__center {
+  font-size: 16px; font-weight: 700; color: var(--ink); text-align: center;
+}
+.change-cancel-btn {
+  font-size: 15px; font-weight: 500; color: var(--navy-soft);
+}
+.change-week-page {
+  padding: 16px clamp(16px, 3.4vw, 40px) 120px;
+  max-width: 680px; margin: 0 auto;
+}
+.change-week-head { margin-bottom: 16px; }
+.change-week-title {
+  font-size: clamp(24px, 5.5vw, 32px); font-weight: 700; letter-spacing: -.02em;
+  margin: 6px 0 10px; line-height: 1.2; color: var(--ink);
+}
+.change-replacing-banner {
+  background: var(--cream); border-radius: 6px; padding: 8px 14px;
+  font-size: 13px; font-weight: 600; color: var(--navy); display: inline-block;
+}
+.change-selector-card {
+  background: #fff; border: 1px solid var(--border); border-radius: 12px;
+  padding: 14px 16px; margin-bottom: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+}
+.change-selector-row {
+  display: flex; align-items: center; gap: 14px; cursor: pointer;
+  padding: 4px 0;
+}
+.change-selector-icon {
+  flex: 0 0 auto; color: var(--ink); display: flex; align-items: center;
+}
+.change-selector-text { flex: 1 1 auto; min-width: 0; }
+.change-selector-label { font-size: 12px; color: var(--navy-soft); margin-bottom: 2px; }
+.change-selector-val { font-size: 15.5px; font-weight: 700; color: var(--ink); }
+.change-selector-action { font-size: 14px; color: var(--ink); text-decoration: underline; }
+.change-selector-divider { height: 1px; background: var(--border); margin: 12px 0; }
+.change-picker-drawer {
+  background: var(--cream); border-radius: 8px; padding: 12px 14px;
+  margin-top: 10px; margin-bottom: 6px;
+}
+.change-picker-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.change-places-head { margin-bottom: 12px; }
+.change-places-title {
+  font-size: 20px; font-weight: 700; letter-spacing: -.01em;
+  margin: 0 0 4px; color: var(--ink);
+}
+.change-places-sub { font-size: 13.5px; color: var(--navy-soft); margin: 0; }
+
+.change-filters-row {
+  display: flex; align-items: center; gap: 8px; overflow-x: auto;
+  padding-bottom: 8px; margin-bottom: 16px; -webkit-overflow-scrolling: touch;
+}
+.filter-chip {
+  height: 38px; padding: 0 16px; border-radius: 9999px;
+  border: 1px solid var(--border); background: #fff;
+  font-size: 13.5px; font-weight: 500; color: var(--ink);
+  cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+  white-space: nowrap; flex: 0 0 auto; transition: all .15s ease;
+}
+.filter-chip:hover { border-color: var(--ink); }
+.filter-chip.is-active {
+  background: var(--cream); border-color: #f2cb35; color: #694900; font-weight: 700;
+}
+.filter-chip--icon { width: 38px; padding: 0; }
+
+.change-venues-list { display: flex; flex-direction: column; gap: 20px; }
+.venue-class-card {
+  background: #fff; border: 1px solid var(--border); border-radius: 14px;
+  overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: border-color .15s ease;
+}
+.venue-class-card.is-selected-venue {
+  border-color: #202124;
+}
+.venue-class-card__media {
+  position: relative; aspect-ratio: 16 / 9; width: 100%;
+  background: var(--cream); overflow: hidden;
+}
+.venue-class-card__media img { width: 100%; height: 100%; object-fit: cover; }
+.venue-class-card__badge {
+  position: absolute; top: 12px; left: 12px; z-index: 2;
+  font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 6px;
+}
+.badge--premium { background: #fdf3cf; color: #855800; }
+.badge--plus { background: #e3effd; color: #0c4a80; }
+.badge--standard { background: #e6f4ea; color: #137333; }
+
+.venue-class-card__body { padding: 18px 18px 20px; }
+.venue-class-card__name { font-size: 19px; font-weight: 700; margin: 0 0 4px; color: var(--ink); letter-spacing: -.01em; }
+.venue-class-card__meta { font-size: 13.5px; color: var(--navy-soft); margin: 0 0 16px; }
+.venue-class-card__options-label { font-size: 13.5px; font-weight: 700; color: var(--ink); margin-bottom: 10px; }
+.venue-class-card__options-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+
+.venue-opt-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px;
+  background: #fff; cursor: pointer; transition: all .15s ease;
+  position: relative; user-select: none;
+}
+.venue-opt-item:hover { border-color: var(--ink-soft); }
+.venue-opt-item.is-chosen {
+  background: #fefce8; border-color: #fde047;
+}
+.venue-opt-item input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+.venue-opt-radio {
+  flex: 0 0 auto; margin-right: 12px; display: flex; align-items: center; color: var(--ink);
+}
+.venue-opt-title { flex: 1 1 auto; font-size: 14.5px; font-weight: 600; color: var(--ink); }
+.venue-opt-time { font-size: 13px; color: var(--navy-soft); font-variant-numeric: tabular-nums; }
+.venue-class-card__details-link {
+  display: inline-block; margin-top: 6px; font-size: 13.5px; text-decoration: underline; color: var(--ink);
+}
+
+.change-sticky-bar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+  background: #fff; border-top: 1px solid var(--border);
+  padding: 12px 18px calc(12px + env(safe-area-inset-bottom));
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.06);
+}
+.change-sticky-bar__left { flex: 1 1 auto; min-width: 0; }
+.change-sticky-bar__dayact { font-size: 15px; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.change-sticky-bar__sub { font-size: 13px; color: var(--navy-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+.change-sticky-bar__cta { flex: 0 0 auto; height: 48px; padding: 0 22px; font-size: 14.5px; }
