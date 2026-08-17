@@ -2905,6 +2905,49 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   margin-top: 14px; text-align: center;
 }
 
+/* Routine Snapshot (Mobile Lean Card) */
+.routine-snapshot {
+  background: #fff; border: 1px solid rgba(0,0,0,0.07);
+  border-radius: var(--radius-lg); padding: 16px 18px; margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+.routine-snapshot__head {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px;
+}
+.routine-snapshot__title {
+  font-size: 15.5px; font-weight: 800; color: var(--ink); margin: 0;
+}
+.routine-snapshot__sub {
+  font-size: 12px; color: var(--navy-soft); margin: 1px 0 0;
+}
+.routine-snapshot__list {
+  display: flex; flex-direction: column; gap: 8px;
+}
+.routine-snapshot__row {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  background: var(--page-grey); border-radius: 10px; padding: 8px 12px; font-size: 13px;
+}
+.routine-snapshot__sport {
+  display: flex; align-items: center; gap: 8px; flex: 0 0 auto; color: var(--ink);
+}
+.routine-snapshot__venue {
+  display: flex; align-items: center; gap: 6px; flex: 1 1 auto; justify-content: flex-end; text-align: right; min-width: 0;
+}
+.routine-snapshot__vname {
+  font-weight: 600; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 140px;
+}
+.routine-snapshot__dist {
+  font-size: 11.5px; color: var(--navy-soft); flex: 0 0 auto;
+}
+
+.planbox-mobile {
+  margin-bottom: 20px;
+}
+.routine-customizer-drawer {
+  background: var(--cream); border: 1px solid var(--cream-line);
+  border-radius: var(--radius-lg); padding: 16px; margin-bottom: 20px;
+}
+
 /* Drag and Drop Routine Builder */
 [draggable="true"] { cursor: grab; -webkit-user-drag: element; }
 [draggable="true"]:active { cursor: grabbing; }
@@ -3550,7 +3593,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 17 Aug 23:41 UTC</span>
+  <span class="demo-banner__build">build 17 Aug 23:44 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -4416,6 +4459,7 @@ let VENUEQ='';
 let WHEREPICK=false, SEEALL=false;
 let RECO_VIEW='pillars'; /* 'pillars' (activity & freedom) or 'week' (day-by-day schedule) */
 let EXPANDED_PILLARS={};
+let CUSTOMIZER_OPEN=false;
 /* In production the neighbourhood comes from the browser or the IP. The pilot has no map
    service, so the page starts from one real Berlin area and says out loud that it guessed
    — the same contract the city chip already keeps (rules 6 and 26). It is never written
@@ -6075,16 +6119,43 @@ function recommendationScreen() {
     </div>
   </details>`;
 
-  /* Three rows under the week, in the order the design draws them: what is near you, what
-     comes with it, and everything else you might want to ask. Rule 14 / 68 — value before
-     price still, and the week is the value.
-     On a phone the plan card moves up directly under the answer sentence, because there is
-     no second column to put the price in and a whole week of venues between the visitor
-     and "what does this cost?" is what made a reviewer call this page overwhelming. Rule
-     65: the plan leads, and the week follows it. */
+  const routineSnapshot = `<section class="routine-snapshot">
+    <div class="routine-snapshot__head">
+      <div>
+        <h2 class="routine-snapshot__title">Your sports &amp; studios</h2>
+        <p class="routine-snapshot__sub">${groups.length} sports &middot; ${wp.sessions.length} sessions a week</p>
+      </div>
+      <button class="btn-pill btn-pill--sm" type="button" data-toggle-routine-customizer>
+        ${CUSTOMIZER_OPEN ? 'Close customizer ↑' : 'Customize →'}
+      </button>
+    </div>
+    <div class="routine-snapshot__list">
+      ${groups.map(g => {
+        const grp = groupById(g.id || g);
+        if (!grp) return '';
+        const v = pool.find(pv => venueInGroup(pv, grp));
+        const tier = v && v.tier ? (v.tier === 'premium' ? 'Premium' : v.tier === 'plus' ? 'Plus' : 'Standard') : '';
+        const tierBadge = tier ? `<span class="tier-tag tier-tag--${v.tier}">${tier}</span>` : '';
+        const areaLabel = v && v.nearestArea ? v.nearestArea.name : (v ? (AREAS.find(a=>a.id===v.area)||{}).name : '');
+        const distLabel = areaLabel ? `${v.distanceKm} km from ${esc(areaLabel)}` : `${v.distanceKm} km away`;
+        return `<div class="routine-snapshot__row">
+          <div class="routine-snapshot__sport">
+            <span class="routine-snapshot__icon">${icon(grp.icon, 16)}</span>
+            <b>${esc(grp.label)}</b>
+          </div>
+          ${v ? `<div class="routine-snapshot__venue">
+            <span class="routine-snapshot__vname">${esc(v.name)}</span>
+            ${tierBadge}
+            <span class="routine-snapshot__dist">${distLabel}</span>
+          </div>` : `<span class="muted">Any partner studio</span>`}
+        </div>`;
+      }).join('')}
+    </div>
+  </section>`;
+
   return `${topbar(1)}<div class="two-col two-col--reco"><main class="two-col__main" id="main">
     ${MOBILE()
-      ? `${heroBlock}${viewSwitcher}${RECO_VIEW==='pillars' ? pillarsBlock : weekBlock}${chipsBlock}${planSummary}${PLANDETAILS_OPEN?`<div class="planbox-inline">${planAside}</div>`:''}${placesSection}${appsBlock()}${moreRow}`
+      ? `${heroBlock}${chipsBlock}<div class="planbox-mobile">${planAside}</div>${routineSnapshot}${CUSTOMIZER_OPEN ? `<div class="routine-customizer-drawer">${viewSwitcher}${RECO_VIEW==='pillars' ? pillarsBlock : weekBlock}</div>` : ''}${placesSection}${appsBlock()}${moreRow}`
       : `${story}${viewSwitcher}${RECO_VIEW==='pillars' ? pillarsBlock : weekBlock}${placesSection}${appsBlock()}${moreRow}`}
   </main>
   ${MOBILE()?'':`<aside class="two-col__aside two-col__aside--sticky">
@@ -6777,8 +6848,15 @@ document.addEventListener('change', e => {
   renderInPlace();
 });
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-change-city],[data-city],[data-unsure],[data-open-ask],[data-rail],[data-radius],[data-toggle-venues],[data-toggle-apps],[data-toggle-week],[data-toggle-places],[data-toggle-more],[data-more],[data-toggle-alt],[data-toggle-plan-details],[data-open-days],[data-day],[data-swap],[data-change-week],[data-add-week],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula],[data-search-example],[data-venue-clear],[data-venue-search-all],[data-toggle-where],[data-where],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-add-activity],[data-remove-activity],[data-expand-pillar]');
+  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-change-city],[data-city],[data-unsure],[data-open-ask],[data-rail],[data-radius],[data-toggle-venues],[data-toggle-apps],[data-toggle-week],[data-toggle-places],[data-toggle-more],[data-more],[data-toggle-alt],[data-toggle-plan-details],[data-open-days],[data-day],[data-swap],[data-change-week],[data-add-week],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula],[data-search-example],[data-venue-clear],[data-venue-search-all],[data-toggle-where],[data-where],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-add-activity],[data-remove-activity],[data-expand-pillar],[data-toggle-routine-customizer]');
   if (!t) return;
+
+  if (t.dataset.toggleRoutineCustomizer !== undefined) {
+    CUSTOMIZER_OPEN = !CUSTOMIZER_OPEN;
+    log('routine_customizer_toggled', { open: CUSTOMIZER_OPEN });
+    render(false);
+    return;
+  }
 
   if (t.dataset.plusOpen) { PLANPLUS=t.dataset.plusOpen; log('plus_explainer_opened',{planId:PLANPLUS}); render(false); return; }
   if (t.dataset.closePlus !== undefined) { PLANPLUS=null; render(false); return; }
