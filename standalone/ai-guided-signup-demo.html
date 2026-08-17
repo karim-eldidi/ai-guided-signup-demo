@@ -3008,7 +3008,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 17 Aug 14:31 UTC</span>
+  <span class="demo-banner__build">build 17 Aug 14:32 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -4795,7 +4795,7 @@ function changeWeekScreen() {
 }
 
 function searchScreen() {
-  if (WEEK_ADD_MODE) return changeWeekScreen();
+  if (WEEK_ADD_MODE && MOBILE()) return changeWeekScreen();
   const r = SEARCH.result;
   const from = r ? r.from : ANYWHERE, known = Boolean(r && r.known);
   /* The typed examples that used to sit under the box are gone: the five activity chips

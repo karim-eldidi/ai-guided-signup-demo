@@ -1947,7 +1947,7 @@ function changeWeekScreen() {
 }
 
 function searchScreen() {
-  if (WEEK_ADD_MODE) return changeWeekScreen();
+  if (WEEK_ADD_MODE && MOBILE()) return changeWeekScreen();
   const r = SEARCH.result;
   const from = r ? r.from : ANYWHERE, known = Boolean(r && r.known);
   /* The typed examples that used to sit under the box are gone: the five activity chips
