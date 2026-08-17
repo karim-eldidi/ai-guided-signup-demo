@@ -1539,14 +1539,11 @@ body.save-modal-open { overflow: hidden; }
 }
 
 @media (max-width: 980px) {
-  /* landing stacks: wordmark bar, photo band, then content.
-     `display: contents` lets the panel's children take part in the page-level
-     flex order, so the wordmark can sit above the photo without duplicating it. */
   .landing { display: flex; flex-direction: column; min-height: 0; background: var(--yellow-hero); }
   .landing__panel { display: contents; }
-  .landing__panelbar { order: 0; padding: 22px 22px 18px; }
-  .landing__body { order: 2; padding: 32px 22px 44px; max-width: none; margin: 0; }
-  .landing__media { order: 1; height: 300px; }
+  .landing__panelbar { order: 0; padding: 22px 22px 14px; }
+  .landing__body { order: 1; padding: 10px 22px 34px; max-width: none; margin: 0; }
+  .landing__media { order: 2; height: 320px; }
   .landing__media img { object-position: 50% 18%; }
   .login-link--desktop { display: none; }
   .login-link--mobile { display: inline; position: static; color: var(--ink); font-weight: 700;
@@ -1848,70 +1845,123 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 /* the glyph lives in a yellow circle, so it stays black when the card goes black */
 .options--door .option-card:hover .option-card__icon { color: var(--ink); }
 
-.landing-intents {
-  display: flex; flex-direction: column; gap: 12px;
-  max-width: 560px; margin: 20px 0 16px;
+.landing-hero-card {
+  background: #fff;
+  border: 1.5px solid var(--ink);
+  border-radius: 16px;
+  padding: 22px 24px 20px;
+  max-width: 560px;
+  margin: 22px 0 12px;
+  box-shadow: 0 4px 18px rgba(8, 9, 10, 0.05);
 }
-.intent-card {
-  display: flex; flex-direction: column; text-align: left;
-  background: #fff; border: 1.5px solid var(--border); border-radius: var(--radius-lg);
-  padding: 16px 18px; cursor: pointer;
-  transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
-  position: relative;
+.landing-hero-card__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--yellow-bright);
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 99px;
+  margin-bottom: 10px;
 }
-.intent-card:hover {
-  border-color: var(--ink); transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+.landing-hero-card__title {
+  font-size: 23px;
+  font-weight: 800;
+  color: var(--ink);
+  margin: 0;
+  letter-spacing: -.02em;
 }
-.intent-card--primary {
-  border: 2px solid var(--ink); padding: 18px 20px;
+.landing-hero-card__meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0 18px;
+  font-size: 13.5px;
+  color: var(--navy-soft);
 }
-.intent-card__badge {
-  display: inline-flex; align-items: center; gap: 6px;
-  background: var(--yellow-bright); color: var(--ink);
-  font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em;
-  padding: 3px 8px; border-radius: 99px; margin-bottom: 10px; align-self: flex-start;
+.landing-hero-card__meta .meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
 }
-.intent-card__badge span { line-height: 1; }
-.intent-card__title {
-  font-size: 17px; font-weight: 800; color: var(--ink); line-height: 1.25;
+.landing-hero-card__meta .meta-dot {
+  color: #c4c1b9;
+  font-weight: 700;
 }
-.intent-card__desc {
-  font-size: 13px; color: var(--navy-soft); line-height: 1.4; margin-top: 4px;
+.landing-hero-card__btn {
+  height: 50px;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 12px;
+  background: var(--ink);
+  color: #fff;
+  border: 0;
+  cursor: pointer;
+  transition: transform .15s ease, background-color .15s ease;
 }
-.intent-card__cta {
-  display: inline-flex; align-items: center; gap: 6px;
-  margin-top: 14px; font-size: 14px; font-weight: 800; color: var(--ink);
+.landing-hero-card__btn:hover {
+  background: #242628;
+  transform: translateY(-1px);
 }
-.intent-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+
+.landing-sub-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  max-width: 560px;
+  margin-bottom: 16px;
 }
-.intent-card--secondary {
-  padding: 14px 16px;
-}
-.intent-card--secondary .intent-card__icon {
-  width: 32px; height: 32px; border-radius: 8px;
-  background: var(--cream); display: flex; align-items: center; justify-content: center;
-  margin-bottom: 10px; color: var(--ink);
-}
-.intent-card--secondary .intent-card__title {
+.sub-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  height: 48px;
+  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
   font-size: 14.5px;
+  font-weight: 700;
+  color: var(--ink);
+  cursor: pointer;
+  padding: 0 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  transition: border-color .15s ease, transform .15s ease, background-color .15s ease;
+  white-space: nowrap;
 }
-.intent-card--secondary .intent-card__desc {
-  font-size: 12px;
+.sub-action-btn:hover {
+  border-color: var(--ink);
+  background: #fafafa;
+  transform: translateY(-1px);
+}
+.sub-action-btn__left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sub-action-btn__arrow {
+  color: var(--navy-soft);
+  font-size: 16px;
+  transition: transform .15s ease, color .15s ease;
+}
+.sub-action-btn:hover .sub-action-btn__arrow {
+  color: var(--ink);
+  transform: translateX(3px);
 }
 
-.landing__hint {
-  display: inline-flex; align-items: center; gap: 7px;
-  font-size: 13.5px; color: var(--navy-soft); margin: 6px 0 0; max-width: 560px;
-}
-.landing__hint svg { color: var(--navy-soft); flex: 0 0 auto; }
-
-@media (max-width: 700px) {
-  .intent-grid { grid-template-columns: 1fr; gap: 8px; }
-  .intent-card--primary { padding: 16px 16px; }
-  .intent-card__title { font-size: 16px; }
-  .intent-card__desc { font-size: 12.5px; }
+@media (max-width: 600px) {
+  .landing-hero-card { padding: 18px 18px 16px; }
+  .landing-hero-card__title { font-size: 20px; }
+  .landing-sub-actions { grid-template-columns: 1fr; gap: 8px; }
 }
 
 /* Under the photo the panel is one column wide, so the three answers stack and go back
@@ -3157,7 +3207,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 17 Aug 16:06 UTC</span>
+  <span class="demo-banner__build">build 17 Aug 16:11 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -4483,41 +4533,43 @@ function landing() {
         ${ERRORS.email?`<p class="field-error" role="alert">${esc(ERRORS.email)}</p>`:''}
         <p class="savenote">Add it and we&rsquo;ll save your answers so you can come back to them.</p>
         <div class="consent-row consent-row--conditional" data-consent-row ${(FIELDS.email||'').trim()?'':'hidden'}><label class="checkbox"><input type="checkbox" name="marketing" id="marketing" ${S.marketing&&(FIELDS.email||'').trim()?'checked':''}><span></span></label>
-          <label class="consent-label" for="marketing">Email me offers, news and activity inspiration.</label></div>
         <p class="terms-line">By continuing, you agree to our <button class="linkish" data-go="terms">Terms</button> and <button class="linkish" data-go="privacy">Privacy Policy</button>.</p>
         <p class="landing__alt">Already know what you want? <button class="linkish strong" type="button" data-go="plans">View memberships ${icon('arrowRight',17)}</button></p></form>`;
 
-  /* 3-Intent front door */
+  /* Clean, high-converting hero card + secondary actions */
   const guideFirst = `
-    <div class="landing-intents">
-      <button class="intent-card intent-card--primary" type="button" data-start-fit>
-        <div class="intent-card__badge">${ulaAvatar('xs')}<span>Recommended</span></div>
-        <div class="intent-card__main">
-          <div class="intent-card__title">Build my personalized routine</div>
-          <div class="intent-card__desc">Answer 4 quick questions to match your sports, nearby studios, and the best membership price.</div>
+    <div class="landing-hero-card">
+      <div class="landing-hero-card__badge">${icon('sparkle',12)} <span>RECOMMENDED</span></div>
+      <h2 class="landing-hero-card__title">Help me choose</h2>
+      <div class="landing-hero-card__meta">
+        <span class="meta-item">${icon('question',15)} <span>4 questions</span></span>
+        <span class="meta-dot">&middot;</span>
+        <span class="meta-item">${icon('clock',15)} <span>2 minutes</span></span>
+        <span class="meta-dot">&middot;</span>
+        <span class="meta-item">${icon('lock',14)} <span>No email needed</span></span>
+      </div>
+      <button class="btn btn--primary btn--block landing-hero-card__btn" type="button" data-start-fit>
+        <span>Start guide</span> ${icon('arrowRight',18)}
+      </button>
+    </div>
+
+    <div class="landing-sub-actions">
+      <button class="sub-action-btn" type="button" data-go="search">
+        <div class="sub-action-btn__left">
+          ${icon('search',17)}
+          <span>Find a venue</span>
         </div>
-        <span class="intent-card__cta">Start guide ${icon('arrowRight',17)}</span>
+        <span class="sub-action-btn__arrow">&rarr;</span>
       </button>
 
-      <div class="intent-grid">
-        <button class="intent-card intent-card--secondary" type="button" data-go="search">
-          <div class="intent-card__icon">${icon('search',18)}</div>
-          <div class="intent-card__main">
-            <div class="intent-card__title">Check a specific venue</div>
-            <div class="intent-card__desc">Search studios and see which plan opens each one.</div>
-          </div>
-        </button>
-
-        <button class="intent-card intent-card--secondary" type="button" data-go="plans">
-          <div class="intent-card__icon">${icon('grid',18)}</div>
-          <div class="intent-card__main">
-            <div class="intent-card__title">Compare all 4 plans</div>
-            <div class="intent-card__desc">View Essential, Classic, Premium, and Max pricing.</div>
-          </div>
-        </button>
-      </div>
-    </div>
-    <p class="landing__hint">${icon('sparkle',15)} <span>Takes about 2 minutes &middot; No account or email needed to start</span></p>`;
+      <button class="sub-action-btn" type="button" data-go="plans">
+        <div class="sub-action-btn__left">
+          ${icon('grid',17)}
+          <span>Compare memberships</span>
+        </div>
+        <span class="sub-action-btn__arrow">&rarr;</span>
+      </button>
+    </div>`;
   const primary = VARIANT === 'email-first' ? emailFirst : guideFirst;
   return `<main class="landing" id="main">
     <div class="landing__panel">
@@ -4525,7 +4577,7 @@ function landing() {
         <button class="login-link login-link--mobile linkish" data-go="login">Log in</button></div>
       <div class="landing__body">
         <h1 class="h-hero" tabindex="-1">Find your way<br>to move.</h1>
-        <p class="lede">Choose how you&rsquo;d like to start today.</p>
+        <p class="lede">Match activities, nearby studios, and the right membership for your routine.</p>
         ${S.returns?`<div class="notice" style="max-width:560px">${icon('checkThin',20)}<span>Welcome back. Your answers are saved — continue where you left off.</span></div>`:''}
         ${primary}
       </div></div>

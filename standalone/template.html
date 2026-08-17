@@ -1486,41 +1486,43 @@ function landing() {
         ${ERRORS.email?`<p class="field-error" role="alert">${esc(ERRORS.email)}</p>`:''}
         <p class="savenote">Add it and we&rsquo;ll save your answers so you can come back to them.</p>
         <div class="consent-row consent-row--conditional" data-consent-row ${(FIELDS.email||'').trim()?'':'hidden'}><label class="checkbox"><input type="checkbox" name="marketing" id="marketing" ${S.marketing&&(FIELDS.email||'').trim()?'checked':''}><span></span></label>
-          <label class="consent-label" for="marketing">Email me offers, news and activity inspiration.</label></div>
         <p class="terms-line">By continuing, you agree to our <button class="linkish" data-go="terms">Terms</button> and <button class="linkish" data-go="privacy">Privacy Policy</button>.</p>
         <p class="landing__alt">Already know what you want? <button class="linkish strong" type="button" data-go="plans">View memberships ${icon('arrowRight',17)}</button></p></form>`;
 
-  /* 3-Intent front door */
+  /* Clean, high-converting hero card + secondary actions */
   const guideFirst = `
-    <div class="landing-intents">
-      <button class="intent-card intent-card--primary" type="button" data-start-fit>
-        <div class="intent-card__badge">${ulaAvatar('xs')}<span>Recommended</span></div>
-        <div class="intent-card__main">
-          <div class="intent-card__title">Build my personalized routine</div>
-          <div class="intent-card__desc">Answer 4 quick questions to match your sports, nearby studios, and the best membership price.</div>
+    <div class="landing-hero-card">
+      <div class="landing-hero-card__badge">${icon('sparkle',12)} <span>RECOMMENDED</span></div>
+      <h2 class="landing-hero-card__title">Help me choose</h2>
+      <div class="landing-hero-card__meta">
+        <span class="meta-item">${icon('question',15)} <span>4 questions</span></span>
+        <span class="meta-dot">&middot;</span>
+        <span class="meta-item">${icon('clock',15)} <span>2 minutes</span></span>
+        <span class="meta-dot">&middot;</span>
+        <span class="meta-item">${icon('lock',14)} <span>No email needed</span></span>
+      </div>
+      <button class="btn btn--primary btn--block landing-hero-card__btn" type="button" data-start-fit>
+        <span>Start guide</span> ${icon('arrowRight',18)}
+      </button>
+    </div>
+
+    <div class="landing-sub-actions">
+      <button class="sub-action-btn" type="button" data-go="search">
+        <div class="sub-action-btn__left">
+          ${icon('search',17)}
+          <span>Find a venue</span>
         </div>
-        <span class="intent-card__cta">Start guide ${icon('arrowRight',17)}</span>
+        <span class="sub-action-btn__arrow">&rarr;</span>
       </button>
 
-      <div class="intent-grid">
-        <button class="intent-card intent-card--secondary" type="button" data-go="search">
-          <div class="intent-card__icon">${icon('search',18)}</div>
-          <div class="intent-card__main">
-            <div class="intent-card__title">Check a specific venue</div>
-            <div class="intent-card__desc">Search studios and see which plan opens each one.</div>
-          </div>
-        </button>
-
-        <button class="intent-card intent-card--secondary" type="button" data-go="plans">
-          <div class="intent-card__icon">${icon('grid',18)}</div>
-          <div class="intent-card__main">
-            <div class="intent-card__title">Compare all 4 plans</div>
-            <div class="intent-card__desc">View Essential, Classic, Premium, and Max pricing.</div>
-          </div>
-        </button>
-      </div>
-    </div>
-    <p class="landing__hint">${icon('sparkle',15)} <span>Takes about 2 minutes &middot; No account or email needed to start</span></p>`;
+      <button class="sub-action-btn" type="button" data-go="plans">
+        <div class="sub-action-btn__left">
+          ${icon('grid',17)}
+          <span>Compare memberships</span>
+        </div>
+        <span class="sub-action-btn__arrow">&rarr;</span>
+      </button>
+    </div>`;
   const primary = VARIANT === 'email-first' ? emailFirst : guideFirst;
   return `<main class="landing" id="main">
     <div class="landing__panel">
@@ -1528,7 +1530,7 @@ function landing() {
         <button class="login-link login-link--mobile linkish" data-go="login">Log in</button></div>
       <div class="landing__body">
         <h1 class="h-hero" tabindex="-1">Find your way<br>to move.</h1>
-        <p class="lede">Choose how you&rsquo;d like to start today.</p>
+        <p class="lede">Match activities, nearby studios, and the right membership for your routine.</p>
         ${S.returns?`<div class="notice" style="max-width:560px">${icon('checkThin',20)}<span>Welcome back. Your answers are saved — continue where you left off.</span></div>`:''}
         ${primary}
       </div></div>
