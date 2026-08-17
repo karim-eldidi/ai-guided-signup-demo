@@ -2168,27 +2168,32 @@ function reasonsFor(rec, plan, match, groups) {
   const where = whereName(match);
   const out = [];
   const freq = S.answers.frequency;
-  /* Three reasons, and none of them repeats a chip. "You said you'd realistically go
-     five or more times a week" was the frequency chip written out longhand, one row
-     above itself; the place name was appearing three times above the fold. Karim
-     wanted this to read as a story with the data behind it — so each reason names one
-     thing about them and then the number that supports it, and the place is named
-     once, in the headline. */
-  const GOAL_TEXT = { move_more:'You want to move more, so regular training came first.',
-                      unwind:'You want to unwind, so calmer studios, pools and sauna came first.',
-                      try_new:'You want to try something new, so I mixed the venue types.' };
-  if (S.answers.goal && GOAL_TEXT[S.answers.goal]) out.push({ icon:'target', text:GOAL_TEXT[S.answers.goal] });
+
+  if (groups.length) {
+    const actLabels = groups.map(g => g.label).join(' & ');
+    out.push({ icon:'sparkle', text:`Covers your ${actLabels} activities in one flexible membership.` });
+  }
+
   if (groups.length && pool.length) {
     const c = coverage(groups, pool, plan.id).totals;
-    if (c.nearby) out.push({ icon:'pin',
-      text:`${c.included} of the ${plural(c.nearby,'place','places')} near you for ${groupWords(groups)} ${c.included===1?'is':'are'} on ${plan.name}.` });
+    if (c.nearby) {
+      out.push({ icon:'pin',
+        text:`Includes ${c.included === c.nearby ? 'all ' + c.nearby : c.included + ' of ' + c.nearby} matching studios & places near ${where}.` });
+    }
   }
+
   if (freq && freq !== SKIP) {
     const wants = visitsWanted(freq), allows = monthlyAllowance(plan);
     out.push({ icon:'calendar',
-      text:`Your week needs about ${wants} visits a month, and ${plan.name} allows ${allows===30?'one a day':allows}.` });
+      text:`Matches your ${wants}x/wk goal (~${wants * 4} visits/mo) — ${plan.name} includes ${allows === 30 ? '30 visits/mo (1/day)' : allows + ' visits/mo'}.` });
   }
-  out.push({ icon:'star', text:`${plan.venueCount} venues in total, across the cities we cover.` });
+
+  const price = priceFor(plan, S.commitmentId);
+  const each = perSession(price, freq, plan);
+  if (each) {
+    out.push({ icon:'target', text:`Averages approximately ${each} € per session based on your schedule.` });
+  }
+
   if (plan.id === rec.planId) {
     const extra = rec.reasons.find(r => /needs |can't cover|start at Classic|starts at Classic/i.test(r));
     if (extra) out.push({ icon:'info', text:extra });
@@ -2518,10 +2523,11 @@ function recommendationScreen() {
          (rule 52). This is the whole argument: what the allowance permits, what the
          money opens near them, what one session costs. Rule 14 — value before price,
          and where the two share a card they share it in that order. -->
-    <div class="planbox__factshead">Fits your routine</div>
+    <div class="planbox__factshead">Why this fits you</div>
     <ul class="planbox__facts">
-      ${wp.perMonth?`<li>${icon('checkThin',16)}<span>Supports <b>${plural(wp.perMonth,'visit','visits')} a month</b></span></li>`:''}
-      ${hereT&&hereT.nearby?`<li>${icon('checkThin',16)}<span>Opens <b>${hereT.included===hereT.nearby ? 'all '+hereT.nearby : hereT.included+' of '+hereT.nearby}</b> matching places near you</span></li>`:''}
+      ${groups.length ? `<li>${icon('checkThin',16)}<span>Covers your <b>${esc(groups.map(g=>g.label).join(' & '))}</b> routine</span></li>` : ''}
+      ${hereT&&hereT.nearby?`<li>${icon('checkThin',16)}<span>Opens <b>${hereT.included===hereT.nearby ? 'all '+hereT.nearby : hereT.included+' of '+hereT.nearby}</b> places near ${esc(whereName(match))}</span></li>`:''}
+      ${wp.perMonth?`<li>${icon('checkThin',16)}<span>Matches your <b>${plural(wp.perMonth,'visit','visits')} / wk goal</b></span></li>`:''}
       ${each?`<li>${icon('checkThin',16)}<span>About <b>${each} €</b> a session</span></li>`:''}
     </ul>
     <div class="planbox__cta desktop-cta"><button class="btn btn--primary btn--block" data-go="details">Continue with ${esc(plan.name)}</button></div>
