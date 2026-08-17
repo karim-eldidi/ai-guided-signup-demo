@@ -631,22 +631,34 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 /* One short sentence under the headline, not a paragraph of lede at 20px. */
 .reco-lede { font-size: 16.5px; line-height: 1.45; color: var(--navy); max-width: 46ch; margin: 0 0 14px; }
 
-.chips-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 0 0 16px; }
+.chips-row {
+  display: flex; align-items: center; gap: 8px; margin: 0 0 16px;
+  max-width: 100%;
+}
 .chips-row__label {
-  font-size: 12.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
-  color: var(--navy-soft); margin-right: 3px;
+  font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--navy-soft); white-space: nowrap; flex: 0 0 auto;
 }
+.chips-row__items {
+  display: flex; align-items: center; gap: 6px;
+  overflow-x: auto; flex-wrap: nowrap;
+  scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  padding: 2px 0;
+}
+.chips-row__items::-webkit-scrollbar { display: none; }
 .answer-chip {
-  display: inline-flex; align-items: center; gap: 7px;
+  display: inline-flex; align-items: center; gap: 5px;
   background: #fff; border: 1px solid var(--border); border-radius: 999px;
-  padding: 6px 12px 6px 11px; font-size: 14.5px; font-weight: 600; color: var(--ink);
-  max-width: 100%; cursor: pointer;
+  padding: 3px 9px 3px 8px; font-size: 12.5px; font-weight: 600; color: var(--ink);
+  white-space: nowrap; flex: 0 0 auto; cursor: pointer; height: 28px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  transition: border-color .12s ease, transform .12s ease;
 }
-.answer-chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 22ch; }
-.answer-chip svg:first-child { color: var(--navy-soft); flex: 0 0 auto; }
-.answer-chip svg:last-child { color: var(--navy-soft); flex: 0 0 auto; opacity: .75; }
-.answer-chip:hover { border-color: var(--ink); }
-.answer-chip:hover svg:last-child { opacity: 1; }
+.answer-chip:hover { border-color: var(--ink); transform: translateY(-0.5px); }
+.answer-chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.answer-chip svg:first-child { color: var(--navy-soft); flex: 0 0 auto; width: 13px; height: 13px; }
+.answer-chip svg:last-child { color: #9aa3b2; flex: 0 0 auto; width: 12px; height: 12px; }
+.answer-chip:hover svg:last-child { color: var(--ink); }
 
 /* the questions own the screen — no side panel to compete with them */
 .one-col { display: block; }
@@ -3136,7 +3148,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 17 Aug 15:21 UTC</span>
+  <span class="demo-banner__build">build 17 Aug 15:23 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -3330,6 +3342,22 @@ const answerLabel = (qid,v) => {
     const names=v.map(id=>(groupById(id)||opts.find(x=>x.id===id)||{}).label).filter(Boolean);
     return names.length?listWords(names):null; }
   if (v===SKIP) return "Not sure yet";
+  const o=optionsFor(qById(qid)).find(x=>x.id===v); return o?o.label:String(v);
+};
+const compactAnswerLabel = (qid,v) => {
+  if (!isAnswered(v)) return null;
+  if (qid==='frequency') {
+    const map={about_once:'1x / wk',twice:'2x / wk',three_four:'3–4x / wk',five_plus:'5+x / wk'};
+    return map[v]||answerLabel(qid,v);
+  }
+  if (Array.isArray(v)) { if (v.includes(SKIP)) return 'Not sure';
+    const opts=optionsFor(qById(qid));
+    const names=v.map(id=>(groupById(id)||opts.find(x=>x.id===id)||{}).label).filter(Boolean);
+    if (!names.length) return null;
+    if (names.length===1) return names[0];
+    if (names.length===2) return `${names[0]} & ${names[1]}`;
+    return `${names[0]} +${names.length-1}`; }
+  if (v===SKIP) return 'Not sure';
   const o=optionsFor(qById(qid)).find(x=>x.id===v); return o?o.label:String(v);
 };
 const answerEcho  = (qid,v) => {
@@ -5029,14 +5057,16 @@ function searchScreen() {
    bottom of the recommendation. Now they sit at the top of whatever screen you
    are on, and each one is the edit control for itself. */
 function answerChips(opts = {}) {
-  const { label = 'Your answers', compact = false } = opts;
+  const { label = 'Your fit', compact = true } = opts;
   const given = QUESTIONS.filter(q => isAnswered(S.answers[q.id]));
   if (!given.length) return '';
   return `<div class="chips-row ${compact?'chips-row--compact':''}">
     ${label?`<span class="chips-row__label">${esc(label)}</span>`:''}
-    ${given.map(q => `<button class="answer-chip" data-edit="${esc(q.id)}"
-        aria-label="Change your answer to: ${esc(q.prompt)}">
-        ${icon(q.icon,15)}<span>${esc(answerLabel(q.id,S.answers[q.id]))}</span>${icon('pencil',14)}</button>`).join('')}
+    <div class="chips-row__items">
+      ${given.map(q => `<button class="answer-chip" data-edit="${esc(q.id)}"
+          aria-label="Change your answer to: ${esc(q.prompt)}">
+          ${icon(q.icon,13)}<span>${esc(compactAnswerLabel(q.id,S.answers[q.id]))}</span>${icon('pencil',12)}</button>`).join('')}
+    </div>
   </div>`;
 }
 

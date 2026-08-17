@@ -356,6 +356,22 @@ const answerLabel = (qid,v) => {
   if (v===SKIP) return "Not sure yet";
   const o=optionsFor(qById(qid)).find(x=>x.id===v); return o?o.label:String(v);
 };
+const compactAnswerLabel = (qid,v) => {
+  if (!isAnswered(v)) return null;
+  if (qid==='frequency') {
+    const map={about_once:'1x / wk',twice:'2x / wk',three_four:'3–4x / wk',five_plus:'5+x / wk'};
+    return map[v]||answerLabel(qid,v);
+  }
+  if (Array.isArray(v)) { if (v.includes(SKIP)) return 'Not sure';
+    const opts=optionsFor(qById(qid));
+    const names=v.map(id=>(groupById(id)||opts.find(x=>x.id===id)||{}).label).filter(Boolean);
+    if (!names.length) return null;
+    if (names.length===1) return names[0];
+    if (names.length===2) return `${names[0]} & ${names[1]}`;
+    return `${names[0]} +${names.length-1}`; }
+  if (v===SKIP) return 'Not sure';
+  const o=optionsFor(qById(qid)).find(x=>x.id===v); return o?o.label:String(v);
+};
 const answerEcho  = (qid,v) => {
   if (!isAnswered(v)) return null;
   if (Array.isArray(v)) { if (v.includes(SKIP)) return "I'm not sure what I'd do yet";
@@ -2053,14 +2069,16 @@ function searchScreen() {
    bottom of the recommendation. Now they sit at the top of whatever screen you
    are on, and each one is the edit control for itself. */
 function answerChips(opts = {}) {
-  const { label = 'Your answers', compact = false } = opts;
+  const { label = 'Your fit', compact = true } = opts;
   const given = QUESTIONS.filter(q => isAnswered(S.answers[q.id]));
   if (!given.length) return '';
   return `<div class="chips-row ${compact?'chips-row--compact':''}">
     ${label?`<span class="chips-row__label">${esc(label)}</span>`:''}
-    ${given.map(q => `<button class="answer-chip" data-edit="${esc(q.id)}"
-        aria-label="Change your answer to: ${esc(q.prompt)}">
-        ${icon(q.icon,15)}<span>${esc(answerLabel(q.id,S.answers[q.id]))}</span>${icon('pencil',14)}</button>`).join('')}
+    <div class="chips-row__items">
+      ${given.map(q => `<button class="answer-chip" data-edit="${esc(q.id)}"
+          aria-label="Change your answer to: ${esc(q.prompt)}">
+          ${icon(q.icon,13)}<span>${esc(compactAnswerLabel(q.id,S.answers[q.id]))}</span>${icon('pencil',12)}</button>`).join('')}
+    </div>
   </div>`;
 }
 

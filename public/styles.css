@@ -617,22 +617,34 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 /* One short sentence under the headline, not a paragraph of lede at 20px. */
 .reco-lede { font-size: 16.5px; line-height: 1.45; color: var(--navy); max-width: 46ch; margin: 0 0 14px; }
 
-.chips-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 0 0 16px; }
+.chips-row {
+  display: flex; align-items: center; gap: 8px; margin: 0 0 16px;
+  max-width: 100%;
+}
 .chips-row__label {
-  font-size: 12.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
-  color: var(--navy-soft); margin-right: 3px;
+  font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--navy-soft); white-space: nowrap; flex: 0 0 auto;
 }
+.chips-row__items {
+  display: flex; align-items: center; gap: 6px;
+  overflow-x: auto; flex-wrap: nowrap;
+  scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  padding: 2px 0;
+}
+.chips-row__items::-webkit-scrollbar { display: none; }
 .answer-chip {
-  display: inline-flex; align-items: center; gap: 7px;
+  display: inline-flex; align-items: center; gap: 5px;
   background: #fff; border: 1px solid var(--border); border-radius: 999px;
-  padding: 6px 12px 6px 11px; font-size: 14.5px; font-weight: 600; color: var(--ink);
-  max-width: 100%; cursor: pointer;
+  padding: 3px 9px 3px 8px; font-size: 12.5px; font-weight: 600; color: var(--ink);
+  white-space: nowrap; flex: 0 0 auto; cursor: pointer; height: 28px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  transition: border-color .12s ease, transform .12s ease;
 }
-.answer-chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 22ch; }
-.answer-chip svg:first-child { color: var(--navy-soft); flex: 0 0 auto; }
-.answer-chip svg:last-child { color: var(--navy-soft); flex: 0 0 auto; opacity: .75; }
-.answer-chip:hover { border-color: var(--ink); }
-.answer-chip:hover svg:last-child { opacity: 1; }
+.answer-chip:hover { border-color: var(--ink); transform: translateY(-0.5px); }
+.answer-chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.answer-chip svg:first-child { color: var(--navy-soft); flex: 0 0 auto; width: 13px; height: 13px; }
+.answer-chip svg:last-child { color: #9aa3b2; flex: 0 0 auto; width: 12px; height: 12px; }
+.answer-chip:hover svg:last-child { color: var(--ink); }
 
 /* the questions own the screen — no side panel to compete with them */
 .one-col { display: block; }
