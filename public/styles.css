@@ -2267,6 +2267,40 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .altbox__warn svg { flex: 0 0 auto; margin-top: 1px; }
 .altbox__card .btn { margin-top: 14px; height: 46px; font-size: 15.5px; }
 
+/* --- compact plan summary for mobile ---------------------------------------- */
+.plan-summary {
+  background: #fff; border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 20px 18px 18px; margin: 16px 0;
+}
+.plan-summary__badge {
+  display: inline-block; background: var(--yellow-bright); color: var(--ink);
+  font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 999px;
+}
+.plan-summary__idrow {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 8px; margin-top: 12px;
+}
+.plan-summary__name { font-size: 24px; font-weight: 700; letter-spacing: -.02em; }
+.plan-summary__price { font-size: 22px; font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+.plan-summary__price small { font-size: 14px; font-weight: 400; color: var(--navy-soft); letter-spacing: 0; }
+.plan-summary__fact {
+  display: flex; align-items: flex-start; gap: 8px;
+  font-size: 15.5px; line-height: 1.4; margin-top: 14px; color: var(--navy);
+}
+.plan-summary__fact svg { flex: 0 0 auto; margin-top: 2px; color: #2d8a4e; }
+.plan-summary__link { display: block; margin-top: 14px; font-size: 15.5px; }
+.plan-summary__save { display: block; margin-top: 10px; font-size: 13.5px; color: var(--navy-soft); }
+
+/* --- weekrow change button (mobile only) ------------------------------------ */
+.weekrow__change {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: none; border: 1px solid var(--border); border-radius: 6px;
+  padding: 6px 12px; font-size: 13.5px; font-weight: 700; color: var(--navy);
+  white-space: nowrap; cursor: pointer;
+}
+.weekrow__change:hover { border-color: var(--ink); color: var(--ink); }
+
 @media (max-width: 980px) {
   /* One row per session becomes two: what and when on top, where underneath. A 44px
      photograph and a plan pill will not share 390px with a day and an activity. */

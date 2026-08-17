@@ -2281,6 +2281,40 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .altbox__warn svg { flex: 0 0 auto; margin-top: 1px; }
 .altbox__card .btn { margin-top: 14px; height: 46px; font-size: 15.5px; }
 
+/* --- compact plan summary for mobile ---------------------------------------- */
+.plan-summary {
+  background: #fff; border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 20px 18px 18px; margin: 16px 0;
+}
+.plan-summary__badge {
+  display: inline-block; background: var(--yellow-bright); color: var(--ink);
+  font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 999px;
+}
+.plan-summary__idrow {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 8px; margin-top: 12px;
+}
+.plan-summary__name { font-size: 24px; font-weight: 700; letter-spacing: -.02em; }
+.plan-summary__price { font-size: 22px; font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+.plan-summary__price small { font-size: 14px; font-weight: 400; color: var(--navy-soft); letter-spacing: 0; }
+.plan-summary__fact {
+  display: flex; align-items: flex-start; gap: 8px;
+  font-size: 15.5px; line-height: 1.4; margin-top: 14px; color: var(--navy);
+}
+.plan-summary__fact svg { flex: 0 0 auto; margin-top: 2px; color: #2d8a4e; }
+.plan-summary__link { display: block; margin-top: 14px; font-size: 15.5px; }
+.plan-summary__save { display: block; margin-top: 10px; font-size: 13.5px; color: var(--navy-soft); }
+
+/* --- weekrow change button (mobile only) ------------------------------------ */
+.weekrow__change {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: none; border: 1px solid var(--border); border-radius: 6px;
+  padding: 6px 12px; font-size: 13.5px; font-weight: 700; color: var(--navy);
+  white-space: nowrap; cursor: pointer;
+}
+.weekrow__change:hover { border-color: var(--ink); color: var(--ink); }
+
 @media (max-width: 980px) {
   /* One row per session becomes two: what and when on top, where underneath. A 44px
      photograph and a plan pill will not share 390px with a day and an activity. */
@@ -2443,7 +2477,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 14 Aug 10:57 UTC</span>
+  <span class="demo-banner__build">build 17 Aug 09:59 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -3263,7 +3297,7 @@ let CITYPICK=false, CITYWANTED=null, ASKOPEN=false, DAYSOPEN=false, PLACEWANTED=
    three sections inside "Questions and details" the visitor asked for, and ALTOPEN is the
    comparison of all four memberships, which starts open because the complaint that made
    rule 64 was that comparing them was hidden. */
-let PLACESOPEN=false, MOREOPEN=false, MOREPICK=null, ALTOPEN=null;
+let PLACESOPEN=false, MOREOPEN=false, MOREPICK=null, ALTOPEN=null, PLANDETAILS_OPEN=false;
 /* What has been typed into the search box above the places. It filters what is already
    near you; the full search screen (rule 63) is the fallback when nothing here matches. */
 let VENUEQ='';
@@ -4307,15 +4341,14 @@ function recommendationScreen() {
         <span class="weekrow__pname">${esc(x.venue.name)}<small>${x.distanceKm} km</small></span>
       </button>
       <span class="weekrow__end">
-        <!-- Rule 13: the per-venue limit is published, and it is the one fact about this
-             row the plan card cannot carry — so it stays on the row. A plan that does not
-             open the place at all says which one does, and says it loudly; a plan that
-             does says how often, and says it quietly. -->
-        ${x.included
-          ? (/^(included|not included)/i.test(x.access) ? '' : `<span class="weekrow__limit">${esc(x.access)}</span>`)
-          : `<span class="weekrow__pill">${x.needs?esc(x.needs.name):'Not included'} only</span>`}
-        ${adjusting && x.alternatives>1?`<button class="weekrow__swap" data-swap="${esc(x.day)}"
-          aria-label="Show a different place for ${esc(x.day)}">${icon('refresh',15)} <span>swap</span></button>`:''}
+        ${MOBILE()
+          ? `<button class="weekrow__change" data-venue="${esc(x.venue.id)}"
+              aria-label="Change venue for ${esc(x.day)}">${icon('refresh',15)} Change</button>`
+          : `${x.included
+              ? (/^(included|not included)/i.test(x.access) ? '' : `<span class="weekrow__limit">${esc(x.access)}</span>`)
+              : `<span class="weekrow__pill">${x.needs?esc(x.needs.name):'Not included'} only</span>`}
+            ${adjusting && x.alternatives>1?`<button class="weekrow__swap" data-swap="${esc(x.day)}"
+              aria-label="Show a different place for ${esc(x.day)}">${icon('refresh',15)} <span>swap</span></button>`:''}`}
       </span>
     </li>`).join('')}</ol>
 
@@ -4495,6 +4528,19 @@ function recommendationScreen() {
     ${allPlans}
   </div>`;
 
+  const planSummary = MOBILE() ? `<div class="plan-summary">
+    <div class="plan-summary__badge">${isRec ? 'Recommended for you' : 'Your choice'}</div>
+    <div class="plan-summary__idrow">
+      <span class="plan-summary__name">${esc(plan.name)}</span>
+      <span class="plan-summary__price">${price} €<small> / month</small></span>
+    </div>
+    <p class="plan-summary__fact">${icon('checkThin',16)}<span>${wp.perMonth
+      ? `${wp.perMonth} visits a month fits your routine`
+      : (hereT && hereT.nearby ? `Opens ${hereT.included} of ${hereT.nearby} places near you` : esc(plan.bestFor))}</span></p>
+    <button class="plan-summary__link linkish strong" type="button" data-toggle-plan-details>See plan details &rarr;</button>
+    ${S.email?'':`<button class="linkish plan-summary__save" data-go="save">Save this and come back later</button>`}
+  </div>` : '';
+
   /* Two sections in this column, not six. Karim: "I don't know why you made so many
      containers, I want simplicity." The places and the week are the story, and they
      are the only things that live here. The plan, why it fits, and what it opens
@@ -4619,13 +4665,16 @@ function recommendationScreen() {
     : weekPhrase ? `You want to ${weekPhrase}, near ${esc(where)}.`
     : GOAL_ECHO[a.goal] ? `You want to ${GOAL_ECHO[a.goal]}, near ${esc(where)}.`
     : `Everything below is near ${esc(where)}.`;
-  const story = `${ulaRow()}
-    <h1 class="h-question reco-hero__title" tabindex="-1">${GOAL_TITLE[a.goal]
-      ? `Your plan for ${GOAL_TITLE[a.goal]}`
-      : `Your plan near ${esc(where)}`}</h1>
-    <p class="reco-hero__lede">${lede}</p>
-    ${answerChips({ label:'You told us' })}
+  const heroBlock = `${ulaRow()}
+    <h1 class="h-question reco-hero__title" tabindex="-1">${MOBILE()
+      ? 'Your week, made to fit'
+      : (GOAL_TITLE[a.goal] ? `Your plan for ${GOAL_TITLE[a.goal]}` : `Your plan near ${esc(where)}`)}</h1>
+    <p class="reco-hero__lede">${MOBILE()
+      ? 'Based on what you told us, here&rsquo;s a routine you could actually keep.'
+      : lede}</p>
     ${match.reachedFurther?`<div class="notice notice--grey">${icon('info',19)}<span>Nothing in this pilot&rsquo;s venue set does ${esc(groupWords(groups))} right by ${esc(where)}, so I looked across the city. The distances below are real.</span></div>`:''}`;
+  const chipsBlock = answerChips({ label:'You told us' });
+  const story = `${heroBlock}${chipsBlock}`;
 
   /* Karim's design, 14 Aug: one row, third of three, carrying everything that is not the
      week, the places or the price. Its handle names the three things inside it, so it is
@@ -4674,7 +4723,7 @@ function recommendationScreen() {
      65: the plan leads, and the week follows it. */
   return `${topbar(1)}<div class="two-col two-col--reco"><main class="two-col__main" id="main">
     ${MOBILE()
-      ? `${story}<div class="planbox-inline">${planAside}</div>${weekBlock}${placesSection}${appsBlock()}${moreRow}`
+      ? `${heroBlock}${weekBlock}${chipsBlock}${planSummary}${PLANDETAILS_OPEN?`<div class="planbox-inline">${planAside}</div>`:''}${placesSection}${appsBlock()}${moreRow}`
       : `${story}${weekBlock}${placesSection}${appsBlock()}${moreRow}`}
   </main>
   ${MOBILE()?'':`<aside class="two-col__aside two-col__aside--sticky">
@@ -5135,7 +5184,7 @@ function go(route, opts={}) {
      email anyway, as part of the membership; saving is a separate choice, on its own
      screen, reached by someone who wants to leave. */
   ROUTE = route; EDITING = null; SHEET = null; CITYPICK = false; CITYWANTED = null; ASKOPEN = false; DAYSOPEN = false; PLACEWANTED = null; VENUESOPEN = false; APPSOPEN = false; DAYNOTE = null; WEEKOPEN = false; VENUEQ = '';
-  PLACESOPEN = false; MOREOPEN = false; MOREPICK = null; ALTOPEN = null; WHEREPICK = false; SEEALL = false;
+  PLACESOPEN = false; MOREOPEN = false; MOREPICK = null; ALTOPEN = null; PLANDETAILS_OPEN = false; WHEREPICK = false; SEEALL = false;
   /* A reviewer saw the save screen's "enter a valid email" error appear under the
      details form's own email field. Errors belong to the screen that produced them. */
   ERRORS = {}; FIELDS = {}; NOCHOICE = false; UNCLEAR = false;
@@ -5246,7 +5295,7 @@ document.addEventListener('change', e => {
   renderInPlace();
 });
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-change-city],[data-city],[data-unsure],[data-open-ask],[data-rail],[data-radius],[data-toggle-venues],[data-toggle-apps],[data-toggle-week],[data-toggle-places],[data-toggle-more],[data-more],[data-toggle-alt],[data-open-days],[data-day],[data-swap],[data-pick-plan],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula],[data-search-example],[data-venue-clear],[data-venue-search-all],[data-toggle-where],[data-where],[data-cat],[data-see-all],[data-pick]');
+  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-change-city],[data-city],[data-unsure],[data-open-ask],[data-rail],[data-radius],[data-toggle-venues],[data-toggle-apps],[data-toggle-week],[data-toggle-places],[data-toggle-more],[data-more],[data-toggle-alt],[data-toggle-plan-details],[data-open-days],[data-day],[data-swap],[data-pick-plan],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula],[data-search-example],[data-venue-clear],[data-venue-search-all],[data-toggle-where],[data-where],[data-cat],[data-see-all],[data-pick]');
   if (!t) return;
 
   /* ---- the venue page. Four controls, and three of them are answers. ---- */
@@ -5346,6 +5395,7 @@ document.addEventListener('click', e => {
     WEEKOPEN = !wasOpen; DAYNOTE = null; render(false); return; }
   if (t.dataset.togglePlaces !== undefined) { PLACESOPEN = !PLACESOPEN; render(false); return; }
   if (t.dataset.toggleAlt !== undefined) { ALTOPEN = !(ALTOPEN===null ? !MOBILE() : ALTOPEN); render(false); return; }
+  if (t.dataset.togglePlanDetails !== undefined) { PLANDETAILS_OPEN = !PLANDETAILS_OPEN; render(false); return; }
   /* "Questions and details" names its three sections on its own handle, and each name is
      the way straight in. Clicking the section that is already open closes it, so this is
      an accordion rather than three drawers that all end up open (rule 16). */

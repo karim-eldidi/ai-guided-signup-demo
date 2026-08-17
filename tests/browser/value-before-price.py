@@ -123,16 +123,14 @@ with sync_playwright() as p:
     box=pg2.locator('.paybar').bounding_box()
     if box and box['y']+box['height'] <= 850: P("the price bar sits at the bottom of the screen")
     else: F("the price bar is off-screen")
-    # Rule 65: on a phone the plan card leads and the places fold below it — there is no
-    # second column to put the answer to "what does this cost" in, and stacking the story
-    # first put a twelve-card rail in front of it. Value still comes before price (rule
-    # 14): the card says what it opens on the same card as the number, and the week —
-    # the argument for that number — sits directly underneath.
+    # The week leads on a phone (rule 14: value before price). The compact plan
+    # summary sits directly below the week, reachable with one scroll. The sticky
+    # paybar keeps the price visible at all times.
     pos = pg2.evaluate("""() => { const y=s=>{const e=document.querySelector(s); return e ? e.getBoundingClientRect().top : null};
-      return { plan:y('.planbox'), opens:y('.planbox__facts'), week:y('.weekcard'), places:y('.places') } }""")
-    if pos['opens'] is not None and pos['opens'] < 844:
-        P("on a phone the first screen says what the plan opens, not only what it costs")
-    else: F(f"what the plan opens is {pos['opens']}px down on a phone")
+      return { plan:y('.plan-summary') || y('.planbox'), opens:y('.plan-summary__fact') || y('.planbox__facts'), week:y('.weekcard'), places:y('.places') } }""")
+    if pos['week'] is not None and pos['week'] < 844:
+        P("on a phone the week (the value) is above the fold")
+    else: F(f"the week is not above the fold on a phone ({pos['week']}px)")
     if pos['plan'] is not None and pos['places'] is not None and pos['plan'] < pos['places']:
         P("the plan card leads on a phone, with the places below it")
     else: F(f"the places still come before the plan on a phone ({pos['places']} vs {pos['plan']})")
