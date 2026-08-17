@@ -441,13 +441,18 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
 }
 .options--rows .option-card__icon { width: 36px; height: 36px; }
 
-/* --- answering in your own words ----------------------------------------- */
-/* Was a link that opened a field. It is the whole point of a guide you can
-   talk to, so it is visible, labelled, and sits directly under the options. */
-.ownwords { margin-top: 12px; }
+.ownwords-toggle { margin-top: 14px; }
+.ownwords__btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 13.5px; font-weight: 600; color: var(--navy-soft);
+  background: transparent; border: 0; padding: 4px 0;
+  cursor: pointer; transition: color .15s ease;
+}
+.ownwords__btn:hover { color: var(--ink); text-decoration: underline; }
+.ownwords { margin-top: 6px; }
 .ownwords__label {
-  display: flex; align-items: center; gap: 9px;
-  font-size: 15px; color: var(--navy); margin-bottom: 7px;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 7px;
 }
 .ownwords__row {
   display: flex; align-items: center; gap: 10px;
@@ -3062,7 +3067,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 17 Aug 14:57 UTC</span>
+  <span class="demo-banner__build">build 17 Aug 15:13 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -3892,7 +3897,7 @@ let CITYPICK=false, CITYWANTED=null, ASKOPEN=false, DAYSOPEN=false, PLACEWANTED=
    three sections inside "Questions and details" the visitor asked for, and ALTOPEN is the
    comparison of all four memberships, which starts open because the complaint that made
    rule 64 was that comparing them was hidden. */
-let PLACESOPEN=false, MOREOPEN=false, MOREPICK=null, ALTOPEN=null, PLANPLUS=null, PLANASK=false, PLANDETAILS_OPEN=false;
+let PLACESOPEN=false, MOREOPEN=false, MOREPICK=null, ALTOPEN=null, PLANPLUS=null, PLANASK=false, PLANDETAILS_OPEN=false, FREETEXT_OPEN=false;
 let WEEK_ADD_MODE=false, WEEK_ADD_DAY=null, WEEK_SWAP_DAY=null, WEEK_SWAP_GROUP=null, WEEK_SWAP_VENUE_ID=null, WEEK_SWAP_OPTION_ID=null, WEEK_SWAP_OPTION_TITLE=null, WEEK_SWAP_FILTER='nearby', WEEK_SWAP_PICKING_DAY=false, WEEK_SWAP_PICKING_ACT=false;
 /* Saving is an interruption, not a checkout step. Keep its state outside the route so
    the modal can open and close without moving the visitor or changing browser history. */
@@ -4598,10 +4603,7 @@ function nearbyRow() {
           SEEALL?'Show fewer places':'See all nearby places'} ${icon('arrowRight',17)}</button>`:''}
       </div>
     </div>
-    ${shown.length ? `<div class="hits hits--row">${shown.map(v=>placeCard(v)).join('')}</div>
-      <p class="placesrow__foot">${icon('info',15)} <span>The badge on each photograph is the cheapest membership that opens that place${
-        b.within.length>shown.length?` &mdash; ${b.within.length-shown.length} more within ${b.radius.km} km`:''}.
-        Distances are measured from ${esc(areaName)} rather than from your door: the pilot has no map service.</span></p>`
+    ${shown.length ? `<div class="hits hits--row">${shown.map(v=>placeCard(v)).join('')}</div>`
       : `<div class="notice notice--grey">${icon('info',19)}<span>${b.list.length
           ? `The nearest is <b>${esc(b.list[0].name)}</b>, ${b.list[0].distanceKm} km away. Widen the distance above and it comes into range.`
           : `Nothing in the pilot&rsquo;s ${VENUES.length} venues does that. Try another activity, or search for the place by name.`}</span></div>`}
@@ -4998,12 +5000,21 @@ function fitScreen() {
       <div class="btn-row desktop-cta">
         ${idx>0?`<button class="btn btn--secondary" type="button" data-back="${esc(q.id)}">${icon('back',18)} Back</button>`:''}
         <button class="btn btn--primary" type="submit" data-continue style="flex:1 1 auto">Continue</button></div>
-      <div class="ownwords">
-        <div class="ownwords__label">${icon('speech',18)} None of these? Say it in your own words &mdash; Urby reads it.</div>
-        <div class="ownwords__row">
-          <input type="text" name="freeText" placeholder="${esc(q.placeholder)}" aria-label="Answer in your own words" autocomplete="off">
-          <button class="ownwords__send" type="submit">Send</button></div></div>
-      ${EDITING?`<p class="small muted" style="margin-top:18px">You&rsquo;re changing an earlier answer. Your recommendation updates as soon as you continue.</p>`:''}
+      <div class="ownwords-toggle">
+        ${FREETEXT_OPEN ? `
+          <div class="ownwords">
+            <div class="ownwords__label">${icon('speech',17)} <span>Answer in your own words</span></div>
+            <div class="ownwords__row">
+              <input type="text" name="freeText" placeholder="${esc(q.placeholder)}" aria-label="Answer in your own words" autocomplete="off" autofocus>
+              <button class="ownwords__send" type="submit">Send</button>
+            </div>
+          </div>
+        ` : `
+          <button class="ownwords__btn linkish" type="button" data-toggle-freetext>
+            ${icon('speech',15)} <span>None of these? Type in your own words</span>
+          </button>
+        `}
+      </div>
       <div class="sticky-cta">
         ${idx>0?`<button class="btn btn--secondary" type="button" data-back="${esc(q.id)}">${icon('back',18)}</button>`:''}
         <button class="btn btn--primary" type="submit" data-continue>Continue</button></div>
@@ -5243,23 +5254,11 @@ function recommendationScreen() {
     <p class="week__changed" role="status">${icon('checkFill',16)} <span>${DAYNOTE || `<b>${esc(plan.name)}</b> fits &mdash; ${plural(wp.perMonth,'visit','visits')} a month.`}</span></p>
     ${gap?`<p class="weekcard__adds">${icon('sparkle',17)} <span><b>${esc(gap.needs.name)}</b> adds ${esc(gap.venue.name)}
       &mdash; the ${esc(gap.activity.toLowerCase())} option that completes your week.</span></p>`:''}
-    <p class="weekcard__foot">${icon('info',15)} <span>A suggestion, not a booking — check each venue&rsquo;s timetable before you go.${wp.note?` ${esc(wp.note)}`:''}</span></p>
   </section>` : '';
 
   /* ---- the plan, on the side, as a consequence of the above ---- */
   /* ---- why this plan: the whole argument, folded behind its own heading ---- */
-  /* Karim, 14 Aug: "make this section collapsed by default." It used to state the first
-     two reasons out loud so the card was not just a price and a chevron (rule 17) — but
-     the card above it already carries the price, the cost per session and how many
-     places the money opens, so the card still argues even with this closed. What is in
-     here is the working: every reason, the caveats, and coverage activity by activity.
-     One fold now, not a fold inside a fold, and the sticky column fits again (rule 51).
-
-     Two things stay outside it, because a closed drawer cannot offer them: the way back
-     to Urby's own pick when this is not it, and the line saying where the answer came
-     from. Rule 67. */
   const covHtml = coverageBlock(rec, match, plan);
-  const whyFoot = `<p class="why__foot">From your four answers and each plan&rsquo;s published access rules.</p>`;
   const whyHead = isRec?`Why ${esc(plan.name)} for you`:`What ${esc(plan.name)} means for you`;
   const whyBody = `<ul class="why__list">${whyCards.map(r=>`<li><span class="why__icon">${icon(r.icon,16)}</span><span>${esc(r.text)}</span></li>`).join('')}</ul>
       ${rec.notes.length?`<p class="why__note">${icon('info',15)} <span>${esc(rec.notes.join(' '))}</span></p>`:''}
@@ -5267,7 +5266,7 @@ function recommendationScreen() {
   const whyBlock = `<details class="reco-why shelf__row"${MOREPICK==='why'?' open':''}>
     <summary class="shelf__head" data-more="why">${icon('sparkle',18)}<span class="shelf__label">${whyHead}</span>
       <span class="shelf__hint">${covHtml?'the reasons, and what it opens near you':'the reasons behind it'}</span>${icon('chevron',18)}</summary>
-    <div class="shelf__body">${whyBody}${whyFoot}</div>
+    <div class="shelf__body">${whyBody}</div>
   </details>`;
 
   /* One comparison, visible, instead of three ways of saying the same thing. The card
@@ -5568,9 +5567,7 @@ function recommendationScreen() {
           <div class="shelf__body">
             <div class="fitpanel__label">What&rsquo;s included in ${esc(plan.name)}</div>
             <ul class="reasons">${(plan.benefits||[]).map(x=>`<li>${icon('checkThin',19)}<span>${esc(x)}</span></li>`).join('')}</ul>
-            <p class="xsmall muted" style="margin-top:10px">From the published Urban Sports Club pricing page.</p>
-
-            <div class="fitpanel__label" style="margin-top:26px">Worth knowing about ${esc(plan.name)}</div>
+            <div class="fitpanel__label" style="margin-top:20px">Worth knowing about ${esc(plan.name)}</div>
             <ul class="reasons">${plan.limitations.map(l=>`<li>${icon('info',19)}<span>${esc(l)}</span></li>`).join('')}</ul>
             <p class="xsmall muted" style="margin-top:12px">${esc(plan.checkInModel)} · ${esc(plan.venueCount)} venues · ${commitment.minimumTermMonths===1?'no minimum term':commitment.minimumTermMonths+'-month minimum term'}. ${esc(RULES.cancellationNotice)}</p>
           </div></details>
@@ -5681,16 +5678,11 @@ function plansScreen() {
 
   const journeyRoute=fitComplete(S.answers)?'recommendation':'fit';
   const guide=`<aside class="plans-guide" aria-label="Get help choosing a membership">
-    <div class="plans-guide__brand">${ulaAvatar('sm')}<span>Urby</span></div>
-    <h2>Want help choosing?</h2>
-    <p>Go back to your journey and I&rsquo;ll match one plan to your activities, nearby venues and weekly routine.</p>
-    <div class="plans-guide__rows">
-      <div class="plans-guide__row">${icon('target',18)}<span>Activities you want</span></div>
-      <div class="plans-guide__row">${icon('pin',18)}<span>Where you&rsquo;ll go</span></div>
-      <div class="plans-guide__row">${icon('calendar',18)}<span>How often you&rsquo;ll visit</span></div>
-    </div>
-    <button class="btn btn--primary" type="button" data-go="${journeyRoute}">Continue my journey ${icon('arrowRight',17)}</button>
-    <span class="plans-guide__note">About 2 minutes · no email needed</span>
+    <div class="plans-guide__brand">${ulaAvatar('sm')}<span>Urby &middot; Guide</span></div>
+    <h2>Not sure which plan to pick?</h2>
+    <p>Answer 4 quick questions and I&rsquo;ll match one plan to your favourite activities, nearby venues and weekly routine.</p>
+    <button class="btn btn--primary" type="button" data-go="${journeyRoute}" style="margin-top:16px">Find my recommended plan ${icon('arrowRight',17)}</button>
+    <span class="plans-guide__note">2 minutes · no email needed</span>
   </aside>`;
 
   return `${topbar(1,{savedNote:Boolean(S.email&&S.saveOptIn)})}<main class="content plans-page" id="main">
@@ -6154,7 +6146,7 @@ function go(route, opts={}) {
      email anyway, as part of the membership; saving is a separate choice, on its own
      screen, reached by someone who wants to leave. */
   ROUTE = route; EDITING = null; SHEET = null; CITYPICK = false; CITYWANTED = null; ASKOPEN = false; DAYSOPEN = false; PLACEWANTED = null; VENUESOPEN = false; APPSOPEN = false; DAYNOTE = null; WEEKOPEN = false; VENUEQ = '';
-  PLACESOPEN = false; MOREOPEN = false; MOREPICK = null; ALTOPEN = null; PLANPLUS = null; PLANASK = false; PLANDETAILS_OPEN = false; WHEREPICK = false; SEEALL = false;
+  PLACESOPEN = false; MOREOPEN = false; MOREPICK = null; ALTOPEN = null; PLANPLUS = null; PLANASK = false; PLANDETAILS_OPEN = false; WHEREPICK = false; SEEALL = false; FREETEXT_OPEN = false;
   /* A reviewer saw the save screen's "enter a valid email" error appear under the
      details form's own email field. Errors belong to the screen that produced them. */
   ERRORS = {}; FIELDS = {}; NOCHOICE = false; UNCLEAR = false;
@@ -6487,6 +6479,7 @@ document.addEventListener('click', e => {
   }
   if (t.dataset.toggleVenues !== undefined) { VENUESOPEN = !VENUESOPEN; render(false); return; }
   if (t.dataset.toggleApps !== undefined) { APPSOPEN = !APPSOPEN; render(false); return; }
+  if (t.dataset.toggleFreetext !== undefined) { FREETEXT_OPEN = !FREETEXT_OPEN; render(false); return; }
   /* The week is open; what folds is adjusting it. The open state has to survive the
      re-render, or changing a day would close the thing you were editing. */
   if (t.dataset.toggleWeek !== undefined) {
