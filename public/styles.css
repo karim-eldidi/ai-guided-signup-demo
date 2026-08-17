@@ -2967,12 +2967,25 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   box-shadow: 0 4px 16px rgba(0,0,0,0.09) !important;
 }
 
-.weekrow__dropbadge {
-  display: none; font-size: 11.5px; font-weight: 700; color: var(--ink);
-  background: var(--yellow-bright); padding: 4px 9px; border-radius: 999px;
+.pillars-section[data-drop-freedom] {
+  position: relative; transition: all .18s ease; border-radius: var(--radius-lg);
 }
-.weekrow.is-dragover .weekrow__dropbadge { display: inline-flex; align-items: center; gap: 4px; }
-.weekrow.is-dragover .weekrow__actions { display: none; }
+.pillars-freedom-drop-cue {
+  display: none; align-items: center; justify-content: center; gap: 8px;
+  background: var(--yellow-pale); border: 2px dashed var(--ink);
+  padding: 12px; border-radius: var(--radius-lg); font-size: 13px; font-weight: 700;
+  color: var(--ink); margin-bottom: 12px;
+}
+.pillars-section.is-freedom-dragover {
+  outline: 2.5px dashed var(--ink); outline-offset: 4px;
+  background: rgba(253, 243, 207, 0.2);
+}
+.pillars-section.is-freedom-dragover .pillars-freedom-drop-cue {
+  display: flex;
+}
+body.is-dragging-pillar .pillar-card:not(.is-dragging) {
+  opacity: 0.5;
+}
 
 .venue-card__draghint, .pillar-venue__draghint {
   display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700;

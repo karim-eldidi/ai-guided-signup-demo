@@ -2981,12 +2981,25 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   box-shadow: 0 4px 16px rgba(0,0,0,0.09) !important;
 }
 
-.weekrow__dropbadge {
-  display: none; font-size: 11.5px; font-weight: 700; color: var(--ink);
-  background: var(--yellow-bright); padding: 4px 9px; border-radius: 999px;
+.pillars-section[data-drop-freedom] {
+  position: relative; transition: all .18s ease; border-radius: var(--radius-lg);
 }
-.weekrow.is-dragover .weekrow__dropbadge { display: inline-flex; align-items: center; gap: 4px; }
-.weekrow.is-dragover .weekrow__actions { display: none; }
+.pillars-freedom-drop-cue {
+  display: none; align-items: center; justify-content: center; gap: 8px;
+  background: var(--yellow-pale); border: 2px dashed var(--ink);
+  padding: 12px; border-radius: var(--radius-lg); font-size: 13px; font-weight: 700;
+  color: var(--ink); margin-bottom: 12px;
+}
+.pillars-section.is-freedom-dragover {
+  outline: 2.5px dashed var(--ink); outline-offset: 4px;
+  background: rgba(253, 243, 207, 0.2);
+}
+.pillars-section.is-freedom-dragover .pillars-freedom-drop-cue {
+  display: flex;
+}
+body.is-dragging-pillar .pillar-card:not(.is-dragging) {
+  opacity: 0.5;
+}
 
 .venue-card__draghint, .pillar-venue__draghint {
   display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700;
@@ -3610,7 +3623,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 17 Aug 23:50 UTC</span>
+  <span class="demo-banner__build">build 17 Aug 23:52 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -5864,7 +5877,8 @@ function recommendationScreen() {
     </div>
   </div>` : '';
 
-  const pillarsBlock = groups.length ? `<section class="pillars-section">
+  const pillarsBlock = groups.length ? `<section class="pillars-section" data-drop-freedom="true">
+    <div class="pillars-freedom-drop-cue">${icon('plus', 16)} <span>Drop any studio here to add its sport</span></div>
     <div class="pillars-list">
       ${groups.map(g => {
         const grp = groupById(g.id || g);
@@ -5873,7 +5887,7 @@ function recommendationScreen() {
         const isExp = Boolean(EXPANDED_PILLARS[grp.id]);
         const grpVenues = isExp ? grpAllVenues.slice(0, 6) : grpAllVenues.slice(0, 2);
         const moreCount = grpAllVenues.length - 2;
-        return `<div class="pillar-card">
+        return `<div class="pillar-card" data-activity-id="${esc(grp.id)}" draggable="true" data-drag-pillar="${esc(grp.id)}" title="Drag away or click ✕ to remove this sport">
           <div class="pillar-card__head">
             <span class="pillar-card__icon">${icon(grp.icon, 18)}</span>
             <div class="pillar-card__titlebox">
@@ -7360,98 +7374,185 @@ document.addEventListener('click', e => { /* click the backdrop to dismiss */
   if (e.target.id === 'exit-modal') { e.target.hidden = true; document.body.style.overflow=''; }
 });
 
-/* --- HTML5 Drag and Drop for Routine Builder --- */
+/* --- HTML5 Drag and Drop for Smart Container Routine Builder --- */
 let DRAGGED_VENUE = null;
+let DRAGGED_PILLAR = null;
 
 document.addEventListener('dragstart', e => {
+  const pillar = e.target.closest('[data-drag-pillar]');
   const card = e.target.closest('[data-drag-venue]');
-  if (!card) return;
-  DRAGGED_VENUE = {
-    id: card.dataset.dragVenue,
-    name: card.dataset.dragName || ''
-  };
-  try {
-    e.dataTransfer.setData('text/plain', card.dataset.dragVenue);
-    e.dataTransfer.effectAllowed = 'copyMove';
-  } catch (_) {}
-  card.classList.add('is-dragging');
-  document.querySelectorAll('[data-drop-day]').forEach(el => el.classList.add('is-drop-active'));
+  
+  if (pillar && !card) {
+    DRAGGED_PILLAR = { id: pillar.dataset.dragPillar };
+    try {
+      e.dataTransfer.setData('text/plain', 'pillar:' + pillar.dataset.dragPillar);
+      e.dataTransfer.effectAllowed = 'move';
+    } catch (_) {}
+    pillar.classList.add('is-dragging');
+    document.body.classList.add('is-dragging-pillar');
+    return;
+  }
+  
+  if (card) {
+    const fromPillar = card.closest('.pillar-card');
+    DRAGGED_VENUE = {
+      id: card.dataset.dragVenue,
+      name: card.dataset.dragName || '',
+      fromActivity: fromPillar ? fromPillar.dataset.activityId : null
+    };
+    try {
+      e.dataTransfer.setData('text/plain', card.dataset.dragVenue);
+      e.dataTransfer.effectAllowed = 'copyMove';
+    } catch (_) {}
+    card.classList.add('is-dragging');
+    document.querySelectorAll('[data-drop-day], [data-drop-freedom]').forEach(el => el.classList.add('is-drop-active'));
+  }
 });
 
 document.addEventListener('dragend', e => {
   const card = e.target.closest('[data-drag-venue]');
+  const pillar = e.target.closest('[data-drag-pillar]');
   if (card) card.classList.remove('is-dragging');
-  document.querySelectorAll('[data-drop-day]').forEach(el => {
-    el.classList.remove('is-drop-active', 'is-dragover');
+  if (pillar) pillar.classList.remove('is-dragging');
+  document.body.classList.remove('is-dragging-pillar');
+  document.querySelectorAll('[data-drop-day], [data-drop-freedom]').forEach(el => {
+    el.classList.remove('is-drop-active', 'is-dragover', 'is-freedom-dragover');
   });
   DRAGGED_VENUE = null;
+  DRAGGED_PILLAR = null;
 });
 
 document.addEventListener('dragover', e => {
-  const dropzone = e.target.closest('[data-drop-day]');
-  if (!dropzone) return;
-  e.preventDefault();
-  try { e.dataTransfer.dropEffect = 'copy'; } catch (_) {}
-  dropzone.classList.add('is-dragover');
+  const freedomDrop = e.target.closest('[data-drop-freedom]');
+  const dayDrop = e.target.closest('[data-drop-day]');
+  
+  if (freedomDrop) {
+    e.preventDefault();
+    try { e.dataTransfer.dropEffect = 'copy'; } catch (_) {}
+    freedomDrop.classList.add('is-freedom-dragover');
+    return;
+  }
+  if (dayDrop) {
+    e.preventDefault();
+    try { e.dataTransfer.dropEffect = 'copy'; } catch (_) {}
+    dayDrop.classList.add('is-dragover');
+    return;
+  }
+  if (DRAGGED_PILLAR) {
+    e.preventDefault();
+    try { e.dataTransfer.dropEffect = 'move'; } catch (_) {}
+  }
 });
 
 document.addEventListener('dragleave', e => {
-  const dropzone = e.target.closest('[data-drop-day]');
-  if (dropzone && !dropzone.contains(e.relatedTarget)) {
-    dropzone.classList.remove('is-dragover');
+  const freedomDrop = e.target.closest('[data-drop-freedom]');
+  const dayDrop = e.target.closest('[data-drop-day]');
+  if (freedomDrop && !freedomDrop.contains(e.relatedTarget)) {
+    freedomDrop.classList.remove('is-freedom-dragover');
+  }
+  if (dayDrop && !dayDrop.contains(e.relatedTarget)) {
+    dayDrop.classList.remove('is-dragover');
   }
 });
 
 document.addEventListener('drop', e => {
-  const dropzone = e.target.closest('[data-drop-day]');
-  if (!dropzone) return;
-  e.preventDefault();
-  dropzone.classList.remove('is-dragover', 'is-drop-active');
-  let venueId = null;
-  try { venueId = e.dataTransfer.getData('text/plain'); } catch (_) {}
-  if (!venueId && DRAGGED_VENUE) venueId = DRAGGED_VENUE.id;
-  const targetDay = dropzone.dataset.dropDay;
-  if (!venueId || !targetDay) return;
-
-  const venue = VENUES.find(v => v.id === venueId);
-  if (!venue) return;
-
-  let group = (A().activities || []).map(groupById).find(g => g && venueInGroup(venue, g));
-  if (!group) group = ACTIVITY_GROUPS.find(g => venueInGroup(venue, g));
-  if (!group) return;
-
-  const chosen = (S.answers.activities || []).filter(x => x !== SKIP);
-  if (!chosen.includes(group.id)) S.answers.activities = [...chosen, group.id];
-
-  S.weekSwap = Object.assign({}, S.weekSwap, { [targetDay]: { venueId: venue.id, groupId: group.id } });
-
-  const curDays = new Set(S.weekDays && S.weekDays.length ? S.weekDays : weekPlan(A().activities||[], matchVenues(A()).pool||[], currentPlan().id, S.answers.frequency).sessions.map(x=>x.day));
-  curDays.add(targetDay);
-  S.weekDays = DAY_ORDER.filter(d => curDays.has(d));
-  const newFreq = freqForDays(S.weekDays.length);
-  if (newFreq !== S.answers.frequency) {
-    S.answers.frequency = newFreq;
-  }
-
-  const wasPlan = currentPlan();
-  const firstPlan = firstPlanWithAccess(venue);
-  if (firstPlan && firstPlan.rank > wasPlan.rank) {
-    S.chosenPlanId = firstPlan.id;
-    S.planOverridden = false;
-    DAYNOTE = `Added <b>${esc(venue.name)}</b> to ${targetDay} &mdash; upgraded your plan to <b>${esc(firstPlan.name)}</b> to cover it.`;
-  } else {
-    S.planOverridden = false;
-    S.chosenPlanId = null;
-    const nowPlan = currentPlan();
-    if (nowPlan.id !== wasPlan.id) {
-      DAYNOTE = `Added <b>${esc(venue.name)}</b> to ${targetDay} &mdash; updated your recommendation to <b>${esc(nowPlan.name)}</b>.`;
-    } else {
-      DAYNOTE = `Added <b>${esc(venue.name)}</b> to ${targetDay}`;
+  const freedomDrop = e.target.closest('[data-drop-freedom]');
+  const dayDrop = e.target.closest('[data-drop-day]');
+  
+  // CASE 1: Dragged a sport pillar OUTSIDE the container -> THROW AWAY!
+  if (DRAGGED_PILLAR && !freedomDrop) {
+    e.preventDefault();
+    const actId = DRAGGED_PILLAR.id;
+    const cur = (S.answers.activities || []).filter(x => x !== SKIP && x !== actId);
+    if (cur.length > 0) {
+      S.answers.activities = cur;
+      S.planOverridden = false;
+      S.chosenPlanId = null;
+      if (S.weekSwap) {
+        Object.keys(S.weekSwap).forEach(d => {
+          if (S.weekSwap[d] && S.weekSwap[d].groupId === actId) delete S.weekSwap[d];
+        });
+      }
+      log('activity_dragged_out_discarded', { activity: actId });
+      render(false);
     }
+    return;
   }
+  
+  // CASE 2: Dragged a venue INTO the Activity Freedom container -> Auto-create sport!
+  if (freedomDrop && DRAGGED_VENUE) {
+    e.preventDefault();
+    freedomDrop.classList.remove('is-freedom-dragover', 'is-drop-active');
+    const venueId = DRAGGED_VENUE.id;
+    const venue = VENUES.find(v => v.id === venueId);
+    if (!venue) return;
+    
+    let group = (A().activities || []).map(groupById).find(g => g && venueInGroup(venue, g));
+    if (!group) group = ACTIVITY_GROUPS.find(g => venueInGroup(venue, g)) || ACTIVITY_GROUPS[0];
+    
+    const cur = (S.answers.activities || []).filter(x => x !== SKIP);
+    if (!cur.includes(group.id)) {
+      S.answers.activities = [...cur, group.id];
+      S.planOverridden = false;
+      S.chosenPlanId = null;
+      log('activity_added_via_venue_drag', { activity: group.id, venue: venue.id });
+      render(false);
+    }
+    return;
+  }
+  
+  // CASE 3: Dropped onto a Day in Week Schedule
+  if (dayDrop) {
+    e.preventDefault();
+    dayDrop.classList.remove('is-dragover', 'is-drop-active');
+    let venueId = null;
+    try { venueId = e.dataTransfer.getData('text/plain'); } catch (_) {}
+    if (!venueId && DRAGGED_VENUE) venueId = DRAGGED_VENUE.id;
+    if (venueId && venueId.startsWith('pillar:')) return;
+    const targetDay = dayDrop.dataset.dropDay;
+    if (!venueId || !targetDay) return;
 
-  log('venue_drag_dropped_on_week', { day: targetDay, venue: venue.id });
-  render(false);
+    const venue = VENUES.find(v => v.id === venueId);
+    if (!venue) return;
+
+    let group = (A().activities || []).map(groupById).find(g => g && venueInGroup(venue, g));
+    if (!group) group = ACTIVITY_GROUPS.find(g => venueInGroup(venue, g));
+    if (!group) return;
+
+    const chosen = (S.answers.activities || []).filter(x => x !== SKIP);
+    if (!chosen.includes(group.id)) S.answers.activities = [...chosen, group.id];
+
+    S.weekSwap = Object.assign({}, S.weekSwap, { [targetDay]: { venueId: venue.id, groupId: group.id } });
+
+    const curDays = new Set(S.weekDays && S.weekDays.length ? S.weekDays : weekPlan(A().activities||[], matchVenues(A()).pool||[], currentPlan().id, S.answers.frequency).sessions.map(x=>x.day));
+    curDays.add(targetDay);
+    S.weekDays = DAY_ORDER.filter(d => curDays.has(d));
+    const newFreq = freqForDays(S.weekDays.length);
+    if (newFreq !== S.answers.frequency) {
+      S.answers.frequency = newFreq;
+    }
+
+    const wasPlan = currentPlan();
+    const firstPlan = firstPlanWithAccess(venue);
+    if (firstPlan && firstPlan.rank > wasPlan.rank) {
+      S.chosenPlanId = firstPlan.id;
+      S.planOverridden = false;
+      DAYNOTE = `Added <b>${esc(venue.name)}</b> to ${targetDay} &mdash; upgraded your plan to <b>${esc(firstPlan.name)}</b> to cover it.`;
+    } else {
+      S.planOverridden = false;
+      S.chosenPlanId = null;
+      const nowPlan = currentPlan();
+      if (nowPlan.id !== wasPlan.id) {
+        DAYNOTE = `Added <b>${esc(venue.name)}</b> to ${targetDay} &mdash; updated your recommendation to <b>${esc(nowPlan.name)}</b>.`;
+      } else {
+        DAYNOTE = `Added <b>${esc(venue.name)}</b> to ${targetDay}`;
+      }
+    }
+
+    log('venue_drag_dropped_on_week', { day: targetDay, venue: venue.id });
+    render(false);
+    return;
+  }
 });
 
 /* keep the card's selected state in step with its checkbox, without re-rendering
