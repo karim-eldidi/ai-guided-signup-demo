@@ -1091,69 +1091,114 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 .modal__fine a { text-decoration: underline; }
 .modal__tertiary { display: inline-block; margin-top: 16px; background: none; border: 0; color: var(--navy-soft); font-size: 16px; text-decoration: none; }
 .modal--save {
-  max-width: 520px; width: 100%; padding: 24px 22px 20px; overflow-y: auto; max-height: calc(100vh - 40px);
-  text-align: left; border-radius: 18px; background: #fff; box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+  max-width: 900px; width: 100%; padding: 0; overflow-y: auto; max-height: calc(100vh - 48px);
+  text-align: left; border-radius: 20px; background: #fff; box-shadow: 0 24px 60px rgba(0,0,0,0.18);
 }
 .modal--save .modal__close {
-  z-index: 5; top: 14px; right: 16px; width: 34px; height: 34px;
-  border-radius: 50%; background: var(--cream);
+  z-index: 5; top: 16px; right: 18px; width: 36px; height: 36px;
+  border-radius: 50%; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.1);
   font-size: 22px; display: flex; align-items: center; justify-content: center;
 }
 .modal--save .savepanel {
-  display: flex; flex-direction: column; background: transparent; border: 0; padding: 0;
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  background: transparent; border: 0; padding: 0;
+}
+.savepanel__left {
+  background: var(--cream); padding: 32px 28px 28px;
+  border-right: 1px solid var(--cream-line);
+}
+.savepanel__right {
+  background: #fff; padding: 32px 28px 28px;
 }
 .savepanel__guide {
-  display: flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 700; color: var(--navy); margin-bottom: 6px;
+  display: flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 700; color: var(--navy); margin-bottom: 10px;
 }
 .savepanel__guide .ula-avatar {
-  width: 26px; height: 26px; margin: 0;
+  width: 28px; height: 28px; margin: 0;
 }
 .savepanel__title {
-  font-size: 24px; font-weight: 800; letter-spacing: -.02em; margin: 0 0 10px; color: var(--ink);
+  font-size: 24px; font-weight: 800; letter-spacing: -.02em; margin: 0 0 6px; color: var(--ink);
+}
+.savepanel__sub {
+  font-size: 14px; color: var(--navy-soft); line-height: 1.4; margin: 0 0 16px;
+}
+.savepanel__asktitle {
+  font-size: 22px; font-weight: 800; letter-spacing: -.02em; margin: 0 0 6px; color: var(--ink);
+}
+.savepanel__asksub {
+  font-size: 14px; color: var(--navy-soft); line-height: 1.4; margin: 0 0 16px;
 }
 
-/* Unified Visual Saved Routine Card */
-.saverecap__visual-card {
-  background: var(--cream); border: 1px solid var(--cream-line); border-radius: 14px;
-  padding: 14px; margin-bottom: 16px;
+/* Visual recap cards */
+.saverecap {
+  display: flex; flex-direction: column; gap: 12px;
 }
-.saverecap__top {
-  display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px;
-}
-.saverecap__plan-badge {
-  display: flex; align-items: center; gap: 8px;
-}
-.saverecap__plan-badge b {
-  font-size: 18px; font-weight: 800; color: var(--ink);
+.saverecap__head {
+  background: #fff; border: 1px solid var(--cream-line); border-radius: 12px;
+  padding: 14px 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);
 }
 .saverecap__tag {
   display: inline-block; background: var(--yellow-bright); color: var(--ink);
   font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em;
-  padding: 3px 8px; border-radius: 99px;
+  padding: 3px 8px; border-radius: 99px; margin-bottom: 6px;
 }
-.saverecap__price b {
-  font-size: 18px; font-weight: 800; color: var(--ink);
+.saverecap__plan {
+  display: flex; align-items: baseline; justify-content: space-between;
 }
-.saverecap__price small {
-  font-size: 12px; color: var(--navy-soft); font-weight: 500;
-}
+.saverecap__plan b { font-size: 20px; font-weight: 800; color: var(--ink); }
+.saverecap__plan span { font-size: 17px; font-weight: 800; color: var(--ink); }
+.saverecap__plan small { font-size: 12px; color: var(--navy-soft); font-weight: 500; }
+.saverecap__meta { font-size: 13px; color: var(--navy-soft); margin-top: 2px; }
 
-/* 3-card photo gallery (3:2 aspect ratio photography) */
-.saverecap__gallery {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px;
+.saverecap__label {
+  font-size: 11.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em;
+  color: var(--navy-soft); margin-bottom: 8px;
+}
+.saverecap__week {
+  background: #fff; border: 1px solid var(--cream-line); border-radius: 12px;
+  padding: 12px 14px;
+}
+.saverecap__days { display: flex; flex-direction: column; gap: 6px; }
+.saverecap__day-row {
+  display: flex; align-items: baseline; gap: 10px; font-size: 13px;
+}
+.saverecap__day-name {
+  font-weight: 800; color: var(--ink); width: 36px; flex-shrink: 0;
+}
+.saverecap__day-act {
+  color: var(--navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.saverecap__day-act b { font-weight: 700; color: var(--ink); }
+
+.saverecap__venues {
+  background: #fff; border: 1px solid var(--cream-line); border-radius: 12px;
+  padding: 12px 14px;
+}
+.saverecap__venue-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
 }
 .saverecap__venue-card {
   background: #fff; border: 1px solid var(--cream-line); border-radius: 8px;
   overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.03);
 }
 .saverecap__venue-img {
-  width: 100%; aspect-ratio: 3 / 2; overflow: hidden; background: #e6e2da;
+  position: relative;
+  width: 100%; aspect-ratio: 3 / 2; overflow: hidden; background: var(--yellow-pale);
+  display: grid; place-items: center;
 }
 .saverecap__venue-img img, .saverecap__venue-img picture {
+  position: absolute; inset: 0;
   width: 100%; height: 100%; object-fit: cover;
 }
+.saverecap__venue-img .venue-card__glyph {
+  color: #4a4126; opacity: .85; display: grid; place-items: center;
+}
+.saverecap__venue-img .venue-card__glyph svg {
+  width: 22px; height: 22px;
+}
 .saverecap__venue-info {
-  padding: 5px 6px 4px;
+  padding: 6px 6px 5px;
 }
 .saverecap__venue-title {
   display: block; font-size: 11px; font-weight: 700; color: var(--ink);
@@ -1162,52 +1207,66 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 .saverecap__venue-dist {
   display: block; font-size: 10px; color: var(--navy-soft); font-weight: 500; margin-top: 1px;
 }
-
-.saverecap__chips-row {
-  display: flex; align-items: center; overflow-x: auto; scrollbar-width: none;
+.saverecap__more {
+  font-size: 12px; color: var(--navy-soft); font-weight: 600; margin-top: 6px; text-align: right;
 }
-.saverecap__chips-row::-webkit-scrollbar { display: none; }
-.saverecap__chips-row .chips-row { margin: 0; padding: 0; }
 
 .savefield__label {
-  display: block; font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 5px;
+  display: block; font-size: 13.5px; font-weight: 700; color: var(--ink); margin-bottom: 6px;
 }
 .savefield {
-  width: 100%; height: 46px; padding: 0 12px; border: 1.5px solid var(--border);
-  border-radius: 10px; font-size: 15px; margin-bottom: 10px;
+  width: 100%; height: 48px; padding: 0 14px; border: 1.5px solid var(--border);
+  border-radius: var(--radius); font-size: 15px; margin-bottom: 12px;
 }
 .savefield:focus { border-color: var(--ink); }
 .savepanel .btn--primary {
-  height: 48px; font-size: 15.5px; font-weight: 700; border-radius: 10px;
+  height: 50px; font-size: 16px; font-weight: 700; border-radius: var(--radius);
 }
 .savepanel .orline {
-  display: flex; align-items: center; gap: 12px; margin: 12px 0 10px;
-  color: var(--navy-soft); font-size: 12px;
+  display: flex; align-items: center; gap: 12px; margin: 14px 0 12px;
+  color: var(--navy-soft); font-size: 12.5px;
 }
 .savepanel .orline::before, .savepanel .orline::after {
   content: ""; flex: 1; height: 1px; background: var(--border);
 }
-.save-trust-line {
-  display: flex; align-items: center; justify-content: center; gap: 6px;
-  font-size: 12px; color: var(--navy-soft); margin-top: 10px; text-align: center;
-}
-.save-trust-line svg { flex-shrink: 0; }
-.save-trust-line .linkish { color: var(--navy); text-decoration: underline; font-weight: 600; }
-.modal--saved { max-width: 520px; text-align: left; padding: 28px 24px 24px; }
-.modal--saved .ula-avatar { margin: 0 0 14px; }
-.modal--saved h2 { margin: 0 0 8px; font-size: 22px; }
-.modal--saved .modal__sub { line-height: 1.5; font-size: 14.5px; }
-.saved-actions { display: flex; gap: 10px; margin-top: 18px; }
+.save-out { text-align: center; margin-top: 14px; font-size: 14px; }
+.modal--saved { max-width: 540px; text-align: left; padding: 32px 28px 28px; }
+.modal--saved .ula-avatar { margin: 0 0 16px; }
+.modal--saved h2 { margin: 0 0 8px; font-size: 24px; }
+.modal--saved .modal__sub { line-height: 1.5; font-size: 15px; }
+.saved-actions { display: flex; gap: 10px; margin-top: 20px; }
 .saved-actions .btn { margin: 0; }
 
-@media (max-width: 600px) {
-  .overlay { padding: 10px; }
+@media (max-width: 768px) {
+  .overlay { padding: 12px; }
   .modal--save {
-    padding: 20px 16px 18px;
-    max-height: calc(100vh - 20px);
-    border-radius: 16px;
+    max-width: 500px;
+    border-radius: 18px;
+    max-height: calc(100vh - 24px);
   }
-  .savepanel__title { font-size: 20px; }
+  .modal--save .savepanel {
+    display: flex;
+    flex-direction: column;
+  }
+  .savepanel__left {
+    order: 1;
+    background: var(--cream);
+    padding: 22px 18px 14px;
+    border-right: 0;
+    border-bottom: 1px solid var(--cream-line);
+  }
+  .savepanel__right {
+    order: 2;
+    background: #fff;
+    padding: 20px 18px 20px;
+  }
+  .savepanel__title { font-size: 20px; margin-bottom: 4px; }
+  .savepanel__sub { font-size: 13.5px; margin-bottom: 12px; }
+  .savepanel__asktitle { display: none; }
+  .savepanel__asksub { display: none; }
+  .saverecap__venue-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
   .saved-actions { flex-direction: column; }
 }
 
@@ -3273,7 +3332,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 17 Aug 16:34 UTC</span>
+  <span class="demo-banner__build">build 17 Aug 16:37 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -5990,42 +6049,55 @@ function saveScreen() {
   const moreVenues = F ? Math.max(0, F.included.length - shownVenues.length) : 0;
   const savedWeek = F ? weekPlan(F.groups, F.match.pool||[], F.plan.id, S.answers.frequency).sessions : [];
 
-  const recapCard = hasPlan ? `
-    <div class="saverecap__visual-card">
-      <div class="saverecap__top">
-        <div class="saverecap__plan-badge">
-          <span class="saverecap__tag">${F.isRec ? 'Recommended' : 'Selected'}</span>
+  const recapSection = hasPlan ? `
+    <div class="saverecap">
+      <div class="saverecap__head">
+        <span class="saverecap__tag">${F.isRec ? 'Recommended routine' : 'Your chosen routine'}</span>
+        <div class="saverecap__plan">
           <b>${esc(F.plan.name)}</b>
+          <span>${F.price} €<small>/mo</small></span>
         </div>
-        <div class="saverecap__price"><b>${F.price} €</b><small>/mo</small></div>
+        <div class="saverecap__meta">${esc(F.commitment.label)} &middot; ${plural(monthlyAllowance(F.plan),'visit','visits')}/mo</div>
       </div>
 
-      ${shownVenues.length ? `
-      <div class="saverecap__gallery">
-        ${shownVenues.map(v => `
-          <div class="saverecap__venue-card">
-            <div class="saverecap__venue-img">${venueMedia(v)}</div>
-            <div class="saverecap__venue-info">
-              <span class="saverecap__venue-title">${esc(v.name)}</span>
-              <span class="saverecap__venue-dist">${v.distanceKm} km</span>
+      ${savedWeek.length ? `
+      <div class="saverecap__week">
+        <div class="saverecap__label">Your planned week</div>
+        <div class="saverecap__days">
+          ${savedWeek.slice(0, 3).map(s => `
+            <div class="saverecap__day-row">
+              <span class="saverecap__day-name">${esc(s.day.slice(0,3))}</span>
+              <span class="saverecap__day-act"><b>${esc(s.activity)}</b> at ${esc(s.venue.name)}</span>
             </div>
-          </div>
-        `).join('')}
+          `).join('')}
+        </div>
       </div>` : ''}
 
-      <div class="saverecap__chips-row">
-        ${answerChips({ label:'', compact:true })}
-      </div>
+      ${shownVenues.length ? `
+      <div class="saverecap__venues">
+        <div class="saverecap__label">Included places near ${esc(F.where)}</div>
+        <div class="saverecap__venue-grid">
+          ${shownVenues.map(v => `
+            <div class="saverecap__venue-card">
+              <div class="saverecap__venue-img">${venueMedia(v)}</div>
+              <div class="saverecap__venue-info">
+                <span class="saverecap__venue-title">${esc(v.name)}</span>
+                <span class="saverecap__venue-dist">${v.distanceKm} km away</span>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+        ${moreVenues ? `<div class="saverecap__more">+${moreVenues} more matching ${plural(moreVenues,'place','places')}</div>` : ''}
+      </div>` : ''}
     </div>
   ` : `
-    <div class="saverecap__visual-card">
-      <div class="saverecap__top">
-        <div class="saverecap__plan-badge">
-          <span class="saverecap__tag">In progress</span>
-          <b>Question ${Math.min(answered + 1, QUESTIONS.length)} of ${QUESTIONS.length}</b>
-        </div>
+    <div class="saverecap">
+      <div class="saverecap__head">
+        <span class="saverecap__tag">Your progress so far</span>
+        <div class="saverecap__plan"><b>Question ${Math.min(answered + 1, QUESTIONS.length)} of ${QUESTIONS.length}</b></div>
+        <div class="saverecap__meta">We'll save every answer you've given so far.</div>
       </div>
-      <div class="saverecap__chips-row" style="margin-top:10px">
+      <div class="saverecap__chips">
         ${answerChips({ label:'', compact:true })}
       </div>
     </div>
@@ -6036,23 +6108,33 @@ function saveScreen() {
                                      : { route:'fit', label:'Back to your questions' } })}
   <main class="savewrap" id="main">
     <div class="savepanel">
-      <div class="savepanel__guide">${ulaAvatar('sm')}<span>Urby &middot; Membership guide</span></div>
-      <h1 class="savepanel__title" tabindex="-1">Here&rsquo;s what you&rsquo;re saving</h1>
-      ${recapCard}
+      <div class="savepanel__left">
+        <div class="savepanel__guide">${ulaAvatar('sm')}<span>Urby &middot; Membership guide</span></div>
+        <h1 class="savepanel__title" tabindex="-1">Here&rsquo;s what you&rsquo;re saving</h1>
+        <p class="savepanel__sub">${hasPlan ? 'Your custom routine, matching studios, and membership plan.' : 'Your answers and progress so far.'}</p>
+        ${recapSection}
+      </div>
 
-      <form data-form="save" novalidate class="saveform">
-        <label class="savefield__label" for="save-email">Email address</label>
-        <input id="save-email" class="savefield" type="email" name="email" placeholder="Your email address" value="${esc(FIELDS.email||'')}">
-        ${ERRORS.email?`<p class="field-error" role="alert">${esc(ERRORS.email)}</p>`:''}
-        <button class="btn btn--primary btn--block" type="submit">Save my progress</button>
-        <div class="orline"><span>or continue with</span></div>
-        <div class="sso-row" style="max-width:none">
-          <button class="sso-btn" type="submit" name="provider" value="google" aria-label="Save with Google">${GOOGLE} Google</button>
-          <button class="sso-btn" type="submit" name="provider" value="apple" aria-label="Save with Apple">${APPLE} Apple</button></div>
-        <div class="consent-row" style="max-width:none;margin:14px 0 10px"><label class="checkbox"><input type="checkbox" name="marketing" id="marketing" ${S.marketing?'checked':''}><span></span></label>
-          <label class="consent-label" for="marketing">Send me occasional offers (Optional)</label></div>
-        <div class="save-trust-line">${icon('lock',14)} <span>No payment taken &middot; <button class="linkish" data-go="terms">Terms</button> &middot; <button class="linkish" data-skip-save>Continue without saving</button></span></div>
-      </form>
+      <div class="savepanel__right">
+        <h2 class="savepanel__asktitle">Keep your progress</h2>
+        <p class="savepanel__asksub">Email yourself a secure link to pick up right where you left off.</p>
+
+        <form data-form="save" novalidate class="saveform">
+          <label class="savefield__label" for="save-email">Email address</label>
+          <input id="save-email" class="savefield" type="email" name="email" placeholder="Your email address" value="${esc(FIELDS.email||'')}">
+          ${ERRORS.email?`<p class="field-error" role="alert">${esc(ERRORS.email)}</p>`:''}
+          <button class="btn btn--primary btn--block" type="submit">Save my progress</button>
+          <div class="orline"><span>or continue with</span></div>
+          <div class="sso-row" style="max-width:none">
+            <button class="sso-btn" type="submit" name="provider" value="google" aria-label="Save with Google">${GOOGLE} Google</button>
+            <button class="sso-btn" type="submit" name="provider" value="apple" aria-label="Save with Apple">${APPLE} Apple</button></div>
+          <div class="consent-row" style="max-width:none;margin:16px 0 12px"><label class="checkbox"><input type="checkbox" name="marketing" id="marketing" ${S.marketing?'checked':''}><span></span></label>
+            <label class="consent-label" for="marketing">Send me occasional offers and activity inspiration.<br><span class="muted">Optional</span></label></div>
+          <div class="notice notice--soft">${icon('lock',18)}<span><b>No payment will be taken.</b> Private return link.</span></div>
+          <p class="terms-line" style="margin-top:12px">By continuing, you agree to our <button class="linkish" data-go="terms">Terms</button> and <button class="linkish" data-go="privacy">Privacy Policy</button>.</p>
+        </form>
+        <p class="save-out"><button class="linkish strong" data-skip-save>Continue without saving</button></p>
+      </div>
     </div>
     <p class="savefoot"><button class="linkish" data-go="terms">Terms</button>
       <button class="linkish" data-go="privacy">Privacy</button>

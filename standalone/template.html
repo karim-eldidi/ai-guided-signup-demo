@@ -2877,42 +2877,55 @@ function saveScreen() {
   const moreVenues = F ? Math.max(0, F.included.length - shownVenues.length) : 0;
   const savedWeek = F ? weekPlan(F.groups, F.match.pool||[], F.plan.id, S.answers.frequency).sessions : [];
 
-  const recapCard = hasPlan ? `
-    <div class="saverecap__visual-card">
-      <div class="saverecap__top">
-        <div class="saverecap__plan-badge">
-          <span class="saverecap__tag">${F.isRec ? 'Recommended' : 'Selected'}</span>
+  const recapSection = hasPlan ? `
+    <div class="saverecap">
+      <div class="saverecap__head">
+        <span class="saverecap__tag">${F.isRec ? 'Recommended routine' : 'Your chosen routine'}</span>
+        <div class="saverecap__plan">
           <b>${esc(F.plan.name)}</b>
+          <span>${F.price} €<small>/mo</small></span>
         </div>
-        <div class="saverecap__price"><b>${F.price} €</b><small>/mo</small></div>
+        <div class="saverecap__meta">${esc(F.commitment.label)} &middot; ${plural(monthlyAllowance(F.plan),'visit','visits')}/mo</div>
       </div>
 
-      ${shownVenues.length ? `
-      <div class="saverecap__gallery">
-        ${shownVenues.map(v => `
-          <div class="saverecap__venue-card">
-            <div class="saverecap__venue-img">${venueMedia(v)}</div>
-            <div class="saverecap__venue-info">
-              <span class="saverecap__venue-title">${esc(v.name)}</span>
-              <span class="saverecap__venue-dist">${v.distanceKm} km</span>
+      ${savedWeek.length ? `
+      <div class="saverecap__week">
+        <div class="saverecap__label">Your planned week</div>
+        <div class="saverecap__days">
+          ${savedWeek.slice(0, 3).map(s => `
+            <div class="saverecap__day-row">
+              <span class="saverecap__day-name">${esc(s.day.slice(0,3))}</span>
+              <span class="saverecap__day-act"><b>${esc(s.activity)}</b> at ${esc(s.venue.name)}</span>
             </div>
-          </div>
-        `).join('')}
+          `).join('')}
+        </div>
       </div>` : ''}
 
-      <div class="saverecap__chips-row">
-        ${answerChips({ label:'', compact:true })}
-      </div>
+      ${shownVenues.length ? `
+      <div class="saverecap__venues">
+        <div class="saverecap__label">Included places near ${esc(F.where)}</div>
+        <div class="saverecap__venue-grid">
+          ${shownVenues.map(v => `
+            <div class="saverecap__venue-card">
+              <div class="saverecap__venue-img">${venueMedia(v)}</div>
+              <div class="saverecap__venue-info">
+                <span class="saverecap__venue-title">${esc(v.name)}</span>
+                <span class="saverecap__venue-dist">${v.distanceKm} km away</span>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+        ${moreVenues ? `<div class="saverecap__more">+${moreVenues} more matching ${plural(moreVenues,'place','places')}</div>` : ''}
+      </div>` : ''}
     </div>
   ` : `
-    <div class="saverecap__visual-card">
-      <div class="saverecap__top">
-        <div class="saverecap__plan-badge">
-          <span class="saverecap__tag">In progress</span>
-          <b>Question ${Math.min(answered + 1, QUESTIONS.length)} of ${QUESTIONS.length}</b>
-        </div>
+    <div class="saverecap">
+      <div class="saverecap__head">
+        <span class="saverecap__tag">Your progress so far</span>
+        <div class="saverecap__plan"><b>Question ${Math.min(answered + 1, QUESTIONS.length)} of ${QUESTIONS.length}</b></div>
+        <div class="saverecap__meta">We'll save every answer you've given so far.</div>
       </div>
-      <div class="saverecap__chips-row" style="margin-top:10px">
+      <div class="saverecap__chips">
         ${answerChips({ label:'', compact:true })}
       </div>
     </div>
@@ -2923,23 +2936,33 @@ function saveScreen() {
                                      : { route:'fit', label:'Back to your questions' } })}
   <main class="savewrap" id="main">
     <div class="savepanel">
-      <div class="savepanel__guide">${ulaAvatar('sm')}<span>Urby &middot; Membership guide</span></div>
-      <h1 class="savepanel__title" tabindex="-1">Here&rsquo;s what you&rsquo;re saving</h1>
-      ${recapCard}
+      <div class="savepanel__left">
+        <div class="savepanel__guide">${ulaAvatar('sm')}<span>Urby &middot; Membership guide</span></div>
+        <h1 class="savepanel__title" tabindex="-1">Here&rsquo;s what you&rsquo;re saving</h1>
+        <p class="savepanel__sub">${hasPlan ? 'Your custom routine, matching studios, and membership plan.' : 'Your answers and progress so far.'}</p>
+        ${recapSection}
+      </div>
 
-      <form data-form="save" novalidate class="saveform">
-        <label class="savefield__label" for="save-email">Email address</label>
-        <input id="save-email" class="savefield" type="email" name="email" placeholder="Your email address" value="${esc(FIELDS.email||'')}">
-        ${ERRORS.email?`<p class="field-error" role="alert">${esc(ERRORS.email)}</p>`:''}
-        <button class="btn btn--primary btn--block" type="submit">Save my progress</button>
-        <div class="orline"><span>or continue with</span></div>
-        <div class="sso-row" style="max-width:none">
-          <button class="sso-btn" type="submit" name="provider" value="google" aria-label="Save with Google">${GOOGLE} Google</button>
-          <button class="sso-btn" type="submit" name="provider" value="apple" aria-label="Save with Apple">${APPLE} Apple</button></div>
-        <div class="consent-row" style="max-width:none;margin:14px 0 10px"><label class="checkbox"><input type="checkbox" name="marketing" id="marketing" ${S.marketing?'checked':''}><span></span></label>
-          <label class="consent-label" for="marketing">Send me occasional offers (Optional)</label></div>
-        <div class="save-trust-line">${icon('lock',14)} <span>No payment taken &middot; <button class="linkish" data-go="terms">Terms</button> &middot; <button class="linkish" data-skip-save>Continue without saving</button></span></div>
-      </form>
+      <div class="savepanel__right">
+        <h2 class="savepanel__asktitle">Keep your progress</h2>
+        <p class="savepanel__asksub">Email yourself a secure link to pick up right where you left off.</p>
+
+        <form data-form="save" novalidate class="saveform">
+          <label class="savefield__label" for="save-email">Email address</label>
+          <input id="save-email" class="savefield" type="email" name="email" placeholder="Your email address" value="${esc(FIELDS.email||'')}">
+          ${ERRORS.email?`<p class="field-error" role="alert">${esc(ERRORS.email)}</p>`:''}
+          <button class="btn btn--primary btn--block" type="submit">Save my progress</button>
+          <div class="orline"><span>or continue with</span></div>
+          <div class="sso-row" style="max-width:none">
+            <button class="sso-btn" type="submit" name="provider" value="google" aria-label="Save with Google">${GOOGLE} Google</button>
+            <button class="sso-btn" type="submit" name="provider" value="apple" aria-label="Save with Apple">${APPLE} Apple</button></div>
+          <div class="consent-row" style="max-width:none;margin:16px 0 12px"><label class="checkbox"><input type="checkbox" name="marketing" id="marketing" ${S.marketing?'checked':''}><span></span></label>
+            <label class="consent-label" for="marketing">Send me occasional offers and activity inspiration.<br><span class="muted">Optional</span></label></div>
+          <div class="notice notice--soft">${icon('lock',18)}<span><b>No payment will be taken.</b> Private return link.</span></div>
+          <p class="terms-line" style="margin-top:12px">By continuing, you agree to our <button class="linkish" data-go="terms">Terms</button> and <button class="linkish" data-go="privacy">Privacy Policy</button>.</p>
+        </form>
+        <p class="save-out"><button class="linkish strong" data-skip-save>Continue without saving</button></p>
+      </div>
     </div>
     <p class="savefoot"><button class="linkish" data-go="terms">Terms</button>
       <button class="linkish" data-go="privacy">Privacy</button>
