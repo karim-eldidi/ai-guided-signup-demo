@@ -2451,13 +2451,27 @@ function recommendationScreen() {
     </div>
   </section>` : '';
 
-  const viewSwitcher = `<div class="reco-switcher" role="tablist" aria-label="Recommendation view format">
-    <button class="reco-switcher__tab ${RECO_VIEW==='pillars'?'is-active':''}" type="button" data-set-reco-view="pillars" aria-selected="${RECO_VIEW==='pillars'}">
-      ${icon('sparkle',15)} <span>Activities & Freedom</span>
-    </button>
-    <button class="reco-switcher__tab ${RECO_VIEW==='week'?'is-active':''}" type="button" data-set-reco-view="week" aria-selected="${RECO_VIEW==='week'}">
-      ${icon('calendar',15)} <span>Week Schedule</span>
-    </button>
+  const viewSwitcher = `<div class="reco-hero-switcher" role="tablist" aria-label="Recommendation view format">
+    <div class="reco-hero-switcher__label">How do you prefer to explore your plan?</div>
+    <div class="reco-hero-switcher__track">
+      <button class="reco-hero-switcher__card ${RECO_VIEW==='pillars'?'is-active':''}" type="button" data-set-reco-view="pillars" aria-selected="${RECO_VIEW==='pillars'}">
+        <div class="reco-hero-switcher__iconbox">${icon('sparkle',18)}</div>
+        <div class="reco-hero-switcher__content">
+          <div class="reco-hero-switcher__title">Activity Freedom</div>
+          <div class="reco-hero-switcher__desc">Explore sports &amp; studios you can visit freely each month</div>
+        </div>
+      </button>
+      <button class="reco-hero-switcher__card ${RECO_VIEW==='week'?'is-active':''}" type="button" data-set-reco-view="week" aria-selected="${RECO_VIEW==='week'}">
+        <div class="reco-hero-switcher__iconbox">${icon('calendar',18)}</div>
+        <div class="reco-hero-switcher__content">
+          <div class="reco-hero-switcher__title">
+            <span>Interactive Week Schedule</span>
+            <span class="reco-hero-switcher__badge">✨ Drag &amp; Drop</span>
+          </div>
+          <div class="reco-hero-switcher__desc">Plan specific days &amp; drag studios into your routine</div>
+        </div>
+      </button>
+    </div>
   </div>`;
 
   /* ---- the plan, on the side, as a consequence of the above ---- */
