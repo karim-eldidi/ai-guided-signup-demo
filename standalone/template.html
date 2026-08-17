@@ -2297,14 +2297,19 @@ function recommendationScreen() {
     <div class="weekcard__head">
       <h2 class="weekcard__title">A week that fits you</h2>
     </div>
-    <ol class="weekcard__list">${wp.sessions.map(x=>`<li class="weekrow ${x.included?'':'is-locked'}">
+    <ol class="weekcard__list">${wp.sessions.map(x=>{
+      const tier = x.venue ? (x.venue.tier === 'premium' ? 'Premium' : x.venue.tier === 'plus' ? 'Plus' : 'Standard') : '';
+      const tierBadge = tier ? `<span class="tier-tag tier-tag--${x.venue.tier}">${tier}</span>` : '';
+      return `<li class="weekrow ${x.included?'':'is-locked'}">
       <span class="weekrow__icon">${icon(x.icon,20)}</span>
       <span class="weekrow__meta"><span class="weekrow__day">${esc(x.day)}</span>
         <span class="weekrow__dot" aria-hidden="true">&middot;</span>
         <span class="weekrow__act">${esc(x.activity)}</span></span>
       <button class="weekrow__place" data-venue="${esc(x.venue.id)}" aria-label="More about ${esc(x.venue.name)}">
         <span class="venue-card__media weekrow__thumb">${venueMedia(x.venue, (groupById(x.groupId)||{}).activities)}</span>
-        <span class="weekrow__pname">${esc(x.venue.name)}<small>${x.distanceKm} km</small></span>
+        <span class="weekrow__pname">${esc(x.venue.name)}
+          <small>${x.distanceKm} km &middot; ${tierBadge}${x.option ? ` &middot; ${esc(x.option)}` : ''}</small>
+        </span>
       </button>
       <span class="weekrow__end">
         <!-- Rule 13: the per-venue limit is published, and it is the one fact about this
@@ -2315,9 +2320,10 @@ function recommendationScreen() {
           ? (/^(included|not included)/i.test(x.access) ? '' : `<span class="weekrow__limit">${esc(x.access)}</span>`)
           : `<span class="weekrow__pill">${x.needs?esc(x.needs.name):'Not included'} only</span>`}
         <button class="weekrow__swap" data-change-week="${esc(x.day)}"
-          aria-label="Choose a different activity or venue for ${esc(x.day)}">${icon('refresh',15)} <span>Change</span></button>
+          aria-label="Choose a different activity or venue for ${esc(x.day)}">${icon('refresh',14)} <span>Change</span></button>
       </span>
-    </li>`).join('')}</ol>
+    </li>`;
+    }).join('')}</ol>
 
     <div class="weekcard__controls">
       <div class="week__days">
@@ -2926,17 +2932,13 @@ function detailsScreen() {
   /* autocomplete and inputmode: a reviewer pointed out the browser could not
      autofill any of this, which is pure typing on a phone. */
   const f=(name,label,o={})=>`<div class="field ${o.wide?'field--wide':''} ${o.className||''}">
-    <label for="${name}">${esc(label)}${o.optional?' <span class="muted" style="font-weight:400">(optional)</span>':''}</label>
+    <label for="${name}">${esc(label)}${o.optional?'<span class="field__opt">Optional</span>':''}</label>
     <input id="${name}" name="${name}" type="${o.type||'text'}" value="${esc(d[name]||'')}" placeholder="${esc(o.ph||'')}"
       ${o.auto?`autocomplete="${o.auto}"`:''} ${o.mode?`inputmode="${o.mode}"`:''}
       ${o.max?`max="${esc(o.max)}"`:''} ${o.min?`min="${esc(o.min)}"`:''} ${o.optional?'':'required aria-required="true"'}>
     ${ERRORS[name]?`<div class="field-error">${esc(ERRORS[name])}</div>`:''}
     ${o.why?`<div class="field__why">${icon('info',14)} ${esc(o.why)}</div>`:''}</div>`;
-  /* What the money opens, said before any field is asked for — rule 14, on the screen
-     where the visitor is most likely to wonder what they are typing all this for. */
-  const opens = F.totals && F.totals.nearby
-    ? `<strong>${esc(plan.name)}</strong> gives you access to ${F.totals.included} of the ${F.totals.nearby} ${F.totals.nearby===1?'place':'places'} you explored near ${esc(F.where)}.`
-    : `You&rsquo;re setting up <strong>${esc(plan.name)}</strong>.`;
+  const each = perSession(F.price, S.answers.frequency, plan);
   const shown = F.included.slice(0,3), more = Math.max(0, F.included.length - shown.length);
   const chosenFor = [
     ...F.groups.map(groupById).filter(Boolean).map(g => ({ i:g.icon, l:g.label })),
@@ -2963,9 +2965,8 @@ function detailsScreen() {
     <main class="two-col__main" id="main">
       <h1 class="details-title" tabindex="-1">Your details</h1>
       <p class="details-lede">Set up your <strong>${esc(plan.name)}</strong> membership. You&rsquo;ll review everything before payment.</p>
-      ${ulaNote('I&rsquo;ll keep your selected membership and places visible while you enter the details needed for this simulated signup.')}
+      ${ulaNote('Your membership and places stay with you while you fill this in. Nothing is charged.')}
       <form class="details-form" data-form="details" novalidate>
-        <p class="xsmall muted">All fields are required except the mobile number.</p>
         <div class="details-sso">
           <div class="details-sso__copy"><b>Save time with an account</b><span>Prefill your name and email.</span></div>
           <div class="sso-row">
@@ -2979,17 +2980,26 @@ function detailsScreen() {
             ${f('firstName','First name',{auto:'given-name'})}${f('lastName','Last name',{auto:'family-name'})}
             ${f('birthDate','Date of birth',{type:'date',auto:'bday',max:dobMax(),min:dobMin()})}
           </div></section>
-        <section class="details-section"><div class="fitpanel__label">Contact and address</div>
+        <section class="details-section"><div class="fitpanel__label">Contact details</div>
           <div class="details-grid details-grid--contact">
             ${f('email','Membership email',{type:'email',auto:'email',mode:'email',why:'Used for your simulated membership only. This does not save your progress or opt you into marketing.'})}
             ${f('phone','Mobile number',{type:'tel',auto:'tel',mode:'tel',optional:true})}
-          </div>
+          </div></section>
+        <section class="details-section"><div class="fitpanel__label">Home address</div>
           <div class="details-grid details-grid--address">
             ${f('street','Street and number',{auto:'street-address'})}
             ${f('postcode','Postcode',{auto:'postal-code',mode:'numeric',ph:'12045'})}${f('city','City',{auto:'address-level2',ph:'Berlin'})}
           </div></section>
-        <div class="details-form__actions"><button class="btn btn--primary btn--wide" type="submit">Continue to payment</button>
+        <div class="details-form__actions"><button class="btn btn--primary btn--wide desktop-cta" type="submit">Continue to payment</button>
           <p class="reassure">${icon('lock',15)} Nothing is charged yet.</p></div>
+        <!-- Rule 9: on a phone the inline button above is hidden and this bar is the one
+             main CTA, so the action is always reachable without scrolling the form to its
+             end — and the plan and price ride along with it instead of sitting in a card
+             a thousand pixels further down. -->
+        <div class="paybar">
+          <div class="paybar__info"><b>${esc(plan.name)}</b><span>${F.price} € / month${each?` · ≈ ${each} € a session`:''}</span></div>
+          <button class="btn btn--primary" type="submit">Continue</button>
+        </div>
       </form>
     </main>
     <aside class="two-col__aside two-col__aside--sticky">${aside}</aside>

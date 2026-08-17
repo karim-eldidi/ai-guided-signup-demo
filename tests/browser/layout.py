@@ -100,7 +100,7 @@ with sync_playwright() as p:
         for f_, v in [('#firstName', 'Alex'), ('#lastName', 'T'), ('#email', 'a@b.com'),
                       ('#birthDate', '1990-01-01'), ('#street', 'W 42'), ('#postcode', '10117'), ('#city', 'Berlin')]:
             pg.fill(f_, v)
-        pg.locator('button:has-text("Continue to payment")').click(); pg.wait_for_timeout(800)
+        pg.locator('.details-form__actions button:visible, .paybar button:visible').first.click(force=True); pg.wait_for_timeout(800)
 
         # the payment screen is the one that broke, so it is the one asserted by name
         rogue = rogue_elements(pg)

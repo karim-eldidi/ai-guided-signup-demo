@@ -1279,7 +1279,10 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 .details-grid--contact { grid-template-columns: 1.15fr .85fr; }
 .details-grid--address { grid-template-columns: 1.55fr .55fr .8fr; }
 .details-form .field { gap: 5px; }
-.details-form .field label { font-size: 13.5px; }
+/* The label carries its own "Optional" tag on the right, so the one field that is
+   not required says so where it is asked rather than in a blanket line at the top. */
+.details-form .field label { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; font-size: 13.5px; }
+.field__opt { flex: 0 0 auto; color: var(--navy-soft); font-weight: 400; font-size: 12.5px; }
 .details-form .field input, .details-form .field select { height: 46px; padding: 0 13px; }
 .details-form .field__why { font-size: 12.5px; }
 .details-form__actions { margin-top: 20px; }
@@ -1291,9 +1294,24 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
   .details-grid--person .field:last-child { grid-column: 1 / -1; }
 }
 
+/* Stacked, the form is the whole page, so the card around it is a second border inside
+   the first — it only narrows the fields. Drop the chrome and let them use the width. */
+@media (max-width: 980px) {
+  .details-form {
+    max-width: none; padding: 0; background: transparent; border: 0; border-radius: 0;
+  }
+  .details-title { margin-top: 4px; }
+  .details-lede { margin-bottom: 14px; }
+  .details-section { margin-top: 24px; }
+  .details-form .field input, .details-form .field select { height: 50px; font-size: 16px; }
+  .details-form .field label { font-size: 14px; }
+  /* the inline button is hidden here, so this only carries the honesty line */
+  .details-form__actions { margin-top: 18px; }
+  .details-form__actions .reassure { margin: 0; }
+}
+
 @media (max-width: 620px) {
   .details-title { font-size: 30px; }
-  .details-form { padding: 18px; }
   .details-sso .sso-row { flex-direction: column; }
   .details-grid--person, .details-grid--contact, .details-grid--address { grid-template-columns: 1fr; }
   .details-grid--person .field:last-child { grid-column: auto; }
@@ -1504,8 +1522,8 @@ body.save-modal-open #app > :not(#exit-modal) { visibility: hidden; }
   .two-col__main { padding: 10px 20px 4px; max-width: none; }
   /* room for the sticky Continue bar, so nothing sits underneath it */
   .two-col__aside { margin: 0 20px 132px; }
-  /* the details form has no sticky bar under it, so it needs no room for one */
-  .two-col--form .two-col__aside { margin-bottom: 44px; }
+  /* the details form ends in a paybar too, so its recap needs the same clearance */
+  .two-col--form .two-col__aside { margin-bottom: 116px; }
   .content { padding-bottom: 100px; }
   .btn--wide { min-width: 0; width: 100%; }
 
@@ -2397,14 +2415,23 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 }
 /* The published limit for this place on this plan (rule 13). Quiet: it is a fact about
    the row, not a warning about it. */
-.weekrow__limit { grid-column: 4; justify-self: end; flex: 0 0 auto; font-size: 13px; color: var(--navy-soft); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.tier-tag {
+  display: inline-flex; align-items: center; font-size: 11px; font-weight: 700;
+  padding: 2px 6px; border-radius: 4px; line-height: 1.2; text-transform: uppercase; letter-spacing: .03em;
+  vertical-align: middle;
+}
+.tier-tag--premium { background: #fdf3cf; color: #855800; }
+.tier-tag--plus { background: #e3effd; color: #0c4a80; }
+.tier-tag--standard { background: #e6f4ea; color: #137333; }
+
 .weekrow__swap {
   grid-column: 5; justify-self: end;
-  display: inline-flex; align-items: center; gap: 7px; background: #fff;
-  border: 1px solid var(--border); border-radius: 8px; padding: 8px 11px;
-  font-size: 13px; font-weight: 700; color: var(--navy);
+  display: inline-flex; align-items: center; gap: 6px; background: #fff;
+  border: 1px solid #dcdfe4; border-radius: 9999px; padding: 6px 12px;
+  font-size: 12.5px; font-weight: 600; color: var(--ink); cursor: pointer;
+  transition: all .15s ease;
 }
-.weekrow__swap:hover { color: var(--ink); border-color: var(--ink); }
+.weekrow__swap:hover { background: #f4f5f7; border-color: var(--ink); }
 /* The one thing the plan on screen cannot carry, said where the gap is visible. */
 .weekcard__adds {
   display: flex; align-items: flex-start; gap: 10px; margin: 14px 2px 0;
@@ -2675,9 +2702,11 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 }
 .venue-class-card__media {
   position: relative; aspect-ratio: 16 / 9; width: 100%;
-  background: var(--cream); overflow: hidden;
+  background: var(--yellow-pale); overflow: hidden; display: grid; place-items: center;
 }
-.venue-class-card__media img { width: 100%; height: 100%; object-fit: cover; }
+.venue-class-card__media img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1;
+}
 .venue-class-card__badge {
   position: absolute; top: 12px; left: 12px; z-index: 2;
   font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 6px;
