@@ -2755,7 +2755,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 17 Aug 13:50 UTC</span>
+  <span class="demo-banner__build">build 17 Aug 14:05 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -4777,9 +4777,8 @@ function recommendationScreen() {
      asked for keeps its numbers and its warning and loses its Switch — it is information,
      never an offer. Rules 32 / 41 / 64. */
   const opensNothing = t => Boolean(t && t.nearby && !t.included);
-  /* Open where there is room for it, closed on a phone: there the plan card leads (rule
-     65) and four more rows under it push the week off the first screen. */
-  const altOpen = ALTOPEN===null ? !MOBILE() : ALTOPEN;
+  /* Collapsed by default; click to expand and compare all four memberships. */
+  const altOpen = Boolean(ALTOPEN);
   const allPlans = `<details class="allplans"${altOpen?' open':''}>
     <summary class="allplans__head" data-toggle-alt>
       <span class="allplans__headcopy"><span>Compare all ${PLANS.length===4?'four':PLANS.length} memberships</span>

@@ -2182,9 +2182,8 @@ function recommendationScreen() {
      asked for keeps its numbers and its warning and loses its Switch — it is information,
      never an offer. Rules 32 / 41 / 64. */
   const opensNothing = t => Boolean(t && t.nearby && !t.included);
-  /* Open where there is room for it, closed on a phone: there the plan card leads (rule
-     65) and four more rows under it push the week off the first screen. */
-  const altOpen = ALTOPEN===null ? !MOBILE() : ALTOPEN;
+  /* Collapsed by default; click to expand and compare all four memberships. */
+  const altOpen = Boolean(ALTOPEN);
   const allPlans = `<details class="allplans"${altOpen?' open':''}>
     <summary class="allplans__head" data-toggle-alt>
       <span class="allplans__headcopy"><span>Compare all ${PLANS.length===4?'four':PLANS.length} memberships</span>
