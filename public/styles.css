@@ -1145,6 +1145,9 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 .notice--grey { background: var(--page-grey); }
 .notice--soft { background: var(--cream); border: 1px solid var(--cream-line); margin: 0; }
 .notice--soft svg { color: var(--navy-soft); }
+/* the full simulated-payment notice is on the review screen at this width, so the
+   short version in the small print would only say it twice */
+.pay-sim-note { display: none; }
 
 /* --- save your fit, and the details form -----------------------------------
    Two screens that used to be one. Both show the same recap — the answers, the plan,
@@ -1561,6 +1564,9 @@ body.save-modal-open #app > :not(#exit-modal) { visibility: hidden; }
      simulated payment, and the order, method and cancellation blocks are the proof
      that nothing is hidden — so on this width they only push the decision down. */
   .pay-preamble { display: none; }
+  /* but the payment must never look real, and the banner above can be collapsed away,
+     so the honesty line carries it here in one sentence of small print instead */
+  .pay-sim-note { display: inline; }
 
   .decision-pair { grid-template-columns: 1fr; }
   /* and it must stop being a clipped, self-scrolling box: on a phone the plan column

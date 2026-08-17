@@ -98,9 +98,14 @@ with sync_playwright() as p:
     autos=pg.evaluate("() => [...document.querySelectorAll('#main input')].map(i=>i.id+':'+(i.autocomplete||'')).filter(x=>x.split(':')[0])")
     missing=[a for a in autos if a.endswith(':')]
     P(f"all {len(autos)} detail fields carry autofill hints") if not missing else F(f"missing autofill: {missing}")
-    # 9. required cue
-    if 'required except the mobile' in pg.locator('#main').inner_text(): P("the form says which fields are required")
-    else: F("no required-field cue")
+    # 9. required cue. This used to look for a blanket "required except the mobile"
+    #    sentence at the top of the form. The one optional field now says so on its own
+    #    label, which is a stronger cue and survives the field list changing.
+    tag = pg.locator('#main .field:has(#phone) .field__opt')
+    unreq = pg.evaluate("() => [...document.querySelectorAll('#main .details-form input')].filter(i => !i.required).map(i => i.id)")
+    if tag.count() == 1 and tag.inner_text().strip().lower() == 'optional' and unreq == ['phone']:
+        P("the form marks its one optional field and requires the rest")
+    else: F(f"required-field cue unclear: {tag.count()} optional tags, not-required {unreq}")
 
     # Date of birth accepted tomorrow. The picker is now bounded, and because the form is
     # novalidate the typed value has to be caught by the screen that produced it (rule 20).

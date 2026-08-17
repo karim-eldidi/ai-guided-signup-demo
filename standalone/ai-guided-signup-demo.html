@@ -1159,6 +1159,9 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 .notice--grey { background: var(--page-grey); }
 .notice--soft { background: var(--cream); border: 1px solid var(--cream-line); margin: 0; }
 .notice--soft svg { color: var(--navy-soft); }
+/* the full simulated-payment notice is on the review screen at this width, so the
+   short version in the small print would only say it twice */
+.pay-sim-note { display: none; }
 
 /* --- save your fit, and the details form -----------------------------------
    Two screens that used to be one. Both show the same recap — the answers, the plan,
@@ -1575,6 +1578,9 @@ body.save-modal-open #app > :not(#exit-modal) { visibility: hidden; }
      simulated payment, and the order, method and cancellation blocks are the proof
      that nothing is hidden — so on this width they only push the decision down. */
   .pay-preamble { display: none; }
+  /* but the payment must never look real, and the banner above can be collapsed away,
+     so the honesty line carries it here in one sentence of small print instead */
+  .pay-sim-note { display: inline; }
 
   .decision-pair { grid-template-columns: 1fr; }
   /* and it must stop being a clipped, self-scrolling box: on a phone the plan column
@@ -3056,7 +3062,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 17 Aug 14:35 UTC</span>
+  <span class="demo-banner__build">build 17 Aug 14:57 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -5958,7 +5964,7 @@ function paymentScreen() {
         <button class="btn btn--primary" type="submit">Confirm and start membership</button>
         <button class="btn btn--secondary" type="button" data-go="details">Back</button>
       </div>
-      <p class="xsmall muted" style="margin-top:16px">By confirming you accept the Terms and the cancellation conditions above.</p>
+      <p class="xsmall muted" style="margin-top:16px">By confirming you accept the Terms and the cancellation conditions above.<span class="pay-sim-note"> Simulated payment: nothing is charged and no card details are collected.</span></p>
       <div class="paybar">
         <div class="paybar__info"><b>${esc(plan.name)}</b><span>${price} € / month${each?` · ≈ ${each} € a session`:''}</span></div>
         <button class="btn btn--primary" type="submit">Confirm and pay</button>

@@ -3062,7 +3062,7 @@ function paymentScreen() {
         <button class="btn btn--primary" type="submit">Confirm and start membership</button>
         <button class="btn btn--secondary" type="button" data-go="details">Back</button>
       </div>
-      <p class="xsmall muted" style="margin-top:16px">By confirming you accept the Terms and the cancellation conditions above.</p>
+      <p class="xsmall muted" style="margin-top:16px">By confirming you accept the Terms and the cancellation conditions above.<span class="pay-sim-note"> Simulated payment: nothing is charged and no card details are collected.</span></p>
       <div class="paybar">
         <div class="paybar__info"><b>${esc(plan.name)}</b><span>${price} € / month${each?` · ≈ ${each} € a session`:''}</span></div>
         <button class="btn btn--primary" type="submit">Confirm and pay</button>
