@@ -1255,10 +1255,9 @@ const venueCard = (v, tappable=true) => {
       <button class="venue-card__name" data-venue="${esc(v.id)}">${esc(v.name)}</button>
       ${tierBadge}
     </div>
-    <div class="venue-card__meta">${v.distanceKm} km away${chosen.length?` · ${hits.length?`for ${esc(hits.join(', '))}`:'other activities'}`:''}</div>
     <div class="venue-card__foot">
-      <span class="venue-card__draghint">${icon('sparkle',11)} Drag to week</span>
       <button class="btn-pill btn-pill--sm" data-open-add-venue="${esc(v.id)}">${icon('plus',11)} <span>Add</span></button>
+      <button class="linkish venue-card__more" data-venue="${esc(v.id)}">Details</button>
     </div>
   </div></div>`;
 };
@@ -2404,6 +2403,14 @@ function recommendationScreen() {
       &mdash; the ${esc(gap.activity.toLowerCase())} option that completes your week.</span></p>`:''}
   </section>` : '';
 
+  const unchosenGroups = ACTIVITY_GROUPS.filter(g => !groups.some(cg => (cg.id||cg) === g.id));
+  const addSportsShelf = unchosenGroups.length ? `<div class="add-sports-shelf">
+    <span class="add-sports-shelf__label">Add another sport:</span>
+    <div class="add-sports-shelf__pills">
+      ${unchosenGroups.map(g => `<button class="add-sport-btn" type="button" data-add-activity="${esc(g.id)}">${icon(g.icon, 13)} <span>+ ${esc(g.label)}</span></button>`).join('')}
+    </div>
+  </div>` : '';
+
   const pillarsBlock = groups.length ? `<section class="pillars-section">
     <div class="pillars-list">
       ${groups.map(g => {
@@ -2417,13 +2424,14 @@ function recommendationScreen() {
               <h3 class="pillar-card__title">${esc(grp.label)}</h3>
               <span class="pillar-card__allowance">4 visits / mo on ${esc(plan.name)}</span>
             </div>
+            ${groups.length > 1 ? `<button class="pillar-card__remove" type="button" data-remove-activity="${esc(grp.id)}" aria-label="Remove ${esc(grp.label)}" title="Remove this activity">✕</button>` : ''}
           </div>
           <div class="pillar-card__venues">
             ${grpVenues.map(v => {
               const inPlan = includedIn(v, plan.id);
               const tier = v.tier ? (v.tier === 'premium' ? 'Premium' : v.tier === 'plus' ? 'Plus' : 'Standard') : '';
               const tierBadge = tier ? `<span class="tier-tag tier-tag--${v.tier}">${tier}</span>` : '';
-              return `<div class="pillar-venue ${inPlan ? '' : 'is-locked'}" draggable="true" data-drag-venue="${esc(v.id)}" data-drag-name="${esc(v.name)}">
+              return `<div class="pillar-venue ${inPlan ? '' : 'is-locked'}" draggable="true" data-drag-venue="${esc(v.id)}" data-drag-name="${esc(v.name)}" title="Drag onto your week or click to add">
                 <button class="pillar-venue__media-btn" data-venue="${esc(v.id)}" aria-label="Details about ${esc(v.name)}">
                   <span class="venue-card__media">${venueMedia(v)}</span>
                 </button>
@@ -2435,7 +2443,6 @@ function recommendationScreen() {
                   <div class="pillar-venue__sub">${v.distanceKm} km away &middot; ${inPlan ? 'Included' : `<span class="pillar-venue__needs">Needs upgrade</span>`}</div>
                 </div>
                 <div class="pillar-venue__action">
-                  <span class="pillar-venue__draghint">${icon('sparkle', 11)} Drag</span>
                   <button class="btn-pill btn-pill--sm" data-open-add-venue="${esc(v.id)}">
                     ${icon('plus', 11)} <span>Add</span>
                   </button>
@@ -2446,32 +2453,16 @@ function recommendationScreen() {
         </div>`;
       }).join('')}
     </div>
-    <div class="pillars-section__foot">
-      <button class="linkish strong" type="button" data-set-reco-view="week">${icon('calendar', 14)} <span>Prefer a scheduled day-by-day calendar? Switch to Week Schedule &rarr;</span></button>
-    </div>
+    ${addSportsShelf}
   </section>` : '';
 
-  const viewSwitcher = `<div class="reco-hero-switcher" role="tablist" aria-label="Recommendation view format">
-    <div class="reco-hero-switcher__label">How do you prefer to explore your plan?</div>
-    <div class="reco-hero-switcher__track">
-      <button class="reco-hero-switcher__card ${RECO_VIEW==='pillars'?'is-active':''}" type="button" data-set-reco-view="pillars" aria-selected="${RECO_VIEW==='pillars'}">
-        <div class="reco-hero-switcher__iconbox">${icon('sparkle',18)}</div>
-        <div class="reco-hero-switcher__content">
-          <div class="reco-hero-switcher__title">Activity Freedom</div>
-          <div class="reco-hero-switcher__desc">Explore sports &amp; studios you can visit freely each month</div>
-        </div>
-      </button>
-      <button class="reco-hero-switcher__card ${RECO_VIEW==='week'?'is-active':''}" type="button" data-set-reco-view="week" aria-selected="${RECO_VIEW==='week'}">
-        <div class="reco-hero-switcher__iconbox">${icon('calendar',18)}</div>
-        <div class="reco-hero-switcher__content">
-          <div class="reco-hero-switcher__title">
-            <span>Interactive Week Schedule</span>
-            <span class="reco-hero-switcher__badge">✨ Drag &amp; Drop</span>
-          </div>
-          <div class="reco-hero-switcher__desc">Plan specific days &amp; drag studios into your routine</div>
-        </div>
-      </button>
-    </div>
+  const viewSwitcher = `<div class="reco-switcher" role="tablist" aria-label="Recommendation view format">
+    <button class="reco-switcher__tab ${RECO_VIEW==='pillars'?'is-active':''}" type="button" data-set-reco-view="pillars" aria-selected="${RECO_VIEW==='pillars'}">
+      ${icon('sparkle',16)} <span>Activity Freedom</span>
+    </button>
+    <button class="reco-switcher__tab ${RECO_VIEW==='week'?'is-active':''}" type="button" data-set-reco-view="week" aria-selected="${RECO_VIEW==='week'}">
+      ${icon('calendar',16)} <span>Week Schedule</span> <span class="reco-switcher__tag">Drag &amp; drop</span>
+    </button>
   </div>`;
 
   /* ---- the plan, on the side, as a consequence of the above ---- */
@@ -2590,21 +2581,29 @@ function recommendationScreen() {
     ? `${hereT.included===hereT.nearby ? 'All ' + hereT.nearby : hereT.included + ' of ' + hereT.nearby} with ${esc(plan.name)}`
     : `Within ${match.radiusKm?match.radiusKm+' km':'reach'} of ${esc(where)}`;
 
+  const displayedVenues = PLACESOPEN || nq ? allVenues : allVenues.slice(0, 3);
+  const remainingCount = allVenues.length - 3;
   const placesSection = `<section class="places-tray">
     <div class="places-tray__head">
       <div>
-        <h3 class="places-tray__title">Studios &amp; places unlocked in ${esc(where)}</h3>
-        <p class="places-tray__sub">${placesSub} &middot; <span style="font-weight:700;color:var(--ink)">Drag any studio onto a day above</span></p>
+        <h3 class="places-tray__title">Studios in ${esc(where)} <small style="font-size:13px;font-weight:400;color:var(--navy-soft)">(${allVenues.length} total)</small></h3>
+        <p class="places-tray__sub">${placesSub}</p>
       </div>
       <form class="venuesearch places-tray__search" data-form="venue-filter" novalidate>
         <span class="venuesearch__icon">${icon('search',15)}</span>
         <input type="search" name="vq" value="${esc(VENUEQ)}" autocomplete="off"
-          placeholder="Filter studios..." aria-label="Search places">
+          placeholder="✨ Ask Urby (e.g. 'sauna with pool', 'bouldering')..." aria-label="Search places">
         ${nq?`<button type="button" class="venuesearch__clear linkish strong" data-venue-clear>Clear</button>`:''}
       </form>
     </div>
     ${hits && !hits.length ? `<div class="notice notice--grey">${icon('info',19)}<span>Nothing within this radius matches &ldquo;${esc(VENUEQ.trim())}&rdquo;. Try a wider radius below.</span></div>` : ''}
-    <div class="venue-grid venue-grid--big is-grid">${allVenues.map(v=>venueCard(v)).join('')}</div>
+    <div class="venue-grid venue-grid--big is-grid">${displayedVenues.map(v=>venueCard(v)).join('')}</div>
+    ${(!nq && remainingCount > 0) ? `
+    <div class="places-tray__expand-row">
+      <button class="btn-pill" type="button" data-toggle-places>
+        ${PLACESOPEN ? `Show top 3 studios only ↑` : `Show all ${allVenues.length} studios in ${esc(where)} (${remainingCount} more) ↓`}
+      </button>
+    </div>` : ''}
     <div class="places__foot" style="margin-top:14px">
       <div class="radius" role="group" aria-label="How far to look">
         <span class="radius__label">${icon('pin',15)} Within</span>
@@ -3610,6 +3609,35 @@ document.addEventListener('click', e => {
     RECO_VIEW = t.dataset.setRecoView;
     log('reco_view_changed', { mode: RECO_VIEW });
     render(false);
+    return;
+  }
+  if (t.dataset.addActivity) {
+    const actId = t.dataset.addActivity;
+    const cur = (S.answers.activities || []).filter(x => x !== SKIP);
+    if (!cur.includes(actId)) {
+      S.answers.activities = [...cur, actId];
+      S.planOverridden = false;
+      S.chosenPlanId = null;
+      log('activity_added_from_reco', { activity: actId });
+      render(false);
+    }
+    return;
+  }
+  if (t.dataset.removeActivity) {
+    const actId = t.dataset.removeActivity;
+    const cur = (S.answers.activities || []).filter(x => x !== SKIP && x !== actId);
+    if (cur.length > 0) {
+      S.answers.activities = cur;
+      S.planOverridden = false;
+      S.chosenPlanId = null;
+      if (S.weekSwap) {
+        Object.keys(S.weekSwap).forEach(d => {
+          if (S.weekSwap[d] && S.weekSwap[d].groupId === actId) delete S.weekSwap[d];
+        });
+      }
+      log('activity_removed_from_reco', { activity: actId });
+      render(false);
+    }
     return;
   }
   if (t.dataset.openAddVenue) {
