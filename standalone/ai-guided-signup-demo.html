@@ -3148,7 +3148,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 17 Aug 15:43 UTC</span>
+  <span class="demo-banner__build">build 17 Aug 15:53 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -3878,7 +3878,8 @@ function askBlock(compact, fold) {
       <div class="ask__title">A specific membership question?</div>
       <div class="ask__sub">Plans, prices, pausing, what&rsquo;s near you. Answered from published information only.</div></div>`;
   const inner = `<form data-form="ask"><div class="ask__row">
-      <input type="text" name="q" value="${esc(ASK.q||'')}" placeholder="Type a question…" aria-label="Ask Urby a question" autocomplete="off">
+      <label for="ask-q-input" class="sr-only">Ask Urby a question</label>
+      <input type="text" name="q" id="ask-q-input" value="${esc(ASK.q||'')}" placeholder="Type a question…" aria-label="Ask Urby a question" autocomplete="off">
       <button class="btn btn--secondary" type="submit">Ask</button></div></form>
     ${body}
     ${!r?`<div class="ask__examples">${examples.map(x=>`<button class="chip-sm" data-ask-example="${esc(x)}">${esc(x)}</button>`).join('')}</div>`:
@@ -4217,8 +4218,8 @@ const venueMedia = (v, acts) => {
      should not show a leaf just because the pool also runs yoga. */
   const offline = v.image && IMG[v.image];
   return `<span class="venue-card__glyph">${icon(activityIcon(acts||v.activities),34)}</span>`
-    + (offline ? `<img src="${offline}" alt="${esc(v.name)}">` : '')
-    + (v.photo ? `<img src="${esc(v.photo)}" alt="${esc(v.name)}" loading="lazy" onerror="this.remove()">` : '');
+    + (offline ? `<img src="${offline}" alt="${esc(v.name)}" decoding="async">` : '')
+    + (v.photo ? `<img src="${esc(v.photo)}" alt="${esc(v.name)}" loading="lazy" decoding="async" onerror="this.remove()">` : '');
 };
 const venueCard = (v, tappable=true) => {
   /* Say plainly whether this place is on the plan in front of them. A greyed-out
@@ -4520,7 +4521,7 @@ function landing() {
         ${primary}
       </div></div>
     <div class="landing__media"><button class="login-link login-link--desktop linkish" data-go="login">Log in</button>
-      <img src="${IMG['/images/hero-climber.jpg']}" alt="A climber resting and smiling at a bouldering gym in Berlin"></div>
+      <img src="${IMG['/images/hero-climber.jpg']}" alt="A climber resting and smiling at a bouldering gym in Berlin" decoding="async"></div>
   </main>
   <section class="ula-section"><div class="ula-section__inner">
     <!-- The question used to be asked twice on this page: once here, under a heading and a
@@ -4649,8 +4650,9 @@ function findBar() {
     </div>` : ''}
     <form data-form="search" novalidate class="findbar__searchform">
       <div class="findsearch">
+        <label for="venue-search-q" class="sr-only">Search for a place, an activity or an address</label>
         <span class="findsearch__icon" aria-hidden="true">${icon('search',18)}</span>
-        <input type="search" name="q" value="${esc(SEARCH.q||'')}"
+        <input type="search" name="q" id="venue-search-q" value="${esc(SEARCH.q||'')}"
           placeholder="Venue, activity or address" aria-label="Search for a place, an activity or an address" autocomplete="off">
         <button type="submit" class="findsearch__btn">Search</button>
       </div>
@@ -5002,6 +5004,16 @@ function searchScreen() {
      honest that the real network is far larger than the sample loaded here. */
   const miss = r && r.kind === 'none' ? `
     <div class="notice notice--grey">${icon('info',19)}<span>This pilot has ${VENUES.length} real Berlin venues loaded, not the whole network of ${esc(PLANS[PLANS.length-1].venueCount)} &mdash; so a miss here does not mean a miss on Urban Sports Club.</span></div>
+    <div class="search-empty-discover" style="margin:16px 0 20px">
+      <p class="small muted" style="margin-bottom:8px">Try searching for popular activities or neighborhoods:</p>
+      <div class="chips-row" style="margin-bottom:0">
+        <button class="chip-sm" type="button" data-search-example="Bouldering">🧗 Bouldering</button>
+        <button class="chip-sm" type="button" data-search-example="Yoga">🧘 Yoga</button>
+        <button class="chip-sm" type="button" data-search-example="Swimming">🏊 Swimming</button>
+        <button class="chip-sm" type="button" data-search-example="Prenzlauer Berg">📍 Prenzlauer Berg</button>
+        <button class="chip-sm" type="button" data-search-example="Kreuzberg">📍 Kreuzberg</button>
+      </div>
+    </div>
     ${PLACEWANTED ? `<div class="notice" style="margin-top:14px">${icon('checkThin',19)}<span>Noted &mdash; <b>${esc(PLACEWANTED)}</b>.
         It shows up in the <button class="linkish" data-go="data">journey data</button> as a place members are asking for.</span></div>`
       : `<form data-form="place-demand" class="partnerask__form" style="margin-top:16px">
@@ -5110,7 +5122,8 @@ function fitScreen() {
           <div class="ownwords">
             <div class="ownwords__label">${icon('speech',17)} <span>Answer in your own words</span></div>
             <div class="ownwords__row">
-              <input type="text" name="freeText" placeholder="${esc(q.placeholder)}" aria-label="Answer in your own words" autocomplete="off" autofocus>
+              <label for="ownwords-input" class="sr-only">Answer in your own words</label>
+              <input type="text" name="freeText" id="ownwords-input" placeholder="${esc(q.placeholder)}" aria-label="Answer in your own words" autocomplete="off" autofocus>
               <button class="ownwords__send" type="submit">Send</button>
             </div>
           </div>
