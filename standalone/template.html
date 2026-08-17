@@ -2354,30 +2354,29 @@ function recommendationScreen() {
       <h2 class="weekcard__title">A week that fits you</h2>
     </div>
     <ol class="weekcard__list">${wp.sessions.map(x=>{
-      const tier = x.venue ? (x.venue.tier === 'premium' ? 'Premium' : x.venue.tier === 'plus' ? 'Plus' : 'Standard') : '';
+      const tier = x.venue ? (x.venue.tier === 'premium' ? 'Premium' : x.venue.tier === 'plus' ? 'Plus' : '') : '';
       const tierBadge = tier ? `<span class="tier-tag tier-tag--${x.venue.tier}">${tier}</span>` : '';
       return `<li class="weekrow ${x.included?'':'is-locked'}">
-      <span class="weekrow__icon">${icon(x.icon,20)}</span>
-      <span class="weekrow__meta"><span class="weekrow__day">${esc(x.day)}</span>
-        <span class="weekrow__dot" aria-hidden="true">&middot;</span>
-        <span class="weekrow__act">${esc(x.activity)}</span></span>
+      <div class="weekrow__lead">
+        <span class="weekrow__icon">${icon(x.icon,18)}</span>
+        <div class="weekrow__meta">
+          <span class="weekrow__day">${esc(x.day)}</span>
+          <b class="weekrow__act">${esc(x.activity)}</b>
+        </div>
+      </div>
       <button class="weekrow__place" data-venue="${esc(x.venue.id)}" aria-label="More about ${esc(x.venue.name)}">
         <span class="venue-card__media weekrow__thumb">${venueMedia(x.venue, (groupById(x.groupId)||{}).activities)}</span>
-        <span class="weekrow__pname">${esc(x.venue.name)}
-          <small>${x.distanceKm} km &middot; ${tierBadge}${x.option ? ` &middot; ${esc(x.option)}` : ''}</small>
+        <span class="weekrow__pname"><b>${esc(x.venue.name)}</b>
+          <small>${x.distanceKm} km${tierBadge ? ' &middot; ' + tierBadge : ''}</small>
         </span>
       </button>
-      <span class="weekrow__end">
-        <!-- Rule 13: the per-venue limit is published, and it is the one fact about this
-             row the plan card cannot carry — so it stays on the row. A plan that does not
-             open the place at all says which one does, and says it loudly; a plan that
-             does says how often, and says it quietly. -->
+      <div class="weekrow__actions">
         ${x.included
           ? (/^(included|not included)/i.test(x.access) ? '' : `<span class="weekrow__limit">${esc(x.access)}</span>`)
-          : `<span class="weekrow__pill">${x.needs?esc(x.needs.name):'Not included'} only</span>`}
+          : `<span class="weekrow__pill">${x.needs?esc(x.needs.name):'Not included'}</span>`}
         <button class="weekrow__swap" data-change-week="${esc(x.day)}"
-          aria-label="Choose a different activity or venue for ${esc(x.day)}">${icon('refresh',14)} <span>Change</span></button>
-      </span>
+          aria-label="Change activity or venue for ${esc(x.day)}">${icon('refresh',12)} <span>Swap</span></button>
+      </div>
     </li>`;
     }).join('')}</ol>
 

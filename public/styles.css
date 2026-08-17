@@ -2798,60 +2798,51 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
    plan terms on the right. A locked row says which membership opens it and nothing else —
    the reasoning for that lives on the card in the other column. */
 .weekrow {
-  display: grid; grid-template-columns: 44px 110px minmax(0, 1fr) 112px 105px;
-  align-items: center; gap: 12px;
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
   background: #fff; border-radius: var(--radius); padding: 12px 16px;
   border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 1px 3px rgba(0,0,0,0.02);
 }
+.weekrow__lead {
+  display: flex; align-items: center; gap: 10px; flex: 0 0 140px; min-width: 0;
+}
 .weekrow__icon {
-  flex: 0 0 auto; display: grid; place-items: center; width: 44px; height: 44px;
+  flex: 0 0 auto; display: grid; place-items: center; width: 38px; height: 38px;
   border-radius: 50%; background: var(--yellow-pale); color: #4a4126;
 }
 .weekrow.is-locked .weekrow__icon { background: var(--page-grey); color: var(--navy-soft); }
-.weekrow__meta { display: flex; align-items: baseline; gap: 9px; min-width: 0; }
-.weekrow__meta { flex-direction: column; align-items: flex-start; gap: 2px; }
-.weekrow__day { font-size: 15.5px; color: var(--navy); }
-.weekrow__dot { display: none; }
-.weekrow__act { font-size: 16px; font-weight: 700; }
-/* The place is a button because tapping it opens the venue sheet, but it must not look
-   like one: a photograph, a name and a distance. */
+.weekrow__meta { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.weekrow__day { font-size: 12.5px; color: var(--navy-soft); font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+.weekrow__act { font-size: 15px; font-weight: 700; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
 .weekrow__place {
-  display: flex; align-items: center; gap: 12px; min-width: 0;
-  background: none; border: 0; padding: 0; text-align: left;
+  display: flex; align-items: center; gap: 10px; flex: 1 1 auto; min-width: 0;
+  background: none; border: 0; padding: 0; text-align: left; cursor: pointer;
 }
 .weekrow__thumb {
-  flex: 0 0 auto; width: 78px; height: 54px; border-radius: 6px; overflow: hidden;
-  aspect-ratio: auto;
+  position: relative;
+  flex: 0 0 auto; width: 56px; height: 40px; border-radius: 6px; overflow: hidden;
+  background: var(--yellow-pale); display: grid; place-items: center;
 }
-.weekrow__thumb svg { width: 24px; height: 24px; }
-.weekrow__pname { min-width: 0; font-size: 15.5px; font-weight: 700; line-height: 1.25; }
-.weekrow__pname small { display: block; font-size: 14px; font-weight: 400; color: var(--navy-soft); font-variant-numeric: tabular-nums; }
-.weekrow__place:hover .weekrow__pname { text-decoration: underline; }
-.weekrow__end { display: contents; }
-.weekrow__pill {
-  grid-column: 4; justify-self: end;
-  flex: 0 0 auto; background: var(--yellow-bright); color: var(--ink);
-  font-size: 12.5px; font-weight: 700; padding: 5px 10px; border-radius: 999px; white-space: nowrap;
-}
-/* The published limit for this place on this plan (rule 13). Quiet: it is a fact about
-   the row, not a warning about it. */
-.tier-tag {
-  display: inline-flex; align-items: center; font-size: 11px; font-weight: 700;
-  padding: 2px 6px; border-radius: 4px; line-height: 1.2; text-transform: uppercase; letter-spacing: .03em;
-  vertical-align: middle;
-}
-.tier-tag--premium { background: #fdf3cf; color: #855800; }
-.tier-tag--plus { background: #e3effd; color: #0c4a80; }
-.tier-tag--standard { background: #e6f4ea; color: #137333; }
+.weekrow__thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.weekrow__pname { min-width: 0; }
+.weekrow__pname b { display: block; font-size: 14.5px; font-weight: 700; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.weekrow__pname small { display: block; font-size: 12.5px; font-weight: 500; color: var(--navy-soft); }
+.weekrow__place:hover .weekrow__pname b { text-decoration: underline; }
 
+.weekrow__actions {
+  display: flex; align-items: center; gap: 8px; flex: 0 0 auto;
+}
+.weekrow__pill {
+  background: var(--yellow-bright); color: var(--ink);
+  font-size: 11.5px; font-weight: 700; padding: 4px 8px; border-radius: 999px; white-space: nowrap;
+}
 .weekrow__swap {
-  grid-column: 5; justify-self: end;
-  display: inline-flex; align-items: center; gap: 6px; background: #fff;
-  border: 1px solid #dcdfe4; border-radius: 9999px; padding: 6px 12px;
-  font-size: 12.5px; font-weight: 600; color: var(--ink); cursor: pointer;
+  display: inline-flex; align-items: center; gap: 5px; background: var(--cream);
+  border: 1px solid var(--cream-line); border-radius: 9999px; padding: 5px 10px;
+  font-size: 12px; font-weight: 700; color: var(--navy); cursor: pointer;
   transition: all .15s ease;
 }
-.weekrow__swap:hover { background: #f4f5f7; border-color: var(--ink); }
+.weekrow__swap:hover { background: #fff; border-color: var(--ink); color: var(--ink); }
 /* The one thing the plan on screen cannot carry, said where the gap is visible. */
 .weekcard__adds {
   display: flex; align-items: flex-start; gap: 10px; margin: 14px 2px 0;
