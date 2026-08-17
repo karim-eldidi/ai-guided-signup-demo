@@ -1028,6 +1028,7 @@ let WHEREPICK=false, SEEALL=false;
 let RECO_VIEW='pillars'; /* 'pillars' (activity & freedom) or 'week' (day-by-day schedule) */
 let EXPANDED_PILLARS={};
 let CUSTOMIZER_OPEN=false;
+let EXCLUDED_VENUES=new Set();
 /* In production the neighbourhood comes from the browser or the IP. The pilot has no map
    service, so the page starts from one real Berlin area and says out loud that it guessed
    — the same contract the city chip already keeps (rules 6 and 26). It is never written
@@ -2424,7 +2425,7 @@ function recommendationScreen() {
       ${groups.map(g => {
         const grp = groupById(g.id || g);
         if (!grp) return '';
-        const grpAllVenues = pool.filter(v => venueInGroup(v, grp));
+        const grpAllVenues = pool.filter(v => venueInGroup(v, grp) && !EXCLUDED_VENUES.has(v.id));
         const isExp = Boolean(EXPANDED_PILLARS[grp.id]);
         const grpVenues = isExp ? grpAllVenues.slice(0, 6) : grpAllVenues.slice(0, 2);
         const moreCount = grpAllVenues.length - 2;
@@ -2468,7 +2469,7 @@ function recommendationScreen() {
                   <button class="btn-pill btn-pill--sm" data-open-add-venue="${esc(v.id)}" title="Add to week">
                     ${icon('plus', 11)} <span>Add</span>
                   </button>
-                  ${groups.length > 1 ? `<button class="pillar-venue__trash" type="button" data-remove-activity="${esc(grp.id)}" aria-label="Remove this sport" title="Remove ${esc(grp.label)} from routine">${icon('trash', 13)}</button>` : ''}
+                  <button class="pillar-venue__trash" type="button" data-exclude-venue="${esc(v.id)}" aria-label="Remove ${esc(v.name)}" title="Remove this studio from routine">${icon('trash', 13)}</button>
                 </div>
               </div>`;
             }).join('')}
@@ -2486,12 +2487,7 @@ function recommendationScreen() {
     ${addSportsShelf}
   </section>` : '';
 
-  const viewSwitcher = `
-  <div class="reco-freedom-reassurance">
-    <span class="reco-freedom-reassurance__tag">Sample Plan</span>
-    <span>Examples of what <b>${esc(plan.name)}</b> unlocks near you. You can visit any partner studio in Berlin anytime.</span>
-  </div>
-  <div class="reco-switcher" role="tablist" aria-label="Recommendation view format">
+  const viewSwitcher = `<div class="reco-switcher" role="tablist" aria-label="Recommendation view format">
     <button class="reco-switcher__tab ${RECO_VIEW==='pillars'?'is-active':''}" type="button" data-set-reco-view="pillars" aria-selected="${RECO_VIEW==='pillars'}">
       ${icon('sparkle',16)} <span>Activity Freedom</span>
     </button>
@@ -2707,9 +2703,14 @@ function recommendationScreen() {
   </details>`;
 
   return `${topbar(1)}<div class="two-col two-col--reco"><main class="two-col__main" id="main">
-    ${story}
-    ${viewSwitcher}
-    ${RECO_VIEW==='pillars' ? pillarsBlock : weekBlock}
+    <section class="reco-story-card">
+      ${heroBlock}
+      ${viewSwitcher}
+      ${chipsBlock}
+      <div class="reco-story-card__canvas">
+        ${RECO_VIEW==='pillars' ? pillarsBlock : weekBlock}
+      </div>
+    </section>
     ${placesSection}
     ${appsBlock()}
     ${moreRow}
@@ -3404,7 +3405,7 @@ document.addEventListener('change', e => {
   renderInPlace();
 });
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-change-city],[data-city],[data-unsure],[data-open-ask],[data-rail],[data-radius],[data-toggle-venues],[data-toggle-apps],[data-toggle-week],[data-toggle-places],[data-toggle-more],[data-more],[data-toggle-alt],[data-toggle-plan-details],[data-open-days],[data-day],[data-swap],[data-change-week],[data-add-week],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula],[data-search-example],[data-venue-clear],[data-venue-search-all],[data-toggle-where],[data-where],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-add-activity],[data-remove-activity],[data-expand-pillar],[data-toggle-routine-customizer],[data-remove-day]');
+  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-change-city],[data-city],[data-unsure],[data-open-ask],[data-rail],[data-radius],[data-toggle-venues],[data-toggle-apps],[data-toggle-week],[data-toggle-places],[data-toggle-more],[data-more],[data-toggle-alt],[data-toggle-plan-details],[data-open-days],[data-day],[data-swap],[data-change-week],[data-add-week],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula],[data-search-example],[data-venue-clear],[data-venue-search-all],[data-toggle-where],[data-where],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-add-activity],[data-remove-activity],[data-expand-pillar],[data-toggle-routine-customizer],[data-remove-day],[data-exclude-venue]');
   if (!t) return;
 
   if (t.dataset.toggleRoutineCustomizer !== undefined) {
@@ -3698,6 +3699,13 @@ document.addEventListener('click', e => {
       log('day_removed_from_schedule', { day });
       render(false);
     }
+    return;
+  }
+  if (t.dataset.excludeVenue) {
+    const vId = t.dataset.excludeVenue;
+    EXCLUDED_VENUES.add(vId);
+    log('venue_excluded_from_routine', { venue: vId });
+    render(false);
     return;
   }
   if (t.dataset.openAddVenue) {

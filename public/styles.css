@@ -2774,16 +2774,26 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   text-transform: none; letter-spacing: 0; font-size: 15px; color: var(--navy);
 }
 
-/* Reassurance banner for new visitors */
-.reco-freedom-reassurance {
-  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
-  background: rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05);
-  padding: 8px 12px; border-radius: 10px; margin-bottom: 12px;
-  font-size: 12.5px; color: var(--navy-soft); line-height: 1.35;
+/* Unified Story Container */
+.reco-story-card {
+  background: #fff; border: 1px solid rgba(0,0,0,0.07);
+  border-radius: var(--radius-xl); padding: 22px 24px; margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
 }
-.reco-freedom-reassurance__tag {
-  font-size: 10.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .04em;
-  background: var(--yellow-pale); color: var(--ink); padding: 2px 7px; border-radius: 4px; flex: 0 0 auto;
+.reco-story-card .reco-hero__title {
+  margin: 4px 0 16px; font-size: 26px; line-height: 1.2;
+}
+.reco-story-card .reco-switcher {
+  margin: 0 0 16px;
+}
+.reco-story-card .chips-row {
+  margin: 0 0 18px; padding-bottom: 16px; border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.reco-story-card__canvas .pillar-card {
+  box-shadow: none; border: 1px solid rgba(0,0,0,0.07); background: #fafafa;
+}
+.reco-story-card__canvas .pillar-venue {
+  background: #fff; border: 1px solid rgba(0,0,0,0.04);
 }
 
 /* Recommendation View Switcher (Clean Segmented Control) */
