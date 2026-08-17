@@ -1091,35 +1091,106 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 .modal__fine a { text-decoration: underline; }
 .modal__tertiary { display: inline-block; margin-top: 16px; background: none; border: 0; color: var(--navy-soft); font-size: 16px; text-decoration: none; }
 .modal--save {
-  max-width: 540px; padding: 28px 28px 24px; overflow-y: auto; max-height: calc(100vh - 48px);
-  text-align: left; border-radius: 18px; background: #fff;
+  max-width: 900px; width: 100%; padding: 0; overflow-y: auto; max-height: calc(100vh - 48px);
+  text-align: left; border-radius: 20px; background: #fff; box-shadow: 0 24px 60px rgba(0,0,0,0.18);
 }
 .modal--save .modal__close {
-  z-index: 3; top: 16px; right: 18px; width: 36px; height: 36px;
-  border-radius: 50%; background: var(--cream); font-size: 22px; display: flex; align-items: center; justify-content: center;
+  z-index: 5; top: 16px; right: 18px; width: 36px; height: 36px;
+  border-radius: 50%; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  font-size: 22px; display: flex; align-items: center; justify-content: center;
 }
 .modal--save .savepanel {
-  display: flex; flex-direction: column; background: transparent; border: 0; padding: 0;
+  display: grid; grid-template-columns: 1.05fr 1fr; background: transparent; border: 0; padding: 0;
+}
+.savepanel__left {
+  background: var(--cream); padding: 32px 28px 28px;
+  border-right: 1px solid var(--cream-line);
+}
+.savepanel__right {
+  background: #fff; padding: 32px 28px 28px;
 }
 .savepanel__guide {
-  display: flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 700; color: var(--navy); margin-bottom: 8px;
+  display: flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 700; color: var(--navy); margin-bottom: 10px;
 }
 .savepanel__guide .ula-avatar {
-  width: 26px; height: 26px; margin: 0;
+  width: 28px; height: 28px; margin: 0;
 }
 .savepanel__title {
-  font-size: 26px; font-weight: 800; letter-spacing: -.02em; margin: 0 0 6px; color: var(--ink);
+  font-size: 24px; font-weight: 800; letter-spacing: -.02em; margin: 0 0 6px; color: var(--ink);
 }
 .savepanel__sub {
-  font-size: 14.5px; color: var(--navy-soft); line-height: 1.4; margin: 0 0 12px;
+  font-size: 14px; color: var(--navy-soft); line-height: 1.4; margin: 0 0 16px;
 }
-.save-pill {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: var(--cream); border: 1px solid var(--cream-line);
-  border-radius: 999px; padding: 6px 14px; font-size: 13px; font-weight: 600;
-  color: var(--ink); margin-bottom: 18px; align-self: flex-start;
+.savepanel__asktitle {
+  font-size: 22px; font-weight: 800; letter-spacing: -.02em; margin: 0 0 6px; color: var(--ink);
 }
-.save-pill svg { color: var(--navy-soft); flex-shrink: 0; }
+.savepanel__asksub {
+  font-size: 14px; color: var(--navy-soft); line-height: 1.4; margin: 0 0 16px;
+}
+
+/* Visual recap cards */
+.saverecap {
+  display: flex; flex-direction: column; gap: 12px;
+}
+.saverecap__head {
+  background: #fff; border: 1px solid var(--cream-line); border-radius: 12px;
+  padding: 14px 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+.saverecap__tag {
+  display: inline-block; background: var(--yellow-bright); color: var(--ink);
+  font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em;
+  padding: 3px 8px; border-radius: 99px; margin-bottom: 6px;
+}
+.saverecap__plan {
+  display: flex; align-items: baseline; justify-content: space-between;
+}
+.saverecap__plan b { font-size: 20px; font-weight: 800; color: var(--ink); }
+.saverecap__plan span { font-size: 17px; font-weight: 800; color: var(--ink); }
+.saverecap__plan small { font-size: 12px; color: var(--navy-soft); font-weight: 500; }
+.saverecap__meta { font-size: 13px; color: var(--navy-soft); margin-top: 2px; }
+
+.saverecap__label {
+  font-size: 11.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em;
+  color: var(--navy-soft); margin-bottom: 8px;
+}
+.saverecap__week {
+  background: #fff; border: 1px solid var(--cream-line); border-radius: 12px;
+  padding: 12px 14px;
+}
+.saverecap__days { display: flex; flex-direction: column; gap: 6px; }
+.saverecap__day-row {
+  display: flex; align-items: baseline; gap: 10px; font-size: 13px;
+}
+.saverecap__day-name {
+  font-weight: 800; color: var(--ink); width: 36px; flex-shrink: 0;
+}
+.saverecap__day-act {
+  color: var(--navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.saverecap__day-act b { font-weight: 700; color: var(--ink); }
+
+.saverecap__venues {
+  background: #fff; border: 1px solid var(--cream-line); border-radius: 12px;
+  padding: 12px 14px;
+}
+.saverecap__venue-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+}
+.saverecap__venue-item { min-width: 0; text-align: left; }
+.saverecap__venue-media {
+  width: 100%; height: 48px; border-radius: 6px; overflow: hidden; margin-bottom: 4px; background: #eee;
+}
+.saverecap__venue-media img, .saverecap__venue-media picture {
+  width: 100%; height: 100%; object-fit: cover;
+}
+.saverecap__venue-name {
+  font-size: 11px; font-weight: 700; color: var(--ink);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.saverecap__more {
+  font-size: 12px; color: var(--navy-soft); font-weight: 600; margin-top: 6px; text-align: right;
+}
+
 .savefield__label {
   display: block; font-size: 13.5px; font-weight: 700; color: var(--ink); margin-bottom: 6px;
 }
@@ -1146,15 +1217,28 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 .saved-actions { display: flex; gap: 10px; margin-top: 20px; }
 .saved-actions .btn { margin: 0; }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .overlay { padding: 12px; }
   .modal--save {
-    padding: 22px 18px 18px;
+    max-width: 500px;
+    border-radius: 18px;
     max-height: calc(100vh - 24px);
-    border-radius: 16px;
   }
-  .savepanel__title { font-size: 22px; }
-  .savepanel__sub { font-size: 13.5px; }
+  .modal--save .savepanel {
+    grid-template-columns: 1fr;
+  }
+  .savepanel__left {
+    padding: 24px 20px 18px;
+    border-right: 0; border-bottom: 1px solid var(--cream-line);
+  }
+  .savepanel__right {
+    padding: 20px 20px 22px;
+  }
+  .savepanel__title { font-size: 20px; }
+  .savepanel__asktitle { font-size: 20px; }
+  .saverecap__venue-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
   .saved-actions { flex-direction: column; }
 }
 
@@ -3215,7 +3299,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 17 Aug 16:22 UTC</span>
+  <span class="demo-banner__build">build 17 Aug 16:25 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -5927,36 +6011,93 @@ function saveScreen() {
   const hasPlan = fitComplete(S.answers) || S.planOverridden;
   const F = hasPlan ? fitSummary() : null;
   const answered = QUESTIONS.filter(q => isAnswered(S.answers[q.id])).length;
+  const shownVenues = F ? F.included.slice(0, 3) : [];
+  const moreVenues = F ? Math.max(0, F.included.length - shownVenues.length) : 0;
+  const savedWeek = F ? weekPlan(F.groups, F.match.pool||[], F.plan.id, S.answers.frequency).sessions : [];
 
-  const progressBadge = !hasPlan
-    ? `<div class="save-pill">${icon('info', 16)} <span>Saved at question ${Math.min(answered + 1, QUESTIONS.length)} of ${QUESTIONS.length} &middot; nothing to answer twice</span></div>`
-    : `<div class="save-pill">${icon('sparkle', 16)} <span>${esc(F.plan.name)} (${F.price} €/mo) &middot; ${F.totals ? F.totals.included + ' matching places' : 'routine saved'}</span></div>`;
+  const recapSection = hasPlan ? `
+    <div class="saverecap">
+      <div class="saverecap__head">
+        <span class="saverecap__tag">${F.isRec ? 'Recommended routine' : 'Your chosen routine'}</span>
+        <div class="saverecap__plan">
+          <b>${esc(F.plan.name)}</b>
+          <span>${F.price} €<small>/mo</small></span>
+        </div>
+        <div class="saverecap__meta">${esc(F.commitment.label)} &middot; ${plural(monthlyAllowance(F.plan),'visit','visits')}/mo</div>
+      </div>
+
+      ${savedWeek.length ? `
+      <div class="saverecap__week">
+        <div class="saverecap__label">Your planned week</div>
+        <div class="saverecap__days">
+          ${savedWeek.slice(0, 3).map(s => `
+            <div class="saverecap__day-row">
+              <span class="saverecap__day-name">${esc(s.day.slice(0,3))}</span>
+              <span class="saverecap__day-act"><b>${esc(s.activity)}</b> at ${esc(s.venue.name)}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>` : ''}
+
+      ${shownVenues.length ? `
+      <div class="saverecap__venues">
+        <div class="saverecap__label">Included places near ${esc(F.where)}</div>
+        <div class="saverecap__venue-grid">
+          ${shownVenues.map(v => `
+            <div class="saverecap__venue-item">
+              <div class="saverecap__venue-media">${venueMedia(v)}</div>
+              <div class="saverecap__venue-name">${esc(v.name)}</div>
+            </div>
+          `).join('')}
+        </div>
+        ${moreVenues ? `<div class="saverecap__more">+${moreVenues} more matching ${plural(moreVenues,'place','places')}</div>` : ''}
+      </div>` : ''}
+    </div>
+  ` : `
+    <div class="saverecap">
+      <div class="saverecap__head">
+        <span class="saverecap__tag">Your progress so far</span>
+        <div class="saverecap__plan"><b>Question ${Math.min(answered + 1, QUESTIONS.length)} of ${QUESTIONS.length}</b></div>
+        <div class="saverecap__meta">We'll save every answer you've given so far.</div>
+      </div>
+      <div class="saverecap__chips">
+        ${answerChips({ label:'', compact:true })}
+      </div>
+    </div>
+  `;
 
   return `${topbar(1,{ stepper:false, savedNote:Boolean(S.email&&S.saveOptIn),
                        back: hasPlan ? { route:'recommendation', label:'Back to recommendation' }
                                      : { route:'fit', label:'Back to your questions' } })}
   <main class="savewrap" id="main">
     <div class="savepanel">
-      <div class="savepanel__guide">${ulaAvatar('sm')}<span>Urby &middot; Membership guide</span></div>
-      <h1 class="savepanel__title" tabindex="-1">Save your progress</h1>
-      <p class="savepanel__sub">We&rsquo;ll email you a private link to pick up right where you left off.</p>
-      ${progressBadge}
+      <div class="savepanel__left">
+        <div class="savepanel__guide">${ulaAvatar('sm')}<span>Urby &middot; Membership guide</span></div>
+        <h1 class="savepanel__title" tabindex="-1">Here&rsquo;s what you&rsquo;re saving</h1>
+        <p class="savepanel__sub">${hasPlan ? 'Your custom routine, matching studios, and membership plan.' : 'Your answers and progress so far.'}</p>
+        ${recapSection}
+      </div>
 
-      <form data-form="save" novalidate class="saveform">
-        <label class="savefield__label" for="save-email">Email address</label>
-        <input id="save-email" class="savefield" type="email" name="email" placeholder="Your email address" value="${esc(FIELDS.email||'')}">
-        ${ERRORS.email?`<p class="field-error" role="alert">${esc(ERRORS.email)}</p>`:''}
-        <button class="btn btn--primary btn--block" type="submit">Save my progress</button>
-        <div class="orline"><span>or continue with</span></div>
-        <div class="sso-row" style="max-width:none">
-          <button class="sso-btn" type="submit" name="provider" value="google" aria-label="Save with Google">${GOOGLE} Google</button>
-          <button class="sso-btn" type="submit" name="provider" value="apple" aria-label="Save with Apple">${APPLE} Apple</button></div>
-        <div class="consent-row" style="max-width:none;margin:16px 0 12px"><label class="checkbox"><input type="checkbox" name="marketing" id="marketing" ${S.marketing?'checked':''}><span></span></label>
-          <label class="consent-label" for="marketing">Send me occasional offers and activity inspiration.<br><span class="muted">Optional</span></label></div>
-        <div class="notice notice--soft">${icon('lock',18)}<span><b>No payment will be taken.</b> Private return link.</span></div>
-        <p class="terms-line" style="margin-top:12px">By continuing, you agree to our <button class="linkish" data-go="terms">Terms</button> and <button class="linkish" data-go="privacy">Privacy Policy</button>.</p>
-      </form>
-      <p class="save-out"><button class="linkish strong" data-skip-save>Continue without saving</button></p>
+      <div class="savepanel__right">
+        <h2 class="savepanel__asktitle">Keep your progress</h2>
+        <p class="savepanel__asksub">Email yourself a secure link to pick up right where you left off.</p>
+
+        <form data-form="save" novalidate class="saveform">
+          <label class="savefield__label" for="save-email">Email address</label>
+          <input id="save-email" class="savefield" type="email" name="email" placeholder="Your email address" value="${esc(FIELDS.email||'')}">
+          ${ERRORS.email?`<p class="field-error" role="alert">${esc(ERRORS.email)}</p>`:''}
+          <button class="btn btn--primary btn--block" type="submit">Save my progress</button>
+          <div class="orline"><span>or continue with</span></div>
+          <div class="sso-row" style="max-width:none">
+            <button class="sso-btn" type="submit" name="provider" value="google" aria-label="Save with Google">${GOOGLE} Google</button>
+            <button class="sso-btn" type="submit" name="provider" value="apple" aria-label="Save with Apple">${APPLE} Apple</button></div>
+          <div class="consent-row" style="max-width:none;margin:16px 0 12px"><label class="checkbox"><input type="checkbox" name="marketing" id="marketing" ${S.marketing?'checked':''}><span></span></label>
+            <label class="consent-label" for="marketing">Send me occasional offers and activity inspiration.<br><span class="muted">Optional</span></label></div>
+          <div class="notice notice--soft">${icon('lock',18)}<span><b>No payment will be taken.</b> Private return link.</span></div>
+          <p class="terms-line" style="margin-top:12px">By continuing, you agree to our <button class="linkish" data-go="terms">Terms</button> and <button class="linkish" data-go="privacy">Privacy Policy</button>.</p>
+        </form>
+        <p class="save-out"><button class="linkish strong" data-skip-save>Continue without saving</button></p>
+      </div>
     </div>
     <p class="savefoot"><button class="linkish" data-go="terms">Terms</button>
       <button class="linkish" data-go="privacy">Privacy</button>
