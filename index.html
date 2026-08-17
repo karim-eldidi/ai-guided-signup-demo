@@ -2875,6 +2875,32 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 }
 .weekcard__controls .week__days { border: 0; margin: 0; padding: 0; }
 .weekcard__helper { margin-top: 7px; font-size: 12.5px; color: var(--navy-soft); }
+
+/* Places Showcase */
+.places-showcase {
+  background: #fff; border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 22px 20px 20px; margin: 0 0 16px;
+}
+.places-showcase__head {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 16px;
+}
+.places-showcase__title {
+  font-size: clamp(18px, 1.4vw, 21px); font-weight: 800; letter-spacing: -.02em; margin: 0 0 4px; color: var(--ink);
+}
+.places-showcase__sub {
+  font-size: 13.5px; color: var(--navy-soft); margin: 0;
+}
+.places-showcase__explore {
+  font-size: 14px; font-weight: 700; color: var(--navy); white-space: nowrap; margin-top: 2px;
+}
+.places-showcase__explore:hover { color: var(--ink); }
+.places-showcase__grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+}
+@media (max-width: 768px) {
+  .places-showcase__head { flex-direction: column; gap: 8px; }
+  .places-showcase__grid { grid-template-columns: 1fr; }
+}
 .sheet__weekadd { margin-top: 16px; padding: 14px; border-radius: 10px; background: var(--cream); border: 1px solid var(--cream-line); }
 .sheet__weekadd-title { margin: 0 0 4px; font-size: 16px; font-weight: 800; }
 .sheet__weekadd-copy { margin: 0 0 12px; font-size: 13.5px; color: var(--navy-soft); }
@@ -3325,7 +3351,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 17 Aug 22:58 UTC</span>
+  <span class="demo-banner__build">build 17 Aug 23:04 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -5739,80 +5765,38 @@ function recommendationScreen() {
     : groups.length && placeCount
       ? `${placeCount} matching ${placeCount===1?'place':'places'} near ${esc(where)}`
       : `${plural(pool.length,'place','places')} near ${esc(where)}`;
-  const placesSub = hereT && hereT.nearby
-    ? `${hereT.included===hereT.nearby?`All ${hereT.nearby}`:`${hereT.included} of ${hereT.nearby}`} with ${esc(plan.name)}${
-        cheaperPlan && cheaperT && cheaperT.nearby ? ` &middot; ${cheaperT.included} with ${esc(cheaperPlan.name)}` : ''}`
-    : `Within ${match.radiusKm?`${match.radiusKm} km`:'reach'} of ${esc(where)}`;
-  const placesSection = `<section class="places">
-    <details class="rowcard places__fold"${PLACESOPEN || nq ?' open':''}>
-      <summary class="rowcard__head" data-toggle-places>
-        <span class="rowcard__icon">${icon('pin',22)}</span>
-        <span class="rowcard__text"><b>${placesTitle}</b><small>${placesSub}</small></span>
-        <span class="rowcard__cta">Explore venues ${icon('arrowRight',18)}</span>
-      </summary>
-      <div class="rowcard__body">
-      <!-- The box sits inside the fold, above the list it filters. It cannot sit in the
-           summary: the row is the handle for the fold, and a field inside a summary
-           either swallows the click or collapses the section as you type. -->
-      <form class="venuesearch" data-form="venue-filter" novalidate>
+  const placesSub = (hereT && hereT.nearby)
+    ? `${hereT.included===hereT.nearby ? 'All ' + hereT.nearby : hereT.included + ' of ' + hereT.nearby} with ${esc(plan.name)}`
+    : `Within ${match.radiusKm?match.radiusKm+' km':'reach'} of ${esc(where)}`;
+  const placesSection = `<section class="places-showcase">
+    <div class="places-showcase__head">
+      <div>
+        <h2 class="places-showcase__title">Places unlocked near ${esc(where)}</h2>
+        <p class="places-showcase__sub">${placesSub}</p>
+      </div>
+      <button class="places-showcase__explore linkish strong" type="button" data-toggle-places>
+        ${PLACESOPEN ? 'Hide extra places' : `Explore all ${placeCount} places &rarr;`}
+      </button>
+    </div>
+    <div class="places-showcase__grid">
+      ${allVenues.slice(0, 3).map(v => venueCard(v)).join('')}
+    </div>
+    ${PLACESOPEN ? `
+    <div class="places-showcase__drawer">
+      <form class="venuesearch" data-form="venue-filter" novalidate style="margin: 14px 0 10px">
         <span class="venuesearch__icon">${icon('search',17)}</span>
         <input type="search" name="vq" value="${esc(VENUEQ)}" autocomplete="off"
           placeholder="Search these places &mdash; a name or an activity" aria-label="Search the places near you">
         ${nq?`<button type="button" class="venuesearch__clear linkish strong" data-venue-clear>Clear</button>`:''}
       </form>
-      ${hits && !hits.length ? `<div class="notice notice--grey">${icon('info',19)}<span>Nothing within this radius matches
-        &ldquo;${esc(VENUEQ.trim())}&rdquo;. Try a wider radius below, or
-        <button class="linkish strong" type="button" data-venue-search-all>search all ${VENUES.length} venues in the pilot</button> &mdash;
-        that answers with the cheapest membership that opens the place.</span></div>` : ''}
-      <!-- Karim: "carousel scroll doesn't work". It always did scroll — but a horizontal
-           rail with no arrows and an overlay scrollbar is invisible to anyone using a
-           mouse, and invisible is the same thing as broken. -->
-      <!-- The seam only exists in grid mode, where a full-width divider is a real row.
-           The rail is a fixed-track grid (rule 44) and a half-width item there would
-           either eat a whole 238px column or reintroduce the collapse bug; in a row the
-           heading's count and each card's own "other activities" label do the work. -->
-      <div class="venue-grid venue-grid--big ${gridMode?'is-grid':'is-rail'}">${allVenues.map((v,i)=>
-        (gridMode && i===seamAt && seamAt>0 ? `<div class="venue-seam" role="separator" aria-label="More nearby, other activities"><span>More nearby &mdash; other activities</span></div>` : '') + venueCard(v)
-      ).join('')}</div>
-      <!-- How far we looked, as a control rather than a fact: he asked what happens when
-           he wants to reach further for more to choose from. -->
-      <div class="places__foot">
-        <!-- The rail's arrows used to sit up beside the heading. The heading is now the
-             handle for the fold, and a button inside a summary either swallows the click
-             or toggles the section by accident — so they moved down here, next to "See
-             all" and "how far to look", which are answers to the same question. -->
-        <div class="places__tools">
-          ${gridMode?'':`<span class="railnav">
-            <button type="button" class="railnav__btn" data-rail="-1" aria-label="Previous places">${icon('back',17)}</button>
-            <button type="button" class="railnav__btn" data-rail="1" aria-label="More places">${icon('chevron',17)}</button></span>`}
-        </div>
+      <div class="venue-grid venue-grid--big is-grid">${allVenues.map(v=>venueCard(v)).join('')}</div>
+      <div class="places__foot" style="margin-top:12px">
         <div class="radius" role="group" aria-label="How far to look">
           <span class="radius__label">${icon('pin',15)} Within</span>
           ${RADII.map(r=>`<button type="button" class="chip-sm ${(S.radiusKm||'auto')===r.id?'is-current':''}" data-radius="${esc(r.id)}">${esc(r.label)}</button>`).join('')}
         </div>
-        <div class="places__count">
-          <!-- Rule 33: the selected chip already says how far we looked, so the count
-               said "within 3 km" one gap away from the button reading "3 km". It only
-               names a distance when that distance is not the one on the chip — when the
-               automatic radius had to reach past 3 km to find enough. -->
-          <!-- With a search running the count has to be of the search, not of the
-               radius, or the heading and this line would be counting two different
-               things one gap apart (rule 33). -->
-          <!-- Not "4 of 7": the heading one card away already says four (rule 33). This
-               line says what was searched, which is the thing the heading does not. -->
-          <span class="radius__count">${hits
-            ? `from the ${plural(nearby.length,'place','places')} near you`
-            : `${plural(allVenues.length,'place','places')}${match.widened
-              ? ` &mdash; reached ${match.radiusKm?`${match.radiusKm} km`:'across Berlin'} to find them`
-              : ''}`}</span>
-          <!-- "See all 7" one gap from "7 places" was the number twice on one line. The
-               count owns the number; the button owns the verb. -->
-          ${!hits && allVenues.length>4?`<button class="linkish strong places__toggle" type="button" data-toggle-venues>${VENUESOPEN?'Back to a row':'See all'}</button>`:''}
-        </div>
       </div>
-      ${partnerAsk(match, groups)}
-      </div>
-    </details>
+    </div>` : ''}
   </section>`;
 
   /* The order of this column depends on the shape of the screen, which is why it is
