@@ -43,7 +43,7 @@ export const QUESTIONS = [
   {
     id: 'area',
     prompt: 'Where should we search?',
-    hint: 'Pick up to 3 neighbourhoods where you live, work, or spend time. We’ll find venues within easy reach (~3 km) of each.',
+    hint: 'Pick up to 3 — home, work, or daily routine.',
     summaryLabel: 'Area',
     icon: 'pin',
     multi: true,
