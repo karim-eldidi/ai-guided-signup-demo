@@ -3343,6 +3343,35 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 }
 .weekrow__trash:hover { color: #d9383a; background: #fee2e2; }
 
+@media (max-width: 768px) {
+  .weekrow {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: auto auto;
+    gap: 8px 10px;
+    padding: 12px 14px;
+  }
+  .weekrow__lead {
+    grid-column: 1 / 3;
+    grid-row: 1;
+    flex: none;
+  }
+  .weekrow__actions {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end;
+  }
+  .weekrow__place {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    padding-top: 8px;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    width: 100%;
+  }
+  .weekrow__pname b { font-size: 14px; }
+  .weekrow__pname small { font-size: 12px; }
+}
+
 .weekcard__controls {
   border-top: 1px solid rgba(0,0,0,0.06); margin-top: 20px; padding-top: 16px;
 }
@@ -3874,7 +3903,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 18 Aug 11:39 UTC</span>
+  <span class="demo-banner__build">build 18 Aug 12:02 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -6338,7 +6367,7 @@ function recommendationScreen() {
     <ul class="planbox__facts">
       <li>${icon('checkThin',16)} <span>All <b>${hereT && hereT.included ? hereT.included : 6} places</b> are included</span></li>
       <li>${icon('checkThin',16)} <span><b>${visitsFor(plan)} visits</b> each month</span></li>
-      ${wp.perMonth?`<li>${icon('checkThin',16)} <span>Matches your <b>${wp.perMonth} visits / wk goal</b></span></li>`:''}
+      ${wp.perMonth?`<li>${icon('checkThin',16)} <span>Matches your <b>${visitsWanted(S.answers.frequency)} sessions/wk goal</b> (~${wp.perMonth} visits/mo)</span></li>`:''}
       ${each?`<li>${icon('checkThin',16)} <span>About <b>${each} €</b> a session</span></li>`:''}
       <li>${icon('checkThin',16)} <span>Flexible &ndash; cancel anytime</span></li>
     </ul>

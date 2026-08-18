@@ -4,7 +4,7 @@ on this membership, for the things I actually do — and what would a tier up bu
 Every number on screen must be countable from the venue data. No claim is exempt."""
 import json, os, re
 from playwright.sync_api import sync_playwright
-OUT=os.path.join(os.environ.get("SHOT_DIR", "/home/claude"), "shots11"); os.makedirs(OUT, exist_ok=True)
+OUT=os.path.join(os.environ.get("SHOT_DIR", os.path.join(os.path.dirname(__file__), "..", "..", ".build", "shots")), "shots11"); os.makedirs(OUT, exist_ok=True)
 U=os.environ.get("DEMO_URL", "file:///mnt/user-data/outputs/ai-guided-signup-demo.html")
 ok=[];bad=[]
 def P(t): ok.append(t); print("PASS",t)
