@@ -5258,7 +5258,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 18 Aug 13:40 UTC</span>
+  <span class="demo-banner__build">build 18 Aug 13:45 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -8391,8 +8391,7 @@ function confirmationScreen() {
         </div>
         <h1 class="confirm-hero__title" tabindex="-1">You&rsquo;re all set, ${esc(first)}!</h1>
         <p class="confirm-hero__sub">
-          Your membership starts on <strong>${esc(fmtDate(S.startDate))}</strong>.
-          Everything is set up for your first workout.
+          Starts <strong>${esc(fmtDate(S.startDate))}</strong> &middot; Everything is ready for your routine.
         </p>
       </div>
     </div>
@@ -8412,7 +8411,6 @@ function confirmationScreen() {
               <div class="confirm-kickoff-step__num">1</div>
               <div class="confirm-kickoff-step__body">
                 <b>Download the USC app</b>
-                <p>Your digital membership card lives in the app.</p>
                 <div class="confirm-app-badges">
                   <a href="https://apps.apple.com/app/urban-sports-club/id974635677" target="_blank" rel="noopener" class="confirm-store-btn confirm-store-btn--apple">${APPLE} <span>App Store</span></a>
                   <a href="https://play.google.com/store/apps/details?id=com.urbansportsclub.urbansportsclub" target="_blank" rel="noopener" class="confirm-store-btn confirm-store-btn--google">${GOOGLE} <span>Google Play</span></a>
@@ -8423,16 +8421,15 @@ function confirmationScreen() {
             <div class="confirm-kickoff-step">
               <div class="confirm-kickoff-step__num">2</div>
               <div class="confirm-kickoff-step__body">
-                <b>Log in with your email</b>
-                <p>Sign in with <strong class="text-ink">${esc(S.email||'your email')}</strong> to activate your card.</p>
+                <b>Sign in with your email</b>
+                <p><strong class="text-ink">${esc(S.email||'your email')}</strong></p>
               </div>
             </div>
 
             <div class="confirm-kickoff-step">
               <div class="confirm-kickoff-step__num">3</div>
               <div class="confirm-kickoff-step__body">
-                <b>Scan the QR code &amp; work out</b>
-                <p>Scan the code at reception or book a class directly in the app.</p>
+                <b>Scan QR code at venue &amp; work out</b>
               </div>
             </div>
           </div>
@@ -8489,10 +8486,10 @@ function confirmationScreen() {
       <!-- RIGHT SIDEBAR COLUMN: Collapsible Receipt & Demo Tools (38%) -->
       <aside class="confirm-sidebar">
         <!-- Collapsible Receipt Card -->
-        <details class="confirm-receipt-disclosure" open>
+        <details class="confirm-receipt-disclosure">
           <summary class="confirm-receipt-summary">
             <div class="confirm-receipt-summary__left">
-              <span class="fitpanel__label" style="margin:0">Order receipt</span>
+              <span class="fitpanel__label" style="margin:0">Order details &amp; receipt</span>
               <span class="confirm-receipt-price">${price}.00 &euro;</span>
             </div>
             <span class="confirm-receipt-chevron">${icon('chevronDown', 16)}</span>
