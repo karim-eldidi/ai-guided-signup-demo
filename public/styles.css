@@ -4572,17 +4572,17 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   color: var(--navy-soft);
 }
 .confirm-hero__title {
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 800;
   letter-spacing: -.02em;
-  margin: 0;
+  margin: 0 0 6px;
   color: var(--ink);
 }
 .confirm-hero__sub {
-  font-size: 15px;
+  font-size: 14.5px;
   color: var(--navy-soft);
-  margin: 6px 0 0;
-  line-height: 1.45;
+  margin: 4px 0 0;
+  line-height: 1.4;
 }
 
 .confirm-layout {
@@ -4992,24 +4992,49 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
     max-width: 100%;
   }
   .confirm-hero {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 18px;
     min-width: 0;
     max-width: 100%;
+  }
+  .confirm-hero__avatar-wrap {
+    flex: 0 0 auto;
+  }
+  .confirm-hero__avatar-wrap .ula-avatar--lg {
+    width: 48px;
+    height: 48px;
+  }
+  .confirm-hero__sparkle {
+    width: 20px;
+    height: 20px;
+    bottom: -2px;
+    right: -2px;
+  }
+  .confirm-hero__sparkle svg {
+    width: 12px;
+    height: 12px;
   }
   .confirm-hero__text {
     min-width: 0;
     max-width: 100%;
   }
   .confirm-hero__title {
-    font-size: 22px;
-    margin: 4px 0 2px;
+    font-size: 20px;
+    margin: 0 0 3px;
+    line-height: 1.2;
     overflow-wrap: break-word;
   }
+  .confirm-hero__badge-row {
+    margin-bottom: 3px;
+    gap: 6px;
+  }
   .confirm-hero__sub {
-    font-size: 13.5px;
+    font-size: 12.5px;
     line-height: 1.35;
+    margin: 0;
     overflow-wrap: break-word;
   }
   .confirm-card {

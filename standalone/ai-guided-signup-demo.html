@@ -4586,17 +4586,17 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   color: var(--navy-soft);
 }
 .confirm-hero__title {
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 800;
   letter-spacing: -.02em;
-  margin: 0;
+  margin: 0 0 6px;
   color: var(--ink);
 }
 .confirm-hero__sub {
-  font-size: 15px;
+  font-size: 14.5px;
   color: var(--navy-soft);
-  margin: 6px 0 0;
-  line-height: 1.45;
+  margin: 4px 0 0;
+  line-height: 1.4;
 }
 
 .confirm-layout {
@@ -5006,24 +5006,49 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
     max-width: 100%;
   }
   .confirm-hero {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 18px;
     min-width: 0;
     max-width: 100%;
+  }
+  .confirm-hero__avatar-wrap {
+    flex: 0 0 auto;
+  }
+  .confirm-hero__avatar-wrap .ula-avatar--lg {
+    width: 48px;
+    height: 48px;
+  }
+  .confirm-hero__sparkle {
+    width: 20px;
+    height: 20px;
+    bottom: -2px;
+    right: -2px;
+  }
+  .confirm-hero__sparkle svg {
+    width: 12px;
+    height: 12px;
   }
   .confirm-hero__text {
     min-width: 0;
     max-width: 100%;
   }
   .confirm-hero__title {
-    font-size: 22px;
-    margin: 4px 0 2px;
+    font-size: 20px;
+    margin: 0 0 3px;
+    line-height: 1.2;
     overflow-wrap: break-word;
   }
+  .confirm-hero__badge-row {
+    margin-bottom: 3px;
+    gap: 6px;
+  }
   .confirm-hero__sub {
-    font-size: 13.5px;
+    font-size: 12.5px;
     line-height: 1.35;
+    margin: 0;
     overflow-wrap: break-word;
   }
   .confirm-card {
@@ -5258,7 +5283,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 18 Aug 13:48 UTC</span>
+  <span class="demo-banner__build">build 18 Aug 13:50 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -8385,11 +8410,11 @@ function confirmationScreen() {
         <span class="confirm-hero__sparkle">${icon('sparkle', 16)}</span>
       </div>
       <div class="confirm-hero__text">
+        <h1 class="confirm-hero__title" tabindex="-1">You&rsquo;re all set, ${esc(first)}!</h1>
         <div class="confirm-hero__badge-row">
           <span class="confirm-hero__tag">Membership confirmed</span>
           <span class="confirm-hero__plan-tag">${esc(plan.name)} &middot; ${monthlyAllowance(plan)} visits/mo</span>
         </div>
-        <h1 class="confirm-hero__title" tabindex="-1">You&rsquo;re all set, ${esc(first)}!</h1>
         <p class="confirm-hero__sub">
           Starts <strong>${esc(fmtDate(S.startDate))}</strong> &middot; Everything is ready for your routine.
         </p>

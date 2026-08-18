@@ -3287,11 +3287,11 @@ function confirmationScreen() {
         <span class="confirm-hero__sparkle">${icon('sparkle', 16)}</span>
       </div>
       <div class="confirm-hero__text">
+        <h1 class="confirm-hero__title" tabindex="-1">You&rsquo;re all set, ${esc(first)}!</h1>
         <div class="confirm-hero__badge-row">
           <span class="confirm-hero__tag">Membership confirmed</span>
           <span class="confirm-hero__plan-tag">${esc(plan.name)} &middot; ${monthlyAllowance(plan)} visits/mo</span>
         </div>
-        <h1 class="confirm-hero__title" tabindex="-1">You&rsquo;re all set, ${esc(first)}!</h1>
         <p class="confirm-hero__sub">
           Starts <strong>${esc(fmtDate(S.startDate))}</strong> &middot; Everything is ready for your routine.
         </p>
