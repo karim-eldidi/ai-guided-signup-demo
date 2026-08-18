@@ -36,6 +36,7 @@
   --radius-sm: 4px;
   --radius:    8px;
   --radius-lg: 12px;
+  --radius-xl: 20px;
 
   --shell: 1440px;
   --font: "Figtree", "Inter Tight", Inter, "Helvetica Neue", Helvetica, FreeSans, Arial, sans-serif;
@@ -2968,8 +2969,30 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   background: var(--yellow-pale); border-color: var(--ink);
 }
 
-.rowcard--explore .rowcard__link-btn {
-  margin-left: auto; font-size: 14px; font-weight: 700; color: var(--navy);
+.made-for-you__foot {
+  margin-top: 14px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.made-for-you__explore-link {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--navy);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  background: rgba(0,0,0,0.03);
+  border: 1px solid rgba(0,0,0,0.08);
+  transition: all .15s ease;
+  cursor: pointer;
+}
+.made-for-you__explore-link:hover {
+  color: var(--ink);
+  background: var(--yellow-pale);
+  border-color: var(--ink);
 }
 .rowcard--explore:hover .rowcard__link-btn {
   color: var(--ink); text-decoration: underline;
@@ -3806,7 +3829,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 18 Aug 11:23 UTC</span>
+  <span class="demo-banner__build">build 18 Aug 11:28 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -6105,7 +6128,7 @@ function recommendationScreen() {
     </div>
 
     <div class="activity-gallery-wrap">
-      <button class="gallery-nav-btn gallery-nav-btn--prev" type="button" data-scroll-gallery="prev" aria-label="Previous activities">
+      <button class="gallery-nav-btn gallery-nav-btn--prev" type="button" data-scroll-gallery="prev" aria-label="Previous activities" style="display:none">
         ${icon('chevron', 16)}
       </button>
       <div class="activity-gallery" id="activity-gallery-scroll">
@@ -6140,6 +6163,12 @@ function recommendationScreen() {
       </div>
       <button class="gallery-nav-btn gallery-nav-btn--next" type="button" data-scroll-gallery="next" aria-label="Next activities">
         ${icon('chevron', 16)}
+      </button>
+    </div>
+
+    <div class="made-for-you__foot">
+      <button class="linkish strong made-for-you__explore-link" type="button" data-go="search">
+        ${icon('sparkle', 14)} <span>Ask Urby or explore all ${allVenues.length} venues &rarr;</span>
       </button>
     </div>
   </div>`;
@@ -6245,17 +6274,6 @@ function recommendationScreen() {
     ${allPlans}
   </div>`;
 
-  const placesSection = `<div class="rowcard rowcard--explore" data-go="search" role="button" tabindex="0" aria-label="Browse all venues in ${esc(where)}">
-    <div class="rowcard__head">
-      <span class="rowcard__icon">${icon('pin', 22)}</span>
-      <div class="rowcard__text">
-        <b>Looking for something else?</b>
-        <div class="rowcard__sub">Browse all ${allVenues.length} venues in ${esc(where)} and explore the full map</div>
-      </div>
-      <span class="rowcard__link-btn strong">Browse all venues &rarr;</span>
-    </div>
-  </div>`;
-
   const GOAL_TITLE  = { move_more:'moving more', unwind:'moving and unwinding', try_new:'trying something new' };
   const heroBlock = `${ulaRow()}
     <h1 class="h-question reco-hero__title" tabindex="-1">${MOBILE()
@@ -6303,7 +6321,6 @@ function recommendationScreen() {
         ${RECO_VIEW==='pillars' ? activitiesGalleryBlock : weekBlock}
       </div>
     </section>
-    ${placesSection}
     ${appsBlock()}
     ${moreRow}
   </main>
@@ -6996,6 +7013,15 @@ document.addEventListener('change', e => {
   SEEALL = false;
   renderInPlace();
 });
+document.addEventListener('scroll', e => {
+  if (e.target && e.target.id === 'activity-gallery-scroll') {
+    const g = e.target;
+    const prev = document.querySelector('.gallery-nav-btn--prev');
+    const next = document.querySelector('.gallery-nav-btn--next');
+    if (prev) prev.style.display = g.scrollLeft > 10 ? 'grid' : 'none';
+    if (next) next.style.display = (g.scrollLeft + g.clientWidth < g.scrollWidth - 10) ? 'grid' : 'none';
+  }
+}, true);
 document.addEventListener('click', e => {
   const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-change-city],[data-city],[data-unsure],[data-open-ask],[data-rail],[data-radius],[data-toggle-venues],[data-toggle-apps],[data-toggle-week],[data-toggle-places],[data-toggle-more],[data-more],[data-toggle-alt],[data-toggle-plan-details],[data-open-days],[data-day],[data-swap],[data-change-week],[data-add-week],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula],[data-search-example],[data-venue-clear],[data-venue-search-all],[data-toggle-where],[data-where],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-add-activity],[data-remove-activity],[data-expand-pillar],[data-toggle-routine-customizer],[data-remove-day],[data-exclude-venue],[data-filter-category],[data-scroll-pills],[data-scroll-gallery]');
   if (!t) return;
@@ -7007,7 +7033,15 @@ document.addEventListener('click', e => {
   }
   if (t.dataset.scrollGallery) {
     const g = document.getElementById('activity-gallery-scroll');
-    if (g) g.scrollBy({ left: t.dataset.scrollGallery === 'prev' ? -240 : 240, behavior: 'smooth' });
+    if (g) {
+      g.scrollBy({ left: t.dataset.scrollGallery === 'prev' ? -250 : 250, behavior: 'smooth' });
+      setTimeout(() => {
+        const prev = document.querySelector('.gallery-nav-btn--prev');
+        const next = document.querySelector('.gallery-nav-btn--next');
+        if (prev) prev.style.display = g.scrollLeft > 10 ? 'grid' : 'none';
+        if (next) next.style.display = (g.scrollLeft + g.clientWidth < g.scrollWidth - 10) ? 'grid' : 'none';
+      }, 260);
+    }
     return;
   }
 
