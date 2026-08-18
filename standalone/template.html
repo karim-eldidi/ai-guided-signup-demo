@@ -1005,7 +1005,7 @@ let ROUTE='landing', ACKTEXT=null, UNCLEAR=false, NOCHOICE=false, EDITING=null, 
 /* City is "detected" in production (IP or browser location). The pilot only has
    venue data loaded for Berlin, so the chip says so plainly and a Change link
    never lies about coverage — picking another city logs the demand instead. */
-let CITYPICK=false, CITYWANTED=null, ASKOPEN=false, DAYSOPEN=false, PLACEWANTED=null, VENUESOPEN=false, APPSOPEN=false, DAYNOTE=null, WEEKOPEN=false;
+let CITYPICK=false, CITYWANTED=null, ASKOPEN=false, DAYSOPEN=false, PLACEWANTED=null, VENUESOPEN=false, APPSOPEN=false, APP_SHEET=null, DAYNOTE=null, WEEKOPEN=false;
 /* The three rows at the foot of the recommendation (places, apps, questions) are folds,
    and everything inside them re-renders the page — a radius chip, a search, an answer
    from Urby. So each one's open state is held here rather than left to <details>, which
@@ -1397,6 +1397,80 @@ function venueSheet() {
       </div></div></div>`;
 }
 
+function appSheet() {
+  if (!APP_SHEET) return '';
+  const a = APPS.find(x => x.id === APP_SHEET);
+  if (!a) return '';
+  const isAnnual = S.commitmentId === 'annual';
+  const isBiennial = S.commitmentId === 'biennial';
+  const isMonthly = !isAnnual && !isBiennial;
+  const requires24 = a.minCommitment === 'biennial';
+
+  const statusBadge = isBiennial
+    ? `<span class="badge badge--included">Included in your 24-mo plan</span>`
+    : isAnnual
+      ? (requires24
+          ? `<span class="badge badge--plus">Requires 24-month plan</span>`
+          : `<span class="badge badge--included">Included in your 12-mo plan</span>`)
+      : `<span class="badge badge--soft-yellow">Included with 12- &amp; 24-mo plans</span>`;
+
+  return `<div class="sheet sheet--app" id="app-sheet" role="dialog" aria-modal="true" aria-labelledby="app-sheet-title">
+    <div class="sheet__panel sheet__panel--app">
+      <div class="sheet__handle" aria-hidden="true"></div>
+      <button class="sheet__close" data-close-app-sheet aria-label="Close dialog">&times;</button>
+      
+      <div class="app-sheet__head">
+        <div class="app-sheet__logo-wrap">
+          ${appLogo(a)}
+        </div>
+        <div class="app-sheet__info">
+          <div class="app-sheet__cat-row">
+            <span class="app-sheet__cat">${esc(a.category)}</span>
+            ${statusBadge}
+          </div>
+          <h2 id="app-sheet-title" class="app-sheet__title">${esc(a.name)}</h2>
+        </div>
+      </div>
+
+      <div class="app-sheet__body">
+        <p class="app-sheet__blurb">${esc(a.blurb)}</p>
+        ${a.details ? `<p class="app-sheet__details">${esc(a.details)}</p>` : ''}
+
+        <div class="app-sheet__perks-card">
+          <div class="app-sheet__perks-title">${icon('device', 17)} Included digital partner app</div>
+          <ul class="app-sheet__perks-list">
+            <li><strong>12-month membership:</strong> 1 active digital partner app at a time.</li>
+            <li><strong>24-month membership:</strong> 2 active digital partner apps simultaneously.</li>
+            <li><strong>Switch anytime:</strong> You can swap to any other app directly in your Urban Sports Club app.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="app-sheet__actions">
+        ${isMonthly ? `
+          <button class="btn btn--primary btn--block" type="button" data-commit="${requires24 ? 'biennial' : 'annual'}" data-close-app-sheet>
+            Switch to ${requires24 ? '24-month' : '12-month'} &middot; Unlock free access
+          </button>
+          <button class="btn btn--secondary btn--block" type="button" data-close-app-sheet>
+            Keep rolling monthly &middot; Close
+          </button>
+        ` : (isAnnual && requires24) ? `
+          <button class="btn btn--primary btn--block" type="button" data-commit="biennial" data-close-app-sheet>
+            Upgrade to 24-month &middot; Unlock 2 apps
+          </button>
+          <button class="btn btn--secondary btn--block" type="button" data-close-app-sheet>
+            Close
+          </button>
+        ` : `
+          <button class="btn btn--primary btn--block" type="button" data-close-app-sheet>
+            Included in your plan &middot; Close
+          </button>
+        `}
+      </div>
+    </div>
+  </div>`;
+}
+
 function fitPanel(match, provisional, confirmed, withAsk) {
   const answered = QUESTIONS.filter(q=>S.answers[q.id]);
   const facts = QUESTIONS.map(q=>{
@@ -1457,23 +1531,24 @@ function appsBlock() {
   if (!APPS.length) return '';
   const mine = appsFor(S.commitmentId);
   const slots = APP_UNLOCK[S.commitmentId] || 0;
-  /* Four logos on one row, inside the places card, because it answers the same
-     question — what do I actually get — and because the end of this page was
-     already the part testers said they could not process. */
   const all = mine.length ? mine : appsFor('annual');
   const locked = !slots;
   const groups = (A().activities||[]).filter(x=>x!==SKIP);
   const ranked = rankApps(all, groups, A().goal);
-  const card = a => `<div class="appcard">${appLogo(a)}<span class="appcard__text">
-    <span class="appcard__name">${esc(a.name)}</span><span class="appcard__cat">${esc(a.category)}</span></span></div>`;
-  /* Karim's design, 14 Aug: one row, the same row the places wear. The claim and the one
-     condition attached to it are on the handle; four logos chosen from the answers prove
-     the catalogue is real; the other seven are behind "See all apps". A bare disclosure
-     hid the whole thing, and eleven logos at once made this the largest block on the page
-     carrying its smallest argument — nobody joins for the apps.
-     The two term buttons live in the body, not on the handle: a button inside a summary
-     is a click that means two things. */
-  const chip = a => `<span class="appchip">${appLogo(a)}<span>${esc(a.name)}</span></span>`;
+
+  const card = a => `<button class="appcard linkish" type="button" data-app="${esc(a.id)}" aria-label="View details about ${esc(a.name)} app">
+    ${appLogo(a)}
+    <span class="appcard__text">
+      <span class="appcard__name">${esc(a.name)}</span>
+      <span class="appcard__cat">${esc(a.category)}</span>
+    </span>
+    <span class="appcard__info-icon">${icon('info',14)}</span>
+  </button>`;
+
+  const chip = a => `<button class="appchip linkish" type="button" data-app="${esc(a.id)}" aria-label="View details about ${esc(a.name)} app">
+    ${appLogo(a)}<span>${esc(a.name)}</span>
+  </button>`;
+
   return `<details class="rowcard rowcard--apps"${APPSOPEN?' open':''}>
     <summary class="rowcard__head" data-toggle-apps>
       <span class="rowcard__icon">${icon('device',22)}</span>
@@ -1481,23 +1556,50 @@ function appsBlock() {
         <small>${locked
           ? 'with a 12- or 24-month membership'
           : `${slots===1?'one':'two'} at a time, switchable, included in your term`}</small></span>
-      <!-- Two, not four: the story column is 860px and a third name had to be cut short to
-           fit, which proves nothing. The other nine are behind "See all apps". -->
       <span class="rowcard__chips">${ranked.list.slice(0,2).map(chip).join('')}</span>
       <span class="rowcard__cta">See all apps ${icon('arrowRight',18)}</span>
     </summary>
     <div class="rowcard__body">
+      ${locked ? `
+      <div class="apps-upsell-card">
+        <div class="apps-upsell-card__badge">✨ Included with 12- &amp; 24-Month Memberships</div>
+        <div class="apps-upsell-card__head">
+          <div class="apps-upsell-card__title">Included Free Digital Partner Apps</div>
+          <span class="apps-upsell-card__value">Save up to 15 € / mo</span>
+        </div>
+        <p class="apps-upsell-card__desc">Choose from top partner apps for yoga, running cadence, recovery coaching, and sleep. You can switch between apps anytime in your USC account.</p>
+        <div class="apps-upsell-card__actions">
+          <button class="btn btn--sm btn--primary" type="button" data-commit="annual">
+            ${icon('checkThin', 14)} Switch to 12-month (1 app included)
+          </button>
+          <button class="btn btn--sm btn--secondary" type="button" data-commit="biennial">
+            Switch to 24-month (2 apps included)
+          </button>
+        </div>
+      </div>
+      ` : slots === 1 ? `
+      <div class="apps-status-card">
+        <div class="apps-status-card__icon">${icon('checkThin', 14)}</div>
+        <div class="apps-status-card__text">
+          <strong>1 digital app included with your 12-month plan.</strong> Tap any app below to see features. You can activate and switch apps whenever you like.
+        </div>
+        <button class="linkish font-bold" type="button" data-commit="biennial">Want 2 apps? 24-mo plan &rarr;</button>
+      </div>
+      ` : `
+      <div class="apps-status-card">
+        <div class="apps-status-card__icon">${icon('checkThin', 14)}</div>
+        <div class="apps-status-card__text">
+          <strong>2 digital apps included with your 24-month plan.</strong> Maximum digital allowance — activate and switch between any two apps at will.
+        </div>
+      </div>
+      `}
+
       <div class="appgrid ${locked?'is-locked':''}">${ranked.list.map(card).join('')}</div>
+
       <div class="apps__foot">
-        <!-- "Closest to", not "for": the app's category is published, the join from an
-             activity to a category is ours. Rule 6 — approximation says so. -->
         <span class="apps__note">${ranked.matched && groups.length
           ? `Closest to ${esc(groupWords(groups))} first`
-          : `From the published catalogue`}</span>
-      </div>
-      ${locked?`<p class="apps__unlock">${icon('info',15)}<span>Free on a
-        <button class="linkish strong" type="button" data-commit="annual">12-month</button> or
-        <button class="linkish strong" type="button" data-commit="biennial">24-month</button> membership.</span></p>`:''}
+          : `From the published catalogue`} &middot; Tap any app for details</span>
     </div>
   </details>`;
 }
@@ -2750,7 +2852,7 @@ function recommendationScreen() {
     <div class="paybar__info"><b>${esc(plan.name)}</b><span>${price} € / month${each?` · ≈ ${each} € a session`:''}</span></div>
     <button class="btn btn--primary" data-go="details">Continue</button>
   </div>
-  ${exitModal()}${venueSheet()}`;
+  ${exitModal()}${venueSheet()}${appSheet()}`;
 }
 
 /* For the visitor who already knows. Aligned in the PM session: a way past the
@@ -3772,7 +3874,7 @@ document.addEventListener('scroll', e => {
   }
 }, true);
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-change-city],[data-city],[data-unsure],[data-open-ask],[data-rail],[data-radius],[data-toggle-venues],[data-toggle-apps],[data-toggle-week],[data-toggle-places],[data-toggle-more],[data-more],[data-toggle-alt],[data-toggle-plan-details],[data-open-days],[data-day],[data-swap],[data-change-week],[data-add-week],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula],[data-search-example],[data-venue-clear],[data-venue-search-all],[data-toggle-where],[data-where],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-add-activity],[data-remove-activity],[data-expand-pillar],[data-toggle-routine-customizer],[data-remove-day],[data-exclude-venue],[data-filter-category],[data-scroll-pills],[data-scroll-gallery]');
+  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-app],[data-close-app-sheet],[data-change-city],[data-city],[data-unsure],[data-open-ask],[data-rail],[data-radius],[data-toggle-venues],[data-toggle-apps],[data-toggle-week],[data-toggle-places],[data-toggle-more],[data-more],[data-toggle-alt],[data-toggle-plan-details],[data-open-days],[data-day],[data-swap],[data-change-week],[data-add-week],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula],[data-search-example],[data-venue-clear],[data-venue-search-all],[data-toggle-where],[data-where],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-add-activity],[data-remove-activity],[data-expand-pillar],[data-toggle-routine-customizer],[data-remove-day],[data-exclude-venue],[data-filter-category],[data-scroll-pills],[data-scroll-gallery]');
   if (!t) return;
 
   if (t.dataset.scrollPills) {
@@ -4116,8 +4218,31 @@ document.addEventListener('click', e => {
     if (s) { document.body.style.overflow = 'hidden'; s.querySelector('.sheet__close')?.focus(); }
     return;
   }
-  if (t.dataset.venue) { SHEET = t.dataset.venue; log('venue_opened', { venue:SHEET }); render(false);
-    const s=document.getElementById('venue-sheet'); if(s){ document.body.style.overflow='hidden'; s.querySelector('.sheet__close').focus(); } return; }
+  if (t.dataset.venue) {
+    SHEET = t.dataset.venue;
+    log('venue_opened', { venue: SHEET });
+    render(false);
+    const s = document.getElementById('venue-sheet');
+    if (s) { document.body.style.overflow = 'hidden'; s.querySelector('.sheet__close')?.focus(); }
+    return;
+  }
+  if (t.dataset.app) {
+    APP_SHEET = t.dataset.app;
+    log('app_opened', { app: APP_SHEET });
+    render(false);
+    const s = document.getElementById('app-sheet');
+    if (s) {
+      document.body.style.overflow = 'hidden';
+      s.querySelector('.sheet__close')?.focus();
+    }
+    return;
+  }
+  if (t.dataset.closeAppSheet !== undefined) {
+    APP_SHEET = null;
+    document.body.style.overflow = '';
+    render(false);
+    return;
+  }
   if (t.dataset.closeSheet !== undefined) { SHEET=null; render(false); return; }
   if (t.dataset.changeCity !== undefined) { CITYPICK=!CITYPICK; if(!CITYPICK) CITYWANTED=null;
     if (CITYPICK) log('city_change_opened'); render(false); return; }
@@ -4316,13 +4441,14 @@ document.addEventListener('keydown', e => {
     if (card) { const input = card.querySelector('input'); if (input && !input.checked) { input.checked = true; input.dispatchEvent(new Event('change',{bubbles:true})); } e.preventDefault(); return; }
   }
   if (e.key === 'Escape') {
+    if (APP_SHEET) { APP_SHEET = null; document.body.style.overflow = ''; render(false); return; }
     if (SHEET) { SHEET=null; render(false); return; }
     const m=document.getElementById('exit-modal');
     if (m && !m.hidden) { m.hidden=true; document.body.style.overflow=''; }
   }
   /* keep Tab inside whichever dialog is open */
   if (e.key === 'Tab') {
-    const dialog = document.getElementById('venue-sheet') || (() => { const m=document.getElementById('exit-modal'); return m && !m.hidden ? m : null; })();
+    const dialog = document.getElementById('app-sheet') || document.getElementById('venue-sheet') || (() => { const m=document.getElementById('exit-modal'); return m && !m.hidden ? m : null; })();
     if (!dialog) return;
     const f = [...dialog.querySelectorAll('button,a,input,select,textarea,summary')].filter(x => x.offsetParent !== null);
     if (!f.length) return;
@@ -4333,6 +4459,7 @@ document.addEventListener('keydown', e => {
   }
 });
 document.addEventListener('click', e => { /* click the backdrop to dismiss */
+  if (e.target.id === 'app-sheet') { APP_SHEET = null; document.body.style.overflow = ''; render(false); }
   if (e.target.id === 'venue-sheet') { SHEET=null; render(false); }
   if (e.target.id === 'plus-sheet') { PLANPLUS=null; render(false); }
   if (e.target.id === 'exit-modal') { e.target.hidden = true; document.body.style.overflow=''; }

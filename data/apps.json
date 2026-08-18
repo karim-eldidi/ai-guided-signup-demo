@@ -23,28 +23,203 @@
     "biennial": "Two apps at a time, switchable, included with your 24-month membership."
   },
   "apps": [
-    { "id": "yogaeasy",     "name": "YogaEasy",            "category": "Yoga",        "blurb": "Yoga classes and courses for every level, at home.",              "minCommitment": "annual",   "domain": "yogaeasy.de" },
-    { "id": "asana-rebel",  "name": "Asana Rebel",         "category": "Yoga",        "blurb": "Yoga-inspired fitness — movement and mindfulness together.",      "minCommitment": "annual",   "domain": "asanarebel.com" },
-    { "id": "fitnessraum",  "name": "fitnessRAUM",         "category": "Home fitness","blurb": "Online fitness, yoga and pilates classes, live and on demand.",    "minCommitment": "annual",   "domain": "fitnessraum.de" },
-    { "id": "skillyoga",    "name": "SkillYoga",           "category": "Mobility",    "blurb": "Yoga, mobility and recovery training in one plan.",                "minCommitment": "annual",   "domain": "skillyoga.app" },
-    { "id": "fizzup",       "name": "FizzUp",              "category": "Home fitness","blurb": "Guided home workouts and wellbeing programmes.",                   "minCommitment": "annual",   "domain": "fizzup.com" },
-    { "id": "joggo",        "name": "Joggo",               "category": "Running",     "blurb": "A running plan and meal plan built around you.",                   "minCommitment": "annual",   "domain": "joggo.run" },
-    { "id": "runners-high", "name": "RUNNERS HIGH",        "category": "Running",     "blurb": "Music scored to your pace, based on running science.",             "minCommitment": "annual",   "domain": null },
-    { "id": "on-dmnd",      "name": "ON-DMND",             "category": "Fitness",     "blurb": "Women's fitness, nutrition and community in one app.",             "minCommitment": "annual",   "domain": null },
-    { "id": "morla-moves",  "name": "Morla Moves",         "category": "Movement",    "blurb": "Movement analysis and coaching for how you actually move.",        "minCommitment": "annual",   "domain": null },
-    { "id": "medizen",      "name": "medizen",             "category": "Fitness",     "blurb": "Adaptive training that adjusts to the day you're having.",         "minCommitment": "annual",   "domain": null },
-    { "id": "tepy",         "name": "Tepy",                "category": "Recovery",    "blurb": "Recovery coaching between the sessions that count.",               "minCommitment": "annual",   "domain": null },
-
-    { "id": "sleep-cycle",  "name": "Sleep Cycle",         "category": "Sleep",       "blurb": "Sleep tracking, and the habits that improve it.",                  "minCommitment": "biennial", "domain": "sleepcycle.com" },
-    { "id": "endel",        "name": "Endel",               "category": "Focus",       "blurb": "Science-backed soundscapes for focus, rest and sleep.",            "minCommitment": "biennial", "domain": "endel.io" },
-    { "id": "petit-bambou", "name": "Petit BamBou",        "category": "Meditation",  "blurb": "Guided meditation, from first session to daily practice.",         "minCommitment": "biennial", "domain": "petitbambou.com" },
-    { "id": "mindfulness",  "name": "The Mindfulness App", "category": "Meditation",  "blurb": "Three months of guided and silent meditation.",                     "minCommitment": "biennial", "domain": "themindfulnessapp.com" },
-    { "id": "the-essence",  "name": "The Essence",         "category": "Cycle",       "blurb": "Training aligned to your menstrual cycle.",                        "minCommitment": "biennial", "domain": null },
-    { "id": "upfit",        "name": "Upfit",               "category": "Nutrition",   "blurb": "Nutrition plans built around your goal and your kitchen.",         "minCommitment": "biennial", "domain": "upfit.de" },
-    { "id": "noory",        "name": "Noory",               "category": "Nutrition",   "blurb": "A personal guide to eating well without counting everything.",      "minCommitment": "biennial", "domain": null },
-    { "id": "lumiere",      "name": "Lumiere",             "category": "Mental",      "blurb": "Anxiety relief and gratitude practice, in short sessions.",         "minCommitment": "biennial", "domain": null },
-    { "id": "lune",         "name": "Lune",                "category": "Sleep",       "blurb": "Better sleep and wind-down habits.",                               "minCommitment": "biennial", "domain": null },
-    { "id": "sylo",         "name": "SYLO",                "category": "Mental",      "blurb": "Resilience coaching and meditation.",                              "minCommitment": "biennial", "domain": null },
-    { "id": "cardi-health", "name": "Cardi.health",        "category": "Health",      "blurb": "Understand your heart health, week by week.",                       "minCommitment": "biennial", "domain": null }
+    {
+      "id": "yogaeasy",
+      "name": "YogaEasy",
+      "category": "Yoga",
+      "blurb": "Over 1,000 yoga and meditation classes for all levels from top German teachers.",
+      "details": "Stream guided vinyasa, hatha, yin yoga, and meditation at home or traveling with Germany's leading online yoga studio.",
+      "minCommitment": "annual",
+      "domain": "yogaeasy.de"
+    },
+    {
+      "id": "asana-rebel",
+      "name": "Asana Rebel",
+      "category": "Yoga & Fitness",
+      "blurb": "Yoga-inspired workouts combining fat burn, flexibility, and mindfulness.",
+      "details": "High-energy yoga flows, bodyweight strength circuits, breathwork, and healthy habit tracking all in one modern app.",
+      "minCommitment": "annual",
+      "domain": "asanarebel.com"
+    },
+    {
+      "id": "fitnessraum",
+      "name": "fitnessRAUM",
+      "category": "Home Fitness",
+      "blurb": "More than 2,000 online workout, pilates, and back-health courses.",
+      "details": "HD workout videos led by certified German trainers covering HIIT, fat burning, pilates, stretching, and targeted back health.",
+      "minCommitment": "annual",
+      "domain": "fitnessraum.de"
+    },
+    {
+      "id": "skillyoga",
+      "name": "SkillYoga",
+      "category": "Mobility & Strength",
+      "blurb": "Functional yoga and mobility coaching engineered specifically for athletes.",
+      "details": "Systematic mobility, core strength, and recovery routines designed to improve athletic performance and prevent injuries.",
+      "minCommitment": "annual",
+      "domain": "skillyoga.com"
+    },
+    {
+      "id": "fizzup",
+      "name": "FizzUp",
+      "category": "Home Fitness",
+      "blurb": "Personalised daily bodyweight and strength coaching at home.",
+      "details": "Adaptive workout routines with no equipment needed, complete with video exercise guidance and custom stretching.",
+      "minCommitment": "annual",
+      "domain": "fizzup.com"
+    },
+    {
+      "id": "joggo",
+      "name": "Joggo",
+      "category": "Running",
+      "blurb": "Personalised running training plans and audio coaching for any fitness level.",
+      "details": "Custom run-walk plans, pace tracking, injury prevention tips, and tailored nutrition recommendations for runners.",
+      "minCommitment": "annual",
+      "domain": "joggo.run"
+    },
+    {
+      "id": "runners-high",
+      "name": "RUNNERS HIGH",
+      "category": "Running & Music",
+      "blurb": "Neuroscience-backed music dynamically scored to 170–180 BPM for your optimal running cadence.",
+      "details": "Curated soundtracks scientifically calibrated to running cadence to boost stamina, focus, and energy on every outdoor run.",
+      "minCommitment": "annual",
+      "domain": "runnershigh.music"
+    },
+    {
+      "id": "on-dmnd",
+      "name": "ON-DMND",
+      "category": "Female Fitness",
+      "blurb": "Holistic women's fitness, cycle-synced workouts, and nutrition community.",
+      "details": "Strength circuits, low-impact toning, and nutrition guides created specifically for women's physiology and daily wellness.",
+      "minCommitment": "annual",
+      "domain": "on-dmnd.com"
+    },
+    {
+      "id": "morla-moves",
+      "name": "Morla Moves",
+      "category": "Movement Analysis",
+      "blurb": "AI-powered motion intelligence providing real-time posture and movement analysis.",
+      "details": "Camera-guided form correction and functional movement tests to ensure safe exercise technique and posture optimization.",
+      "minCommitment": "annual",
+      "domain": "morlamoves.com"
+    },
+    {
+      "id": "medizen",
+      "name": "medizen",
+      "category": "Back Health",
+      "blurb": "Clinically validated motion therapy and back pain prevention exercises.",
+      "details": "Developed with university sports science researchers to relieve neck, back, and joint tension through gentle daily routines.",
+      "minCommitment": "annual",
+      "domain": "medizen.digital"
+    },
+    {
+      "id": "tepy",
+      "name": "Tepy",
+      "category": "Muscle Recovery",
+      "blurb": "AI recovery coach that relieves muscle soreness and enhances joint mobility.",
+      "details": "Personalized muscle relief protocols based on where you feel tight or sore after gym, bouldering, or running sessions.",
+      "minCommitment": "annual",
+      "domain": "tepy.app"
+    },
+    {
+      "id": "sleep-cycle",
+      "name": "Sleep Cycle",
+      "category": "Sleep Tracking",
+      "blurb": "Smart sleep analysis and gentle alarm that wakes you during light sleep.",
+      "details": "Track sleep cycles, snoring, and rest quality with sound analysis, helping you wake up refreshed and rested.",
+      "minCommitment": "biennial",
+      "domain": "sleepcycle.com"
+    },
+    {
+      "id": "endel",
+      "name": "Endel",
+      "category": "Focus & Rest",
+      "blurb": "AI-generated soundscapes that adapt in real time to your heart rate and circadian rhythm.",
+      "details": "Patented neuroscience audio designed for deep focus work, stress reduction, mindful breathing, and falling asleep faster.",
+      "minCommitment": "biennial",
+      "domain": "endel.io"
+    },
+    {
+      "id": "petit-bambou",
+      "name": "Petit BamBou",
+      "category": "Meditation & Calm",
+      "blurb": "Leading European meditation and mindfulness app with hundreds of guided audio sessions.",
+      "details": "Step-by-step meditation programs covering stress management, anxiety relief, emotional balance, and mindful breathing.",
+      "minCommitment": "biennial",
+      "domain": "petitbambou.com"
+    },
+    {
+      "id": "mindfulness",
+      "name": "The Mindfulness App",
+      "category": "Mindfulness",
+      "blurb": "Guided and silent meditation sessions from world-renowned mindfulness teachers.",
+      "details": "Timed meditations, daily mindfulness reminders, and progressive courses for cultivating daily calm and presence.",
+      "minCommitment": "biennial",
+      "domain": "themindfulnessapp.com"
+    },
+    {
+      "id": "the-essence",
+      "name": "The Essence",
+      "category": "Cycle Syncing",
+      "blurb": "Cycle-syncing fitness and nutrition coaching aligned with female hormonal phases.",
+      "details": "Optimise your workouts, energy levels, and food choices across each phase of your menstrual cycle.",
+      "minCommitment": "biennial",
+      "domain": "theessence.app"
+    },
+    {
+      "id": "upfit",
+      "name": "Upfit",
+      "category": "Custom Nutrition",
+      "blurb": "Science-based nutrition and meal plans adapted to your dietary preferences.",
+      "details": "Custom meal plans, automated grocery shopping lists, and 10,000+ healthy recipes tailored to weight, vegan, or fitness goals.",
+      "minCommitment": "biennial",
+      "domain": "upfit.de"
+    },
+    {
+      "id": "noory",
+      "name": "Noory",
+      "category": "Healthy Eating",
+      "blurb": "Intuitive nutrition coaching and mindful eating habits without strict calorie counting.",
+      "details": "Build sustainable eating habits and a healthier relationship with food through audio coaching and simple meal tracking.",
+      "minCommitment": "biennial",
+      "domain": "noory.com"
+    },
+    {
+      "id": "lumiere",
+      "name": "Lumiere",
+      "category": "Mental Wellbeing",
+      "blurb": "Short daily anxiety relief and gratitude audio exercises for busy days.",
+      "details": "Quick 3–5 minute psychological reframing exercises and gratitude journaling to manage everyday stress and stay grounded.",
+      "minCommitment": "biennial",
+      "domain": "lumiereapp.com"
+    },
+    {
+      "id": "lune",
+      "name": "Lune",
+      "category": "Sleep & Calm",
+      "blurb": "Evening relaxation rituals and soothing wind-down audio journeys.",
+      "details": "Bedtime stories, breathing exercises, and ambient audio landscapes designed to calm an active mind before sleep.",
+      "minCommitment": "biennial",
+      "domain": "luneapp.com"
+    },
+    {
+      "id": "sylo",
+      "name": "SYLO",
+      "category": "Resilience",
+      "blurb": "AI sparring partner and resilience coach for high mental performance.",
+      "details": "Interactive mental fitness drills, emotional regulation coaching, and focus training for stress resilience.",
+      "minCommitment": "biennial",
+      "domain": "sylodigital.com"
+    },
+    {
+      "id": "cardi-health",
+      "name": "Cardi.health",
+      "category": "Cardio Health",
+      "blurb": "Heart health tracking, blood pressure logs, and cardiovascular fitness plans.",
+      "details": "Personalised cardio workouts, nutrition advice, and heart rate trend monitoring to support long-term heart vitality.",
+      "minCommitment": "biennial",
+      "domain": "cardi.health"
+    }
   ]
 }
