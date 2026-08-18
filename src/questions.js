@@ -43,8 +43,11 @@ export const QUESTIONS = [
   {
     id: 'area',
     prompt: 'Where should we search?',
+    hint: 'Pick up to 3 neighbourhoods where you live, work, or spend time. We’ll find venues within easy reach (~3 km) of each.',
     summaryLabel: 'Area',
     icon: 'pin',
+    multi: true,
+    maxPick: 3,
     allowFreeText: true,
     freeTextPlaceholder: 'Postcode or neighbourhood…',
     // Options are generated from data/venues.json areas at request time.

@@ -111,6 +111,10 @@ function labelFor(questionId, answers, areas) {
   if (!value) return null;
   if (typeof value === 'object' && value.freeText) return value.freeText;
   if (questionId === 'area') {
+    if (Array.isArray(value)) {
+      const names = value.map((id) => (areas.find((x) => x.id === id) || {}).name).filter(Boolean);
+      return names.length ? (names.length <= 1 ? names[0] : `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`) : String(value);
+    }
     const a = areas.find((x) => x.id === value);
     return a ? a.name : value;
   }
@@ -122,6 +126,10 @@ function labelFor(questionId, answers, areas) {
     variety: 'Having enough variety',
     schedule: 'Fitting it around my schedule'
   };
+  if (Array.isArray(value)) {
+    const names = value.map((id) => map[id] || id).filter(Boolean);
+    return names.length ? (names.length <= 1 ? names[0] : `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`) : String(value);
+  }
   return map[value] || String(value);
 }
 

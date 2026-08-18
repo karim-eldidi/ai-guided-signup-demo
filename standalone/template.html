@@ -263,8 +263,8 @@ const QUESTIONS = [
   /* Two areas, not one. People live in one place and work in another, and asking
      them to pick a single neighbourhood makes the search worse than they are.
      Distances below are then measured from whichever of their areas is nearer. */
-  { id:'area', prompt:'Where should we search?', hint:'Pick one or two &mdash; home and work, if they differ.',
-    summaryLabel:'Area', icon:'pin', multi:true, maxPick:2, placeholder:'Postcode or neighbourhood…', optionsFrom:'areas' },
+  { id:'area', prompt:'Where should we search?', hint:'Pick up to 3 neighbourhoods where you live, work, or spend time. We’ll find venues within easy reach (~3 km) of each.',
+    summaryLabel:'Area', icon:'pin', multi:true, maxPick:3, placeholder:'Postcode or neighbourhood…', optionsFrom:'areas' },
   { id:'frequency', prompt:'How often would you realistically like to go?', summaryLabel:'Frequency', icon:'calendar', placeholder:'Or tell Urby in your own words…', skip:true,
     options:[{id:'once',label:'About once a week',echo:'About once a week',icon:'level1'},{id:'twice',label:'Twice a week',echo:'Twice a week',icon:'level2'},{id:'often',label:'Three or four times a week',echo:'Three or four times a week',icon:'level3'},{id:'daily',label:'Five times a week or more',echo:'Five times a week or more',icon:'level4'}] }
 ];
@@ -4639,24 +4639,29 @@ document.addEventListener('change', e => {
     const all = [...group.querySelectorAll('input[name="choice"]')];
     if (input.value === 'anywhere') all.filter(i => i !== input).forEach(clear);
     else all.filter(i => i.value === 'anywhere').forEach(clear);
-    const max = Number(group.dataset.maxpick) || 2;
+    const max = Number(group.dataset.maxpick) || 3;
     const on = [...group.querySelectorAll('input[name="choice"]')].filter(i => i.checked);
     let notice = group.parentElement?.querySelector('.maxpick-notice');
     if (on.length > max) {
-      const drop = on.shift();
-      drop.checked = false; drop.closest('.option-card')?.classList.remove('is-selected');
-      const dropLabel = drop.closest('.option-card')?.querySelector('.option-card__label');
-      const addLabel = input.closest('.option-card')?.querySelector('.option-card__label');
-      const dropName = (dropLabel ? dropLabel.childNodes[0].textContent : drop.value).trim();
-      const addName = (addLabel ? addLabel.childNodes[0].textContent : input.value).trim();
-      if (!notice) {
-        notice = document.createElement('div');
-        notice.className = 'maxpick-notice xsmall muted';
-        notice.style.cssText = 'margin-top: 10px; padding: 8px 12px; background: #f8fafc; border-radius: 8px; border: 1px solid var(--border);';
-        group.after(notice);
+      const dropIdx = on.findIndex(i => i !== input);
+      const drop = dropIdx !== -1 ? on.splice(dropIdx, 1)[0] : on.shift();
+      if (drop) {
+        drop.checked = false; drop.closest('.option-card')?.classList.remove('is-selected');
+        const dropLabel = drop.closest('.option-card')?.querySelector('.option-card__label');
+        const addLabel = input.closest('.option-card')?.querySelector('.option-card__label');
+        const dropName = (dropLabel ? dropLabel.childNodes[0].textContent : drop.value).trim();
+        const addName = (addLabel ? addLabel.childNodes[0].textContent : input.value).trim();
+        if (dropName && addName && dropName !== addName) {
+          if (!notice) {
+            notice = document.createElement('div');
+            notice.className = 'maxpick-notice xsmall muted';
+            notice.style.cssText = 'margin-top: 10px; padding: 8px 12px; background: #f8fafc; border-radius: 8px; border: 1px solid var(--border);';
+            group.after(notice);
+          }
+          notice.innerHTML = `You can pick up to ${max} neighbourhoods &mdash; replaced <strong>${esc(dropName)}</strong> with <strong>${esc(addName)}</strong>.`;
+        }
       }
-      notice.innerHTML = `You can pick up to ${max} areas &mdash; swapped out <strong>${esc(dropName)}</strong> for <strong>${esc(addName)}</strong>.`;
-    } else if (notice && (on.length < max || input.value === 'anywhere')) {
+    } else if (notice && (on.length <= max || input.value === 'anywhere')) {
       notice.remove();
     }
   }
