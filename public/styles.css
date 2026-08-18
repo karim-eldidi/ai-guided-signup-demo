@@ -977,17 +977,23 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 .geochip-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
+  gap: 8px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 2px;
 }
+.geochip-row::-webkit-scrollbar { display: none; }
 .geochip {
-  display: inline-flex; align-items: center; gap: 9px;
+  display: inline-flex; align-items: center; gap: 8px;
   background: var(--cream); border: 1px solid var(--cream-line);
-  border-radius: 999px; padding: 6px 8px 6px 14px; font-size: 14.5px;
+  border-radius: 999px; padding: 6px 8px 6px 12px; font-size: 14.5px;
+  flex-shrink: 0;
 }
 .geochip__change {
   background: #fff; border: 1px solid var(--border); border-radius: 999px;
-  padding: 4px 12px; font-size: 13px; font-weight: 700; color: var(--ink);
+  padding: 4px 11px; font-size: 12.5px; font-weight: 700; color: var(--ink);
 }
 .geochip__change:hover { border-color: var(--ink); }
 
@@ -995,6 +1001,7 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  flex-shrink: 0;
 }
 .area-visual-pill {
   display: inline-flex;
@@ -1003,13 +1010,25 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
   background: #f4f5f7;
   border: 1px solid var(--border);
   border-radius: 999px;
-  padding: 5px 11px;
-  font-size: 13px;
+  padding: 5px 10px;
+  font-size: 12.5px;
   font-weight: 600;
   color: var(--navy);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .area-visual-pill svg {
   color: var(--navy);
+}
+
+@media (max-width: 600px) {
+  .geochip__full { display: none; }
+  .geochip-row { gap: 5px; }
+  .geochip { padding: 4px 5px 4px 9px; font-size: 13px; gap: 5px; }
+  .geochip__change { padding: 2px 7px; font-size: 11.5px; }
+  .area-visual-pills { gap: 4px; }
+  .area-visual-pill { padding: 3px 7px; font-size: 11.5px; gap: 3px; }
+  .area-visual-pill svg { width: 11px; height: 11px; }
 }
 
 .option-card__label {
