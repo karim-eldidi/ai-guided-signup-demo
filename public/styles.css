@@ -1684,13 +1684,15 @@ body.save-modal-open { overflow: hidden; }
 
 
   /* app shell */
-  .topbar { grid-template-columns: 1fr auto; padding: 20px 20px 12px; align-items: center; }
+  .topbar { grid-template-columns: 1fr auto; padding: 12px 16px 6px; align-items: center; }
   .topbar__center { display: none; }
-  .topbar .wordmark { font-size: 17px; }
-  .topbar .link-plain { font-size: 15px; white-space: nowrap; }
-  .mobile-progress { display: block; }
+  .topbar .wordmark { font-size: 15px; }
+  .topbar .link-plain { font-size: 13.5px; white-space: nowrap; }
+  .mobile-progress { display: block; padding: 0 16px 6px; }
   .topbar .saved-note { display: none; }
-  .saved-note--mobile { display: flex; margin-top: 11px; }
+  .saved-note--mobile { display: flex; margin-top: 6px; }
+  .mobile-progress__label { font-size: 12.5px; font-weight: 700; margin-bottom: 6px; color: var(--navy-soft); }
+  .mobile-progress__track { height: 4px; background: #e7e5df; border-radius: 2px; overflow: hidden; }
 
   .two-col, .two-col--form { grid-template-columns: 1fr; }
   /* Stacked, the recap keeps its place at the top — rule 14 holds on a phone too, and
@@ -1728,14 +1730,14 @@ body.save-modal-open { overflow: hidden; }
   .venue-grid { grid-template-columns: 1fr 1fr; }
 
   .sticky-cta {
-    display: flex; gap: 10px; position: fixed; left: 0; right: 0; bottom: 0;
+    display: flex; gap: 8px; position: fixed; left: 0; right: 0; bottom: 0;
     background: #fff; border-top: 1px solid var(--border);
-    padding: 14px 20px calc(14px + env(safe-area-inset-bottom));
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
     z-index: 30;
   }
-  .sticky-cta .btn { height: 56px; }
+  .sticky-cta .btn { height: 48px; font-size: 15px; border-radius: 10px; }
   .sticky-cta .btn--primary { flex: 1 1 auto; }
-  .sticky-cta .btn--secondary { flex: 0 0 auto; padding: 0 18px; }
+  .sticky-cta .btn--secondary { flex: 0 0 48px; width: 48px; height: 48px; padding: 0; display: inline-flex; align-items: center; justify-content: center; }
   .desktop-cta { display: none; }
   /* On a phone the review screen has to get to the order and the terms fast. Both
      reassurances above it are already carried elsewhere — the pilot banner names the
@@ -1747,6 +1749,41 @@ body.save-modal-open { overflow: hidden; }
   .pay-sim-note { display: inline; }
 
   .decision-pair { grid-template-columns: 1fr; }
+  .one-col__main { padding: 4px 16px 80px; }
+  .chips-row {
+    display: flex; align-items: center; gap: 6px; margin: 0 0 8px;
+    overflow-x: auto; flex-wrap: nowrap; scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .chips-row::-webkit-scrollbar { display: none; }
+  .chips-row__label { display: none; }
+  .answer-chip { font-size: 12px; padding: 3px 8px; height: 26px; flex: 0 0 auto; }
+  .answer-chip span { max-width: 18ch; }
+  .ula-row { display: flex; align-items: center; gap: 8px; margin: 0 0 8px; }
+  .ula-avatar { width: 28px; height: 28px; }
+  .ula-name b { font-size: 13px; }
+  .ula-name span { font-size: 12px; color: var(--navy-soft); }
+  .h-question { font-size: 22px; font-weight: 800; letter-spacing: -.02em; margin: 0 0 4px; line-height: 1.25; }
+  .qhint { font-size: 13px; color: var(--navy-soft); margin: 0 0 12px; line-height: 1.35; }
+  .options--tiles { gap: 8px; }
+  .options--tiles .option-card { min-height: 48px; padding: 10px 14px; font-size: 15px; gap: 10px; border-radius: 12px; }
+  .options--tiles .option-card__icon { width: 30px; height: 30px; }
+  .options--chips { gap: 8px; }
+  .options--chips .option-card { min-height: 48px; padding: 10px 14px; font-size: 15px; gap: 10px; border-radius: 12px; }
+  .options--chips .option-card__icon { width: 30px; height: 30px; }
+  .options--compact { grid-template-columns: 1fr; gap: 8px; }
+  .options--compact .option-card { min-height: 48px; padding: 10px 14px; font-size: 15px; gap: 10px; border-radius: 12px; }
+  .options--stack-mobile { grid-template-columns: 1fr !important; }
+  .option-card { border: 1.5px solid rgba(0,0,0,0.07); }
+  .option-card.is-selected { border: 2px solid var(--ink); background: #faf8f5; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+  .ownwords__label { font-size: 13.5px; }
+  .ownwords-toggle { margin-top: 10px; }
+  .form-grid { grid-template-columns: 1fr; }
+  .alt-grid { grid-template-columns: 1fr; }
+  .aside-ask { display: none; }
+  .ai-badge { display: none; }
+  .modal { padding: 34px 24px 28px; }
+  .modal h2 { font-size: 26px; }
   /* and it must stop being a clipped, self-scrolling box: on a phone the plan column
      is just a section of the page, and a max-height here turned it into a small inner
      scroller sitting on top of the sticky price bar. */

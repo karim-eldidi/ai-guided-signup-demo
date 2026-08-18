@@ -1090,15 +1090,18 @@ function topbar(step, opts={}) {
       Array.from({length:sub.total},(_,k)=>`<span class="stepper__seg ${k<sub.done?'is-done':k===sub.done?'is-now':''}"></span>`).join('')}</div>` : '';
     return `${i?'<div class="stepper__line"></div>':''}<div class="stepper__step ${state}"><div class="stepper__dot">${s.n<step?icon('checkThin',16):s.n}</div><div class="stepper__label">${s.l}</div>${segs}</div>`;
   }).join('');
-  /* One bar on mobile, with the questions nested inside its first third: finishing the
-     fourth question is exactly what completes step 1. */
-  const barPct = (((step-1) + (sub && sub.total ? (sub.done+1)/sub.total : 1)) / 3) * 100;
+  const mobileLabel = (sub && sub.total) 
+    ? `Question ${sub.done+1} of ${sub.total} &middot; ${steps[step-1].l}`
+    : `Step ${step} of 3 &middot; ${steps[step-1].l}`;
+  const barPct = (sub && sub.total)
+    ? (((step-1) + (sub.done+1)/sub.total) / 3) * 100
+    : (step / 3) * 100;
   const note = savedNote ? `<div class="saved-note" title="Saved to ${esc(S.email)} — your progress is safe.">${icon('checkThin',13)} <span>Saved &middot;</span> <span class="saved-note__mail">${esc(S.email)}</span></div>` : '';
   return `<header class="topbar">
     <div class="topbar__left"><button class="wordmark linkish" style="text-decoration:none" data-go="landing">Urban Sports Club</button>${note}</div>
     <div class="topbar__center"><div class="stepper">${dots}</div></div>
     <div class="topbar__right">${saveExit?`<button class="link-plain" data-open-exit>Save for later</button>`:''}</div></header>
-  <div class="mobile-progress"><div class="mobile-progress__label">${step} of 3 · ${steps[step-1].l}</div>
+  <div class="mobile-progress"><div class="mobile-progress__label">${mobileLabel}</div>
     <div class="mobile-progress__track"><div class="mobile-progress__fill" style="width:${barPct}%"></div></div>
     ${savedNote?`<div class="saved-note saved-note--mobile">${icon('checkThin',16)} Saved — your progress is safe.</div>`:''}</div>`;
 }
@@ -2184,8 +2187,7 @@ function fitScreen() {
      tester told us the panel was a distraction on the first questions. */
   const found = S.answers.area ? (match.venues||[]).slice(0,3) : [];
   return `${topbar(1,{sub:{done:idx,total:QUESTIONS.length}})}<div class="one-col"><main class="one-col__main" id="main">
-    <div class="qprogress"><span class="qprogress__label">Question ${idx+1} of ${QUESTIONS.length}</span></div>
-    ${answerChips({ label:'So far' })}
+    ${answerChips({ label:'' })}
     ${/* Urby introduces herself once, on the first question. She used to repeat the
          previous answer back as a chat bubble on question two — but the chips above
          already show it, so it was the same fact twice, and it pushed the Continue
@@ -2193,7 +2195,7 @@ function fitScreen() {
     ${ACKTEXT?`<div class="notice">${icon('sparkle',19)}<span>${esc(ACKTEXT)}</span></div>`:''}
     ${UNCLEAR?`<div class="notice notice--grey">${icon('info',19)}<span>I didn&rsquo;t quite catch that one — could you pick the closest option below? You can always change it later.</span></div>`:''}
     ${TYPING?`<div class="typing" role="status" aria-label="Urby is typing"><span></span><span></span><span></span></div>`
-      :`<form data-form="answer" data-qid="${esc(q.id)}">
+      :`<form data-form="answer" data-qid="${esc(q.id)}" data-single-select="${q.multi?'false':'true'}">
       <h1 class="h-question" tabindex="-1">${esc(q.prompt)}</h1>
       ${q.hint?`<p class="qhint">${q.hint}</p>`:''}
       ${q.id==='area'?cityChip():''}
@@ -3722,6 +3724,20 @@ document.addEventListener('input', e => {
    options is a select — and because it then works with the keyboard, on a phone, and
    with a screen reader without any of that being written twice. */
 document.addEventListener('change', e => {
+  const ansForm = e.target.closest('form[data-form="answer"]');
+  if (ansForm) {
+    const qid = ansForm.dataset.qid, q = qById(qid);
+    ansForm.querySelectorAll('.option-card').forEach(card => {
+      const inp = card.querySelector('input');
+      if (inp) card.classList.toggle('is-selected', inp.checked);
+    });
+    if (q && !q.multi && ansForm.dataset.singleSelect === 'true') {
+      setTimeout(() => {
+        if (ansForm.isConnected) ansForm.requestSubmit();
+      }, 160);
+    }
+    return;
+  }
   const sel = e.target.closest('select[data-radius-pick], select[data-cat-pick]');
   if (!sel) return;
   if (sel.dataset.radiusPick !== undefined) {
