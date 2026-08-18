@@ -3519,6 +3519,156 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   background: var(--ink); border-color: var(--ink); color: #fff; font-weight: 800;
 }
 
+/* Quick-Add Sleek Bottom Sheet */
+.sheet--quickadd {
+  padding: 16px;
+  place-items: center;
+}
+.sheet__panel--quickadd {
+  max-width: 420px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.2);
+  background: #fff;
+  position: relative;
+}
+.quickadd-card {
+  padding: 20px 20px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.quickadd-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-right: 32px;
+}
+.quickadd-thumb {
+  flex: 0 0 52px;
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  background: #f0f2f5;
+}
+.quickadd-thumb img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.quickadd-info {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.quickadd-title {
+  font-size: 16.5px;
+  font-weight: 800;
+  color: var(--ink);
+  margin: 0;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.quickadd-sub {
+  font-size: 12px;
+  color: var(--navy-soft);
+  margin: 2px 0 0;
+}
+.quickadd-body {
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 10px 14px;
+}
+.quickadd-label {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 8px;
+  text-align: center;
+}
+.quickadd-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.quickadd-days .daybtn {
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.12);
+  border-radius: 8px;
+  color: var(--navy);
+  font-weight: 700;
+  padding: 7px 1px;
+  font-size: 11.5px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .15s ease;
+  width: 100%;
+}
+.quickadd-days .daybtn:hover {
+  background: var(--yellow-pale);
+  border-color: var(--ink);
+}
+.quickadd-days .daybtn.is-on {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+  font-weight: 800;
+}
+.quickadd-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+.quickadd-btn {
+  height: 44px;
+  font-size: 14.5px;
+  font-weight: 800;
+  border-radius: 9999px;
+}
+.quickadd-details-btn {
+  font-size: 12.5px;
+  color: var(--navy-soft);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  padding: 2px 0;
+}
+.quickadd-details-btn:hover {
+  color: var(--ink);
+}
+
+@media (max-width: 620px) {
+  .sheet--quickadd {
+    padding: 0;
+    place-items: end center;
+  }
+  .sheet__panel--quickadd {
+    max-width: none;
+    width: 100%;
+    border-radius: 20px 20px 0 0;
+    padding-bottom: env(safe-area-inset-bottom, 16px);
+  }
+  .sheet__handle {
+    width: 36px;
+    height: 4px;
+    background: rgba(0,0,0,0.18);
+    border-radius: 9999px;
+    margin: 8px auto 0;
+  }
+  .quickadd-card {
+    padding: 12px 16px 14px;
+  }
+}
+
 @media (max-width: 1180px) {
   /* The visit allowance is already stated in the recommendation card. At laptop
      widths it yields to the venue and the direct Swap action instead of clipping them. */

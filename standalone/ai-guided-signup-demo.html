@@ -3533,6 +3533,156 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   background: var(--ink); border-color: var(--ink); color: #fff; font-weight: 800;
 }
 
+/* Quick-Add Sleek Bottom Sheet */
+.sheet--quickadd {
+  padding: 16px;
+  place-items: center;
+}
+.sheet__panel--quickadd {
+  max-width: 420px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.2);
+  background: #fff;
+  position: relative;
+}
+.quickadd-card {
+  padding: 20px 20px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.quickadd-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-right: 32px;
+}
+.quickadd-thumb {
+  flex: 0 0 52px;
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  background: #f0f2f5;
+}
+.quickadd-thumb img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.quickadd-info {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.quickadd-title {
+  font-size: 16.5px;
+  font-weight: 800;
+  color: var(--ink);
+  margin: 0;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.quickadd-sub {
+  font-size: 12px;
+  color: var(--navy-soft);
+  margin: 2px 0 0;
+}
+.quickadd-body {
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 10px 14px;
+}
+.quickadd-label {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 8px;
+  text-align: center;
+}
+.quickadd-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.quickadd-days .daybtn {
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.12);
+  border-radius: 8px;
+  color: var(--navy);
+  font-weight: 700;
+  padding: 7px 1px;
+  font-size: 11.5px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .15s ease;
+  width: 100%;
+}
+.quickadd-days .daybtn:hover {
+  background: var(--yellow-pale);
+  border-color: var(--ink);
+}
+.quickadd-days .daybtn.is-on {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+  font-weight: 800;
+}
+.quickadd-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+.quickadd-btn {
+  height: 44px;
+  font-size: 14.5px;
+  font-weight: 800;
+  border-radius: 9999px;
+}
+.quickadd-details-btn {
+  font-size: 12.5px;
+  color: var(--navy-soft);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  padding: 2px 0;
+}
+.quickadd-details-btn:hover {
+  color: var(--ink);
+}
+
+@media (max-width: 620px) {
+  .sheet--quickadd {
+    padding: 0;
+    place-items: end center;
+  }
+  .sheet__panel--quickadd {
+    max-width: none;
+    width: 100%;
+    border-radius: 20px 20px 0 0;
+    padding-bottom: env(safe-area-inset-bottom, 16px);
+  }
+  .sheet__handle {
+    width: 36px;
+    height: 4px;
+    background: rgba(0,0,0,0.18);
+    border-radius: 9999px;
+    margin: 8px auto 0;
+  }
+  .quickadd-card {
+    padding: 12px 16px 14px;
+  }
+}
+
 @media (max-width: 1180px) {
   /* The visit allowance is already stated in the recommendation card. At laptop
      widths it yields to the venue and the direct Swap action instead of clipping them. */
@@ -4894,7 +5044,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 18 Aug 13:09 UTC</span>
+  <span class="demo-banner__build">build 18 Aug 13:15 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -6034,23 +6184,65 @@ function venueSheet() {
   const found = (match.venues||[]).find(x=>x.id===v.id);
   const km = found ? found.distanceKm : Math.min(...((match.areas)||[match.anywhere?ANYWHERE:match.area]).map(a=>distanceKm(a,v)));
   const plan = currentPlan();
-  const included = plan.venueTiers.includes(v.tier);
-  const firstPlan = PLANS.find(p=>p.venueTiers.includes(v.tier));
-  /* the real per-plan visit limits published on the venue's own page */
-  const yours = v.access ? v.access[plan.id] : null;
-  const firstAccess = v.access ? PLANS.find(pl=>v.access[pl.id] && !/^not included/i.test(v.access[pl.id])) : firstPlan;
   const currentWeekDays = (S.weekDays && S.weekDays.length)
     ? S.weekDays : weekPlan(A().activities||[], match.pool||[], plan.id, A().frequency).sessions.map(x=>x.day);
   const activeDay = WEEK_ADD_DAY || currentWeekDays[0] || 'Monday';
   if (!WEEK_ADD_DAY) WEEK_ADD_DAY = activeDay;
+
+  /* If opened via "Add to week", show a focused, lightweight Quick-Add bottom sheet */
+  if (WEEK_ADD_MODE) {
+    const areaLabel = v.nearestArea ? v.nearestArea.name : (AREAS.find(a=>a.id===v.area)||{}).name || '';
+    const distLabel = areaLabel ? `${km} km from ${esc(areaLabel)}` : `${km} km away`;
+    return `<div class="sheet sheet--quickadd" id="venue-sheet" role="dialog" aria-modal="true" aria-labelledby="quickadd-title">
+      <div class="sheet__panel sheet__panel--quickadd">
+        <div class="sheet__handle" aria-hidden="true"></div>
+        <button class="sheet__close" data-close-sheet aria-label="Close">&times;</button>
+        
+        <div class="quickadd-card">
+          <div class="quickadd-head">
+            <div class="quickadd-thumb">${venueMedia(v)}</div>
+            <div class="quickadd-info">
+              <h2 id="quickadd-title" class="quickadd-title">${esc(v.name)}</h2>
+              <p class="quickadd-sub">${esc(v.tierLabel||'Venue')} &middot; ${distLabel}</p>
+            </div>
+          </div>
+
+          <div class="quickadd-body">
+            <div class="quickadd-label">Choose a day for your routine</div>
+            <div class="quickadd-days" role="group" aria-label="Select day">
+              ${DAY_ORDER.map(day=>{
+                const isSelected = WEEK_ADD_DAY === day;
+                return `<button class="daybtn ${isSelected ? 'is-on' : ''}" type="button" data-add-day="${esc(day)}" aria-pressed="${isSelected}">${DAY_SHORT[day]}</button>`;
+              }).join('')}
+            </div>
+          </div>
+
+          <div class="quickadd-actions">
+            <button class="btn btn--primary btn--block quickadd-btn" type="button" data-add-venue="${esc(v.id)}">
+              Add to ${esc(WEEK_ADD_DAY || 'my week')}
+            </button>
+            <button class="linkish quickadd-details-btn" type="button" data-venue="${esc(v.id)}">
+              View full studio details &amp; timetable &rarr;
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  /* Full venue details profile */
+  const included = plan.venueTiers.includes(v.tier);
+  const firstPlan = PLANS.find(p=>p.venueTiers.includes(v.tier));
+  const yours = v.access ? v.access[plan.id] : null;
+  const firstAccess = v.access ? PLANS.find(pl=>v.access[pl.id] && !/^not included/i.test(v.access[pl.id])) : firstPlan;
 
   return `<div class="sheet" id="venue-sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
     <div class="sheet__panel">
       <button class="sheet__close" data-close-sheet aria-label="Close">&times;</button>
       <div class="sheet__media">${venueMedia(v)}</div>
       <div class="sheet__body">
-        <h2 id="sheet-title" style="font-size:26px">${esc(v.name)}</h2>
-        <p class="small muted" style="margin:6px 0 0">${esc(v.tierLabel||'Venue')} · ${km} km from ${esc(match.anywhere?'the city centre':((found&&found.nearestArea)||match.area).name)}</p>
+        <h2 id="sheet-title" style="font-size:22px;font-weight:800;letter-spacing:-.01em">${esc(v.name)}</h2>
+        <p class="small muted" style="margin:4px 0 0">${esc(v.tierLabel||'Venue')} · ${km} km from ${esc(match.anywhere?'the city centre':((found&&found.nearestArea)||match.area).name)}</p>
         ${v.address?`<p class="small muted" style="margin:4px 0 0">${icon('pin',15)} ${esc(v.address)}</p>`:''}
         
         <div class="sheet__weekadd">
@@ -6063,7 +6255,7 @@ function venueSheet() {
           <button class="btn btn--primary btn--block" type="button" data-add-venue="${esc(v.id)}">Add to ${esc(WEEK_ADD_DAY || 'my week')}</button>
         </div>
 
-        <p style="font-size:16.5px;line-height:1.5;margin:14px 0 0">${esc(v.blurb)}</p>
+        <p style="font-size:15px;line-height:1.45;margin:14px 0 0">${esc(v.blurb)}</p>
         <div class="chips">${v.activities.map(a=>`<span class="chip-sm">${esc(ACTIVITY_LABELS[a]||a)}</span>`).join('')}</div>
         <div style="margin-top:16px">
           ${v.hoursWeekday?`<div class="sheet__row">${icon('clock',20)}<span><strong>Weekdays</strong><br>${esc(v.hoursWeekday)}</span></div>`:''}
