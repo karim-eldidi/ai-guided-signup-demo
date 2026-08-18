@@ -97,7 +97,7 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
 
 .landing {
   display: grid;
-  grid-template-columns: 52% 48%;
+  grid-template-columns: 50% 50%;
   min-height: 100vh;
 }
 
@@ -106,10 +106,11 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
   padding: 42px clamp(28px, 4.6vw, 76px) 48px;
   display: flex;
   flex-direction: column;
+  align-items: flex-end;
 }
 
-.landing__panelbar { display: flex; align-items: center; justify-content: space-between; }
-.landing__body { margin-top: auto; margin-bottom: auto; max-width: 640px; width: 100%; padding-top: 40px; }
+.landing__panelbar { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 600px; }
+.landing__body { margin-top: auto; margin-bottom: auto; max-width: 600px; width: 100%; padding-top: 40px; }
 
 .landing__media { position: relative; background: #d9d5cd; overflow: hidden; }
 .landing__media img { width: 100%; height: 100%; object-fit: cover; object-position: 42% center; }
