@@ -2843,16 +2843,14 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   background: #fff; color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,0.08); font-weight: 800;
 }
 
-/* Category Filter Pills (Horizontal Scroll with Gradient Mask) */
+/* Category Filter Pills (Horizontal Scroll with Gradient Mask & Subtle Mini Chevron) */
 .category-pills-wrap {
-  position: relative; margin-bottom: 18px;
+  position: relative; margin-bottom: 18px; display: flex; align-items: center;
 }
 .category-pills {
-  display: flex; gap: 8px; overflow-x: auto; padding: 2px 0 4px;
+  display: flex; gap: 8px; overflow-x: auto; padding: 2px 40px 4px 2px;
   scrollbar-width: none; scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
-  mask-image: linear-gradient(to right, black 0%, black calc(100% - 36px), transparent 100%);
-  -webkit-mask-image: linear-gradient(to right, black 0%, black calc(100% - 36px), transparent 100%);
+  -webkit-overflow-scrolling: touch; flex: 1 1 auto;
 }
 .category-pills::-webkit-scrollbar { display: none; }
 .category-pill {
@@ -2867,21 +2865,50 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .category-pill.is-active {
   background: var(--ink); color: #fff; border-color: var(--ink); font-weight: 800;
 }
+.category-pills__fade {
+  position: absolute; right: 0; top: 0; bottom: 0; width: 44px;
+  background: linear-gradient(to right, rgba(255,255,255,0), #fff 60%);
+  display: flex; align-items: center; justify-content: flex-end;
+  pointer-events: none;
+}
+.category-pills__mini-btn {
+  pointer-events: auto; width: 22px; height: 22px; border-radius: 50%;
+  background: #fff; border: 1px solid rgba(0,0,0,0.15); box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  display: grid; place-items: center; cursor: pointer; color: var(--ink);
+  transition: all .15s ease; padding: 0;
+}
+.category-pills__mini-btn:hover {
+  background: var(--yellow-pale); border-color: var(--ink); transform: scale(1.08);
+}
 
-/* Activity Cards Gallery (Smooth Responsive Carousel with Natural Peek) */
+/* Activity Cards Gallery (Smooth Carousel with Prominent Navigation Arrows) */
 .activity-gallery-wrap {
-  position: relative; margin-bottom: 16px;
+  position: relative; margin-bottom: 16px; display: flex; align-items: center;
 }
 .activity-gallery {
   overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth;
   scrollbar-width: none; -webkit-overflow-scrolling: touch;
-  padding: 4px 2px 10px;
-  mask-image: linear-gradient(to right, black 0%, black calc(100% - 40px), transparent 100%);
-  -webkit-mask-image: linear-gradient(to right, black 0%, black calc(100% - 40px), transparent 100%);
+  padding: 4px 2px 10px; width: 100%;
 }
 .activity-gallery::-webkit-scrollbar { display: none; }
 .activity-gallery__track {
   display: flex; gap: 14px;
+}
+.gallery-nav-btn {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 38px; height: 38px; border-radius: 50%; background: #fff;
+  border: 1px solid rgba(0,0,0,0.12); box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+  display: grid; place-items: center; cursor: pointer; color: var(--ink);
+  z-index: 4; transition: all .15s ease;
+}
+.gallery-nav-btn:hover {
+  background: var(--yellow-pale); border-color: var(--ink); transform: translateY(-50%) scale(1.08);
+}
+.gallery-nav-btn--prev { left: -14px; }
+.gallery-nav-btn--prev svg { transform: rotate(180deg); }
+.gallery-nav-btn--next { right: -14px; }
+@media (max-width: 768px) {
+  .gallery-nav-btn { display: none; }
 }
 .activity-card {
   flex: 0 0 230px; scroll-snap-align: start;
@@ -3779,7 +3806,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 18 Aug 11:22 UTC</span>
+  <span class="demo-banner__build">build 18 Aug 11:23 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -6070,9 +6097,17 @@ function recommendationScreen() {
           </button>
         `).join('')}
       </div>
+      <div class="category-pills__fade">
+        <button class="category-pills__mini-btn" type="button" data-scroll-pills="right" aria-label="Scroll sports">
+          ${icon('chevron', 12)}
+        </button>
+      </div>
     </div>
 
     <div class="activity-gallery-wrap">
+      <button class="gallery-nav-btn gallery-nav-btn--prev" type="button" data-scroll-gallery="prev" aria-label="Previous activities">
+        ${icon('chevron', 16)}
+      </button>
       <div class="activity-gallery" id="activity-gallery-scroll">
         <div class="activity-gallery__track">
           ${curatedCards.map(({ grp, v }) => {
@@ -6103,6 +6138,9 @@ function recommendationScreen() {
           }).join('')}
         </div>
       </div>
+      <button class="gallery-nav-btn gallery-nav-btn--next" type="button" data-scroll-gallery="next" aria-label="Next activities">
+        ${icon('chevron', 16)}
+      </button>
     </div>
   </div>`;
 

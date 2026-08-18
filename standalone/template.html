@@ -2451,9 +2451,17 @@ function recommendationScreen() {
           </button>
         `).join('')}
       </div>
+      <div class="category-pills__fade">
+        <button class="category-pills__mini-btn" type="button" data-scroll-pills="right" aria-label="Scroll sports">
+          ${icon('chevron', 12)}
+        </button>
+      </div>
     </div>
 
     <div class="activity-gallery-wrap">
+      <button class="gallery-nav-btn gallery-nav-btn--prev" type="button" data-scroll-gallery="prev" aria-label="Previous activities">
+        ${icon('chevron', 16)}
+      </button>
       <div class="activity-gallery" id="activity-gallery-scroll">
         <div class="activity-gallery__track">
           ${curatedCards.map(({ grp, v }) => {
@@ -2484,6 +2492,9 @@ function recommendationScreen() {
           }).join('')}
         </div>
       </div>
+      <button class="gallery-nav-btn gallery-nav-btn--next" type="button" data-scroll-gallery="next" aria-label="Next activities">
+        ${icon('chevron', 16)}
+      </button>
     </div>
   </div>`;
 
