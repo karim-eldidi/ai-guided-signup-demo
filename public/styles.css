@@ -4718,6 +4718,15 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   background: #fff;
   display: flex;
   flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+.confirm-venue-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+  border-color: var(--ink);
 }
 .confirm-venue-media {
   aspect-ratio: 16 / 10;
@@ -4791,6 +4800,15 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 .confirm-routine-banner svg {
   flex: 0 0 auto;
   color: #16a34a;
+}
+.confirm-explore-link {
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.confirm-explore-link:hover {
+  color: #000;
 }
 
 /* Sidebar & Receipt */

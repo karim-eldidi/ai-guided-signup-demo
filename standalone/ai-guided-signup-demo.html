@@ -4732,6 +4732,15 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   background: #fff;
   display: flex;
   flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+.confirm-venue-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+  border-color: var(--ink);
 }
 .confirm-venue-media {
   aspect-ratio: 16 / 10;
@@ -4805,6 +4814,15 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 .confirm-routine-banner svg {
   flex: 0 0 auto;
   color: #16a34a;
+}
+.confirm-explore-link {
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.confirm-explore-link:hover {
+  color: #000;
 }
 
 /* Sidebar & Receipt */
@@ -5203,7 +5221,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 18 Aug 13:31 UTC</span>
+  <span class="demo-banner__build">build 18 Aug 13:34 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -8401,28 +8419,29 @@ function confirmationScreen() {
                 const tierClass = s.venue.tier === 'premium' ? 'badge--premium' : s.venue.tier === 'plus' ? 'badge--plus' : 'badge--standard';
                 const tierText = s.venue.tier === 'premium' ? 'Premium' : s.venue.tier === 'plus' ? 'Plus' : 'Included';
                 return `
-                <div class="confirm-venue-card">
-                <div class="venue-card__media confirm-venue-media">
-                  ${venueMedia(s.venue, (groupById(s.groupId)||{}).activities)}
-                  <span class="confirm-venue-day-badge">${esc(s.day)}</span>
-                </div>
-                <div class="confirm-venue-card__body">
-                  <div class="confirm-venue-card__top">
-                    <b>${esc(s.venue.name)}</b>
-                    <span class="confirm-tier-badge ${tierClass}">${tierText}</span>
+                <a href="${esc(s.venue.url || 'https://urbansportsclub.com/en/venues')}" target="_blank" rel="noopener" class="confirm-venue-card" title="View ${esc(s.venue.name)} on Urban Sports Club">
+                  <div class="venue-card__media confirm-venue-media">
+                    ${venueMedia(s.venue, (groupById(s.groupId)||{}).activities)}
+                    <span class="confirm-venue-day-badge">${esc(s.day)}</span>
                   </div>
-                  <div class="confirm-venue-card__meta">
-                    <span>${esc(s.activity)}</span>
-                    ${areaLabel ? ` &middot; <span>${esc(areaLabel)}</span>` : ''}
+                  <div class="confirm-venue-card__body">
+                    <div class="confirm-venue-card__top">
+                      <b>${esc(s.venue.name)}</b>
+                      <span class="confirm-tier-badge ${tierClass}">${tierText}</span>
+                    </div>
+                    <div class="confirm-venue-card__meta">
+                      <span>${esc(s.activity)}</span>
+                      ${areaLabel ? ` &middot; <span>${esc(areaLabel)}</span>` : ''}
+                    </div>
                   </div>
-                </div>
-              </div>`;
-            }).join('')}
+                </a>`;
+              }).join('')}
+            </div>
           </div>
 
           <div class="confirm-routine-banner">
             ${icon('checkThin', 16)}
-            <span>Your routine is ready. You can follow these exact days or explore 14,800+ other partner venues anytime.</span>
+            <span>Your routine is ready. You can follow these exact days or <a href="https://urbansportsclub.com/en/venues" target="_blank" rel="noopener" class="confirm-explore-link">explore 14,800+ partner venues &rarr;</a></span>
           </div>
         </div>` : ''}
 

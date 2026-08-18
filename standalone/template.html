@@ -3358,28 +3358,29 @@ function confirmationScreen() {
                 const tierClass = s.venue.tier === 'premium' ? 'badge--premium' : s.venue.tier === 'plus' ? 'badge--plus' : 'badge--standard';
                 const tierText = s.venue.tier === 'premium' ? 'Premium' : s.venue.tier === 'plus' ? 'Plus' : 'Included';
                 return `
-                <div class="confirm-venue-card">
-                <div class="venue-card__media confirm-venue-media">
-                  ${venueMedia(s.venue, (groupById(s.groupId)||{}).activities)}
-                  <span class="confirm-venue-day-badge">${esc(s.day)}</span>
-                </div>
-                <div class="confirm-venue-card__body">
-                  <div class="confirm-venue-card__top">
-                    <b>${esc(s.venue.name)}</b>
-                    <span class="confirm-tier-badge ${tierClass}">${tierText}</span>
+                <a href="${esc(s.venue.url || 'https://urbansportsclub.com/en/venues')}" target="_blank" rel="noopener" class="confirm-venue-card" title="View ${esc(s.venue.name)} on Urban Sports Club">
+                  <div class="venue-card__media confirm-venue-media">
+                    ${venueMedia(s.venue, (groupById(s.groupId)||{}).activities)}
+                    <span class="confirm-venue-day-badge">${esc(s.day)}</span>
                   </div>
-                  <div class="confirm-venue-card__meta">
-                    <span>${esc(s.activity)}</span>
-                    ${areaLabel ? ` &middot; <span>${esc(areaLabel)}</span>` : ''}
+                  <div class="confirm-venue-card__body">
+                    <div class="confirm-venue-card__top">
+                      <b>${esc(s.venue.name)}</b>
+                      <span class="confirm-tier-badge ${tierClass}">${tierText}</span>
+                    </div>
+                    <div class="confirm-venue-card__meta">
+                      <span>${esc(s.activity)}</span>
+                      ${areaLabel ? ` &middot; <span>${esc(areaLabel)}</span>` : ''}
+                    </div>
                   </div>
-                </div>
-              </div>`;
-            }).join('')}
+                </a>`;
+              }).join('')}
+            </div>
           </div>
 
           <div class="confirm-routine-banner">
             ${icon('checkThin', 16)}
-            <span>Your routine is ready. You can follow these exact days or explore 14,800+ other partner venues anytime.</span>
+            <span>Your routine is ready. You can follow these exact days or <a href="https://urbansportsclub.com/en/venues" target="_blank" rel="noopener" class="confirm-explore-link">explore 14,800+ partner venues &rarr;</a></span>
           </div>
         </div>` : ''}
 
