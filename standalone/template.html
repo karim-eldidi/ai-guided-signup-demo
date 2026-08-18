@@ -2468,7 +2468,7 @@ function recommendationScreen() {
       </div>
     </div>
 
-    <div class="activity-gallery-wrap">
+    ${curatedCards.length ? `<div class="activity-gallery-wrap">
       <button class="gallery-nav-btn gallery-nav-btn--prev" type="button" data-scroll-gallery="prev" aria-label="Previous activities" style="display:none">
         ${icon('chevron', 16)}
       </button>
@@ -2505,7 +2505,29 @@ function recommendationScreen() {
       <button class="gallery-nav-btn gallery-nav-btn--next" type="button" data-scroll-gallery="next" aria-label="Next activities">
         ${icon('chevron', 16)}
       </button>
-    </div>
+    </div>` : (() => {
+      const selectedGroup = groupById(ACTIVE_CATEGORY_FILTER);
+      const selectedCategoryLabel = selectedGroup ? selectedGroup.label : 'this activity';
+      const radiusLabel = (S.radiusKm === '8') ? '8 km' : (S.radiusKm === 'any') ? 'Berlin' : '3 km';
+      return `<div class="gallery-empty-state">
+        <div class="gallery-empty-state__icon">${icon('pin', 22)}</div>
+        <div class="gallery-empty-state__text">
+          <b>No ${esc(selectedCategoryLabel.toLowerCase())} studios right within ${esc(radiusLabel)} of ${esc(where)}</b>
+          <p>There are great ${esc(selectedCategoryLabel.toLowerCase())} venues across Berlin, or you can expand your search distance.</p>
+        </div>
+        <div class="gallery-empty-state__actions">
+          <button class="btn btn--secondary btn--sm" type="button" data-radius="any">
+            ${icon('pin', 13)} <span>Expand to all Berlin</span>
+          </button>
+          <button class="btn btn--secondary btn--sm" type="button" data-filter-category="all">
+            <span>Show all sports</span>
+          </button>
+          <button class="btn btn--primary btn--sm" type="button" data-go="search">
+            ${icon('search', 13)} <span>Explore all venues &rarr;</span>
+          </button>
+        </div>
+      </div>`;
+    })()}
 
     <div class="made-for-you__foot">
       <button class="linkish strong made-for-you__explore-link" type="button" data-go="search">

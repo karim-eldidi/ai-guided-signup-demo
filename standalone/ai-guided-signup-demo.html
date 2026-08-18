@@ -2969,6 +2969,34 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   background: var(--yellow-pale); border-color: var(--ink);
 }
 
+.gallery-empty-state {
+  background: #faf8f5;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px 20px;
+  text-align: center;
+  margin: 10px 0 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.gallery-empty-state__icon {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: #fff; border: 1px solid var(--border);
+  display: grid; place-items: center; color: var(--navy-soft);
+  margin-bottom: 2px;
+}
+.gallery-empty-state__text b {
+  display: block; font-size: 15.5px; font-weight: 800; color: var(--ink); margin-bottom: 4px;
+}
+.gallery-empty-state__text p {
+  font-size: 13px; color: var(--navy-soft); margin: 0; max-width: 50ch;
+}
+.gallery-empty-state__actions {
+  display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 10px;
+}
+
 .made-for-you__foot {
   margin-top: 14px;
   display: flex;
@@ -3846,7 +3874,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 18 Aug 11:35 UTC</span>
+  <span class="demo-banner__build">build 18 Aug 11:36 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -6154,7 +6182,7 @@ function recommendationScreen() {
       </div>
     </div>
 
-    <div class="activity-gallery-wrap">
+    ${curatedCards.length ? `<div class="activity-gallery-wrap">
       <button class="gallery-nav-btn gallery-nav-btn--prev" type="button" data-scroll-gallery="prev" aria-label="Previous activities" style="display:none">
         ${icon('chevron', 16)}
       </button>
@@ -6191,7 +6219,29 @@ function recommendationScreen() {
       <button class="gallery-nav-btn gallery-nav-btn--next" type="button" data-scroll-gallery="next" aria-label="Next activities">
         ${icon('chevron', 16)}
       </button>
-    </div>
+    </div>` : (() => {
+      const selectedGroup = groupById(ACTIVE_CATEGORY_FILTER);
+      const selectedCategoryLabel = selectedGroup ? selectedGroup.label : 'this activity';
+      const radiusLabel = (S.radiusKm === '8') ? '8 km' : (S.radiusKm === 'any') ? 'Berlin' : '3 km';
+      return `<div class="gallery-empty-state">
+        <div class="gallery-empty-state__icon">${icon('pin', 22)}</div>
+        <div class="gallery-empty-state__text">
+          <b>No ${esc(selectedCategoryLabel.toLowerCase())} studios right within ${esc(radiusLabel)} of ${esc(where)}</b>
+          <p>There are great ${esc(selectedCategoryLabel.toLowerCase())} venues across Berlin, or you can expand your search distance.</p>
+        </div>
+        <div class="gallery-empty-state__actions">
+          <button class="btn btn--secondary btn--sm" type="button" data-radius="any">
+            ${icon('pin', 13)} <span>Expand to all Berlin</span>
+          </button>
+          <button class="btn btn--secondary btn--sm" type="button" data-filter-category="all">
+            <span>Show all sports</span>
+          </button>
+          <button class="btn btn--primary btn--sm" type="button" data-go="search">
+            ${icon('search', 13)} <span>Explore all venues &rarr;</span>
+          </button>
+        </div>
+      </div>`;
+    })()}
 
     <div class="made-for-you__foot">
       <button class="linkish strong made-for-you__explore-link" type="button" data-go="search">

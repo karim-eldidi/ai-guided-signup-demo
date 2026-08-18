@@ -2955,6 +2955,34 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   background: var(--yellow-pale); border-color: var(--ink);
 }
 
+.gallery-empty-state {
+  background: #faf8f5;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px 20px;
+  text-align: center;
+  margin: 10px 0 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.gallery-empty-state__icon {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: #fff; border: 1px solid var(--border);
+  display: grid; place-items: center; color: var(--navy-soft);
+  margin-bottom: 2px;
+}
+.gallery-empty-state__text b {
+  display: block; font-size: 15.5px; font-weight: 800; color: var(--ink); margin-bottom: 4px;
+}
+.gallery-empty-state__text p {
+  font-size: 13px; color: var(--navy-soft); margin: 0; max-width: 50ch;
+}
+.gallery-empty-state__actions {
+  display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 10px;
+}
+
 .made-for-you__foot {
   margin-top: 14px;
   display: flex;
