@@ -3041,17 +3041,15 @@ function detailsScreen() {
   return `${topbar(2)}<div class="two-col two-col--form">
     <main class="two-col__main" id="main">
       <h1 class="details-title" tabindex="-1">Your details</h1>
-      <p class="details-lede">Set up your <strong>${esc(plan.name)}</strong> membership. You&rsquo;ll review everything before payment.</p>
-      ${ulaNote('Your membership and places stay with you while you fill this in. Nothing is charged.')}
+      <p class="details-lede">Set up your <strong>${esc(plan.name)}</strong> membership &middot; Nothing is charged today.</p>
       <form class="details-form" data-form="details" novalidate>
         <div class="details-sso">
-          <div class="details-sso__copy"><b>Save time with an account</b><span>Prefill your name and email.</span></div>
           <div class="sso-row">
-            <button class="sso-btn" type="submit" name="provider" value="google">${GOOGLE} Continue with Google</button>
-            <button class="sso-btn" type="submit" name="provider" value="apple">${APPLE} Continue with Apple</button>
+            <button class="sso-btn" type="submit" name="provider" value="google">${GOOGLE} <span>Google</span></button>
+            <button class="sso-btn" type="submit" name="provider" value="apple">${APPLE} <span>Apple</span></button>
           </div>
         </div>
-        <div class="details-divider">or enter your details</div>
+        <div class="details-divider"><span>or continue with email</span></div>
         <section class="details-section"><div class="fitpanel__label">Personal information</div>
           <div class="details-grid details-grid--person">
             ${f('firstName','First name',{auto:'given-name'})}${f('lastName','Last name',{auto:'family-name'})}
