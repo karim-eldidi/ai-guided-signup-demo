@@ -3245,90 +3245,93 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 /* --- the week ---------------------------------------------------------------
    The signature of the whole journey, so it is the one card on the page that is open
    and coloured: cream body, one white row per session. Rule 18 / 60. */
+/* --- the week: calm, clean, spacious editorial routine --- */
 .weekcard {
-  background: var(--cream); border: 1px solid var(--cream-line);
-  border-radius: var(--radius-lg); padding: 20px 20px 18px; margin: 0 0 16px;
+  background: transparent; border: 0; padding: 0; margin: 0 0 16px;
   container: weekcard / inline-size;
 }
-.weekcard__head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
-.weekcard__title { font-size: clamp(19px, 1.55vw, 23px); font-weight: 800; letter-spacing: -.02em; }
-/* Adjusting the week is a second intention, so it is a link at the far end of the
-   heading rather than a button competing with the one on the right (rule 9). */
-.weekcard__adjust {
-  display: inline-flex; align-items: center; gap: 7px; flex: 0 0 auto;
-  background: none; border: 0; padding: 0; color: var(--navy);
-  font-size: 15px; font-weight: 700; text-decoration: underline; text-underline-offset: 3px;
+.weekcard__head {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 16px;
 }
-.weekcard__adjust:hover { color: var(--ink); }
-.weekcard__list { list-style: none; margin: 14px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.weekcard__title {
+  font-size: 21px; font-weight: 800; letter-spacing: -.01em; margin: 0; color: var(--ink);
+}
+.weekcard__sub {
+  font-size: 13px; color: var(--navy-soft); margin: 2px 0 0;
+}
+.weekcard__list {
+  list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px;
+}
 
-/* One row: what it is on the left, where it is in the middle, and what it costs you in
-   plan terms on the right. A locked row says which membership opens it and nothing else —
-   the reasoning for that lives on the card in the other column. */
 .weekrow {
-  display: flex; align-items: center; justify-content: space-between; gap: 14px;
-  background: #fff; border-radius: var(--radius); padding: 12px 16px;
-  border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  background: #fff; border-radius: var(--radius-lg); padding: 14px 18px;
+  border: 1px solid rgba(0,0,0,0.08); box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+  transition: all .15s ease;
+}
+.weekrow:hover {
+  border-color: rgba(0,0,0,0.15); box-shadow: 0 2px 6px rgba(0,0,0,0.04);
 }
 .weekrow__lead {
-  display: flex; align-items: center; gap: 10px; flex: 0 0 140px; min-width: 0;
+  display: flex; align-items: center; gap: 12px; flex: 0 0 130px; min-width: 0;
 }
 .weekrow__icon {
-  flex: 0 0 auto; display: grid; place-items: center; width: 38px; height: 38px;
-  border-radius: 50%; background: var(--yellow-pale); color: #4a4126;
+  flex: 0 0 auto; display: grid; place-items: center; width: 34px; height: 34px;
+  border-radius: 50%; background: #f2f4f7; color: var(--ink);
 }
 .weekrow.is-locked .weekrow__icon { background: var(--page-grey); color: var(--navy-soft); }
 .weekrow__meta { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
-.weekrow__day { font-size: 12.5px; color: var(--navy-soft); font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
-.weekrow__act { font-size: 15px; font-weight: 700; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.weekrow__day { font-size: 12px; color: var(--navy-soft); font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+.weekrow__act { font-size: 14.5px; font-weight: 700; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 .weekrow__place {
-  display: flex; align-items: center; gap: 10px; flex: 1 1 auto; min-width: 0;
+  display: flex; align-items: center; gap: 12px; flex: 1 1 auto; min-width: 0;
   background: none; border: 0; padding: 0; text-align: left; cursor: pointer;
 }
 .weekrow__thumb {
   position: relative;
-  flex: 0 0 auto; width: 56px; height: 40px; border-radius: 6px; overflow: hidden;
-  background: var(--yellow-pale); display: grid; place-items: center;
+  flex: 0 0 auto; width: 50px; height: 38px; border-radius: 8px; overflow: hidden;
+  background: #f0f2f5; display: grid; place-items: center;
 }
 .weekrow__thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .weekrow__pname { min-width: 0; }
 .weekrow__pname b { display: block; font-size: 14.5px; font-weight: 700; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.weekrow__pname small { display: block; font-size: 12.5px; font-weight: 500; color: var(--navy-soft); }
-.weekrow__place:hover .weekrow__pname b { text-decoration: underline; }
+.weekrow__pname small { display: block; font-size: 12.5px; font-weight: 500; color: var(--navy-soft); margin-top: 2px; }
+.weekrow__place:hover .weekrow__pname b { text-decoration: underline; color: var(--ink); }
 
 .weekrow__actions {
   display: flex; align-items: center; gap: 8px; flex: 0 0 auto;
 }
-.weekrow__pill {
-  background: var(--yellow-bright); color: var(--ink);
-  font-size: 11.5px; font-weight: 700; padding: 4px 8px; border-radius: 999px; white-space: nowrap;
-}
 .weekrow__swap {
-  display: inline-flex; align-items: center; gap: 5px; background: var(--cream);
-  border: 1px solid var(--cream-line); border-radius: 9999px; padding: 5px 10px;
+  display: inline-flex; align-items: center; gap: 5px; background: #fff;
+  border: 1px solid rgba(0,0,0,0.12); border-radius: 9999px; padding: 5px 12px;
   font-size: 12px; font-weight: 700; color: var(--navy); cursor: pointer;
   transition: all .15s ease;
 }
-.weekrow__swap:hover { background: #fff; border-color: var(--ink); color: var(--ink); }
-/* The one thing the plan on screen cannot carry, said where the gap is visible. */
-.weekcard__adds {
-  display: flex; align-items: flex-start; gap: 10px; margin: 14px 2px 0;
-  font-size: 15px; line-height: 1.45;
+.weekrow__swap:hover { background: var(--yellow-pale); border-color: var(--ink); color: var(--ink); }
+.weekrow__trash {
+  background: none; border: 0; color: var(--navy-soft); cursor: pointer;
+  padding: 6px; border-radius: 6px; display: grid; place-items: center; transition: all .15s ease;
 }
-.weekcard__adds svg { flex: 0 0 auto; margin-top: 2px; }
-.weekcard__foot {
-  display: flex; align-items: flex-start; gap: 8px; margin: 12px 2px 0;
-  font-size: 13.5px; line-height: 1.45; color: var(--navy-soft);
-}
-.weekcard__foot svg { flex: 0 0 auto; margin-top: 3px; }
-.weekcard .week__days { border-top-color: var(--cream-line); margin: 16px 2px 0; }
-.weekcard .week__changed { background: #fff; margin: 12px 2px 0; }
+.weekrow__trash:hover { color: #d9383a; background: #fee2e2; }
+
 .weekcard__controls {
-  border-top: 1px solid var(--cream-line); margin: 16px 2px 0; padding-top: 14px;
+  border-top: 1px solid rgba(0,0,0,0.06); margin-top: 20px; padding-top: 16px;
 }
 .weekcard__controls .week__days { border: 0; margin: 0; padding: 0; }
-.weekcard__helper { margin-top: 7px; font-size: 12.5px; color: var(--navy-soft); }
+.week__days-label { font-size: 13.5px; font-weight: 800; color: var(--ink); margin-bottom: 8px; }
+.week__days-row { display: flex; gap: 6px; flex-wrap: wrap; }
+.weekcard__helper { margin-top: 8px; font-size: 12.5px; color: var(--navy-soft); }
+
+.weekcard .daybtn {
+  background: #fff; border: 1px solid rgba(0,0,0,0.12); border-radius: 9999px;
+  color: var(--navy); font-weight: 700; padding: 7px 14px; font-size: 13px;
+  cursor: pointer; transition: all .15s ease;
+}
+.weekcard .daybtn:hover { background: var(--yellow-pale); border-color: var(--ink); }
+.weekcard .daybtn.is-on {
+  background: var(--ink); border-color: var(--ink); color: #fff; font-weight: 800;
+}
 
 /* Places Showcase */
 .places-showcase {
@@ -3829,7 +3832,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 18 Aug 11:28 UTC</span>
+  <span class="demo-banner__build">build 18 Aug 11:31 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -6030,16 +6033,21 @@ function recommendationScreen() {
   /* The one session the plan on screen does not open, which is the honest argument for
      the plan above it. Rule 41: it says what the gap is, not only that there is one. */
   const gap = wp.sessions.find(x=>!x.included && x.needs);
-  const weekBlock = wp.sessions.length ? `<section class="weekcard">
+  const weekBlock = wp.sessions.length ? `<div class="weekcard">
     <div class="weekcard__head">
-      <h2 class="weekcard__title">A week that fits you</h2>
+      <div>
+        <h2 class="weekcard__title">A week that fits you</h2>
+        <p class="weekcard__sub">${wp.sessions.length} sessions &middot; Matches your goal in ${esc(where)}</p>
+      </div>
     </div>
     <ol class="weekcard__list">${wp.sessions.map(x=>{
-      const tier = x.venue ? (x.venue.tier === 'premium' ? 'Premium' : x.venue.tier === 'plus' ? 'Plus' : '') : '';
-      const tierBadge = tier ? `<span class="tier-tag tier-tag--${x.venue.tier}">${tier}</span>` : '';
+      const areaLabel = x.venue.nearestArea ? x.venue.nearestArea.name : (AREAS.find(a=>a.id===x.venue.area)||{}).name || '';
+      const distLabel = areaLabel ? `${x.distanceKm} km from ${esc(areaLabel)}` : `${x.distanceKm} km away`;
+      const tierText = x.venue.tier === 'premium' ? 'Premium access' : x.venue.tier === 'plus' ? 'Plus access' : 'Regular check-in';
+      const limitText = x.access && !/^(included|not included)/i.test(x.access) ? ` &middot; ${esc(x.access)}` : '';
       return `<li class="weekrow ${x.included?'':'is-locked'}" data-drop-day="${esc(x.day)}">
       <div class="weekrow__lead">
-        <span class="weekrow__icon">${icon(x.icon,18)}</span>
+        <span class="weekrow__icon">${icon(x.icon,16)}</span>
         <div class="weekrow__meta">
           <span class="weekrow__day">${esc(x.day)}</span>
           <b class="weekrow__act">${esc(x.activity)}</b>
@@ -6047,17 +6055,15 @@ function recommendationScreen() {
       </div>
       <button class="weekrow__place" data-venue="${esc(x.venue.id)}" aria-label="More about ${esc(x.venue.name)}">
         <span class="venue-card__media weekrow__thumb">${venueMedia(x.venue, (groupById(x.groupId)||{}).activities)}</span>
-        <span class="weekrow__pname"><b>${esc(x.venue.name)}</b>
-          <small>${x.distanceKm} km${tierBadge ? ' &middot; ' + tierBadge : ''}</small>
+        <span class="weekrow__pname">
+          <b>${esc(x.venue.name)}</b>
+          <small>${distLabel} &middot; ${tierText}${limitText}</small>
         </span>
       </button>
       <div class="weekrow__actions">
-        ${x.included
-          ? (/^(included|not included)/i.test(x.access) ? '' : `<span class="weekrow__limit">${esc(x.access)}</span>`)
-          : `<span class="weekrow__pill">${x.needs?esc(x.needs.name):'Not included'}</span>`}
         <button class="weekrow__swap" data-change-week="${esc(x.day)}"
           aria-label="Change activity or venue for ${esc(x.day)}">${icon('refresh',12)} <span>Swap</span></button>
-        <button class="weekrow__trash" data-remove-day="${esc(x.day)}" aria-label="Remove ${esc(x.day)}" title="Remove this day from schedule">
+        <button class="weekrow__trash" data-remove-day="${esc(x.day)}" aria-label="Remove ${esc(x.day)}" title="Remove this day">
           ${icon('trash',13)}
         </button>
       </div>
@@ -6066,19 +6072,19 @@ function recommendationScreen() {
 
     <div class="weekcard__controls">
       <div class="week__days">
-      <div class="week__days-label" id="week-days-label">Choose your days</div>
-      <div class="week__days-row" role="group" aria-labelledby="week-days-label">${DAY_ORDER.map(d=>{
-          const on = wp.sessions.some(x=>x.day===d);
-          return `<button class="daybtn ${on?'is-on':''}" data-day="${esc(d)}" aria-pressed="${on}" data-drop-day="${esc(d)}">${DAY_SHORT[d]}</button>`;
-        }).join('')}</div>
-      <p class="weekcard__helper">Change your days or drag places to customize your routine.</p>
+        <div class="week__days-label" id="week-days-label">Choose your days</div>
+        <div class="week__days-row" role="group" aria-labelledby="week-days-label">${DAY_ORDER.map(d=>{
+            const on = wp.sessions.some(x=>x.day===d);
+            return `<button class="daybtn ${on?'is-on':''}" data-day="${esc(d)}" aria-pressed="${on}" data-drop-day="${esc(d)}">${DAY_SHORT[d]}</button>`;
+          }).join('')}</div>
+        <p class="weekcard__helper">Tap any day to toggle it in your routine, or swap any venue above.</p>
       </div>
     </div>
 
     ${DAYNOTE ? `<p class="week__changed" role="status">${icon('checkFill',16)} <span>${DAYNOTE}</span></p>` : ''}
     ${gap?`<p class="weekcard__adds">${icon('sparkle',17)} <span><b>${esc(gap.needs.name)}</b> adds ${esc(gap.venue.name)}
       &mdash; the ${esc(gap.activity.toLowerCase())} option that completes your week.</span></p>`:''}
-  </section>` : '';
+  </div>` : '';
 
   const displayGroups = ACTIVE_CATEGORY_FILTER === 'all' 
     ? (groups.length ? groups : ACTIVITY_GROUPS.slice(0, 4))
