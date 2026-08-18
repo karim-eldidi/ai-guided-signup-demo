@@ -4780,14 +4780,25 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   border-color: var(--ink);
 }
 
-/* Visual Routine Gym Grid */
+/* Visual Routine Carousel (Desktop & Mobile 1-line rail) */
+.confirm-routine-carousel-wrap {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,0,0,0.15) transparent;
+  padding: 4px 2px 10px;
+  -webkit-overflow-scrolling: touch;
+}
 .confirm-routine-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  display: flex;
   gap: 12px;
-  margin-top: 12px;
+  width: max-content;
+  margin-top: 8px;
 }
 .confirm-venue-card {
+  flex: 0 0 224px;
+  width: 224px;
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   overflow: hidden;
@@ -4801,7 +4812,6 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   text-align: left;
   font-family: inherit;
   font-size: inherit;
-  width: 100%;
   transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
 }
 .confirm-venue-card:hover {
