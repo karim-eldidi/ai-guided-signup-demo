@@ -3846,7 +3846,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 18 Aug 11:34 UTC</span>
+  <span class="demo-banner__build">build 18 Aug 11:35 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -5005,7 +5005,7 @@ function venueSheet() {
             const isSelected = WEEK_ADD_DAY === day;
             return `<button class="daybtn ${isSelected ? 'is-on' : ''}" type="button" data-add-day="${esc(day)}" aria-pressed="${isSelected}">${DAY_SHORT[day]}</button>`;
           }).join('')}</div>
-          <button class="btn btn--primary btn--block" type="button" data-add-venue="${esc(v.id)}">Add ${esc(v.name)} to ${esc(WEEK_ADD_DAY || 'my week')}</button>
+          <button class="btn btn--primary btn--block" type="button" data-add-venue="${esc(v.id)}">Add to ${esc(WEEK_ADD_DAY || 'my week')}</button>
         </div>
 
         <p style="font-size:16.5px;line-height:1.5;margin:14px 0 0">${esc(v.blurb)}</p>

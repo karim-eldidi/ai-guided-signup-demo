@@ -1319,7 +1319,7 @@ function venueSheet() {
             const isSelected = WEEK_ADD_DAY === day;
             return `<button class="daybtn ${isSelected ? 'is-on' : ''}" type="button" data-add-day="${esc(day)}" aria-pressed="${isSelected}">${DAY_SHORT[day]}</button>`;
           }).join('')}</div>
-          <button class="btn btn--primary btn--block" type="button" data-add-venue="${esc(v.id)}">Add ${esc(v.name)} to ${esc(WEEK_ADD_DAY || 'my week')}</button>
+          <button class="btn btn--primary btn--block" type="button" data-add-venue="${esc(v.id)}">Add to ${esc(WEEK_ADD_DAY || 'my week')}</button>
         </div>
 
         <p style="font-size:16.5px;line-height:1.5;margin:14px 0 0">${esc(v.blurb)}</p>
