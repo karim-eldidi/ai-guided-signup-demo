@@ -2774,6 +2774,13 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   text-transform: none; letter-spacing: 0; font-size: 15px; color: var(--navy);
 }
 
+/* Main Framed Routine Container */
+.reco-canvas-box {
+  background: #fff; border: 1px solid var(--border);
+  border-radius: var(--radius-xl); padding: 22px 24px; margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+
 /* Reco Top Tabs (Underline Style) */
 .reco-tabs {
   display: flex; gap: 24px; border-bottom: 1.5px solid rgba(0,0,0,0.08); margin: 0 0 20px;
@@ -2795,10 +2802,10 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 
 /* Made For You Section */
 .made-for-you {
-  margin-bottom: 24px;
+  margin-bottom: 4px;
 }
 .made-for-you__head {
-  display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 14px;
+  display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 16px;
 }
 .made-for-you__title {
   font-size: 21px; font-weight: 800; margin: 0; color: var(--ink); letter-spacing: -.01em;
@@ -2806,8 +2813,20 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .made-for-you__sub {
   font-size: 13px; color: var(--navy-soft); margin: 2px 0 0;
 }
-.made-for-you__why {
-  font-size: 13px; font-weight: 700; color: var(--navy); display: inline-flex; align-items: center; gap: 4px;
+
+/* Radius Toggle (Segmented Pill) */
+.radius-toggle {
+  display: inline-flex; gap: 2px; background: rgba(0,0,0,0.05); padding: 3px;
+  border-radius: 9999px; flex: 0 0 auto;
+}
+.radius-toggle__btn {
+  background: transparent; border: 0; padding: 4px 12px; border-radius: 9999px;
+  font-size: 12px; font-weight: 700; color: var(--navy); cursor: pointer;
+  transition: all .15s ease; white-space: nowrap;
+}
+.radius-toggle__btn:hover { color: var(--ink); }
+.radius-toggle__btn.is-active {
+  background: #fff; color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,0.08); font-weight: 800;
 }
 
 /* Category Filter Pills (Horizontal Scroll with Right Chevron) */

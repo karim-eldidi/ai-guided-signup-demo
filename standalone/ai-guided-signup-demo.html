@@ -2788,6 +2788,13 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   text-transform: none; letter-spacing: 0; font-size: 15px; color: var(--navy);
 }
 
+/* Main Framed Routine Container */
+.reco-canvas-box {
+  background: #fff; border: 1px solid var(--border);
+  border-radius: var(--radius-xl); padding: 22px 24px; margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+
 /* Reco Top Tabs (Underline Style) */
 .reco-tabs {
   display: flex; gap: 24px; border-bottom: 1.5px solid rgba(0,0,0,0.08); margin: 0 0 20px;
@@ -2809,10 +2816,10 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 
 /* Made For You Section */
 .made-for-you {
-  margin-bottom: 24px;
+  margin-bottom: 4px;
 }
 .made-for-you__head {
-  display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 14px;
+  display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 16px;
 }
 .made-for-you__title {
   font-size: 21px; font-weight: 800; margin: 0; color: var(--ink); letter-spacing: -.01em;
@@ -2820,8 +2827,20 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .made-for-you__sub {
   font-size: 13px; color: var(--navy-soft); margin: 2px 0 0;
 }
-.made-for-you__why {
-  font-size: 13px; font-weight: 700; color: var(--navy); display: inline-flex; align-items: center; gap: 4px;
+
+/* Radius Toggle (Segmented Pill) */
+.radius-toggle {
+  display: inline-flex; gap: 2px; background: rgba(0,0,0,0.05); padding: 3px;
+  border-radius: 9999px; flex: 0 0 auto;
+}
+.radius-toggle__btn {
+  background: transparent; border: 0; padding: 4px 12px; border-radius: 9999px;
+  font-size: 12px; font-weight: 700; color: var(--navy); cursor: pointer;
+  transition: all .15s ease; white-space: nowrap;
+}
+.radius-toggle__btn:hover { color: var(--ink); }
+.radius-toggle__btn.is-active {
+  background: #fff; color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,0.08); font-weight: 800;
 }
 
 /* Category Filter Pills (Horizontal Scroll with Right Chevron) */
@@ -3781,7 +3800,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 18 Aug 11:16 UTC</span>
+  <span class="demo-banner__build">build 18 Aug 11:20 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -6050,13 +6069,15 @@ function recommendationScreen() {
   const matchingActivitiesCount = groups.length || ACTIVITY_GROUPS.length;
   const matchingVenuesCount = (hereT && hereT.included) ? hereT.included : (wanted.length || pool.length);
 
-  const activitiesGalleryBlock = `<section class="made-for-you">
+  const activitiesGalleryBlock = `<div class="made-for-you">
     <div class="made-for-you__head">
       <div>
         <h2 class="made-for-you__title">Activities in ${esc(where)}</h2>
         <p class="made-for-you__sub">${matchingActivitiesCount} sports &middot; ${matchingVenuesCount} places &middot; Based on your preferences</p>
       </div>
-      <button class="made-for-you__why linkish strong" type="button" data-more="why">Why these? ${icon('info', 14)}</button>
+      <div class="radius-toggle" role="group" aria-label="Distance radius">
+        ${RADII.map(r=>`<button class="radius-toggle__btn ${(S.radiusKm||'auto')===r.id?'is-active':''}" type="button" data-radius="${esc(r.id)}">${esc(r.label)}</button>`).join('')}
+      </div>
     </div>
 
     <div class="category-pills-wrap">
@@ -6113,7 +6134,7 @@ function recommendationScreen() {
         ${icon('chevron', 16)}
       </button>
     </div>
-  </section>`;
+  </div>`;
 
   const recoTabs = `<div class="reco-tabs" role="tablist" aria-label="Recommendation view format">
     <button class="reco-tab ${RECO_VIEW==='pillars'?'is-active':''}" type="button" data-set-reco-view="pillars" aria-selected="${RECO_VIEW==='pillars'}">
@@ -6216,33 +6237,16 @@ function recommendationScreen() {
     ${allPlans}
   </div>`;
 
-  const placesSection = `<details class="rowcard rowcard--explore"${PLACESOPEN || nq ? ' open' : ''}>
-    <summary class="rowcard__head" data-toggle-places>
+  const placesSection = `<div class="rowcard rowcard--explore" data-go="search" role="button" tabindex="0" aria-label="Browse all venues in ${esc(where)}">
+    <div class="rowcard__head">
       <span class="rowcard__icon">${icon('pin', 22)}</span>
       <div class="rowcard__text">
         <b>Looking for something else?</b>
-        <div class="rowcard__sub">Browse all venues in ${esc(where)} and nearby.</div>
+        <div class="rowcard__sub">Browse all ${allVenues.length} venues in ${esc(where)} and explore the full map</div>
       </div>
       <span class="rowcard__link-btn strong">Browse all venues &rarr;</span>
-      <span class="rowcard__chev">${icon('chevron', 20)}</span>
-    </summary>
-    <div class="rowcard__body">
-      <form class="venuesearch places-tray__search" data-form="venue-filter" novalidate style="margin-bottom:14px">
-        <span class="venuesearch__icon">${icon('search',15)}</span>
-        <input type="search" name="vq" value="${esc(VENUEQ)}" autocomplete="off"
-          placeholder="✨ Ask Urby (e.g. 'sauna with pool', 'bouldering near U-Bahn')..." aria-label="Search places">
-        ${nq?`<button type="button" class="venuesearch__clear linkish strong" data-venue-clear>Clear</button>`:''}
-      </form>
-      ${hits && !hits.length ? `<div class="notice notice--grey">${icon('info',19)}<span>Nothing within this radius matches &ldquo;${esc(VENUEQ.trim())}&rdquo;. Try a wider radius below.</span></div>` : ''}
-      <div class="venue-grid venue-grid--big is-grid">${allVenues.map(v=>venueCard(v)).join('')}</div>
-      <div class="places__foot" style="margin-top:16px">
-        <div class="radius" role="group" aria-label="How far to look">
-          <span class="radius__label">${icon('pin',15)} Within</span>
-          ${RADII.map(r=>`<button type="button" class="chip-sm ${(S.radiusKm||'auto')===r.id?'is-current':''}" data-radius="${esc(r.id)}">${esc(r.label)}</button>`).join('')}
-        </div>
-      </div>
     </div>
-  </details>`;
+  </div>`;
 
   const GOAL_TITLE  = { move_more:'moving more', unwind:'moving and unwinding', try_new:'trying something new' };
   const heroBlock = `${ulaRow()}
@@ -6285,10 +6289,12 @@ function recommendationScreen() {
   return `${topbar(1)}<div class="two-col two-col--reco"><main class="two-col__main" id="main">
     ${heroBlock}
     ${chipsBlock}
-    ${recoTabs}
-    <div class="reco-main-canvas">
-      ${RECO_VIEW==='pillars' ? activitiesGalleryBlock : weekBlock}
-    </div>
+    <section class="reco-canvas-box">
+      ${recoTabs}
+      <div class="reco-main-canvas">
+        ${RECO_VIEW==='pillars' ? activitiesGalleryBlock : weekBlock}
+      </div>
+    </section>
     ${placesSection}
     ${appsBlock()}
     ${moreRow}

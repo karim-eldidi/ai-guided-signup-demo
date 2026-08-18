@@ -2429,13 +2429,15 @@ function recommendationScreen() {
   const matchingActivitiesCount = groups.length || ACTIVITY_GROUPS.length;
   const matchingVenuesCount = (hereT && hereT.included) ? hereT.included : (wanted.length || pool.length);
 
-  const activitiesGalleryBlock = `<section class="made-for-you">
+  const activitiesGalleryBlock = `<div class="made-for-you">
     <div class="made-for-you__head">
       <div>
         <h2 class="made-for-you__title">Activities in ${esc(where)}</h2>
         <p class="made-for-you__sub">${matchingActivitiesCount} sports &middot; ${matchingVenuesCount} places &middot; Based on your preferences</p>
       </div>
-      <button class="made-for-you__why linkish strong" type="button" data-more="why">Why these? ${icon('info', 14)}</button>
+      <div class="radius-toggle" role="group" aria-label="Distance radius">
+        ${RADII.map(r=>`<button class="radius-toggle__btn ${(S.radiusKm||'auto')===r.id?'is-active':''}" type="button" data-radius="${esc(r.id)}">${esc(r.label)}</button>`).join('')}
+      </div>
     </div>
 
     <div class="category-pills-wrap">
@@ -2492,7 +2494,7 @@ function recommendationScreen() {
         ${icon('chevron', 16)}
       </button>
     </div>
-  </section>`;
+  </div>`;
 
   const recoTabs = `<div class="reco-tabs" role="tablist" aria-label="Recommendation view format">
     <button class="reco-tab ${RECO_VIEW==='pillars'?'is-active':''}" type="button" data-set-reco-view="pillars" aria-selected="${RECO_VIEW==='pillars'}">
@@ -2595,33 +2597,16 @@ function recommendationScreen() {
     ${allPlans}
   </div>`;
 
-  const placesSection = `<details class="rowcard rowcard--explore"${PLACESOPEN || nq ? ' open' : ''}>
-    <summary class="rowcard__head" data-toggle-places>
+  const placesSection = `<div class="rowcard rowcard--explore" data-go="search" role="button" tabindex="0" aria-label="Browse all venues in ${esc(where)}">
+    <div class="rowcard__head">
       <span class="rowcard__icon">${icon('pin', 22)}</span>
       <div class="rowcard__text">
         <b>Looking for something else?</b>
-        <div class="rowcard__sub">Browse all venues in ${esc(where)} and nearby.</div>
+        <div class="rowcard__sub">Browse all ${allVenues.length} venues in ${esc(where)} and explore the full map</div>
       </div>
       <span class="rowcard__link-btn strong">Browse all venues &rarr;</span>
-      <span class="rowcard__chev">${icon('chevron', 20)}</span>
-    </summary>
-    <div class="rowcard__body">
-      <form class="venuesearch places-tray__search" data-form="venue-filter" novalidate style="margin-bottom:14px">
-        <span class="venuesearch__icon">${icon('search',15)}</span>
-        <input type="search" name="vq" value="${esc(VENUEQ)}" autocomplete="off"
-          placeholder="✨ Ask Urby (e.g. 'sauna with pool', 'bouldering near U-Bahn')..." aria-label="Search places">
-        ${nq?`<button type="button" class="venuesearch__clear linkish strong" data-venue-clear>Clear</button>`:''}
-      </form>
-      ${hits && !hits.length ? `<div class="notice notice--grey">${icon('info',19)}<span>Nothing within this radius matches &ldquo;${esc(VENUEQ.trim())}&rdquo;. Try a wider radius below.</span></div>` : ''}
-      <div class="venue-grid venue-grid--big is-grid">${allVenues.map(v=>venueCard(v)).join('')}</div>
-      <div class="places__foot" style="margin-top:16px">
-        <div class="radius" role="group" aria-label="How far to look">
-          <span class="radius__label">${icon('pin',15)} Within</span>
-          ${RADII.map(r=>`<button type="button" class="chip-sm ${(S.radiusKm||'auto')===r.id?'is-current':''}" data-radius="${esc(r.id)}">${esc(r.label)}</button>`).join('')}
-        </div>
-      </div>
     </div>
-  </details>`;
+  </div>`;
 
   const GOAL_TITLE  = { move_more:'moving more', unwind:'moving and unwinding', try_new:'trying something new' };
   const heroBlock = `${ulaRow()}
@@ -2664,10 +2649,12 @@ function recommendationScreen() {
   return `${topbar(1)}<div class="two-col two-col--reco"><main class="two-col__main" id="main">
     ${heroBlock}
     ${chipsBlock}
-    ${recoTabs}
-    <div class="reco-main-canvas">
-      ${RECO_VIEW==='pillars' ? activitiesGalleryBlock : weekBlock}
-    </div>
+    <section class="reco-canvas-box">
+      ${recoTabs}
+      <div class="reco-main-canvas">
+        ${RECO_VIEW==='pillars' ? activitiesGalleryBlock : weekBlock}
+      </div>
+    </section>
     ${placesSection}
     ${appsBlock()}
     ${moreRow}
