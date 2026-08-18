@@ -4643,25 +4643,53 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   line-height: 1.4;
 }
 .confirm-app-badges {
-  display: flex;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
   margin-top: 10px;
+  max-width: 100%;
 }
 .confirm-store-btn {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
-  background: var(--ink);
-  color: #fff;
-  border-radius: 8px;
-  font-size: 13px;
+  justify-content: center;
+  gap: 5px;
+  height: 38px;
+  padding: 0 6px;
+  border-radius: 9999px;
+  font-size: 11.5px;
   font-weight: 700;
   text-decoration: none;
-  transition: opacity .15s ease;
+  transition: all .15s ease;
+  cursor: pointer;
+  white-space: nowrap;
 }
-.confirm-store-btn:hover {
-  opacity: .9;
+.confirm-store-btn svg {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+}
+.confirm-store-btn--apple {
+  background: #000;
+  color: #fff;
+  border: 1.5px solid #000;
+}
+.confirm-store-btn--apple svg path {
+  fill: #fff;
+}
+.confirm-store-btn--apple:hover {
+  background: #222;
+  border-color: #222;
+  color: #fff;
+}
+.confirm-store-btn--google {
+  background: #fff;
+  color: var(--ink);
+  border: 1.5px solid var(--border);
+}
+.confirm-store-btn--google:hover {
+  background: var(--yellow-pale);
+  border-color: var(--ink);
 }
 
 /* Visual Routine Gym Grid */
@@ -4865,30 +4893,89 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 @media (max-width: 900px) {
   .confirm-layout {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 16px;
   }
   .confirm-page {
-    padding: 20px 14px 60px;
+    padding: 16px 14px 60px;
   }
   .confirm-hero {
     flex-direction: column;
     align-items: flex-start;
-    gap: 14px;
+    gap: 12px;
   }
   .confirm-hero__title {
-    font-size: 24px;
+    font-size: 22px;
+    margin: 4px 0 2px;
+  }
+  .confirm-hero__sub {
+    font-size: 13.5px;
+    line-height: 1.35;
   }
   .confirm-card {
-    padding: 18px 16px;
-  }
-  .confirm-routine-grid {
-    grid-template-columns: 1fr;
+    padding: 14px 14px 16px;
+    border-radius: 16px;
   }
   .confirm-app-badges {
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    max-width: none;
+    width: 100%;
   }
   .confirm-store-btn {
-    justify-content: center;
+    height: 40px;
+    font-size: 12.5px;
+  }
+  /* Horizontal Swipeable Carousel for picked places on mobile */
+  .confirm-routine-carousel-wrap {
+    margin: 0 -14px;
+    padding: 0 14px;
+    overflow: hidden;
+  }
+  .confirm-routine-grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 10px;
+    padding: 4px 2px 8px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .confirm-routine-grid::-webkit-scrollbar {
+    display: none;
+  }
+  .confirm-venue-card {
+    flex: 0 0 205px;
+    scroll-snap-align: start;
+    border-radius: 12px;
+  }
+  .confirm-venue-media {
+    aspect-ratio: 16 / 11;
+  }
+  .confirm-venue-card__body {
+    padding: 10px 10px 12px;
+    gap: 2px;
+  }
+  .confirm-venue-card__top b {
+    font-size: 13px;
+  }
+  .confirm-venue-card__meta {
+    font-size: 11.5px;
+  }
+  .confirm-kickoff-step {
+    padding: 10px 12px;
+    gap: 10px;
+  }
+  .confirm-kickoff-step__num {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+  }
+  .confirm-kickoff-step__body b {
+    font-size: 13.5px;
+  }
+  .confirm-kickoff-step__body p {
+    font-size: 12.5px;
   }
 }
 

@@ -3314,8 +3314,8 @@ function confirmationScreen() {
                 <b>Download the USC app</b>
                 <p>Your digital membership card lives in the app.</p>
                 <div class="confirm-app-badges">
-                  <a href="https://apps.apple.com/app/urban-sports-club/id974635677" target="_blank" rel="noopener" class="confirm-store-btn">${icon('apple', 15)} App Store</a>
-                  <a href="https://play.google.com/store/apps/details?id=com.urbansportsclub.urbansportsclub" target="_blank" rel="noopener" class="confirm-store-btn">${icon('phone', 15)} Google Play</a>
+                  <a href="https://apps.apple.com/app/urban-sports-club/id974635677" target="_blank" rel="noopener" class="confirm-store-btn confirm-store-btn--apple">${APPLE} <span>App Store</span></a>
+                  <a href="https://play.google.com/store/apps/details?id=com.urbansportsclub.urbansportsclub" target="_blank" rel="noopener" class="confirm-store-btn confirm-store-btn--google">${GOOGLE} <span>Google Play</span></a>
                 </div>
               </div>
             </div>
@@ -3351,13 +3351,14 @@ function confirmationScreen() {
             </div>
           </div>
 
-          <div class="confirm-routine-grid">
-            ${sessions.map(s => {
-              const areaLabel = s.venue.nearestArea ? s.venue.nearestArea.name : (AREAS.find(ar=>ar.id===s.venue.area)||{}).name || '';
-              const tierClass = s.venue.tier === 'premium' ? 'badge--premium' : s.venue.tier === 'plus' ? 'badge--plus' : 'badge--standard';
-              const tierText = s.venue.tier === 'premium' ? 'Premium' : s.venue.tier === 'plus' ? 'Plus' : 'Included';
-              return `
-              <div class="confirm-venue-card">
+          <div class="confirm-routine-carousel-wrap">
+            <div class="confirm-routine-grid" role="region" aria-label="Chosen workout places">
+              ${sessions.map(s => {
+                const areaLabel = s.venue.nearestArea ? s.venue.nearestArea.name : (AREAS.find(ar=>ar.id===s.venue.area)||{}).name || '';
+                const tierClass = s.venue.tier === 'premium' ? 'badge--premium' : s.venue.tier === 'plus' ? 'badge--plus' : 'badge--standard';
+                const tierText = s.venue.tier === 'premium' ? 'Premium' : s.venue.tier === 'plus' ? 'Plus' : 'Included';
+                return `
+                <div class="confirm-venue-card">
                 <div class="venue-card__media confirm-venue-media">
                   ${venueMedia(s.venue, (groupById(s.groupId)||{}).activities)}
                   <span class="confirm-venue-day-badge">${esc(s.day)}</span>
