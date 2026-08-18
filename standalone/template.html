@@ -543,6 +543,7 @@ const SESSIONS = { once:1, twice:2, often:3, daily:5 };
    never be recommended for it, and must never be priced as if it could. */
 const monthlyAllowance = plan => !plan ? 0 : (plan.dailyCheckIn ? 30 : (plan.checkInsPerMonth || 0));
 const visitsWanted = freq => (SESSIONS[freq] || 2) * 4;
+const visitsFor = (pl, freq = S.answers.frequency) => freq && freq !== SKIP ? Math.min(monthlyAllowance(pl), visitsWanted(freq)) : monthlyAllowance(pl);
 const carriesFrequency = (plan, freq) => monthlyAllowance(plan) >= visitsWanted(freq);
 const DAY_SPREAD = { 1:['Wednesday'], 2:['Tuesday','Saturday'], 3:['Monday','Wednesday','Saturday'],
                      4:['Monday','Wednesday','Friday','Sunday'], 5:['Monday','Tuesday','Thursday','Friday','Sunday'] };
@@ -1041,17 +1042,23 @@ const log = (name,payload) => S.events.push({ name, payload:payload||null, at:ne
 const b64e = o => btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 const b64d = s => JSON.parse(decodeURIComponent(escape(atob(s.replace(/-/g,'+').replace(/_/g,'/')))));
 const resumeUrl = () => `${location.href.split('#')[0].split('?')[0]}#resume=${b64e(S)}`;
-const firstOfNextMonth = () => { const d=new Date(); return new Date(d.getFullYear(),d.getMonth()+1,1).toISOString().slice(0,10); };
-const fmtDate = iso => { if(!iso) return '—'; const d=new Date(iso); return isNaN(d)?String(iso):d.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}); };
+const firstOfNextMonth = (ref = new Date()) => {
+  const next = new Date(ref.getFullYear(), ref.getMonth() + 1, 1);
+  return isoDay(next);
+};
+const fmtDate = iso => {
+  if (!iso) return '—';
+  if (typeof iso === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(iso)) {
+    const [y, m, d] = iso.split('-').map(Number);
+    const dt = new Date(y, m - 1, d);
+    return dt.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+  const d = new Date(iso);
+  return isNaN(d) ? String(iso) : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+};
 const A = () => clean(S.answers);
 const currentPlan = () => { const r=recommend(A(),matchVenues(A())); return planById(S.chosenPlanId||r.planId); };
 const validEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e||'');
-/* Date of birth had no bounds at all, so the field accepted tomorrow. The only limits
-   we can put on it are the ones arithmetic gives us for free: nobody was born in the
-   future, and nobody signing up was born 120 years ago. A *minimum age* would be a
-   different kind of claim — Urban Sports Club's published terms in data/plans.json
-   carry none, and rule 6 says we don't state a fact we can't source. So this stops the
-   impossible date without inventing a policy. */
 const isoDay = dt => `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
 const dobMax = () => isoDay(new Date());
 const dobMin = () => { const n=new Date(); return isoDay(new Date(n.getFullYear()-120, n.getMonth(), n.getDate())); };
@@ -2202,9 +2209,10 @@ function reasonsFor(rec, plan, match, groups) {
   }
 
   if (freq && freq !== SKIP) {
+    const weeklyLabel = freq === 'once' ? '1' : freq === 'twice' ? '2' : freq === 'often' ? '3–4' : (freq === 'daily' ? '5+' : (SESSIONS[freq] || '2'));
     const wants = visitsWanted(freq), allows = monthlyAllowance(plan);
     out.push({ icon:'calendar',
-      text:`Matches your ${wants}x/wk goal (~${wants * 4} visits/mo) — ${plan.name} includes ${allows === 30 ? '30 visits/mo (1/day)' : allows + ' visits/mo'}.` });
+      text:`Matches your ${weeklyLabel} sessions/wk goal (~${wants} visits/mo) — ${plan.name} includes ${allows === 30 ? '30 visits/mo (1/day)' : allows + ' visits/mo'}.` });
   }
 
   const price = priceFor(plan, S.commitmentId);
@@ -2624,7 +2632,7 @@ function recommendationScreen() {
     <ul class="planbox__facts">
       <li>${icon('checkThin',16)} <span>All <b>${hereT && hereT.included ? hereT.included : 6} places</b> are included</span></li>
       <li>${icon('checkThin',16)} <span><b>${visitsFor(plan)} visits</b> each month</span></li>
-      ${wp.perMonth?`<li>${icon('checkThin',16)} <span>Matches your <b>${visitsWanted(S.answers.frequency)} sessions/wk goal</b> (~${wp.perMonth} visits/mo)</span></li>`:''}
+      ${wp.perMonth?`<li>${icon('checkThin',16)} <span>Matches your <b>${S.answers.frequency === 'once' ? '1' : S.answers.frequency === 'twice' ? '2' : S.answers.frequency === 'often' ? '3–4' : (S.answers.frequency === 'daily' ? '5+' : (SESSIONS[S.answers.frequency] || '2'))} sessions/wk goal</b> (~${wp.perMonth} visits/mo)</span></li>`:''}
       ${each?`<li>${icon('checkThin',16)} <span>About <b>${each} €</b> a session</span></li>`:''}
       <li>${icon('checkThin',16)} <span>Flexible &ndash; cancel anytime</span></li>
     </ul>
@@ -2857,7 +2865,7 @@ function saveScreen() {
           <b>${esc(F.plan.name)}</b>
           <span>${F.price} €<small>/mo</small></span>
         </div>
-        <div class="saverecap__meta">${esc(F.commitment.label)} &middot; ${plural(monthlyAllowance(F.plan),'visit','visits')}/mo</div>
+        <div class="saverecap__meta">${esc(F.commitment.label)} &middot; ${plural(visitsFor(F.plan, S.answers.frequency),'visit','visits')}/mo</div>
       </div>
 
       ${savedWeek.length ? `
@@ -4466,10 +4474,46 @@ document.addEventListener('change', e => {
     else all.filter(i => i.value === 'anywhere').forEach(clear);
     const max = Number(group.dataset.maxpick) || 2;
     const on = [...group.querySelectorAll('input[name="choice"]')].filter(i => i.checked);
-    while (on.length > max) {
+    let notice = group.parentElement?.querySelector('.maxpick-notice');
+    if (on.length > max) {
       const drop = on.shift();
       drop.checked = false; drop.closest('.option-card')?.classList.remove('is-selected');
+      const dropLabel = drop.closest('.option-card')?.querySelector('.option-card__label');
+      const addLabel = input.closest('.option-card')?.querySelector('.option-card__label');
+      const dropName = (dropLabel ? dropLabel.childNodes[0].textContent : drop.value).trim();
+      const addName = (addLabel ? addLabel.childNodes[0].textContent : input.value).trim();
+      if (!notice) {
+        notice = document.createElement('div');
+        notice.className = 'maxpick-notice xsmall muted';
+        notice.style.cssText = 'margin-top: 10px; padding: 8px 12px; background: #f8fafc; border-radius: 8px; border: 1px solid var(--border);';
+        group.after(notice);
+      }
+      notice.innerHTML = `You can pick up to ${max} areas &mdash; swapped out <strong>${esc(dropName)}</strong> for <strong>${esc(addName)}</strong>.`;
+    } else if (notice && (on.length < max || input.value === 'anywhere')) {
+      notice.remove();
     }
+  }
+});
+
+/* Live validation: clear field errors on typing as soon as input is valid */
+document.addEventListener('input', e => {
+  const input = e.target.closest('form[data-form="details"] input, form[data-form="save"] input');
+  if (!input || !input.name) return;
+  const name = input.name, val = input.value.trim();
+  let isValid = false;
+  if (name === 'firstName' || name === 'lastName' || name === 'street' || name === 'city') {
+    isValid = val.length > 0;
+  } else if (name === 'email') {
+    isValid = validEmail(val);
+  } else if (name === 'birthDate') {
+    isValid = val && val <= dobMax() && val >= dobMin();
+  } else if (name === 'postcode') {
+    isValid = /^\d{4,5}$/.test(val);
+  }
+  if (isValid && ERRORS[name]) {
+    delete ERRORS[name];
+    const field = input.closest('.field');
+    field?.querySelector('.field-error')?.remove();
   }
 });
 
