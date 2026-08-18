@@ -3358,11 +3358,25 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   .places-showcase__head { flex-direction: column; gap: 8px; }
   .places-showcase__grid { grid-template-columns: 1fr; }
 }
-.sheet__weekadd { margin-top: 16px; padding: 14px; border-radius: 10px; background: var(--cream); border: 1px solid var(--cream-line); }
-.sheet__weekadd-title { margin: 0 0 4px; font-size: 16px; font-weight: 800; }
-.sheet__weekadd-copy { margin: 0 0 12px; font-size: 13.5px; color: var(--navy-soft); }
-.sheet__weekadd-days { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 12px; }
-.sheet__weekadd-days .daybtn { min-width: 48px; }
+.sheet__weekadd {
+  margin-top: 18px; padding: 16px 18px; border-radius: var(--radius-lg);
+  background: #faf8f5; border: 1px solid var(--border);
+}
+.sheet__weekadd-title { margin: 0 0 2px; font-size: 16px; font-weight: 800; color: var(--ink); }
+.sheet__weekadd-copy { margin: 0 0 12px; font-size: 13px; color: var(--navy-soft); }
+.sheet__weekadd-days { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.sheet__weekadd-days .daybtn {
+  flex: 1 1 auto; min-width: 42px; text-align: center;
+  background: #fff; border: 1px solid rgba(0,0,0,0.12); border-radius: 9999px;
+  color: var(--navy); font-weight: 700; padding: 7px 10px; font-size: 12.5px;
+  cursor: pointer; transition: all .15s ease;
+}
+.sheet__weekadd-days .daybtn:hover {
+  background: var(--yellow-pale); border-color: var(--ink);
+}
+.sheet__weekadd-days .daybtn.is-on {
+  background: var(--ink); border-color: var(--ink); color: #fff; font-weight: 800;
+}
 
 @media (max-width: 1180px) {
   /* The visit allowance is already stated in the recommendation card. At laptop
@@ -3832,7 +3846,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 18 Aug 11:31 UTC</span>
+  <span class="demo-banner__build">build 18 Aug 11:34 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -4970,8 +4984,11 @@ function venueSheet() {
   /* the real per-plan visit limits published on the venue's own page */
   const yours = v.access ? v.access[plan.id] : null;
   const firstAccess = v.access ? PLANS.find(pl=>v.access[pl.id] && !/^not included/i.test(v.access[pl.id])) : firstPlan;
-  const weekDays = (S.weekDays && S.weekDays.length)
+  const currentWeekDays = (S.weekDays && S.weekDays.length)
     ? S.weekDays : weekPlan(A().activities||[], match.pool||[], plan.id, A().frequency).sessions.map(x=>x.day);
+  const activeDay = WEEK_ADD_DAY || currentWeekDays[0] || 'Monday';
+  if (!WEEK_ADD_DAY) WEEK_ADD_DAY = activeDay;
+
   return `<div class="sheet" id="venue-sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
     <div class="sheet__panel">
       <button class="sheet__close" data-close-sheet aria-label="Close">&times;</button>
@@ -4980,13 +4997,17 @@ function venueSheet() {
         <h2 id="sheet-title" style="font-size:26px">${esc(v.name)}</h2>
         <p class="small muted" style="margin:6px 0 0">${esc(v.tierLabel||'Venue')} · ${km} km from ${esc(match.anywhere?'the city centre':((found&&found.nearestArea)||match.area).name)}</p>
         ${v.address?`<p class="small muted" style="margin:4px 0 0">${icon('pin',15)} ${esc(v.address)}</p>`:''}
-        ${WEEK_ADD_MODE ? `<div class="sheet__weekadd">
+        
+        <div class="sheet__weekadd">
           <p class="sheet__weekadd-title">Add to your week</p>
-          <p class="sheet__weekadd-copy">Use the selected day or choose another.</p>
-          <div class="sheet__weekadd-days" role="group" aria-label="Choose a day">${weekDays.map(day=>
-            `<button class="daybtn ${WEEK_ADD_DAY===day?'is-on':''}" type="button" data-add-day="${esc(day)}" aria-pressed="${WEEK_ADD_DAY===day}">${DAY_SHORT[day]}</button>`).join('')}</div>
-          <button class="btn btn--primary btn--block" type="button" data-add-venue="${esc(v.id)}" ${WEEK_ADD_DAY?'':'disabled'}>Add ${esc(v.name)} to ${WEEK_ADD_DAY?esc(WEEK_ADD_DAY):'my week'}</button>
-        </div>` : ''}
+          <p class="sheet__weekadd-copy">Choose any day of the week to add this venue to your routine.</p>
+          <div class="sheet__weekadd-days" role="group" aria-label="Choose a day">${DAY_ORDER.map(day=>{
+            const isSelected = WEEK_ADD_DAY === day;
+            return `<button class="daybtn ${isSelected ? 'is-on' : ''}" type="button" data-add-day="${esc(day)}" aria-pressed="${isSelected}">${DAY_SHORT[day]}</button>`;
+          }).join('')}</div>
+          <button class="btn btn--primary btn--block" type="button" data-add-venue="${esc(v.id)}">Add ${esc(v.name)} to ${esc(WEEK_ADD_DAY || 'my week')}</button>
+        </div>
+
         <p style="font-size:16.5px;line-height:1.5;margin:14px 0 0">${esc(v.blurb)}</p>
         <div class="chips">${v.activities.map(a=>`<span class="chip-sm">${esc(ACTIVITY_LABELS[a]||a)}</span>`).join('')}</div>
         <div style="margin-top:16px">
@@ -5005,8 +5026,8 @@ function venueSheet() {
               <span>${included
                 ? `Included in <strong>${esc(plan.name)}</strong> — ${lowerFirst(plan.checkInModel)}.`
                 : `Needs a Plus check-in, which ${esc(plan.name)} doesn&rsquo;t include.`}</span></div>`}
-        <p class="xsmall muted" style="margin-top:16px">Real venue data from ${v.url?`<a href="${esc(v.url)}" target="_blank" rel="noopener" style="text-decoration:underline">this venue&rsquo;s page on urbansportsclub.com</a>`:'urbansportsclub.com'}. Opening this changes nothing about your recommendation.</p>
-        <div class="btn-row" style="margin-top:18px"><button class="btn btn--secondary btn--block" data-close-sheet>Back to my fit</button></div>
+        <p class="xsmall muted" style="margin-top:16px">Real venue data from ${v.url?`<a href="${esc(v.url)}" target="_blank" rel="noopener" style="text-decoration:underline">this venue&rsquo;s page on urbansportsclub.com</a>`:'urbansportsclub.com'}.</p>
+        <div class="btn-row" style="margin-top:18px"><button class="btn btn--secondary btn--block" data-close-sheet>Close</button></div>
       </div></div></div>`;
 }
 
@@ -7256,7 +7277,13 @@ document.addEventListener('click', e => {
     
     log('week_venue_added',{day:WEEK_ADD_DAY,venue:venue.id,activity:group.id});
     SHEET=null; WEEK_ADD_MODE=false; WEEK_ADD_DAY=null; document.body.style.overflow = '';
-    render(false); return;
+    RECO_VIEW = 'week';
+    if (ROUTE === 'search') {
+      go('recommendation');
+    } else {
+      render(false);
+    }
+    return;
   }
   /* Nothing near you matched, so hand the words to the search that can answer for the
      whole pilot — and answers with the cheapest membership that opens the place. */
