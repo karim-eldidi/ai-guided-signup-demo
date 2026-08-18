@@ -2829,13 +2829,16 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   background: #fff; color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,0.08); font-weight: 800;
 }
 
-/* Category Filter Pills (Horizontal Scroll with Right Chevron) */
+/* Category Filter Pills (Horizontal Scroll with Gradient Mask) */
 .category-pills-wrap {
-  position: relative; display: flex; align-items: center; margin-bottom: 18px;
+  position: relative; margin-bottom: 18px;
 }
 .category-pills {
-  display: flex; gap: 8px; overflow-x: auto; padding: 2px 36px 4px 2px;
-  scrollbar-width: none; scroll-behavior: smooth; flex: 1 1 auto;
+  display: flex; gap: 8px; overflow-x: auto; padding: 2px 0 4px;
+  scrollbar-width: none; scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  mask-image: linear-gradient(to right, black 0%, black calc(100% - 36px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, black 0%, black calc(100% - 36px), transparent 100%);
 }
 .category-pills::-webkit-scrollbar { display: none; }
 .category-pill {
@@ -2850,24 +2853,17 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .category-pill.is-active {
   background: var(--ink); color: #fff; border-color: var(--ink); font-weight: 800;
 }
-.category-pills__scroll-btn {
-  position: absolute; right: 0; top: 50%; transform: translateY(-50%);
-  width: 32px; height: 32px; border-radius: 50%; background: #fff;
-  border: 1px solid rgba(0,0,0,0.12); box-shadow: -4px 0 10px #fff;
-  display: grid; place-items: center; cursor: pointer; color: var(--ink);
-  z-index: 3; transition: all .15s ease;
-}
-.category-pills__scroll-btn:hover {
-  background: var(--yellow-pale); border-color: var(--ink);
-}
 
-/* Activity Cards Gallery (Responsive Carousel / Grid) */
+/* Activity Cards Gallery (Smooth Responsive Carousel with Natural Peek) */
 .activity-gallery-wrap {
   position: relative; margin-bottom: 16px;
 }
 .activity-gallery {
   overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth;
-  scrollbar-width: none; padding: 4px 2px 10px;
+  scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  padding: 4px 2px 10px;
+  mask-image: linear-gradient(to right, black 0%, black calc(100% - 40px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, black 0%, black calc(100% - 40px), transparent 100%);
 }
 .activity-gallery::-webkit-scrollbar { display: none; }
 .activity-gallery__track {
@@ -2929,23 +2925,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 }
 .activity-card .btn-pill:hover {
   background: var(--yellow-pale); border-color: var(--ink);
-}
-
-.gallery-nav-btn {
-  position: absolute; top: 50%; transform: translateY(-50%);
-  width: 36px; height: 36px; border-radius: 50%; background: #fff;
-  border: 1px solid rgba(0,0,0,0.12); box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  display: grid; place-items: center; cursor: pointer; color: var(--ink);
-  z-index: 4; transition: all .15s ease;
-}
-.gallery-nav-btn:hover {
-  background: var(--yellow-pale); border-color: var(--ink);
-}
-.gallery-nav-btn--prev { left: -14px; }
-.gallery-nav-btn--prev svg { transform: rotate(180deg); }
-.gallery-nav-btn--next { right: -14px; }
-@media (max-width: 768px) {
-  .gallery-nav-btn { display: none; }
 }
 
 .rowcard--explore .rowcard__link-btn {

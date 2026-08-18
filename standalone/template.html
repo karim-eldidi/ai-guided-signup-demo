@@ -2451,9 +2451,6 @@ function recommendationScreen() {
           </button>
         `).join('')}
       </div>
-      <button class="category-pills__scroll-btn" type="button" data-scroll-pills="right" aria-label="Scroll more sports">
-        ${icon('chevron', 14)}
-      </button>
     </div>
 
     <div class="activity-gallery-wrap">
@@ -2468,7 +2465,7 @@ function recommendationScreen() {
             const accessLabel = inPlan
               ? (v.tier === 'plus' ? 'Included &middot; Plus access' : v.tier === 'premium' ? 'Included &middot; Premium access' : 'Included &middot; Regular check-in')
               : `<span style="color:#8a5a1a;font-weight:700">Needs upgrade</span>`;
-            return `<div class="activity-card ${inPlan ? '' : 'is-locked'}" draggable="true" data-drag-venue="${esc(v.id)}" data-drag-name="${esc(v.name)}" title="Drag onto your week or click to view">
+            return `<div class="activity-card ${inPlan ? '' : 'is-locked'}" draggable="true" data-drag-venue="${esc(v.id)}" data-drag-name="${esc(v.name)}">
               <div class="activity-card__badge">${matchPct}% match</div>
               <button class="activity-card__media-btn" data-venue="${esc(v.id)}" aria-label="Details about ${esc(v.name)}">
                 <span class="activity-card__media">${venueMedia(v)}</span>
@@ -2479,7 +2476,7 @@ function recommendationScreen() {
                 <button class="activity-card__vname linkish" data-venue="${esc(v.id)}">${esc(v.name)}</button>
                 <div class="activity-card__dist">${distLabel}</div>
                 <div class="activity-card__access">${accessLabel}</div>
-                <button class="btn-pill btn-pill--sm btn-pill--block" data-open-add-venue="${esc(v.id)}" title="Add to week">
+                <button class="btn-pill btn-pill--sm btn-pill--block" data-open-add-venue="${esc(v.id)}">
                   ${icon('plus', 11)} <span>Add to week</span>
                 </button>
               </div>
@@ -2487,12 +2484,6 @@ function recommendationScreen() {
           }).join('')}
         </div>
       </div>
-      <button class="gallery-nav-btn gallery-nav-btn--prev" type="button" data-scroll-gallery="prev" aria-label="Previous activities">
-        ${icon('chevron', 16)}
-      </button>
-      <button class="gallery-nav-btn gallery-nav-btn--next" type="button" data-scroll-gallery="next" aria-label="Next activities">
-        ${icon('chevron', 16)}
-      </button>
     </div>
   </div>`;
 

@@ -2843,13 +2843,16 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   background: #fff; color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,0.08); font-weight: 800;
 }
 
-/* Category Filter Pills (Horizontal Scroll with Right Chevron) */
+/* Category Filter Pills (Horizontal Scroll with Gradient Mask) */
 .category-pills-wrap {
-  position: relative; display: flex; align-items: center; margin-bottom: 18px;
+  position: relative; margin-bottom: 18px;
 }
 .category-pills {
-  display: flex; gap: 8px; overflow-x: auto; padding: 2px 36px 4px 2px;
-  scrollbar-width: none; scroll-behavior: smooth; flex: 1 1 auto;
+  display: flex; gap: 8px; overflow-x: auto; padding: 2px 0 4px;
+  scrollbar-width: none; scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  mask-image: linear-gradient(to right, black 0%, black calc(100% - 36px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, black 0%, black calc(100% - 36px), transparent 100%);
 }
 .category-pills::-webkit-scrollbar { display: none; }
 .category-pill {
@@ -2864,24 +2867,17 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .category-pill.is-active {
   background: var(--ink); color: #fff; border-color: var(--ink); font-weight: 800;
 }
-.category-pills__scroll-btn {
-  position: absolute; right: 0; top: 50%; transform: translateY(-50%);
-  width: 32px; height: 32px; border-radius: 50%; background: #fff;
-  border: 1px solid rgba(0,0,0,0.12); box-shadow: -4px 0 10px #fff;
-  display: grid; place-items: center; cursor: pointer; color: var(--ink);
-  z-index: 3; transition: all .15s ease;
-}
-.category-pills__scroll-btn:hover {
-  background: var(--yellow-pale); border-color: var(--ink);
-}
 
-/* Activity Cards Gallery (Responsive Carousel / Grid) */
+/* Activity Cards Gallery (Smooth Responsive Carousel with Natural Peek) */
 .activity-gallery-wrap {
   position: relative; margin-bottom: 16px;
 }
 .activity-gallery {
   overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth;
-  scrollbar-width: none; padding: 4px 2px 10px;
+  scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  padding: 4px 2px 10px;
+  mask-image: linear-gradient(to right, black 0%, black calc(100% - 40px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, black 0%, black calc(100% - 40px), transparent 100%);
 }
 .activity-gallery::-webkit-scrollbar { display: none; }
 .activity-gallery__track {
@@ -2943,23 +2939,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 }
 .activity-card .btn-pill:hover {
   background: var(--yellow-pale); border-color: var(--ink);
-}
-
-.gallery-nav-btn {
-  position: absolute; top: 50%; transform: translateY(-50%);
-  width: 36px; height: 36px; border-radius: 50%; background: #fff;
-  border: 1px solid rgba(0,0,0,0.12); box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  display: grid; place-items: center; cursor: pointer; color: var(--ink);
-  z-index: 4; transition: all .15s ease;
-}
-.gallery-nav-btn:hover {
-  background: var(--yellow-pale); border-color: var(--ink);
-}
-.gallery-nav-btn--prev { left: -14px; }
-.gallery-nav-btn--prev svg { transform: rotate(180deg); }
-.gallery-nav-btn--next { right: -14px; }
-@media (max-width: 768px) {
-  .gallery-nav-btn { display: none; }
 }
 
 .rowcard--explore .rowcard__link-btn {
@@ -3800,7 +3779,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 18 Aug 11:20 UTC</span>
+  <span class="demo-banner__build">build 18 Aug 11:22 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -6091,9 +6070,6 @@ function recommendationScreen() {
           </button>
         `).join('')}
       </div>
-      <button class="category-pills__scroll-btn" type="button" data-scroll-pills="right" aria-label="Scroll more sports">
-        ${icon('chevron', 14)}
-      </button>
     </div>
 
     <div class="activity-gallery-wrap">
@@ -6108,7 +6084,7 @@ function recommendationScreen() {
             const accessLabel = inPlan
               ? (v.tier === 'plus' ? 'Included &middot; Plus access' : v.tier === 'premium' ? 'Included &middot; Premium access' : 'Included &middot; Regular check-in')
               : `<span style="color:#8a5a1a;font-weight:700">Needs upgrade</span>`;
-            return `<div class="activity-card ${inPlan ? '' : 'is-locked'}" draggable="true" data-drag-venue="${esc(v.id)}" data-drag-name="${esc(v.name)}" title="Drag onto your week or click to view">
+            return `<div class="activity-card ${inPlan ? '' : 'is-locked'}" draggable="true" data-drag-venue="${esc(v.id)}" data-drag-name="${esc(v.name)}">
               <div class="activity-card__badge">${matchPct}% match</div>
               <button class="activity-card__media-btn" data-venue="${esc(v.id)}" aria-label="Details about ${esc(v.name)}">
                 <span class="activity-card__media">${venueMedia(v)}</span>
@@ -6119,7 +6095,7 @@ function recommendationScreen() {
                 <button class="activity-card__vname linkish" data-venue="${esc(v.id)}">${esc(v.name)}</button>
                 <div class="activity-card__dist">${distLabel}</div>
                 <div class="activity-card__access">${accessLabel}</div>
-                <button class="btn-pill btn-pill--sm btn-pill--block" data-open-add-venue="${esc(v.id)}" title="Add to week">
+                <button class="btn-pill btn-pill--sm btn-pill--block" data-open-add-venue="${esc(v.id)}">
                   ${icon('plus', 11)} <span>Add to week</span>
                 </button>
               </div>
@@ -6127,12 +6103,6 @@ function recommendationScreen() {
           }).join('')}
         </div>
       </div>
-      <button class="gallery-nav-btn gallery-nav-btn--prev" type="button" data-scroll-gallery="prev" aria-label="Previous activities">
-        ${icon('chevron', 16)}
-      </button>
-      <button class="gallery-nav-btn gallery-nav-btn--next" type="button" data-scroll-gallery="next" aria-label="Next activities">
-        ${icon('chevron', 16)}
-      </button>
     </div>
   </div>`;
 
