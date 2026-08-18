@@ -3661,7 +3661,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 17 Aug 23:57 UTC</span>
+  <span class="demo-banner__build">build 18 Aug 00:03 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -5898,7 +5898,7 @@ function recommendationScreen() {
 
     <div class="weekcard__controls">
       <div class="week__days">
-      <div class="week__days-label" id="week-days-label">Choose your days <small style="font-weight:400;color:var(--navy-soft)">&middot; drag any studio above onto a day</small></div>
+      <div class="week__days-label" id="week-days-label">Choose your days</div>
       <div class="week__days-row" role="group" aria-labelledby="week-days-label">${DAY_ORDER.map(d=>{
           const on = wp.sessions.some(x=>x.day===d);
           return `<button class="daybtn ${on?'is-on':''}" data-day="${esc(d)}" aria-pressed="${on}" data-drop-day="${esc(d)}">${DAY_SHORT[d]}</button>`;
@@ -5921,7 +5921,6 @@ function recommendationScreen() {
   </div>` : '';
 
   const pillarsBlock = groups.length ? `<section class="pillars-section" data-drop-freedom="true">
-    <div class="pillars-freedom-drop-cue">${icon('plus', 16)} <span>Drop any studio here to add its sport</span></div>
     <div class="pillars-list">
       ${groups.map(g => {
         const grp = groupById(g.id || g);
@@ -5955,7 +5954,7 @@ function recommendationScreen() {
               } else {
                 accessText = `Included &middot; Regular check-in`;
               }
-              return `<div class="pillar-venue ${inPlan ? '' : 'is-locked'}" draggable="true" data-drag-venue="${esc(v.id)}" data-drag-name="${esc(v.name)}" title="Drag onto your week or click to add">
+              return `<div class="pillar-venue ${inPlan ? '' : 'is-locked'}" draggable="true" data-drag-venue="${esc(v.id)}" data-drag-name="${esc(v.name)}" title="Drag onto your week or click to view details">
                 <button class="pillar-venue__media-btn" data-venue="${esc(v.id)}" aria-label="Details about ${esc(v.name)}">
                   <span class="venue-card__media">${venueMedia(v)}</span>
                 </button>
@@ -5967,9 +5966,6 @@ function recommendationScreen() {
                   <div class="pillar-venue__sub">${distLabel} &middot; ${accessText}</div>
                 </div>
                 <div class="pillar-venue__action">
-                  <button class="btn-pill btn-pill--sm" data-open-add-venue="${esc(v.id)}" title="Add to week">
-                    ${icon('plus', 11)} <span>Add</span>
-                  </button>
                   <button class="pillar-venue__trash" type="button" data-exclude-venue="${esc(v.id)}" aria-label="Remove ${esc(v.name)}" title="Remove this studio from routine">${icon('trash', 13)}</button>
                 </div>
               </div>`;
@@ -6090,74 +6086,33 @@ function recommendationScreen() {
     ${allPlans}
   </div>`;
 
-  const planSummary = MOBILE() ? `<div class="plan-summary">
-    <div class="plan-summary__badge">${isRec ? 'Recommended for you' : 'Your choice'}</div>
-    <div class="plan-summary__idrow">
-      <span class="plan-summary__name">${esc(plan.name)}</span>
-      <span class="plan-summary__price">${price} €<small> / month</small></span>
-    </div>
-    <p class="plan-summary__fact">${icon('checkThin',16)}<span>${wp.perMonth
-      ? `${wp.perMonth} visits a month fits your routine`
-      : (hereT && hereT.nearby ? `Opens ${hereT.included} of ${hereT.nearby} places near you` : esc(plan.bestFor))}</span></p>
-    <button class="plan-summary__link linkish strong" type="button" data-toggle-plan-details>See plan details &rarr;</button>
-    ${S.email?'':`<button class="linkish plan-summary__save" data-go="save">Save this and come back later</button>`}
-  </div>` : '';
-
-  const placeCount = hereT && hereT.nearby ? hereT.nearby : wanted.length;
-  const placesTitle = hits
-    ? `${plural(hits.length,'place','places')} matching &ldquo;${esc(VENUEQ.trim())}&rdquo;`
-    : groups.length && placeCount
-      ? `${placeCount} matching ${placeCount===1?'place':'places'} near ${esc(where)}`
-      : `${plural(pool.length,'place','places')} near ${esc(where)}`;
-  const placesSub = (hereT && hereT.nearby)
-    ? `${hereT.included===hereT.nearby ? 'All ' + hereT.nearby : hereT.included + ' of ' + hereT.nearby} with ${esc(plan.name)}`
-    : `Within ${match.radiusKm?match.radiusKm+' km':'reach'} of ${esc(where)}`;
-
-  const displayedVenues = PLACESOPEN || nq ? allVenues : allVenues.slice(0, 3);
-  const remainingCount = allVenues.length - 3;
-  const placesSection = `<section class="places-tray">
-    <div class="places-tray__head">
-      <div>
-        <h3 class="places-tray__title">Studios in ${esc(where)} <small style="font-size:13px;font-weight:400;color:var(--navy-soft)">(${allVenues.length} total)</small></h3>
-        <p class="places-tray__sub">${placesSub}</p>
+  const placesSection = `<details class="rowcard rowcard--places"${PLACESOPEN || nq ? ' open' : ''}>
+    <summary class="rowcard__head" data-toggle-places>
+      <span class="rowcard__icon">${icon('pin', 22)}</span>
+      <div class="rowcard__text">
+        <b>Explore studios near ${esc(where)} <small style="font-weight:400;color:var(--navy-soft)">(${allVenues.length} places)</small></b>
+        <div style="font-size:12.5px;color:var(--navy-soft);font-weight:500">Search &amp; add more studios or sports to your recommended plan</div>
       </div>
-      <form class="venuesearch places-tray__search" data-form="venue-filter" novalidate>
+      <span class="rowcard__chev">${icon('chevron', 20)}</span>
+    </summary>
+    <div class="rowcard__body">
+      <form class="venuesearch places-tray__search" data-form="venue-filter" novalidate style="margin-bottom:14px">
         <span class="venuesearch__icon">${icon('search',15)}</span>
         <input type="search" name="vq" value="${esc(VENUEQ)}" autocomplete="off"
           placeholder="✨ Ask Urby (e.g. 'sauna with pool', 'bouldering')..." aria-label="Search places">
         ${nq?`<button type="button" class="venuesearch__clear linkish strong" data-venue-clear>Clear</button>`:''}
       </form>
-    </div>
-    ${hits && !hits.length ? `<div class="notice notice--grey">${icon('info',19)}<span>Nothing within this radius matches &ldquo;${esc(VENUEQ.trim())}&rdquo;. Try a wider radius below.</span></div>` : ''}
-    <div class="venue-grid venue-grid--big is-grid">${displayedVenues.map(v=>venueCard(v)).join('')}</div>
-    ${(!nq && remainingCount > 0) ? `
-    <div class="places-tray__expand-row">
-      <button class="btn-pill" type="button" data-toggle-places>
-        ${PLACESOPEN ? `Show top 3 studios only ↑` : `Show all ${allVenues.length} studios in ${esc(where)} (${remainingCount} more) ↓`}
-      </button>
-    </div>` : ''}
-    <div class="places__foot" style="margin-top:14px">
-      <div class="radius" role="group" aria-label="How far to look">
-        <span class="radius__label">${icon('pin',15)} Within</span>
-        ${RADII.map(r=>`<button type="button" class="chip-sm ${(S.radiusKm||'auto')===r.id?'is-current':''}" data-radius="${esc(r.id)}">${esc(r.label)}</button>`).join('')}
+      ${hits && !hits.length ? `<div class="notice notice--grey">${icon('info',19)}<span>Nothing within this radius matches &ldquo;${esc(VENUEQ.trim())}&rdquo;. Try a wider radius below.</span></div>` : ''}
+      <div class="venue-grid venue-grid--big is-grid">${allVenues.map(v=>venueCard(v)).join('')}</div>
+      <div class="places__foot" style="margin-top:16px">
+        <div class="radius" role="group" aria-label="How far to look">
+          <span class="radius__label">${icon('pin',15)} Within</span>
+          ${RADII.map(r=>`<button type="button" class="chip-sm ${(S.radiusKm||'auto')===r.id?'is-current':''}" data-radius="${esc(r.id)}">${esc(r.label)}</button>`).join('')}
+        </div>
       </div>
     </div>
-  </section>`;
+  </details>`;
 
-  /* The order of this column depends on the shape of the screen, which is why it is
-     assembled here rather than left to CSS. On a desktop the story leads and the plan
-     sits beside it in its own column, exactly as before. On a phone there is only one
-     column, and stacking it in DOM order put a rail of venues, a week and a fold of
-     apps between the visitor and the answer to "what does this cost?" — Karim's
-     instruction, and the reviewer's complaint. So the plan card moves up directly under
-     the answer chips, and the week follows it, because the week is the argument for the
-     number just above it and is the one thing that never folds (rule 60). */
-  /* Karim's design, 14 Aug. The page opens by saying back what they asked for, in their
-     words, before it says anything about money: the title names what they want out of it,
-     and the line under it is the four answers written as one sentence, so it is checkable
-     at a glance. Every part of it is editable in the chips directly below (rule 15), and
-     the sentence is recomputed from the week actually on screen (rule 52) — change a day
-     and "three times a week" changes with it. */
   const GOAL_TITLE  = { move_more:'moving more', unwind:'moving and unwinding', try_new:'trying something new' };
   const heroBlock = `${ulaRow()}
     <h1 class="h-question reco-hero__title" tabindex="-1">${MOBILE()
@@ -6165,14 +6120,7 @@ function recommendationScreen() {
       : (GOAL_TITLE[a.goal] ? `Your plan for ${GOAL_TITLE[a.goal]}` : `Your plan near ${esc(where)}`)}</h1>
     ${match.reachedFurther?`<div class="notice notice--grey">${icon('info',19)}<span>Nothing in this pilot&rsquo;s venue set does ${esc(groupWords(groups))} right by ${esc(where)}, so I looked across the city. The distances below are real.</span></div>`:''}`;
   const chipsBlock = answerChips({ label:'You told us' });
-  const story = `${heroBlock}${chipsBlock}`;
 
-  /* Karim's design, 14 Aug: one row, third of three, carrying everything that is not the
-     week, the places or the price. Its handle names the three things inside it, so it is
-     never an unlabelled drawer — and each of those names is the way straight into its own
-     section, which is why they are buttons and not decoration. Rule 16: one section open,
-     the rest collapsed. Rule 67: the reasoning folds because the plan card argues in
-     numbers. */
   const moreRow = `<details class="rowcard rowcard--more"${MOREOPEN?' open':''}>
     <summary class="rowcard__head" data-toggle-more>
       <span class="rowcard__icon">${icon('question',22)}</span>
@@ -6204,8 +6152,8 @@ function recommendationScreen() {
   </details>`;
 
   return `${topbar(1)}<div class="two-col two-col--reco"><main class="two-col__main" id="main">
+    ${heroBlock}
     <section class="reco-story-card">
-      ${heroBlock}
       ${viewSwitcher}
       ${chipsBlock}
       <div class="reco-story-card__canvas">
