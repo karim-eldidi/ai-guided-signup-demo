@@ -3275,6 +3275,30 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 .rowcard__body { padding: 0 18px 18px; }
 .rowcard__body--flush { padding: 0 14px 14px; }
 .rowcard[open] > .rowcard__head { padding-bottom: 12px; }
+
+.rowcard--places .rowcard__sub {
+  font-size: 12.5px; color: var(--navy-soft); font-weight: 500; margin-top: 2px;
+}
+.rowcard--places .rowcard__cta {
+  background: var(--yellow-pale); border: 1px solid var(--cream-line);
+  color: var(--ink); font-size: 12px; font-weight: 700;
+  padding: 6px 12px; border-radius: 9999px; transition: all .16s ease;
+}
+.rowcard--places:hover .rowcard__cta {
+  background: var(--yellow-bright); border-color: var(--ink); text-decoration: none;
+}
+.rowcard--places[open] .rowcard__cta svg:last-child {
+  transform: rotate(90deg);
+}
+
+.places-tray__hint {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--page-grey); border: 1px solid rgba(0,0,0,0.05);
+  border-radius: 10px; padding: 10px 14px; margin-bottom: 14px;
+  font-size: 13px; color: var(--navy-soft); line-height: 1.4;
+}
+.places-tray__hint svg { color: var(--ink); flex: 0 0 auto; }
+.places-tray__hint b { color: var(--ink); font-weight: 700; }
 /* The apps row proves its claim on the handle: four logos, chosen from the answers. */
 .rowcard__chips { display: flex; align-items: center; gap: 8px; margin-left: auto; min-width: 0; overflow: hidden; }
 .appchip {
@@ -3661,7 +3685,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 18 Aug 00:05 UTC</span>
+  <span class="demo-banner__build">build 18 Aug 08:00 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -6089,16 +6113,19 @@ function recommendationScreen() {
     <summary class="rowcard__head" data-toggle-places>
       <span class="rowcard__icon">${icon('pin', 22)}</span>
       <div class="rowcard__text">
-        <b>Explore studios near ${esc(where)} <small style="font-weight:400;color:var(--navy-soft)">(${allVenues.length} places)</small></b>
-        <div style="font-size:12.5px;color:var(--navy-soft);font-weight:500">Search &amp; add more studios or sports to your recommended plan</div>
+        <b>${allVenues.length} studios in ${esc(where)}</b>
+        <div class="rowcard__sub">Drag &amp; drop or tap to add more studios and sports to your plan</div>
       </div>
-      <span class="rowcard__chev">${icon('chevron', 20)}</span>
+      <span class="rowcard__cta btn-pill btn-pill--sm">${icon('plus', 11)} <span>Browse &amp; Add</span> ${icon('chevron', 14)}</span>
     </summary>
     <div class="rowcard__body">
+      <div class="places-tray__hint">
+        ${icon('sparkle', 14)} <span><b>Pro-tip:</b> Drag any studio card straight into your routine above, or tap to explore details and add it.</span>
+      </div>
       <form class="venuesearch places-tray__search" data-form="venue-filter" novalidate style="margin-bottom:14px">
         <span class="venuesearch__icon">${icon('search',15)}</span>
         <input type="search" name="vq" value="${esc(VENUEQ)}" autocomplete="off"
-          placeholder="✨ Ask Urby (e.g. 'sauna with pool', 'bouldering')..." aria-label="Search places">
+          placeholder="✨ Ask Urby (e.g. 'sauna with pool', 'bouldering near U-Bahn')..." aria-label="Search places">
         ${nq?`<button type="button" class="venuesearch__clear linkish strong" data-venue-clear>Clear</button>`:''}
       </form>
       ${hits && !hits.length ? `<div class="notice notice--grey">${icon('info',19)}<span>Nothing within this radius matches &ldquo;${esc(VENUEQ.trim())}&rdquo;. Try a wider radius below.</span></div>` : ''}

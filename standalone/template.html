@@ -2588,16 +2588,19 @@ function recommendationScreen() {
     <summary class="rowcard__head" data-toggle-places>
       <span class="rowcard__icon">${icon('pin', 22)}</span>
       <div class="rowcard__text">
-        <b>Explore studios near ${esc(where)} <small style="font-weight:400;color:var(--navy-soft)">(${allVenues.length} places)</small></b>
-        <div style="font-size:12.5px;color:var(--navy-soft);font-weight:500">Search &amp; add more studios or sports to your recommended plan</div>
+        <b>${allVenues.length} studios in ${esc(where)}</b>
+        <div class="rowcard__sub">Drag &amp; drop or tap to add more studios and sports to your plan</div>
       </div>
-      <span class="rowcard__chev">${icon('chevron', 20)}</span>
+      <span class="rowcard__cta btn-pill btn-pill--sm">${icon('plus', 11)} <span>Browse &amp; Add</span> ${icon('chevron', 14)}</span>
     </summary>
     <div class="rowcard__body">
+      <div class="places-tray__hint">
+        ${icon('sparkle', 14)} <span><b>Pro-tip:</b> Drag any studio card straight into your routine above, or tap to explore details and add it.</span>
+      </div>
       <form class="venuesearch places-tray__search" data-form="venue-filter" novalidate style="margin-bottom:14px">
         <span class="venuesearch__icon">${icon('search',15)}</span>
         <input type="search" name="vq" value="${esc(VENUEQ)}" autocomplete="off"
-          placeholder="✨ Ask Urby (e.g. 'sauna with pool', 'bouldering')..." aria-label="Search places">
+          placeholder="✨ Ask Urby (e.g. 'sauna with pool', 'bouldering near U-Bahn')..." aria-label="Search places">
         ${nq?`<button type="button" class="venuesearch__clear linkish strong" data-venue-clear>Clear</button>`:''}
       </form>
       ${hits && !hits.length ? `<div class="notice notice--grey">${icon('info',19)}<span>Nothing within this radius matches &ldquo;${esc(VENUEQ.trim())}&rdquo;. Try a wider radius below.</span></div>` : ''}
