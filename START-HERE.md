@@ -102,21 +102,13 @@ Doing it yourself is free and takes thirty seconds.
 
 ## Where the work stands
 
-Live and working: the landing with the optional email, four questions, the places rail with
-a distance control, the app catalogue band, a possible week that drives the plan, the plan
-column with its alternative and collapsed reasoning, details, simulated payment, the resume
-link, and the journey-data page.
-
-Open, and needing a decision rather than code:
-
-- **Mobile needs its own pass.** Desktop works because the plan sits beside the story; on a
-  phone that becomes a long scroll. A different composition, not a tweak.
-- **Typography is the honest weakness.** One family does every job. Fixing it properly is a
-  brand decision.
-- **Put it in front of five real people.** Four sources of feedback now disagree with each
-  other. Testing breaks the tie better than another round of opinions.
-
-Waiting on others: Alonso's top-categories-per-city data, clarity on Jeff's "ads" note, and
-the conversation with Nick about where people drop off today.
-
-One thing for you: **revoke the GitHub token** that was pasted into a chat earlier.
+Live and working:
+- Non-tollgate landing page with instant venue search and "Find my fit" entry point.
+- 4-question fit journey with natural language support and skip capabilities.
+- Curated Activities gallery with match percentages, category filters, distance toggles, and carousel navigation.
+- Calm, spacious "My week" routine builder with universal 7-day venue scheduling and session swapping.
+- Deterministic membership recommendation with monthly/annual commitments and transparent alternative comparison.
+- Universal 7-day venue scheduling with dynamic feedback notices.
+- Save for later modal with unguessable resume tokens and cross-session restoration.
+- Simulated checkout with order summary and terms.
+- Multi-viewport responsive layouts (Desktop 1440px/1280px and Mobile 390px).

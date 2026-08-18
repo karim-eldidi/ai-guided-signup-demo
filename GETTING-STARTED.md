@@ -91,8 +91,7 @@ Things that work well:
 
 **Always finish with:** *"then run the tests and tell me if anything broke."*
 
-There are 31 tests covering the rules and the whole journey. They're your safety net — they catch
-it if a change accidentally breaks something you weren't looking at.
+There are 58 unit tests and comprehensive browser journey tests (`npm run verify`). They're your safety net — they catch it if a change accidentally breaks something you weren't looking at.
 
 ---
 
@@ -102,27 +101,22 @@ Right now it runs only on your Mac. Three ways to share, easiest first:
 
 | Way | What's involved |
 | --- | --- |
-| **Show it live** in a meeting, on your screen | Nothing extra. Just run it. |
-| **Screenshots or a screen recording** | Ask Claude Code: *"walk the whole journey and give me screenshots I can put in a deck."* |
-| **A web address anyone can open** | Ask Claude Code: *"deploy this so I have a link I can send to colleagues, and walk me through it click by click."* You'll need a free hosting account in your name; it's about 15 minutes once. |
+| **Show it live** in a meeting, on your screen | Nothing extra. Just run `npm start` or open `index.html`. |
+| **Screenshots or a screen recording** | Ask your assistant: *"walk the whole journey and give me screenshots I can put in a deck."* |
+| **A web address anyone can open** | Deploy to GitHub Pages: `index.html` at the repository root is automatically served by Pages. |
 
-For a stakeholder review, the live demo plus the `/admin/journeys` page is the strongest
-combination — that page is the thing that turns the concept into a measurable experiment.
+For a stakeholder review, the live demo plus the `/admin/journeys` page is the strongest combination — that page turns the concept into a measurable experiment.
 
 ---
 
 ## The demo path worth rehearsing
 
-1. Landing page → tick the marketing box → any email → **Find my fit**
-2. Answer Urby's four questions. On one of them, type instead of clicking — try
-   *"realistically about twice a week"* — so people see it handles real language.
-3. On the recommendation, press **Change** on the frequency answer and let them watch the
-   recommendation update. This is the moment that lands.
-4. Press **Save and exit** → choose an email preference → copy the resume link → open it in a
-   **private window**. Everything comes back. This is the second moment that lands.
-5. Show `/preview/email` — note the marketing content only appears because consent was given.
-6. Finish through details and payment.
-7. End on `/admin/journeys`.
+1. Landing page → search for a favourite studio or click **Find my fit** / **Start with one answer** (notice email is not requested upfront).
+2. Answer Urby's four questions. On one of them, type instead of clicking — try *"realistically about twice a week"* or *"I live in 12045"* — so people see it handles natural language.
+3. On the recommendation, explore the **Activities gallery** and **My week** routine. Tap **Swap** or add studios across any of the 7 days (`MON`–`SUN`).
+4. Press **Save for later** in the top right → enter an email → copy the resume link → open it in a **private window**. Everything comes back instantly.
+5. Finish through details and simulated checkout.
+6. End on `/admin/journeys` (server mode) to view the funnel analytics.
 
 ---
 
