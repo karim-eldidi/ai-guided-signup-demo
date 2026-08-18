@@ -4631,6 +4631,9 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 }
 .confirm-kickoff-step__body {
   flex: 1 1 auto;
+  min-width: 0;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 .confirm-kickoff-step__body b {
   font-size: 15px;
@@ -4641,6 +4644,8 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   color: var(--navy-soft);
   margin: 3px 0 0;
   line-height: 1.4;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 .confirm-app-badges {
   display: grid;
@@ -4648,6 +4653,7 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   gap: 8px;
   margin-top: 10px;
   max-width: 100%;
+  min-width: 0;
 }
 .confirm-store-btn {
   display: inline-flex;
@@ -4663,6 +4669,12 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   transition: all .15s ease;
   cursor: pointer;
   white-space: nowrap;
+  min-width: 0;
+}
+.confirm-store-btn span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .confirm-store-btn svg {
   width: 14px;
@@ -4766,43 +4778,44 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 }
 .confirm-routine-banner {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 10px;
-  margin-top: 16px;
-  padding: 12px 14px;
+  margin-top: 14px;
+  padding: 10px 14px;
   background: #f8fafc;
   border-radius: var(--radius);
   font-size: 12.5px;
-  color: var(--navy);
-  line-height: 1.45;
+  color: var(--navy-soft);
+  line-height: 1.4;
 }
 .confirm-routine-banner svg {
   flex: 0 0 auto;
   color: #16a34a;
-  margin-top: 1px;
 }
 
-/* Sidebar Elements */
+/* Sidebar & Receipt */
 .confirm-sidebar {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 16px;
 }
 .confirm-receipt-disclosure {
   background: #fff;
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
-  padding: 20px;
+  overflow: hidden;
   box-shadow: 0 1px 4px rgba(0,0,0,0.02);
 }
 .confirm-receipt-summary {
-  list-style: none;
+  padding: 16px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  outline: none;
   user-select: none;
+  background: #faf8f5;
+  border-bottom: 1px solid transparent;
+  transition: background .15s ease;
 }
 .confirm-receipt-summary::-webkit-details-marker {
   display: none;
@@ -4813,48 +4826,64 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   gap: 10px;
 }
 .confirm-receipt-price {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 800;
   color: var(--ink);
 }
 .confirm-receipt-chevron {
+  color: var(--navy-soft);
   display: grid;
   place-items: center;
-  color: var(--navy-soft);
   transition: transform .2s ease;
 }
 .confirm-receipt-disclosure[open] .confirm-receipt-chevron {
   transform: rotate(180deg);
 }
 .confirm-receipt-body {
-  margin-top: 14px;
-  padding-top: 14px;
-  border-top: 1px solid rgba(0,0,0,0.06);
+  padding: 16px 20px;
+  border-top: 1px solid var(--border);
 }
 .confirm-receipt-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 .confirm-receipt-row {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
+  gap: 12px;
   font-size: 13.5px;
+  color: var(--ink);
 }
-.confirm-receipt-footer {
+.confirm-receipt-row .muted {
+  color: var(--navy-soft);
+}
+.confirm-receipt-row b {
+  font-weight: 700;
+}
+.confirm-receipt-total {
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+  margin-top: 4px;
+  font-size: 15px;
+}
+.confirm-receipt-total b {
+  font-size: 16px;
+  font-weight: 800;
+}
+.confirm-receipt-simulated-note {
+  margin: 14px 0 0;
   font-size: 12px;
   color: var(--navy-soft);
-  margin-top: 12px;
+  line-height: 1.4;
   padding-top: 10px;
-  border-top: 1px dashed rgba(0,0,0,0.08);
+  border-top: 1px dashed var(--border);
 }
+
 .confirm-urby-card {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  background: #f8fafc;
-  border: 1px solid var(--border);
+  background: var(--cream);
+  border: 1px solid var(--cream-line);
   border-radius: var(--radius-lg);
   padding: 16px;
 }
@@ -4892,69 +4921,117 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 
 @media (max-width: 900px) {
   .confirm-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: 100%;
     gap: 16px;
+    min-width: 0;
+    max-width: 100%;
   }
   .confirm-page {
     padding: 16px 14px 60px;
+    overflow-x: hidden;
+    min-width: 0;
+    max-width: 100%;
+  }
+  .confirm-main {
+    min-width: 0;
+    max-width: 100%;
   }
   .confirm-hero {
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
+    min-width: 0;
+    max-width: 100%;
+  }
+  .confirm-hero__text {
+    min-width: 0;
+    max-width: 100%;
   }
   .confirm-hero__title {
     font-size: 22px;
     margin: 4px 0 2px;
+    overflow-wrap: break-word;
   }
   .confirm-hero__sub {
     font-size: 13.5px;
     line-height: 1.35;
+    overflow-wrap: break-word;
   }
   .confirm-card {
     padding: 14px 14px 16px;
     border-radius: 16px;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  .confirm-kickoff-step {
+    padding: 10px 12px;
+    gap: 10px;
+    min-width: 0;
+  }
+  .confirm-kickoff-step__num {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+    flex: 0 0 24px;
+  }
+  .confirm-kickoff-step__body {
+    min-width: 0;
+  }
+  .confirm-kickoff-step__body b {
+    font-size: 13.5px;
+  }
+  .confirm-kickoff-step__body p {
+    font-size: 12.5px;
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
   .confirm-app-badges {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 8px;
-    max-width: none;
+    max-width: 100%;
     width: 100%;
+    min-width: 0;
   }
   .confirm-store-btn {
-    height: 40px;
-    font-size: 12.5px;
+    height: 38px;
+    font-size: 11.5px;
+    padding: 0 4px;
+    min-width: 0;
+  }
+  .confirm-store-btn span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   /* Horizontal Swipeable Carousel for picked places on mobile */
   .confirm-routine-carousel-wrap {
     margin: 0 -14px;
     padding: 0 14px;
-    overflow: hidden;
-  }
-  .confirm-routine-grid {
-    display: flex;
     overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    gap: 10px;
-    padding: 4px 2px 8px;
+    overflow-y: hidden;
+    width: calc(100% + 28px);
+    box-sizing: border-box;
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
   }
-  .confirm-routine-grid::-webkit-scrollbar {
+  .confirm-routine-carousel-wrap::-webkit-scrollbar {
     display: none;
   }
+  .confirm-routine-grid {
+    display: flex;
+    gap: 10px;
+    padding: 4px 2px 8px;
+    width: max-content;
+  }
   .confirm-venue-card {
-    flex: 0 0 205px;
-    scroll-snap-align: start;
+    flex: 0 0 190px;
+    width: 190px;
     border-radius: 12px;
   }
   .confirm-venue-media {
     aspect-ratio: 16 / 11;
-  }
-  .confirm-venue-card__body {
-    padding: 10px 10px 12px;
-    gap: 2px;
   }
   .confirm-venue-card__top b {
     font-size: 13px;
@@ -4962,21 +5039,5 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   .confirm-venue-card__meta {
     font-size: 11.5px;
   }
-  .confirm-kickoff-step {
-    padding: 10px 12px;
-    gap: 10px;
-  }
-  .confirm-kickoff-step__num {
-    width: 24px;
-    height: 24px;
-    font-size: 12px;
-  }
-  .confirm-kickoff-step__body b {
-    font-size: 13.5px;
-  }
-  .confirm-kickoff-step__body p {
-    font-size: 12.5px;
-  }
-}
 
 
