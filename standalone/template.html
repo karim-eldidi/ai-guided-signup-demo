@@ -3026,11 +3026,19 @@ function detailsScreen() {
     </div>
     <div class="ordercard__term">${esc(commitment.label)} &middot; Cancel anytime</div>
     
+    ${shown.length ? `
+    <div class="ordercard__venues">
+      <div class="ordercard__venues-title">Included from your routine:</div>
+      <div class="asidevenues">
+        ${shown.map(asideVenue).join('')}
+      </div>
+      ${more > 0 ? `<div class="ordercard__venues-more">+ ${more} more places included in ${esc(plan.name)}</div>` : ''}
+    </div>` : `
     <div class="ordercard__highlights">
       <div class="ordercard__item">${icon('checkThin',16)}<span>${esc(plan.venueCount)} venues across Germany &amp; Europe</span></div>
       <div class="ordercard__item">${icon('checkThin',16)}<span>${plan.dailyCheckIn?'Daily check-ins (up to 1 visit/day)':'4 check-ins each month'}</span></div>
       ${plan.plusCheckIns?`<div class="ordercard__item">${icon('checkThin',16)}<span>${plan.plusCheckIns} Plus check-ins / month (${plan.id==='max'?'2 massages':'1 massage'})</span></div>`:''}
-    </div>
+    </div>`}
 
     <div class="ordercard__trust">
       ${icon('lock',15)} <span>Secure checkout &middot; Simulated pilot</span>
@@ -3062,8 +3070,8 @@ function detailsScreen() {
             </div></section>
           <section class="details-section"><div class="fitpanel__label">Contact details</div>
             <div class="details-grid details-grid--contact">
-              ${f('email','Membership email',{type:'email',auto:'email',mode:'email',why:'Used for your simulated membership only. This does not save your progress or opt you into marketing.'})}
-              ${f('phone','Mobile number',{type:'tel',auto:'tel',mode:'tel',optional:true})}
+              ${f('email','Membership email',{type:'email',auto:'email',mode:'email',ph:'you@example.com'})}
+              ${f('phone','Mobile number',{type:'tel',auto:'tel',mode:'tel',optional:true,ph:'+49 151...'})}
             </div></section>
           <section class="details-section"><div class="fitpanel__label">Home address</div>
             <div class="details-grid details-grid--address">

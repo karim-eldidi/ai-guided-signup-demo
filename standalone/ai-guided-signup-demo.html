@@ -1300,10 +1300,11 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 .summary-row--total { font-size: 20px; padding-top: 20px; }
 
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-.field { display: flex; flex-direction: column; gap: 8px; }
+.field { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
 .field--wide { grid-column: 1 / -1; }
 .field label { font-size: 15px; font-weight: 700; }
 .field input, .field select {
+  width: 100%; min-width: 0; box-sizing: border-box;
   height: 56px; padding: 0 16px; border: 1px solid var(--border);
   border-radius: var(--radius); background: #fff; outline: none;
 }
@@ -1517,52 +1518,68 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 }
 
 .details-page-wrap {
-  max-width: 1100px;
+  max-width: 980px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 20px;
   width: 100%;
 }
 .details-header-block {
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 .two-col--form {
   max-width: 100%;
   margin: 0;
-  grid-template-columns: minmax(0, 1fr) 360px;
-  gap: 32px;
+  grid-template-columns: minmax(0, 560px) 360px;
+  gap: 28px;
   padding: 0;
   width: 100%;
-  align-items: stretch;
+  align-items: start;
 }
 .two-col--form .two-col__main {
-  padding: 0 0 60px;
+  padding: 0 0 40px;
   max-width: 100%;
-  display: flex;
-  flex-direction: column;
 }
 .two-col--form .two-col__aside {
-  margin: 0 0 60px 0;
-  display: flex;
-  flex-direction: column;
-  align-self: stretch;
+  margin: 0 0 40px 0;
+  position: sticky;
+  top: 84px;
 }
 .ordercard {
   background: var(--cream); border: 1px solid var(--cream-line);
-  border-radius: var(--radius-lg); padding: 24px;
-  height: 100%;
+  border-radius: var(--radius-lg); padding: 22px 20px;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
 }
 .ordercard__idrow { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; }
-.ordercard__name { font-size: 24px; font-weight: 800; letter-spacing: -.4px; }
+.ordercard__name { font-size: 22px; font-weight: 800; letter-spacing: -.4px; }
 .ordercard__price { font-variant-numeric: tabular-nums; white-space: nowrap; }
 .ordercard__price b { font-size: 22px; font-weight: 800; }
 .ordercard__price span { font-size: 13px; color: var(--navy-soft); margin-left: 3px; }
-.ordercard__term { font-size: 13.5px; color: var(--navy-soft); margin-top: 3px; }
+.ordercard__term { font-size: 13px; color: var(--navy-soft); margin-top: 2px; }
+.ordercard__venues {
+  margin: 14px 0 16px;
+  padding: 12px 0 14px;
+  border-top: 1px solid var(--cream-line);
+  border-bottom: 1px solid var(--cream-line);
+}
+.ordercard__venues-title {
+  font-size: 11.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--navy-soft);
+  margin-bottom: 10px;
+}
+.ordercard__venues-more {
+  font-size: 12px;
+  color: var(--navy-soft);
+  margin-top: 10px;
+  font-weight: 600;
+}
 .ordercard__highlights {
   display: flex; flex-direction: column; gap: 10px;
-  margin: 16px 0; padding: 14px 0;
+  margin: 14px 0 16px; padding: 12px 0 14px;
   border-top: 1px solid var(--cream-line); border-bottom: 1px solid var(--cream-line);
 }
 .ordercard__item {
@@ -1572,16 +1589,15 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 .ordercard__item svg { flex: 0 0 auto; margin-top: 2px; color: var(--ink); }
 .ordercard__trust {
   display: flex; align-items: center; gap: 7px;
-  font-size: 12.5px; color: var(--navy-soft);
-  margin-top: auto;
-  padding-top: 14px;
+  font-size: 12px; color: var(--navy-soft);
+  margin-top: 2px;
 }
 .ordercard__trust svg { color: var(--navy-soft); }
 .ordercard__links {
   display: flex; flex-direction: column; align-items: flex-start; gap: 12px;
-  margin-top: 12px; padding-top: 14px; border-top: 1px solid var(--cream-line);
+  margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--cream-line);
 }
-.ordercard__links .linkish { display: flex; align-items: center; gap: 9px; font-size: 15px; }
+.ordercard__links .linkish { display: flex; align-items: center; gap: 9px; font-size: 14px; }
 .ordercard__links svg { color: var(--navy-soft); }
 .asidevenues { display: flex; flex-direction: column; gap: 12px; }
 .asidevenue { display: flex; align-items: center; gap: 12px; min-width: 0; }
@@ -5336,7 +5352,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 18 Aug 14:07 UTC</span>
+  <span class="demo-banner__build">build 18 Aug 14:17 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -8202,11 +8218,19 @@ function detailsScreen() {
     </div>
     <div class="ordercard__term">${esc(commitment.label)} &middot; Cancel anytime</div>
     
+    ${shown.length ? `
+    <div class="ordercard__venues">
+      <div class="ordercard__venues-title">Included from your routine:</div>
+      <div class="asidevenues">
+        ${shown.map(asideVenue).join('')}
+      </div>
+      ${more > 0 ? `<div class="ordercard__venues-more">+ ${more} more places included in ${esc(plan.name)}</div>` : ''}
+    </div>` : `
     <div class="ordercard__highlights">
       <div class="ordercard__item">${icon('checkThin',16)}<span>${esc(plan.venueCount)} venues across Germany &amp; Europe</span></div>
       <div class="ordercard__item">${icon('checkThin',16)}<span>${plan.dailyCheckIn?'Daily check-ins (up to 1 visit/day)':'4 check-ins each month'}</span></div>
       ${plan.plusCheckIns?`<div class="ordercard__item">${icon('checkThin',16)}<span>${plan.plusCheckIns} Plus check-ins / month (${plan.id==='max'?'2 massages':'1 massage'})</span></div>`:''}
-    </div>
+    </div>`}
 
     <div class="ordercard__trust">
       ${icon('lock',15)} <span>Secure checkout &middot; Simulated pilot</span>
@@ -8238,8 +8262,8 @@ function detailsScreen() {
             </div></section>
           <section class="details-section"><div class="fitpanel__label">Contact details</div>
             <div class="details-grid details-grid--contact">
-              ${f('email','Membership email',{type:'email',auto:'email',mode:'email',why:'Used for your simulated membership only. This does not save your progress or opt you into marketing.'})}
-              ${f('phone','Mobile number',{type:'tel',auto:'tel',mode:'tel',optional:true})}
+              ${f('email','Membership email',{type:'email',auto:'email',mode:'email',ph:'you@example.com'})}
+              ${f('phone','Mobile number',{type:'tel',auto:'tel',mode:'tel',optional:true,ph:'+49 151...'})}
             </div></section>
           <section class="details-section"><div class="fitpanel__label">Home address</div>
             <div class="details-grid details-grid--address">
