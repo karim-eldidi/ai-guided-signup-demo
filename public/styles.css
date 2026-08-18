@@ -4758,6 +4758,11 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   text-decoration: none;
   color: inherit;
   cursor: pointer;
+  padding: 0;
+  text-align: left;
+  font-family: inherit;
+  font-size: inherit;
+  width: 100%;
   transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
 }
 .confirm-venue-card:hover {

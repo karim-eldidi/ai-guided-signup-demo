@@ -3357,7 +3357,7 @@ function confirmationScreen() {
                 const tierClass = s.venue.tier === 'premium' ? 'badge--premium' : s.venue.tier === 'plus' ? 'badge--plus' : 'badge--standard';
                 const tierText = s.venue.tier === 'premium' ? 'Premium' : s.venue.tier === 'plus' ? 'Plus' : 'Included';
                 return `
-                <a href="${esc(s.venue.url || 'https://urbansportsclub.com/en/venues')}" target="_blank" rel="noopener" class="confirm-venue-card" title="View ${esc(s.venue.name)} on Urban Sports Club">
+                <button type="button" class="confirm-venue-card linkish" data-venue="${esc(s.venue.id)}" aria-label="View details about ${esc(s.venue.name)}">
                   <div class="venue-card__media confirm-venue-media">
                     ${venueMedia(s.venue, (groupById(s.groupId)||{}).activities)}
                     <span class="confirm-venue-day-badge">${esc(s.day)}</span>
@@ -3372,14 +3372,14 @@ function confirmationScreen() {
                       ${areaLabel ? ` &middot; <span>${esc(areaLabel)}</span>` : ''}
                     </div>
                   </div>
-                </a>`;
+                </button>`;
               }).join('')}
             </div>
           </div>
 
           <div class="confirm-routine-banner">
             ${icon('checkThin', 16)}
-            <span>Your routine is ready. You can follow these exact days or <a href="https://urbansportsclub.com/en/venues" target="_blank" rel="noopener" class="confirm-explore-link">explore 14,800+ partner venues &rarr;</a></span>
+            <span>Your routine is saved. You can follow these days or discover and book all venues directly in the USC app.</span>
           </div>
         </div>` : ''}
 
