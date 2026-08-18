@@ -3215,20 +3215,160 @@ function paymentScreen() {
 
 function confirmationScreen() {
   const plan = currentPlan();
-  return `${topbar(3,{saveExit:false})}<main class="content" id="main">
-    <div style="display:flex;align-items:center;gap:14px;margin:20px 0 10px">${ulaAvatar('lg')}<div>
-      <h1 class="h-question" style="margin:0" tabindex="-1">You&rsquo;re in, ${esc(S.details.firstName||'welcome')}.</h1>
-      <p class="small muted" style="margin:6px 0 0">${esc(plan.name)} · starts ${esc(fmtDate(S.startDate))}</p></div></div>
-    <div class="notice">${icon('info',19)}<span><strong>Placeholder handoff.</strong> In production this is where the journey hands over to the existing checkout. Nothing was charged and no membership exists.</span></div>
-    <div class="card"><div class="fitpanel__label">What happens next</div><ul class="reasons">
-      <li>${icon('checkThin',19)}<span>A confirmation goes to ${esc(S.email||'your email')}.</span></li>
-      <li>${icon('checkThin',19)}<span>Your membership starts on ${esc(fmtDate(S.startDate))} and costs ${priceFor(plan,S.commitmentId)} € a month.</span></li>
-      <li>${icon('checkThin',19)}<span>You can check in at any included venue with the app from day one.</span></li>
-      <li>${icon(S.marketing?'checkThin':'info',19)}<span>${S.marketing?'You asked us to email you activity inspiration and offers. You can unsubscribe any time.':'You chose not to receive marketing emails.'}</span></li></ul></div>
-    <div class="card"><div class="fitpanel__label">Demo tools</div>
-      <p class="small muted" style="margin-top:0">These exist to make the pilot demonstrable — they would not appear in a real journey.</p>
+  const commitment = commitmentById(S.commitmentId);
+  const price = priceFor(plan, S.commitmentId);
+  const a = A();
+  const match = matchVenues(a);
+  const groups = a.activities || [];
+  const pool = match.pool || [];
+  const wp = weekPlan(groups, pool, plan.id, a.frequency);
+  const sessions = wp.sessions || [];
+  const memberName = ((S.details && S.details.firstName) || '') + ' ' + ((S.details && S.details.lastName) || '');
+  const first = S.details && S.details.firstName ? S.details.firstName : (S.email ? S.email.split('@')[0] : 'there');
+
+  return `${topbar(3,{saveExit:false})}<main class="content confirm-page" id="main">
+    <!-- Celebratory Hero Header -->
+    <div class="confirm-hero">
+      <div class="confirm-hero__avatar-wrap">
+        ${ulaAvatar('lg')}
+        <span class="confirm-hero__sparkle">${icon('sparkle', 16)}</span>
+      </div>
+      <div class="confirm-hero__text">
+        <span class="confirm-hero__tag">Membership confirmed</span>
+        <h1 class="confirm-hero__title" tabindex="-1">You&rsquo;re all set, ${esc(first)}!</h1>
+        <p class="confirm-hero__sub">
+          Your <strong>${esc(plan.name)}</strong> membership starts on <strong>${esc(fmtDate(S.startDate))}</strong>.
+          Your routine and saved gyms are ready in the app.
+        </p>
+      </div>
+    </div>
+
+    <!-- Saved Routine & Picked Gyms Gratification -->
+    ${sessions.length ? `
+    <div class="confirm-card confirm-routine-card">
+      <div class="confirm-card__head">
+        <div>
+          <div class="confirm-card__badge-row">
+            <span class="confirm-card__badge">Your initial routine</span>
+            <span class="confirm-card__subbadge">${sessions.length} sessions / week</span>
+          </div>
+          <h2 class="confirm-card__title">The places you picked</h2>
+        </div>
+        <div class="confirm-card__note">
+          ${monthlyAllowance(plan)} visits / mo included
+        </div>
+      </div>
+      <div class="confirm-routine-list">
+        ${sessions.map(s => {
+          const areaLabel = s.venue.nearestArea ? s.venue.nearestArea.name : (AREAS.find(ar=>ar.id===s.venue.area)||{}).name || '';
+          const dist = s.distanceKm ? `${s.distanceKm} km` : '';
+          const tierClass = s.venue.tier === 'premium' ? 'badge--premium' : s.venue.tier === 'plus' ? 'badge--plus' : 'badge--standard';
+          const tierText = s.venue.tier === 'premium' ? 'Premium' : s.venue.tier === 'plus' ? 'Plus' : 'Included';
+          return `
+          <div class="confirm-routine-item">
+            <div class="confirm-routine-day">
+              <span class="confirm-routine-day__pill">${esc(s.day)}</span>
+            </div>
+            <div class="confirm-routine-thumb">
+              ${venueMedia(s.venue, (groupById(s.groupId)||{}).activities)}
+            </div>
+            <div class="confirm-routine-info">
+              <div class="confirm-routine-name">
+                <b>${esc(s.venue.name)}</b>
+                <span class="confirm-tier-badge ${tierClass}">${tierText}</span>
+              </div>
+              <div class="confirm-routine-meta">
+                <span>${esc(s.activity)}</span>
+                ${areaLabel ? ` &middot; <span>${esc(areaLabel)}</span>` : ''}
+                ${dist ? ` &middot; <span>${dist}</span>` : ''}
+              </div>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div class="confirm-routine-footer">
+        ${icon('checkThin', 16)}
+        <span>All ${sessions.length} studios accept your <strong>${esc(plan.name)}</strong> card. You can start with this routine on day one, or check in at any of the 14,800+ other partner venues across Europe.</span>
+      </div>
+    </div>` : ''}
+
+    <!-- 3-Step Guide to Start Using the Plan on Day One -->
+    <div class="confirm-card">
+      <div class="confirm-card__head">
+        <div>
+          <h2 class="confirm-card__title">Get ready for your first check-in</h2>
+          <p class="confirm-card__sub" style="margin:4px 0 0">Three quick steps to start visiting your gyms:</p>
+        </div>
+      </div>
+      <div class="confirm-steps">
+        <div class="confirm-step">
+          <div class="confirm-step__num">1</div>
+          <div class="confirm-step__content">
+            <b>Download the Urban Sports Club app</b>
+            <p>Available free for iPhone and Android. Check in, book classes, and track your visits.</p>
+            <div class="confirm-app-badges">
+              <a href="https://apps.apple.com/app/urban-sports-club/id974635677" target="_blank" rel="noopener" class="confirm-store-btn">${icon('apple', 16)} <span>App Store</span></a>
+              <a href="https://play.google.com/store/apps/details?id=com.urbansportsclub.urbansportsclub" target="_blank" rel="noopener" class="confirm-store-btn">${icon('phone', 16)} <span>Google Play</span></a>
+            </div>
+          </div>
+        </div>
+        <div class="confirm-step">
+          <div class="confirm-step__num">2</div>
+          <div class="confirm-step__content">
+            <b>Log in with your email</b>
+            <p>Sign in using <strong>${esc(S.email||'your email')}</strong>. Your routine and membership profile will be waiting for you.</p>
+          </div>
+        </div>
+        <div class="confirm-step">
+          <div class="confirm-step__num">3</div>
+          <div class="confirm-step__content">
+            <b>Scan the QR code at the desk</b>
+            <p>When you walk into any partner studio, scan the USC QR code with your camera at the front desk. That&rsquo;s it!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Summary & Receipt -->
+    <div class="confirm-card confirm-receipt-card">
+      <div class="fitpanel__label">Order summary &amp; receipt</div>
+      <div class="confirm-receipt-grid">
+        <div class="confirm-receipt-item">
+          <span class="muted small">Plan</span>
+          <b>${esc(plan.name)} (${esc(commitment.label)})</b>
+        </div>
+        <div class="confirm-receipt-item">
+          <span class="muted small">Start date</span>
+          <b>${esc(fmtDate(S.startDate))}</b>
+        </div>
+        <div class="confirm-receipt-item">
+          <span class="muted small">Monthly rate</span>
+          <b>${price}.00 &euro; / month</b>
+        </div>
+        <div class="confirm-receipt-item">
+          <span class="muted small">Member</span>
+          <b>${esc(memberName.trim()||first)}</b>
+        </div>
+        <div class="confirm-receipt-item">
+          <span class="muted small">Payment method</span>
+          <b>${FIELDS.method==='card'?'Credit / debit card':'SEPA direct debit'}</b>
+        </div>
+        <div class="confirm-receipt-item">
+          <span class="muted small">Confirmation email</span>
+          <b>${esc(S.email||'—')}</b>
+        </div>
+      </div>
+      <p class="xsmall muted" style="margin:16px 0 0">
+        ${esc(commitment.renewal.replace(/\.*$/, ''))}. Cancellation notice: ${esc(RULES.cancellationNotice.replace(/\.*$/, ''))}.
+      </p>
+    </div>
+
+    <!-- Simulated Pilot Notice & Demo Tools -->
+    <div class="notice" style="margin-top:24px">${icon('info',19)}<span><strong>Simulated pilot handoff.</strong> In production this is where the journey hands over to the USC member dashboard &amp; app download. Nothing was charged.</span></div>
+    <div class="card" style="margin-top:16px"><div class="fitpanel__label">Demo tools</div>
+      <p class="small muted" style="margin-top:0">These exist to make the pilot demonstrable &mdash; they would not appear in a real journey.</p>
       <ul class="reasons" style="margin-top:14px">
-        <li>${icon('refresh',19)}<span><button class="linkish" data-go="left">Your resume link</button> — proves progress survives leaving.</span></li>
+        <li>${icon('refresh',19)}<span><button class="linkish" data-go="left">Your resume link</button> &mdash; proves progress survives leaving.</span></li>
         <li>${icon('speech',19)}<span><button class="linkish" data-go="email">Follow-up email preview</button></span></li>
         <li>${icon('grid',19)}<span><button class="linkish" data-go="data">Journey data</button></span></li>
         <li>${icon('bolt',19)}<span><button class="linkish" data-reset>Start a fresh visitor</button></span></li></ul></div>
