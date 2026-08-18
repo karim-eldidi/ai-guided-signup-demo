@@ -3291,103 +3291,201 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px;
 }
 
-.weekrow {
-  display: flex; align-items: center; justify-content: space-between; gap: 16px;
-  background: #fff; border-radius: var(--radius-lg); padding: 14px 18px;
-  border: 1px solid rgba(0,0,0,0.08); box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+.weekcard__days-bar {
+  margin: 0 0 16px;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 12px 14px;
+}
+.week__days-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+.weekcard .daybtn {
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.12);
+  border-radius: 8px;
+  color: var(--navy);
+  font-weight: 700;
+  padding: 8px 2px;
+  font-size: 13px;
+  text-align: center;
+  cursor: pointer;
   transition: all .15s ease;
+  width: 100%;
+}
+.weekcard .daybtn:hover {
+  background: var(--yellow-pale);
+  border-color: var(--ink);
+}
+.weekcard .daybtn.is-on {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+  font-weight: 800;
+}
+.weekcard__helper {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: var(--navy-soft);
+  text-align: center;
+}
+
+/* Modern Clean Weekrow */
+.weekrow {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #fff;
+  border-radius: var(--radius-lg);
+  padding: 12px 14px;
+  border: 1px solid rgba(0,0,0,0.08);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+  transition: all .15s ease;
+  margin-bottom: 10px;
 }
 .weekrow:hover {
-  border-color: rgba(0,0,0,0.15); box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  border-color: rgba(0,0,0,0.15);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+.weekrow__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
 }
 .weekrow__lead {
-  display: flex; align-items: center; gap: 12px; flex: 0 0 130px; min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 .weekrow__icon {
-  flex: 0 0 auto; display: grid; place-items: center; width: 34px; height: 34px;
-  border-radius: 50%; background: #f2f4f7; color: var(--ink);
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #f2f4f7;
+  color: var(--ink);
+  display: grid;
+  place-items: center;
 }
-.weekrow.is-locked .weekrow__icon { background: var(--page-grey); color: var(--navy-soft); }
-.weekrow__meta { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
-.weekrow__day { font-size: 12px; color: var(--navy-soft); font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
-.weekrow__act { font-size: 14.5px; font-weight: 700; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-.weekrow__place {
-  display: flex; align-items: center; gap: 12px; flex: 1 1 auto; min-width: 0;
-  background: none; border: 0; padding: 0; text-align: left; cursor: pointer;
+.weekrow.is-locked .weekrow__icon {
+  background: var(--page-grey);
+  color: var(--navy-soft);
 }
-.weekrow__thumb {
-  position: relative;
-  flex: 0 0 auto; width: 50px; height: 38px; border-radius: 8px; overflow: hidden;
-  background: #f0f2f5; display: grid; place-items: center;
+.weekrow__meta {
+  display: flex;
+  flex-direction: column;
 }
-.weekrow__thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.weekrow__pname { min-width: 0; }
-.weekrow__pname b { display: block; font-size: 14.5px; font-weight: 700; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.weekrow__pname small { display: block; font-size: 12.5px; font-weight: 500; color: var(--navy-soft); margin-top: 2px; }
-.weekrow__place:hover .weekrow__pname b { text-decoration: underline; color: var(--ink); }
-
+.weekrow__day {
+  font-size: 11px;
+  color: var(--navy-soft);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+.weekrow__act {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+}
 .weekrow__actions {
-  display: flex; align-items: center; gap: 8px; flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 .weekrow__swap {
-  display: inline-flex; align-items: center; gap: 5px; background: #fff;
-  border: 1px solid rgba(0,0,0,0.12); border-radius: 9999px; padding: 5px 12px;
-  font-size: 12px; font-weight: 700; color: var(--navy); cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.12);
+  border-radius: 9999px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--navy);
+  cursor: pointer;
   transition: all .15s ease;
 }
-.weekrow__swap:hover { background: var(--yellow-pale); border-color: var(--ink); color: var(--ink); }
+.weekrow__swap:hover {
+  background: var(--yellow-pale);
+  border-color: var(--ink);
+  color: var(--ink);
+}
 .weekrow__trash {
-  background: none; border: 0; color: var(--navy-soft); cursor: pointer;
-  padding: 6px; border-radius: 6px; display: grid; place-items: center; transition: all .15s ease;
+  background: none;
+  border: 0;
+  color: var(--navy-soft);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  transition: all .15s ease;
 }
-.weekrow__trash:hover { color: #d9383a; background: #fee2e2; }
-
-@media (max-width: 768px) {
-  .weekrow {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    grid-template-rows: auto auto;
-    gap: 8px 10px;
-    padding: 12px 14px;
-  }
-  .weekrow__lead {
-    grid-column: 1 / 3;
-    grid-row: 1;
-    flex: none;
-  }
-  .weekrow__actions {
-    grid-column: 3;
-    grid-row: 1;
-    justify-self: end;
-  }
-  .weekrow__place {
-    grid-column: 1 / -1;
-    grid-row: 2;
-    padding-top: 8px;
-    border-top: 1px solid rgba(0,0,0,0.05);
-    width: 100%;
-  }
-  .weekrow__pname b { font-size: 14px; }
-  .weekrow__pname small { font-size: 12px; }
+.weekrow__trash:hover {
+  color: #d9383a;
+  background: #fee2e2;
 }
 
-.weekcard__controls {
-  border-top: 1px solid rgba(0,0,0,0.06); margin-top: 20px; padding-top: 16px;
+/* Venue card body sits flush on the left with 54px thumbnail and full width */
+.weekrow__place {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  background: #f8fafc;
+  border: 1px solid rgba(0,0,0,0.04);
+  border-radius: 10px;
+  padding: 8px 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease;
 }
-.weekcard__controls .week__days { border: 0; margin: 0; padding: 0; }
-.week__days-label { font-size: 13.5px; font-weight: 800; color: var(--ink); margin-bottom: 8px; }
-.week__days-row { display: flex; gap: 6px; flex-wrap: wrap; }
-.weekcard__helper { margin-top: 8px; font-size: 12.5px; color: var(--navy-soft); }
-
-.weekcard .daybtn {
-  background: #fff; border: 1px solid rgba(0,0,0,0.12); border-radius: 9999px;
-  color: var(--navy); font-weight: 700; padding: 7px 14px; font-size: 13px;
-  cursor: pointer; transition: all .15s ease;
+.weekrow__place:hover {
+  background: #f1f5f9;
+  border-color: rgba(0,0,0,0.08);
 }
-.weekcard .daybtn:hover { background: var(--yellow-pale); border-color: var(--ink); }
-.weekcard .daybtn.is-on {
-  background: var(--ink); border-color: var(--ink); color: #fff; font-weight: 800;
+.weekrow__thumb {
+  flex: 0 0 54px;
+  width: 54px;
+  height: 54px;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  background: #eee;
+}
+.weekrow__thumb img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.weekrow__pname {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.weekrow__pname b {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.weekrow__pname small {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--navy-soft);
 }
 
 /* Places Showcase */
@@ -3439,10 +3537,6 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   /* The visit allowance is already stated in the recommendation card. At laptop
      widths it yields to the venue and the direct Swap action instead of clipping them. */
   .weekrow__limit { display: none; }
-  .weekrow { grid-template-columns: 44px minmax(0, 1fr) auto; row-gap: 9px; }
-  .weekrow__meta { grid-column: 2; grid-row: 1; }
-  .weekrow__end { display: flex; align-items: center; gap: 10px; margin-left: auto; grid-column: 3; grid-row: 1; }
-  .weekrow__place { grid-column: 2 / -1; grid-row: 2; }
 
   .places__fold .rowcard__head { flex-wrap: wrap; }
   .places__fold .rowcard__cta { flex: 1 1 100%; margin: 6px 0 0 36px; }
@@ -3456,15 +3550,8 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   .rowcard--more .rowcard__links { display: none; }
 }
 
-/* The recommendation is two columns, so viewport width does not tell us how much room
-   the week itself has. Switch based on the card's real width to prevent the allowance
-   and Change action escaping on wide screens with a narrow main column. */
 @container weekcard (max-width: 650px) {
   .weekrow__limit { display: none; }
-  .weekrow { grid-template-columns: 44px minmax(0, 1fr) auto; row-gap: 9px; }
-  .weekrow__meta { grid-column: 2; grid-row: 1; }
-  .weekrow__end { display: flex; align-items: center; gap: 10px; margin-left: auto; grid-column: 3; grid-row: 1; }
-  .weekrow__place { grid-column: 2 / -1; grid-row: 2; }
 }
 
 /* --- the three rows --------------------------------------------------------
@@ -3594,11 +3681,6 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 .allplans__row[data-plan]:hover { background: #fff; }
 
 @media (max-width: 980px) {
-  /* One row per session becomes two: what and when on top, where underneath. A 44px
-     photograph and a plan pill will not share 390px with a day and an activity. */
-  .weekrow { grid-template-columns: 44px minmax(0, 1fr) auto; row-gap: 10px; }
-  .weekrow__place { grid-column: 2 / -1; }
-  .weekrow__end { grid-column: 3; grid-row: 1; }
   .weekcard { padding: 16px 14px 14px; }
   /* The rows keep their shape but give up their right-hand end: a claim and a chevron,
      with the proof inside. */
@@ -4812,7 +4894,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 18 Aug 13:02 UTC</span>
+  <span class="demo-banner__build">build 18 Aug 13:09 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -7035,17 +7117,38 @@ function recommendationScreen() {
         <p class="weekcard__sub">${wp.sessions.length} sessions &middot; Matches your goal in ${esc(where)}</p>
       </div>
     </div>
+
+    <!-- 1-Row Day Selector at the Top -->
+    <div class="weekcard__days-bar">
+      <div class="week__days-row" role="group" aria-label="Select workout days">
+        ${DAY_ORDER.map(d=>{
+          const on = wp.sessions.some(x=>x.day===d);
+          return `<button class="daybtn ${on?'is-on':''}" data-day="${esc(d)}" aria-pressed="${on}" data-drop-day="${esc(d)}" title="${esc(d)}">${DAY_SHORT[d]}</button>`;
+        }).join('')}
+      </div>
+      <p class="weekcard__helper">Tap any day to toggle it in your routine.</p>
+    </div>
+
     <ol class="weekcard__list">${wp.sessions.map(x=>{
       const areaLabel = x.venue.nearestArea ? x.venue.nearestArea.name : (AREAS.find(a=>a.id===x.venue.area)||{}).name || '';
       const distLabel = areaLabel ? `${x.distanceKm} km from ${esc(areaLabel)}` : `${x.distanceKm} km away`;
       const tierText = x.venue.tier === 'premium' ? 'Premium access' : x.venue.tier === 'plus' ? 'Plus access' : 'Regular check-in';
       const limitText = x.access && !/^(included|not included)/i.test(x.access) ? ` &middot; ${esc(x.access)}` : '';
       return `<li class="weekrow ${x.included?'':'is-locked'}" data-drop-day="${esc(x.day)}">
-      <div class="weekrow__lead">
-        <span class="weekrow__icon">${icon(x.icon,16)}</span>
-        <div class="weekrow__meta">
-          <span class="weekrow__day">${esc(x.day)}</span>
-          <b class="weekrow__act">${esc(x.activity)}</b>
+      <div class="weekrow__top">
+        <div class="weekrow__lead">
+          <span class="weekrow__icon">${icon(x.icon,15)}</span>
+          <div class="weekrow__meta">
+            <span class="weekrow__day">${esc(x.day)}</span>
+            <b class="weekrow__act">${esc(x.activity)}</b>
+          </div>
+        </div>
+        <div class="weekrow__actions">
+          <button class="weekrow__swap" data-change-week="${esc(x.day)}"
+            aria-label="Change activity or venue for ${esc(x.day)}">${icon('refresh',12)} <span>Swap</span></button>
+          <button class="weekrow__trash" data-remove-day="${esc(x.day)}" aria-label="Remove ${esc(x.day)}" title="Remove this day">
+            ${icon('trash',13)}
+          </button>
         </div>
       </div>
       <button class="weekrow__place" data-venue="${esc(x.venue.id)}" aria-label="More about ${esc(x.venue.name)}">
@@ -7055,26 +7158,8 @@ function recommendationScreen() {
           <small>${distLabel} &middot; ${tierText}${limitText}</small>
         </span>
       </button>
-      <div class="weekrow__actions">
-        <button class="weekrow__swap" data-change-week="${esc(x.day)}"
-          aria-label="Change activity or venue for ${esc(x.day)}">${icon('refresh',12)} <span>Swap</span></button>
-        <button class="weekrow__trash" data-remove-day="${esc(x.day)}" aria-label="Remove ${esc(x.day)}" title="Remove this day">
-          ${icon('trash',13)}
-        </button>
-      </div>
     </li>`;
     }).join('')}</ol>
-
-    <div class="weekcard__controls">
-      <div class="week__days">
-        <div class="week__days-label" id="week-days-label">Choose your days</div>
-        <div class="week__days-row" role="group" aria-labelledby="week-days-label">${DAY_ORDER.map(d=>{
-            const on = wp.sessions.some(x=>x.day===d);
-            return `<button class="daybtn ${on?'is-on':''}" data-day="${esc(d)}" aria-pressed="${on}" data-drop-day="${esc(d)}">${DAY_SHORT[d]}</button>`;
-          }).join('')}</div>
-        <p class="weekcard__helper">Tap any day to toggle it in your routine, or swap any venue above.</p>
-      </div>
-    </div>
 
     ${DAYNOTE ? `<p class="week__changed" role="status">${icon('checkFill',16)} <span>${DAYNOTE}</span></p>` : ''}
     ${gap?`<p class="weekcard__adds">${icon('sparkle',17)} <span><b>${esc(gap.needs.name)}</b> adds ${esc(gap.venue.name)}

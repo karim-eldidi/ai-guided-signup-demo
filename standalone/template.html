@@ -2383,17 +2383,38 @@ function recommendationScreen() {
         <p class="weekcard__sub">${wp.sessions.length} sessions &middot; Matches your goal in ${esc(where)}</p>
       </div>
     </div>
+
+    <!-- 1-Row Day Selector at the Top -->
+    <div class="weekcard__days-bar">
+      <div class="week__days-row" role="group" aria-label="Select workout days">
+        ${DAY_ORDER.map(d=>{
+          const on = wp.sessions.some(x=>x.day===d);
+          return `<button class="daybtn ${on?'is-on':''}" data-day="${esc(d)}" aria-pressed="${on}" data-drop-day="${esc(d)}" title="${esc(d)}">${DAY_SHORT[d]}</button>`;
+        }).join('')}
+      </div>
+      <p class="weekcard__helper">Tap any day to toggle it in your routine.</p>
+    </div>
+
     <ol class="weekcard__list">${wp.sessions.map(x=>{
       const areaLabel = x.venue.nearestArea ? x.venue.nearestArea.name : (AREAS.find(a=>a.id===x.venue.area)||{}).name || '';
       const distLabel = areaLabel ? `${x.distanceKm} km from ${esc(areaLabel)}` : `${x.distanceKm} km away`;
       const tierText = x.venue.tier === 'premium' ? 'Premium access' : x.venue.tier === 'plus' ? 'Plus access' : 'Regular check-in';
       const limitText = x.access && !/^(included|not included)/i.test(x.access) ? ` &middot; ${esc(x.access)}` : '';
       return `<li class="weekrow ${x.included?'':'is-locked'}" data-drop-day="${esc(x.day)}">
-      <div class="weekrow__lead">
-        <span class="weekrow__icon">${icon(x.icon,16)}</span>
-        <div class="weekrow__meta">
-          <span class="weekrow__day">${esc(x.day)}</span>
-          <b class="weekrow__act">${esc(x.activity)}</b>
+      <div class="weekrow__top">
+        <div class="weekrow__lead">
+          <span class="weekrow__icon">${icon(x.icon,15)}</span>
+          <div class="weekrow__meta">
+            <span class="weekrow__day">${esc(x.day)}</span>
+            <b class="weekrow__act">${esc(x.activity)}</b>
+          </div>
+        </div>
+        <div class="weekrow__actions">
+          <button class="weekrow__swap" data-change-week="${esc(x.day)}"
+            aria-label="Change activity or venue for ${esc(x.day)}">${icon('refresh',12)} <span>Swap</span></button>
+          <button class="weekrow__trash" data-remove-day="${esc(x.day)}" aria-label="Remove ${esc(x.day)}" title="Remove this day">
+            ${icon('trash',13)}
+          </button>
         </div>
       </div>
       <button class="weekrow__place" data-venue="${esc(x.venue.id)}" aria-label="More about ${esc(x.venue.name)}">
@@ -2403,26 +2424,8 @@ function recommendationScreen() {
           <small>${distLabel} &middot; ${tierText}${limitText}</small>
         </span>
       </button>
-      <div class="weekrow__actions">
-        <button class="weekrow__swap" data-change-week="${esc(x.day)}"
-          aria-label="Change activity or venue for ${esc(x.day)}">${icon('refresh',12)} <span>Swap</span></button>
-        <button class="weekrow__trash" data-remove-day="${esc(x.day)}" aria-label="Remove ${esc(x.day)}" title="Remove this day">
-          ${icon('trash',13)}
-        </button>
-      </div>
     </li>`;
     }).join('')}</ol>
-
-    <div class="weekcard__controls">
-      <div class="week__days">
-        <div class="week__days-label" id="week-days-label">Choose your days</div>
-        <div class="week__days-row" role="group" aria-labelledby="week-days-label">${DAY_ORDER.map(d=>{
-            const on = wp.sessions.some(x=>x.day===d);
-            return `<button class="daybtn ${on?'is-on':''}" data-day="${esc(d)}" aria-pressed="${on}" data-drop-day="${esc(d)}">${DAY_SHORT[d]}</button>`;
-          }).join('')}</div>
-        <p class="weekcard__helper">Tap any day to toggle it in your routine, or swap any venue above.</p>
-      </div>
-    </div>
 
     ${DAYNOTE ? `<p class="week__changed" role="status">${icon('checkFill',16)} <span>${DAYNOTE}</span></p>` : ''}
     ${gap?`<p class="weekcard__adds">${icon('sparkle',17)} <span><b>${esc(gap.needs.name)}</b> adds ${esc(gap.venue.name)}
