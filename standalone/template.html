@@ -3078,31 +3078,37 @@ function paymentScreen() {
             </div>
           </div>
 
-          <!-- 2. Transparent Cancellation & Flexibility -->
-          <div class="pay-section-card">
-            <div class="pay-section-title">
-              <span class="pay-step-badge">2</span>
-              <span>Flexibility &amp; terms</span>
+          <!-- 2. Transparent Cancellation & Flexibility (Collapsible) -->
+          <details class="pay-terms-disclosure pay-section-card">
+            <summary>
+              <div class="pay-terms-summary-left">
+                <span class="pay-step-badge">2</span>
+                <span>Cancellation, pause &amp; terms</span>
+              </div>
+              <span class="pay-terms-chevron">${icon('chevronDown', 18)}</span>
+            </summary>
+            <div class="pay-terms-body">
+              <ul class="pay-terms-list">
+                <li>
+                  ${icon('checkThin',17)}
+                  <span><strong>${esc(renewal)}</strong></span>
+                </li>
+                <li>
+                  ${icon('checkThin',17)}
+                  <span><strong>Cancellation notice:</strong> ${esc(RULES.cancellationNotice)}</span>
+                </li>
+                <li>
+                  ${icon(commitment.canPause?'checkThin':'info',17)}
+                  <span>${commitment.canPause ? '<strong>Free pause:</strong> Pause your membership for 1 to 6 full months at zero cost.' : '<strong>No pause:</strong> Monthly memberships are fully flexible, but pause is unavailable.'}</span>
+                </li>
+                <li>
+                  ${icon('sparkle',17)}
+                  <span><strong>Instant access:</strong> Check in at any included venue via the USC app starting ${esc(fmtDate(S.startDate))}.</span>
+                </li>
+              </ul>
+              <p class="xsmall muted" style="margin:14px 0 0">Real published terms. You can always review or update your membership in the USC app.</p>
             </div>
-            <ul class="pay-terms-list">
-              <li>
-                ${icon('checkThin',17)}
-                <span><strong>${esc(renewal)}</strong></span>
-              </li>
-              <li>
-                ${icon('checkThin',17)}
-                <span><strong>Cancellation notice:</strong> ${esc(RULES.cancellationNotice)}</span>
-              </li>
-              <li>
-                ${icon(commitment.canPause?'checkThin':'info',17)}
-                <span>${commitment.canPause ? '<strong>Free pause:</strong> Pause your membership for 1 to 6 full months at zero cost.' : '<strong>No pause:</strong> Monthly memberships are fully flexible, but pause is unavailable.'}</span>
-              </li>
-              <li>
-                ${icon('sparkle',17)}
-                <span><strong>Instant access:</strong> Check in at any included venue via the USC app starting ${esc(fmtDate(S.startDate))}.</span>
-              </li>
-            </ul>
-          </div>
+          </details>
 
           <!-- 3. Primary Action Row -->
           <div class="pay-actions desktop-cta">

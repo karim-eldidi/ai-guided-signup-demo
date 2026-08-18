@@ -3762,10 +3762,10 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   gap: 32px;
   align-items: start;
 }
-.pay-main {
+.pay-main form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
 }
 .pay-section-card {
   background: #fff;
@@ -3810,6 +3810,47 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 .pay-mock-notice svg {
   flex: 0 0 auto;
   color: var(--navy);
+}
+
+/* Collapsible Terms Disclosure */
+.pay-terms-disclosure {
+  cursor: pointer;
+}
+.pay-terms-disclosure summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  user-select: none;
+  outline: none;
+}
+.pay-terms-disclosure summary::-webkit-details-marker {
+  display: none;
+}
+.pay-terms-summary-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -.01em;
+  color: var(--ink);
+}
+.pay-terms-chevron {
+  display: grid;
+  place-items: center;
+  color: var(--navy-soft);
+  transition: transform .2s ease;
+}
+.pay-terms-disclosure[open] .pay-terms-chevron {
+  transform: rotate(180deg);
+}
+.pay-terms-body {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(0,0,0,0.06);
+  cursor: default;
 }
 .pay-terms-list {
   list-style: none;
