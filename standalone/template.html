@@ -2432,57 +2432,65 @@ function recommendationScreen() {
   const activitiesGalleryBlock = `<section class="made-for-you">
     <div class="made-for-you__head">
       <div>
-        <h2 class="made-for-you__title">Made for you</h2>
-        <p class="made-for-you__sub">${matchingActivitiesCount} activities &middot; ${matchingVenuesCount} places &middot; Based on your goals</p>
+        <h2 class="made-for-you__title">Activities in ${esc(where)}</h2>
+        <p class="made-for-you__sub">${matchingActivitiesCount} sports &middot; ${matchingVenuesCount} places &middot; Based on your preferences</p>
       </div>
       <button class="made-for-you__why linkish strong" type="button" data-more="why">Why these? ${icon('info', 14)}</button>
     </div>
 
-    <div class="category-pills" role="tablist" aria-label="Filter by sport">
-      <button class="category-pill ${ACTIVE_CATEGORY_FILTER === 'all' ? 'is-active' : ''}" type="button" data-filter-category="all">
-        ${icon('grid', 13)} <span>All</span>
-      </button>
-      ${ACTIVITY_GROUPS.map(g => `
-        <button class="category-pill ${ACTIVE_CATEGORY_FILTER === g.id ? 'is-active' : ''}" type="button" data-filter-category="${esc(g.id)}">
-          ${icon(g.icon, 13)} <span>${esc(g.label)}</span>
+    <div class="category-pills-wrap">
+      <div class="category-pills" id="category-pills-scroll" role="tablist" aria-label="Filter by sport">
+        <button class="category-pill ${ACTIVE_CATEGORY_FILTER === 'all' ? 'is-active' : ''}" type="button" data-filter-category="all">
+          ${icon('grid', 13)} <span>All</span>
         </button>
-      `).join('')}
-    </div>
-
-    <div class="activity-gallery">
-      <div class="activity-gallery__track">
-        ${curatedCards.map(({ grp, v }) => {
-          const inPlan = includedIn(v, plan.id);
-          const tier = v.tier ? (v.tier === 'premium' ? 'Premium' : v.tier === 'plus' ? 'Plus' : 'Standard') : '';
-          const tierBadge = tier ? `<span class="tier-tag tier-tag--${v.tier}">${tier}</span>` : '';
-          const baseScore = 97 - Math.round(v.distanceKm * 2.2) - (v.tier === 'premium' ? 3 : v.tier === 'plus' ? 1 : 0);
-          const matchPct = Math.max(89, Math.min(98, baseScore));
-          const areaLabel = v.nearestArea ? v.nearestArea.name : (AREAS.find(a=>a.id===v.area)||{}).name || '';
-          const distLabel = areaLabel ? `${v.distanceKm} km from ${esc(areaLabel)}` : `${v.distanceKm} km away`;
-          return `<div class="activity-card ${inPlan ? '' : 'is-locked'}" draggable="true" data-drag-venue="${esc(v.id)}" data-drag-name="${esc(v.name)}" title="Drag onto your week or click to view">
-            <div class="activity-card__badge">${matchPct}% match</div>
-            <button class="activity-card__media-btn" data-venue="${esc(v.id)}" aria-label="Details about ${esc(v.name)}">
-              <span class="activity-card__media">${venueMedia(v)}</span>
-              <span class="activity-card__icon-badge">${icon(grp.icon, 16)}</span>
-            </button>
-            <div class="activity-card__content">
-              <div class="activity-card__activity"><b>${esc(grp.label)}</b></div>
-              <button class="activity-card__vname linkish" data-venue="${esc(v.id)}">${esc(v.name)}</button>
-              <div class="activity-card__meta">
-                <span>${v.distanceKm} km</span>
-                ${tierBadge ? `&middot; ${tierBadge}` : ''}
-              </div>
-              <button class="btn-pill btn-pill--sm btn-pill--block" data-open-add-venue="${esc(v.id)}" title="Add to week">
-                ${icon('plus', 11)} <span>Add to week</span>
-              </button>
-            </div>
-          </div>`;
-        }).join('')}
+        ${ACTIVITY_GROUPS.map(g => `
+          <button class="category-pill ${ACTIVE_CATEGORY_FILTER === g.id ? 'is-active' : ''}" type="button" data-filter-category="${esc(g.id)}">
+            ${icon(g.icon, 13)} <span>${esc(g.label)}</span>
+          </button>
+        `).join('')}
       </div>
+      <button class="category-pills__scroll-btn" type="button" data-scroll-pills="right" aria-label="Scroll more sports">
+        ${icon('chevron', 14)}
+      </button>
     </div>
 
-    <div class="made-for-you__foot">
-      <button class="linkish strong" type="button" data-toggle-places>See all activities &rarr;</button>
+    <div class="activity-gallery-wrap">
+      <div class="activity-gallery" id="activity-gallery-scroll">
+        <div class="activity-gallery__track">
+          ${curatedCards.map(({ grp, v }) => {
+            const inPlan = includedIn(v, plan.id);
+            const baseScore = 97 - Math.round(v.distanceKm * 2.2) - (v.tier === 'premium' ? 3 : v.tier === 'plus' ? 1 : 0);
+            const matchPct = Math.max(89, Math.min(98, baseScore));
+            const areaLabel = v.nearestArea ? v.nearestArea.name : (AREAS.find(a=>a.id===v.area)||{}).name || '';
+            const distLabel = areaLabel ? `${v.distanceKm} km from ${esc(areaLabel)}` : `${v.distanceKm} km away`;
+            const accessLabel = inPlan
+              ? (v.tier === 'plus' ? 'Included &middot; Plus access' : v.tier === 'premium' ? 'Included &middot; Premium access' : 'Included &middot; Regular check-in')
+              : `<span style="color:#8a5a1a;font-weight:700">Needs upgrade</span>`;
+            return `<div class="activity-card ${inPlan ? '' : 'is-locked'}" draggable="true" data-drag-venue="${esc(v.id)}" data-drag-name="${esc(v.name)}" title="Drag onto your week or click to view">
+              <div class="activity-card__badge">${matchPct}% match</div>
+              <button class="activity-card__media-btn" data-venue="${esc(v.id)}" aria-label="Details about ${esc(v.name)}">
+                <span class="activity-card__media">${venueMedia(v)}</span>
+                <span class="activity-card__icon-badge">${icon(grp.icon, 16)}</span>
+              </button>
+              <div class="activity-card__content">
+                <div class="activity-card__activity"><b>${esc(grp.label)}</b></div>
+                <button class="activity-card__vname linkish" data-venue="${esc(v.id)}">${esc(v.name)}</button>
+                <div class="activity-card__dist">${distLabel}</div>
+                <div class="activity-card__access">${accessLabel}</div>
+                <button class="btn-pill btn-pill--sm btn-pill--block" data-open-add-venue="${esc(v.id)}" title="Add to week">
+                  ${icon('plus', 11)} <span>Add to week</span>
+                </button>
+              </div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+      <button class="gallery-nav-btn gallery-nav-btn--prev" type="button" data-scroll-gallery="prev" aria-label="Previous activities">
+        ${icon('chevron', 16)}
+      </button>
+      <button class="gallery-nav-btn gallery-nav-btn--next" type="button" data-scroll-gallery="next" aria-label="Next activities">
+        ${icon('chevron', 16)}
+      </button>
     </div>
   </section>`;
 
@@ -3354,8 +3362,19 @@ document.addEventListener('change', e => {
   renderInPlace();
 });
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-change-city],[data-city],[data-unsure],[data-open-ask],[data-rail],[data-radius],[data-toggle-venues],[data-toggle-apps],[data-toggle-week],[data-toggle-places],[data-toggle-more],[data-more],[data-toggle-alt],[data-toggle-plan-details],[data-open-days],[data-day],[data-swap],[data-change-week],[data-add-week],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula],[data-search-example],[data-venue-clear],[data-venue-search-all],[data-toggle-where],[data-where],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-add-activity],[data-remove-activity],[data-expand-pillar],[data-toggle-routine-customizer],[data-remove-day],[data-exclude-venue],[data-filter-category]');
+  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-change-city],[data-city],[data-unsure],[data-open-ask],[data-rail],[data-radius],[data-toggle-venues],[data-toggle-apps],[data-toggle-week],[data-toggle-places],[data-toggle-more],[data-more],[data-toggle-alt],[data-toggle-plan-details],[data-open-days],[data-day],[data-swap],[data-change-week],[data-add-week],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula],[data-search-example],[data-venue-clear],[data-venue-search-all],[data-toggle-where],[data-where],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-add-activity],[data-remove-activity],[data-expand-pillar],[data-toggle-routine-customizer],[data-remove-day],[data-exclude-venue],[data-filter-category],[data-scroll-pills],[data-scroll-gallery]');
   if (!t) return;
+
+  if (t.dataset.scrollPills) {
+    const p = document.getElementById('category-pills-scroll');
+    if (p) p.scrollBy({ left: t.dataset.scrollPills === 'left' ? -200 : 200, behavior: 'smooth' });
+    return;
+  }
+  if (t.dataset.scrollGallery) {
+    const g = document.getElementById('activity-gallery-scroll');
+    if (g) g.scrollBy({ left: t.dataset.scrollGallery === 'prev' ? -240 : 240, behavior: 'smooth' });
+    return;
+  }
 
   if (t.dataset.filterCategory) {
     ACTIVE_CATEGORY_FILTER = t.dataset.filterCategory;
