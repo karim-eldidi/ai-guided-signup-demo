@@ -5258,7 +5258,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 18 Aug 13:45 UTC</span>
+  <span class="demo-banner__build">build 18 Aug 13:48 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -7293,7 +7293,7 @@ function fitScreen() {
     ${ACKTEXT?`<div class="notice">${icon('sparkle',19)}<span>${esc(ACKTEXT)}</span></div>`:''}
     ${UNCLEAR?`<div class="notice notice--grey">${icon('info',19)}<span>I didn&rsquo;t quite catch that one — could you pick the closest option below? You can always change it later.</span></div>`:''}
     ${TYPING?`<div class="typing" role="status" aria-label="Urby is typing"><span></span><span></span><span></span></div>`
-      :`<form data-form="answer" data-qid="${esc(q.id)}" data-single-select="${q.multi?'false':'true'}">
+      :`<form data-form="answer" data-qid="${esc(q.id)}">
       <h1 class="h-question" tabindex="-1">${esc(q.prompt)}</h1>
       ${q.hint?`<p class="qhint">${q.hint}</p>`:''}
       ${q.id==='area'?cityChip():''}
@@ -8821,16 +8821,10 @@ document.addEventListener('input', e => {
 document.addEventListener('change', e => {
   const ansForm = e.target.closest('form[data-form="answer"]');
   if (ansForm) {
-    const qid = ansForm.dataset.qid, q = qById(qid);
     ansForm.querySelectorAll('.option-card').forEach(card => {
       const inp = card.querySelector('input');
       if (inp) card.classList.toggle('is-selected', inp.checked);
     });
-    if (q && !q.multi && ansForm.dataset.singleSelect === 'true') {
-      setTimeout(() => {
-        if (ansForm.isConnected) ansForm.requestSubmit();
-      }, 160);
-    }
     return;
   }
   const sel = e.target.closest('select[data-radius-pick], select[data-cat-pick]');
