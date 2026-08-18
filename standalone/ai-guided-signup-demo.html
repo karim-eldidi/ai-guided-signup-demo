@@ -2025,91 +2025,91 @@ button.appcard:hover .appcard__info-icon {
   opacity: 1;
 }
 
-/* App Catalog Upsell & Status Strips */
-.apps-upsell-strip {
+/* App Catalog Segmented Switcher Strip */
+.apps-switcher-strip {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 14px;
   background: #fdfbf7;
   border: 1px solid #ebdcb0;
-  border-radius: var(--radius-md);
-  padding: 12px 16px;
-  margin-bottom: 14px;
-  width: 100%;
-}
-.apps-upsell-strip__info {
-  flex: 1 1 auto;
-  min-width: 0;
-}
-.apps-upsell-strip__title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13.5px;
-  font-weight: 700;
-  color: var(--ink);
-  flex-wrap: wrap;
-}
-.apps-upsell-strip__tag {
-  font-size: 11px;
-  font-weight: 700;
-  color: #0d8a4e;
-  background: #eafaf1;
-  padding: 2px 7px;
-  border-radius: 999px;
-}
-.apps-upsell-strip__sub {
-  font-size: 12px;
-  color: var(--navy-soft);
-  margin: 3px 0 0;
-  line-height: 1.35;
-}
-.apps-upsell-strip__actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex: 0 0 auto;
-}
-.apps-upsell-strip__actions .btn {
-  height: 34px !important;
-  padding: 0 14px !important;
-  font-size: 12.5px !important;
-  font-weight: 700 !important;
-  border-radius: 999px !important;
-  white-space: nowrap;
-}
-.apps-status-strip {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  background: #f2fbf6;
-  border: 1px solid #c2ebd5;
   border-radius: var(--radius-md);
   padding: 10px 14px;
   margin-bottom: 14px;
   width: 100%;
-  font-size: 13px;
+}
+.apps-switcher-strip__label {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.apps-switcher-strip__title {
+  font-size: 13.5px;
+  font-weight: 700;
   color: var(--ink);
 }
-.apps-status-strip__text {
-  flex: 1 1 auto;
-  min-width: 0;
+.apps-switcher-strip__hint {
+  font-size: 12px;
+  color: var(--navy-soft);
+}
+.apps-segmented-control {
+  display: inline-flex;
+  background: #ede9dc;
+  padding: 3px;
+  border-radius: 999px;
+  gap: 2px;
+  flex: 0 0 auto;
+}
+.apps-seg-btn {
+  height: 30px;
+  padding: 0 12px;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  color: var(--navy);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all .15s ease;
+  white-space: nowrap;
+}
+.apps-seg-btn small {
+  font-size: 10.5px;
+  font-weight: 600;
+  opacity: 0.75;
+}
+.apps-seg-btn:hover {
+  color: var(--ink);
+}
+.apps-seg-btn.is-active {
+  background: var(--ink);
+  color: #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+}
+.apps-seg-btn.is-active small {
+  opacity: 0.9;
+  color: #f6d878;
 }
 
-@media (max-width: 600px) {
-  .apps-upsell-strip {
+@media (max-width: 650px) {
+  .apps-switcher-strip {
     flex-direction: column;
     align-items: flex-start;
-    gap: 10px;
+    gap: 8px;
   }
-  .apps-upsell-strip__actions {
+  .apps-segmented-control {
     width: 100%;
+    display: flex;
   }
-  .apps-upsell-strip__actions .btn {
-    flex: 1 1 auto;
-    text-align: center;
+  .apps-seg-btn {
+    flex: 1 1 0;
+    justify-content: center;
+    padding: 0 6px;
+    font-size: 11.5px;
   }
 }
 
@@ -5586,7 +5586,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 18 Aug 14:42 UTC</span>
+  <span class="demo-banner__build">build 18 Aug 14:45 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -6918,38 +6918,17 @@ function appsBlock() {
       <span class="rowcard__cta">See all apps ${icon('arrowRight',18)}</span>
     </summary>
     <div class="rowcard__body">
-      ${locked ? `
-      <div class="apps-upsell-strip">
-        <div class="apps-upsell-strip__info">
-          <div class="apps-upsell-strip__title">
-            <span>✨ Digital apps included free on 12- &amp; 24-month plans</span>
-            <span class="apps-upsell-strip__tag">Save ~15 € / mo</span>
-          </div>
-          <p class="apps-upsell-strip__sub">1 app on 12-month, 2 on 24-month &middot; Switch between apps anytime in your USC account.</p>
+      <div class="apps-switcher-strip">
+        <div class="apps-switcher-strip__label">
+          <span class="apps-switcher-strip__title">✨ Digital Partner Apps</span>
+          <span class="apps-switcher-strip__hint">${locked ? 'Requires 12- or 24-month membership' : slots === 1 ? '1 app unlocked &middot; switch anytime' : '2 apps unlocked &middot; switch anytime'}</span>
         </div>
-        <div class="apps-upsell-strip__actions">
-          <button class="btn btn--sm btn--primary" type="button" data-commit="annual">
-            Switch to 12-mo
-          </button>
-          <button class="btn btn--sm btn--secondary" type="button" data-commit="biennial">
-            24-mo (2 apps)
-          </button>
+        <div class="apps-segmented-control" role="group" aria-label="Membership length">
+          <button class="apps-seg-btn ${S.commitmentId==='monthly'?'is-active':''}" type="button" data-commit="monthly">Monthly <small>(no apps)</small></button>
+          <button class="apps-seg-btn ${S.commitmentId==='annual'?'is-active':''}" type="button" data-commit="annual">12 mo <small>(1 app)</small></button>
+          <button class="apps-seg-btn ${S.commitmentId==='biennial'?'is-active':''}" type="button" data-commit="biennial">24 mo <small>(2 apps)</small></button>
         </div>
       </div>
-      ` : slots === 1 ? `
-      <div class="apps-status-strip">
-        <div class="apps-status-strip__text">
-          <strong>✓ 1 digital app included with your 12-month plan.</strong> Tap any app below to see details.
-        </div>
-        <button class="linkish font-bold" type="button" data-commit="biennial">Want 2 apps? 24-mo plan &rarr;</button>
-      </div>
-      ` : `
-      <div class="apps-status-strip">
-        <div class="apps-status-strip__text">
-          <strong>✓ 2 digital apps included with your 24-month plan.</strong> Maximum digital allowance active.
-        </div>
-      </div>
-      `}
 
       <div class="appgrid ${locked?'is-locked':''}">${ranked.list.map(card).join('')}</div>
 

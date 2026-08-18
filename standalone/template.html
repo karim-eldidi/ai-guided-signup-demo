@@ -1492,38 +1492,17 @@ function appsBlock() {
       <span class="rowcard__cta">See all apps ${icon('arrowRight',18)}</span>
     </summary>
     <div class="rowcard__body">
-      ${locked ? `
-      <div class="apps-upsell-strip">
-        <div class="apps-upsell-strip__info">
-          <div class="apps-upsell-strip__title">
-            <span>✨ Digital apps included free on 12- &amp; 24-month plans</span>
-            <span class="apps-upsell-strip__tag">Save ~15 € / mo</span>
-          </div>
-          <p class="apps-upsell-strip__sub">1 app on 12-month, 2 on 24-month &middot; Switch between apps anytime in your USC account.</p>
+      <div class="apps-switcher-strip">
+        <div class="apps-switcher-strip__label">
+          <span class="apps-switcher-strip__title">✨ Digital Partner Apps</span>
+          <span class="apps-switcher-strip__hint">${locked ? 'Requires 12- or 24-month membership' : slots === 1 ? '1 app unlocked &middot; switch anytime' : '2 apps unlocked &middot; switch anytime'}</span>
         </div>
-        <div class="apps-upsell-strip__actions">
-          <button class="btn btn--sm btn--primary" type="button" data-commit="annual">
-            Switch to 12-mo
-          </button>
-          <button class="btn btn--sm btn--secondary" type="button" data-commit="biennial">
-            24-mo (2 apps)
-          </button>
+        <div class="apps-segmented-control" role="group" aria-label="Membership length">
+          <button class="apps-seg-btn ${S.commitmentId==='monthly'?'is-active':''}" type="button" data-commit="monthly">Monthly <small>(no apps)</small></button>
+          <button class="apps-seg-btn ${S.commitmentId==='annual'?'is-active':''}" type="button" data-commit="annual">12 mo <small>(1 app)</small></button>
+          <button class="apps-seg-btn ${S.commitmentId==='biennial'?'is-active':''}" type="button" data-commit="biennial">24 mo <small>(2 apps)</small></button>
         </div>
       </div>
-      ` : slots === 1 ? `
-      <div class="apps-status-strip">
-        <div class="apps-status-strip__text">
-          <strong>✓ 1 digital app included with your 12-month plan.</strong> Tap any app below to see details.
-        </div>
-        <button class="linkish font-bold" type="button" data-commit="biennial">Want 2 apps? 24-mo plan &rarr;</button>
-      </div>
-      ` : `
-      <div class="apps-status-strip">
-        <div class="apps-status-strip__text">
-          <strong>✓ 2 digital apps included with your 24-month plan.</strong> Maximum digital allowance active.
-        </div>
-      </div>
-      `}
 
       <div class="appgrid ${locked?'is-locked':''}">${ranked.list.map(card).join('')}</div>
 
