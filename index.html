@@ -5664,7 +5664,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 18 Aug 14:52 UTC</span>
+  <span class="demo-banner__build">build 18 Aug 22:01 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -5756,7 +5756,7 @@ const APPLE = '<svg width="20" height="20" viewBox="0 0 24 24" fill="#08090a" ar
 const SKIP = '__skip';
 const SKIP_OPTION = { id: SKIP, label: "I'm not sure yet", echo: "I'm not sure yet", icon: 'question' };
 const QUESTIONS = [
-  { id:'goal', prompt:'What would you love to do more of?', summaryLabel:'Goal', icon:'target', placeholder:'Or tell Urby in your own words…', skip:true,
+  { id:'goal', prompt:'What would you love to do more of?', hint:'Pick one or more that fit what you want.', summaryLabel:'Goal', icon:'target', multi:true, placeholder:'Or tell Urby in your own words…', skip:true,
     options:[{id:'move_more',label:'Move more',echo:'I want to move more',icon:'bolt'},{id:'unwind',label:'Unwind',echo:'I want to unwind',icon:'leaf'},{id:'try_new',label:'Try something new',echo:'I want to try something new',icon:'sparkle'}] },
   /* The concrete question the old "what would make it easier?" was dancing around.
      Multi-select, because nobody does exactly one thing — and because this answer is
@@ -5798,9 +5798,10 @@ const APP_MATCH_GOAL = {
   unwind:['Meditation','Sleep','Recovery','Mental'],
   try_new:['Movement','Focus','Yoga']
 };
-function rankApps(list, groupIds, goalId) {
+function rankApps(list, groupIds, goal) {
   const strong = new Set(groupIds.flatMap(g => APP_MATCH[g] || []));
-  const soft = new Set(APP_MATCH_GOAL[goalId] || []);
+  const goalList = Array.isArray(goal) ? goal.filter(x => x !== SKIP) : (goal && goal !== SKIP ? [goal] : []);
+  const soft = new Set(goalList.flatMap(g => APP_MATCH_GOAL[g] || []));
   const score = a => (strong.has(a.category) ? 2 : 0) + (soft.has(a.category) ? 1 : 0);
   const ranked = list.map((a,i) => ({ a, i, s:score(a) }))
     .sort((x,y) => y.s - x.s || x.i - y.i);
@@ -5871,6 +5872,14 @@ const compactAnswerLabel = (qid,v) => {
   }
   if (qid==='goal') {
     const map={move_more:'Move more',unwind:'Unwind',try_new:'Try new sports'};
+    if (Array.isArray(v)) {
+      if (v.includes(SKIP)) return 'Not sure';
+      const names = v.map(id => map[id] || (optionsFor(qById(qid)).find(x=>x.id===id)||{}).label).filter(Boolean);
+      if (!names.length) return null;
+      if (names.length===1) return names[0];
+      if (names.length===2) return `${names[0]} & ${names[1]}`;
+      return `${names[0]} +${names.length-1}`;
+    }
     return map[v]||answerLabel(qid,v);
   }
   if (Array.isArray(v)) { if (v.includes(SKIP)) return 'Not sure';
@@ -5926,7 +5935,9 @@ function matchVenues(answers = {}, limit = 6) {
   /* what they said they would actually do beats what we inferred from a one-word
      goal; the goal is only the fallback for anyone who skipped this */
   const chosen = activityIdsFor(answers.activities || []);
-  const aff = chosen.length ? chosen : (GOAL_AFFINITY[answers.goal] || []);
+  const goalList = Array.isArray(answers.goal) ? answers.goal.filter(x => x !== SKIP) : (answers.goal && answers.goal !== SKIP ? [answers.goal] : []);
+  const goalAffinities = [...new Set(goalList.flatMap(g => GOAL_AFFINITY[g] || []))];
+  const aff = chosen.length ? chosen : goalAffinities;
   const scored = VENUES.map(v => {
     const km = nearestOf(v), hits = v.activities.filter(x => aff.includes(x));
     const nearestArea = from.reduce((best,a)=>distanceKm(a,v)<distanceKm(best,v)?a:best, from[0]);
@@ -6198,12 +6209,33 @@ function recommend(answers = {}, match = { venues:[], categories:[] }) {
   const areaName = whereName(match);
   const cats=(match.categories||[]).length;
   const top=[...new Set((match.venues||[]).flatMap(v=>v.affinityHits||[]))].slice(0,3).map(a=>ACTIVITY_LABELS[a]||a);
-  const GOAL_REASON = {
-    move_more: top.length?`You want to move more, so we prioritised ${listWords(top)} near you.`:'You want to move more, so we prioritised regular training venues near you.',
-    unwind:'You want to unwind, so we prioritised calmer studios, pools and sauna.',
-    try_new:'You want to try something new, so we mixed venue types instead of repeating one.'
-  };
-  if (answers.goal && GOAL_REASON[answers.goal]) reasons.push(GOAL_REASON[answers.goal]);
+  const goalList = Array.isArray(answers.goal)
+    ? answers.goal.filter(x => x && x !== SKIP)
+    : (answers.goal && answers.goal !== SKIP ? [answers.goal] : []);
+
+  if (goalList.length === 1) {
+    const g = goalList[0];
+    const GOAL_REASON = {
+      move_more: top.length?`You want to move more, so we prioritised ${listWords(top)} near you.`:'You want to move more, so we prioritised regular training venues near you.',
+      unwind:'You want to unwind, so we prioritised calmer studios, pools and sauna.',
+      try_new:'You want to try something new, so we mixed venue types instead of repeating one.'
+    };
+    if (GOAL_REASON[g]) reasons.push(GOAL_REASON[g]);
+  } else if (goalList.length > 1) {
+    const hasMove = goalList.includes('move_more');
+    const hasUnwind = goalList.includes('unwind');
+    const hasTryNew = goalList.includes('try_new');
+
+    if (hasMove && hasUnwind && hasTryNew) {
+      reasons.push('You want to stay active, recharge and try new things, so we balanced high-energy workouts, recovery spas and novel studio styles.');
+    } else if (hasMove && hasUnwind) {
+      reasons.push('You want to move more and unwind, so we balanced regular workout places with calming yoga, pools and recovery spots.');
+    } else if (hasMove && hasTryNew) {
+      reasons.push('You want to move more and explore new sports, so we prioritised active variety across different fitness and studio formats.');
+    } else if (hasUnwind && hasTryNew) {
+      reasons.push('You want to unwind while trying new things, so we curated relaxing wellness alongside fresh movement and class styles.');
+    }
+  }
   /* the reason that answers the real question: how many of the places I'd actually
      use does this plan let me into? */
   let cov = groups.length && pool.length ? coverage(groups, pool, plan.id) : null;
@@ -6299,7 +6331,27 @@ const ACK = { goal:{ move_more:"Great — I'll find nearby activities that fit y
   activities:{ _default:"Got it — I'll count the places near you for each of those.", [SKIP]:"That's fine — I'll keep the options broad." },
   area:{ _default:"Thanks — I'm searching there now.", anywhere:"Fine by me — I'll look across the whole city." },
   frequency:{ once:"That helps — I'll match a plan to one session a week.", twice:"That helps — twice a week is a good rhythm.", often:"That helps — I'll look at plans built for frequent visits.", daily:"That helps — I'll look at our widest access.", [SKIP]:"No problem — I'll assume a couple of times a week and you can change it." } };
-const ackFor=(qid,aid)=>(ACK[qid]||{})[aid]||(ACK[qid]||{})._default||'Thanks — noted.';
+const ackFor=(qid,aid)=>{
+  if (qid==='goal' && Array.isArray(aid)) {
+    const list = aid.filter(x=>x&&x!==SKIP);
+    if (!list.length) return "No problem — we can work it out as we go.";
+    if (list.length === 1) return (ACK.goal||{})[list[0]] || "Great — I'll find nearby activities that fit your routine.";
+    if (list.includes('move_more') && list.includes('unwind') && list.includes('try_new')) {
+      return "The full package — active workouts, calming recovery, and plenty of new sports to try.";
+    }
+    if (list.includes('move_more') && list.includes('unwind')) {
+      return "Love that balance — active movement combined with time to recharge.";
+    }
+    if (list.includes('move_more') && list.includes('try_new')) {
+      return "Great combination — high-energy training with fresh sports to explore.";
+    }
+    if (list.includes('unwind') && list.includes('try_new')) {
+      return "Wonderful — calming spaces paired with novel activities to discover.";
+    }
+    return "Great choices — I'll tailor the recommendations to everything you're looking for.";
+  }
+  return (ACK[qid]||{})[aid]||(ACK[qid]||{})._default||'Thanks — noted.';
+};
 
 
 /* ---------------- Ask Urby: grounded answers, no invention ----------------
@@ -8211,11 +8263,14 @@ function recommendationScreen() {
     ${allPlans}
   </div>`;
 
-  const GOAL_TITLE  = { move_more:'moving more', unwind:'moving and unwinding', try_new:'trying something new' };
+  const goalPhraseMap = { move_more:'moving more', unwind:'unwinding', try_new:'trying new things' };
+  const goalListRaw = Array.isArray(a.goal) ? a.goal.filter(x => x !== SKIP) : (a.goal && a.goal !== SKIP ? [a.goal] : []);
+  const goalPhrases = goalListRaw.map(g => goalPhraseMap[g]).filter(Boolean);
+  const goalTitleStr = goalPhrases.length ? listWords(goalPhrases) : null;
   const heroBlock = `${ulaRow()}
     <h1 class="h-question reco-hero__title" tabindex="-1">${MOBILE()
       ? 'Your week, made to fit'
-      : (GOAL_TITLE[a.goal] ? `Your plan for ${GOAL_TITLE[a.goal]}` : `Your plan near ${esc(where)}`)}</h1>
+      : (goalTitleStr ? `Your plan for ${goalTitleStr}` : `Your plan near ${esc(where)}`)}</h1>
     ${match.reachedFurther?`<div class="notice notice--grey">${icon('info',19)}<span>Nothing in this pilot&rsquo;s venue set does ${esc(groupWords(groups))} right by ${esc(where)}, so I looked across the city. The distances below are real.</span></div>`:''}`;
   const chipsBlock = answerChips({ label:'You told us' });
 
@@ -10220,7 +10275,8 @@ document.addEventListener('submit', e => {
     if (chosen.length) {
       if (qid === 'frequency') { S.weekDays = []; S.weekSwap = {}; }   // a new frequency rebuilds the week
       S.answers[qid] = q.multi ? chosen : chosen[0];
-      log('answer_given',{ question:qid, value:q.multi?chosen:chosen[0], mode:'choice' }); ACKTEXT = null;
+      log('answer_given',{ question:qid, value:q.multi?chosen:chosen[0], mode:'choice' });
+      ACKTEXT = ackFor(qid, S.answers[qid]);
     }
     else if (text) {
       const id = interpret(qid, text);

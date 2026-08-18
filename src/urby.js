@@ -83,6 +83,24 @@ const ACK_FALLBACK = {
 };
 
 export function acknowledgeFallback(questionId, answerId) {
+  if (questionId === 'goal' && Array.isArray(answerId)) {
+    const list = answerId.filter((x) => x && x !== '__skip');
+    if (!list.length) return 'No problem — we can work it out as we go.';
+    if (list.length === 1) return (ACK_FALLBACK.goal || {})[list[0]] || "Great — I'll find nearby activities that fit your routine.";
+    if (list.includes('move_more') && list.includes('unwind') && list.includes('try_new')) {
+      return 'The full package — active workouts, calming recovery, and plenty of new sports to try.';
+    }
+    if (list.includes('move_more') && list.includes('unwind')) {
+      return 'Love that balance — active movement combined with time to recharge.';
+    }
+    if (list.includes('move_more') && list.includes('try_new')) {
+      return 'Great combination — high-energy training with fresh sports to explore.';
+    }
+    if (list.includes('unwind') && list.includes('try_new')) {
+      return 'Wonderful — calming spaces paired with novel activities to discover.';
+    }
+    return "Great choices — I'll tailor the recommendations to everything you're looking for.";
+  }
   const forQuestion = ACK_FALLBACK[questionId] || {};
   return forQuestion[answerId] || forQuestion._default || 'Thanks — noted.';
 }

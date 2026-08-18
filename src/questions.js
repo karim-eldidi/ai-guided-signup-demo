@@ -13,8 +13,10 @@ export const QUESTIONS = [
   {
     id: 'goal',
     prompt: 'What would you love to do more of?',
+    hint: 'Pick one or more that fit what you want.',
     summaryLabel: 'Goal',
     icon: 'target',
+    multi: true,
     allowFreeText: true,
     freeTextPlaceholder: 'Or tell Urby in your own words…',
     options: [
@@ -93,7 +95,9 @@ export function answeredCount(answers = {}) {
 export function answerLabel(questionId, value, areas = []) {
   if (!isAnswered(value)) return null;
   if (Array.isArray(value)) {
-    const names = value.map((id) => (groupById(id) || {}).label).filter(Boolean);
+    const q = questionById(questionId);
+    const opts = q ? optionsFor(q, areas) : [];
+    const names = value.map((id) => (groupById(id) || opts.find((o) => o.id === id) || {}).label).filter(Boolean);
     return names.length ? listWords(names) : null;
   }
   if (typeof value === 'object' && value.freeText) return value.freeText;
@@ -110,6 +114,16 @@ export function answerLabel(questionId, value, areas = []) {
 export function answerEcho(questionId, value, areas = []) {
   if (!isAnswered(value)) return null;
   if (Array.isArray(value)) {
+    const q = questionById(questionId);
+    const opts = q ? optionsFor(q, areas) : [];
+    if (questionId === 'area') {
+      const n = value.map((id) => (opts.find((x) => x.id === id) || {}).label).filter(Boolean);
+      return n.length ? `I'd look around ${listWords(n)}` : null;
+    }
+    if (questionId === 'goal') {
+      const n = value.map((id) => (opts.find((x) => x.id === id) || {}).echo || (opts.find((x) => x.id === id) || {}).label).filter(Boolean);
+      return n.length ? listWords(n) : null;
+    }
     const names = value.map((id) => (groupById(id) || {}).short).filter(Boolean);
     return names.length ? `I'd do ${listWords(names)}` : null;
   }

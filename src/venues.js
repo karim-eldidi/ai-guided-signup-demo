@@ -62,7 +62,11 @@ export function matchVenues(answers = {}, limit = 6) {
   /* What the visitor said they would actually do beats what we inferred from a
      one-word goal. The goal is only a fallback for anyone who skipped it. */
   const chosen = activityIdsFor(answers.activities || []);
-  const affinity = chosen.length ? chosen : (GOAL_AFFINITY[answers.goal] || []);
+  const goalList = Array.isArray(answers.goal)
+    ? answers.goal.filter((x) => x && x !== '__skip')
+    : (answers.goal && answers.goal !== '__skip' ? [answers.goal] : []);
+  const goalAffinities = [...new Set(goalList.flatMap((g) => GOAL_AFFINITY[g] || []))];
+  const affinity = chosen.length ? chosen : goalAffinities;
 
   const scored = VENUES.map((v) => {
     const km = distanceKm(area, v);

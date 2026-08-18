@@ -157,14 +157,35 @@ export function recommend(answers = {}, match = { venues: [], categories: [] }) 
     .slice(0, 3)
     .map((a) => ACTIVITY_LABELS[a] || a);
 
-  const GOAL_REASON = {
-    move_more: topActivitiesEarly.length
-      ? `You want to move more, so we prioritised ${listWords(topActivitiesEarly)} near you.`
-      : 'You want to move more, so we prioritised regular training venues near you.',
-    unwind: 'You want to unwind, so we prioritised calmer studios, pools and sauna.',
-    try_new: 'You want to try something new, so we mixed venue types instead of repeating one.'
-  };
-  if (answers.goal && GOAL_REASON[answers.goal]) reasons.push(GOAL_REASON[answers.goal]);
+  const goalList = Array.isArray(answers.goal)
+    ? answers.goal.filter((x) => x && x !== '__skip')
+    : (answers.goal && answers.goal !== '__skip' ? [answers.goal] : []);
+
+  if (goalList.length === 1) {
+    const g = goalList[0];
+    const GOAL_REASON = {
+      move_more: topActivitiesEarly.length
+        ? `You want to move more, so we prioritised ${listWords(topActivitiesEarly)} near you.`
+        : 'You want to move more, so we prioritised regular training venues near you.',
+      unwind: 'You want to unwind, so we prioritised calmer studios, pools and sauna.',
+      try_new: 'You want to try something new, so we mixed venue types instead of repeating one.'
+    };
+    if (GOAL_REASON[g]) reasons.push(GOAL_REASON[g]);
+  } else if (goalList.length > 1) {
+    const hasMove = goalList.includes('move_more');
+    const hasUnwind = goalList.includes('unwind');
+    const hasTryNew = goalList.includes('try_new');
+
+    if (hasMove && hasUnwind && hasTryNew) {
+      reasons.push('You want to stay active, recharge and try new things, so we balanced high-energy workouts, recovery spas and novel studio styles.');
+    } else if (hasMove && hasUnwind) {
+      reasons.push('You want to move more and unwind, so we balanced regular workout places with calming yoga, pools and recovery spots.');
+    } else if (hasMove && hasTryNew) {
+      reasons.push('You want to move more and explore new sports, so we prioritised active variety across different fitness and studio formats.');
+    } else if (hasUnwind && hasTryNew) {
+      reasons.push('You want to unwind while trying new things, so we curated relaxing wellness alongside fresh movement and class styles.');
+    }
+  }
 
   /* The reason that answers the real question: how many of the places I would
      actually use does this plan let me into? */

@@ -145,6 +145,25 @@ describe('recommendation rules', () => {
       assert.ok(prices.includes(rec.price), `unexpected price ${rec.price}`);
     }
   });
+
+  test('multiple goals combine reasons and tailor recommendations', () => {
+    const recAllThree = forAnswers({
+      goal: ['move_more', 'unwind', 'try_new'],
+      activities: ['gym', 'yoga', 'spa'],
+      area: 'kreuzberg',
+      frequency: 'often'
+    });
+    assert.ok(recAllThree.reasons.some((r) => r.includes('stay active, recharge and try new things')));
+    assert.equal(recAllThree.planId, 'premium');
+
+    const recMoveUnwind = forAnswers({
+      goal: ['move_more', 'unwind'],
+      activities: ['gym', 'spa'],
+      area: 'kreuzberg',
+      frequency: 'twice'
+    });
+    assert.ok(recMoveUnwind.reasons.some((r) => r.includes('move more and unwind')));
+  });
 });
 
 /* ------------------------------------------------------------------ *
