@@ -1406,127 +1406,59 @@ function appSheet() {
   const isMonthly = !isAnnual && !isBiennial;
   const requires24 = a.minCommitment === 'biennial';
 
-  const statusBadge = isBiennial
-    ? `<span class="badge badge--included">Included in your 24-mo plan</span>`
-    : isAnnual
-      ? (requires24
-          ? `<span class="badge badge--plus">Requires 24-month plan</span>`
-          : `<span class="badge badge--included">Included in your 12-mo plan</span>`)
-      : `<span class="badge badge--soft-yellow">Included with 12- &amp; 24-mo plans</span>`;
-
   return `<div class="sheet sheet--app" id="app-sheet" role="dialog" aria-modal="true" aria-labelledby="app-sheet-title">
     <div class="sheet__panel sheet__panel--app">
       <div class="sheet__handle" aria-hidden="true"></div>
       <button class="sheet__close" data-close-app-sheet aria-label="Close dialog">&times;</button>
       
-      <div class="app-sheet__head">
-        <div class="app-sheet__logo-wrap">
-          ${appLogo(a)}
-        </div>
-        <div class="app-sheet__info">
-          <div class="app-sheet__cat-row">
-            <span class="app-sheet__cat">${esc(a.category)}</span>
-            ${statusBadge}
+      <div class="app-popup">
+        <div class="app-popup__head">
+          <div class="app-popup__logo-box">${appLogo(a)}</div>
+          <div class="app-popup__title-group">
+            <span class="app-popup__cat">${esc(a.category)}</span>
+            <h2 id="app-sheet-title" class="app-popup__name">${esc(a.name)}</h2>
           </div>
-          <h2 id="app-sheet-title" class="app-sheet__title">${esc(a.name)}</h2>
         </div>
-      </div>
 
-      <div class="app-sheet__body">
-        <p class="app-sheet__blurb">${esc(a.blurb)}</p>
-        ${a.details ? `<p class="app-sheet__details">${esc(a.details)}</p>` : ''}
+        <p class="app-popup__pitch">${esc(a.blurb)}</p>
 
-        <div class="app-sheet__perks-card">
-          <div class="app-sheet__perks-title">${icon('device', 17)} Included digital partner app</div>
-          <ul class="app-sheet__perks-list">
-            <li><strong>12-month membership:</strong> 1 active digital partner app at a time.</li>
-            <li><strong>24-month membership:</strong> 2 active digital partner apps simultaneously.</li>
-            <li><strong>Switch anytime:</strong> You can swap to any other app directly in your Urban Sports Club app.</li>
-          </ul>
+        <div class="app-popup__facts">
+          <div class="app-popup__fact">
+            <span class="app-popup__fact-dot"></span>
+            <span><strong>Included in 12- &amp; 24-mo plans</strong> (worth ~10–15 €/mo).</span>
+          </div>
+          <div class="app-popup__fact">
+            <span class="app-popup__fact-dot"></span>
+            <span><strong>Switch anytime</strong> directly in your USC app.</span>
+          </div>
         </div>
-      </div>
 
-      <div class="app-sheet__actions">
-        ${isMonthly ? `
-          <button class="btn btn--primary btn--block" type="button" data-commit="${requires24 ? 'biennial' : 'annual'}" data-close-app-sheet>
-            Switch to ${requires24 ? '24-month' : '12-month'} &middot; Unlock free access
-          </button>
-          <button class="btn btn--secondary btn--block" type="button" data-close-app-sheet>
-            Keep rolling monthly &middot; Close
-          </button>
-        ` : (isAnnual && requires24) ? `
-          <button class="btn btn--primary btn--block" type="button" data-commit="biennial" data-close-app-sheet>
-            Upgrade to 24-month &middot; Unlock 2 apps
-          </button>
-          <button class="btn btn--secondary btn--block" type="button" data-close-app-sheet>
-            Close
-          </button>
-        ` : `
-          <button class="btn btn--primary btn--block" type="button" data-close-app-sheet>
-            Included in your plan &middot; Close
-          </button>
-        `}
+        <div class="app-popup__foot">
+          ${isMonthly ? `
+            <button class="btn btn--primary btn--sm app-popup__cta" type="button" data-commit="${requires24 ? 'biennial' : 'annual'}" data-close-app-sheet>
+              Unlock with ${requires24 ? '24-month' : '12-month'} plan
+            </button>
+            <button class="linkish app-popup__dismiss" type="button" data-close-app-sheet>
+              Keep monthly &middot; Close
+            </button>
+          ` : (isAnnual && requires24) ? `
+            <button class="btn btn--primary btn--sm app-popup__cta" type="button" data-commit="biennial" data-close-app-sheet>
+              Upgrade to 24-month (unlocks 2 apps)
+            </button>
+            <button class="linkish app-popup__dismiss" type="button" data-close-app-sheet>
+              Close
+            </button>
+          ` : `
+            <button class="btn btn--primary btn--sm app-popup__cta" type="button" data-close-app-sheet>
+              Got it
+            </button>
+          `}
+        </div>
       </div>
     </div>
   </div>`;
 }
 
-function fitPanel(match, provisional, confirmed, withAsk) {
-  const answered = QUESTIONS.filter(q=>S.answers[q.id]);
-  const facts = QUESTIONS.map(q=>{
-    const l=answerLabel(q.id,S.answers[q.id]); if(!l) return '';
-    const text = q.id==='area' ? (areaIds(S.answers.area).includes('anywhere') ? 'Anywhere in Berlin' : 'Berlin · '+l) : l;
-    return `<div class="fitpanel__fact">${icon(q.icon,21)}<span>${esc(text)}</span></div>`;
-  }).filter(Boolean).join('');
-  /* during the conversation the strip is the progressive reveal; once the recommendation
-     is on screen the main column owns the venues, so don't show them twice */
-  const venues = (S.answers.area && !confirmed) ? (match.venues||[]).slice(0,3) : [];
-  const remaining = QUESTIONS.length - answered.length;
-  const note = confirmed
-    ? `<div class="panel-note">${icon('checkThin',19)}<span>This is your recommendation. You can change it any time.</span></div>`
-    : provisional ? `<div class="panel-note">${icon('sparkle',19)}<span>${remaining>1?`I'll confirm this after ${remaining} more questions.`:remaining===1?`I'll confirm this after one more question.`:'Ready when you are.'}</span></div>` : '';
-  const planBlock = provisional?`<div class="plan-card"><span class="plan-card__icon">${icon('star',22)}</span><div>
-      <div class="plan-card__name">${esc(provisional.planName)}</div>
-      <div class="plan-card__price"><b>${provisional.price} €</b> <span>/ month</span></div>
-      <div class="plan-card__reason">${esc(provisional.shortReason)}</div></div></div>`:'';
-  const contents = fitContents(match, confirmed, provisional, facts, venues, note, planBlock);
-  /* On a question screen the right column carries the AI itself: ask anything,
-     any time, without leaving the question you are on. */
-  return `<aside class="two-col__aside">
-    ${withAsk?`<div class="aside-ask">${askBlock(true)}</div>`:''}
-    <button class="fitpanel-mobile-toggle" data-toggle-fitpanel aria-expanded="${PANEL_OPEN}" aria-controls="fitpanel-contents">
-      <span>Your fit so far · ${answered.length} answer${answered.length===1?'':'s'}</span>${icon('chevron',20)}</button>
-    <div class="fitpanel"><div class="fitpanel__contents ${PANEL_OPEN?'is-open':''}" id="fitpanel-contents">${contents}</div></div></aside>`;
-}
-
-function fitContents(match, confirmed, provisional, facts, venues, note, planBlock) {
-  return `<h2>Your fit, so far</h2>
-    <div class="fitpanel__facts">${facts||'<p class="small muted">Nothing yet — Urby is about to ask.</p>'}</div>
-    ${venues.length?`<hr><div class="fitpanel__label">Nearby venues we found for you</div><div class="venue-strip">${venues.map(v=>venueCard(v)).join('')}</div>
-      ${match.widened?`<p class="xsmall muted" style="margin-top:10px">Looked a little further out to find enough options.</p>`:''}`:''}
-    ${provisional?`<hr><div class="fitpanel__label">${confirmed?'Your membership':'Looking like a fit'}</div>${planBlock}`:''}
-    ${note}`;
-}
-
-/* Just the panel's contents, for the recommendation screen where the aside is
-   already a column of its own. */
-function fitPanelContents(match, confirmed) {
-  const answered = QUESTIONS.filter(q=>isAnswered(S.answers[q.id]));
-  const facts = QUESTIONS.map(q=>{
-    const l=answerLabel(q.id,S.answers[q.id]); if(!l) return '';
-    const text = q.id==='area' ? (areaIds(S.answers.area).includes('anywhere') ? 'Anywhere in Berlin' : 'Berlin · '+l) : l;
-    return `<div class="fitpanel__fact">${icon(q.icon,21)}<span>${esc(text)}</span></div>`;
-  }).filter(Boolean).join('');
-  return `<div class="fitpanel"><div class="fitpanel__contents is-open">
-    <h2>Your answers</h2>
-    <div class="fitpanel__facts">${facts||'<p class="small muted">Nothing yet.</p>'}</div>
-    <p class="xsmall muted" style="margin-top:18px">Change any of these from &ldquo;Change an answer&rdquo; and everything on this page recalculates.</p>
-  </div></div>`;
-}
-
-/* Included with the membership and never mentioned on the pricing page: the app
-   catalogue. It sits next to the venues because it is the same question — what do
-   I actually get — and it is honest about the one condition attached to it. */
 function appsBlock() {
   if (!APPS.length) return '';
   const mine = appsFor(S.commitmentId);
@@ -1561,35 +1493,34 @@ function appsBlock() {
     </summary>
     <div class="rowcard__body">
       ${locked ? `
-      <div class="apps-upsell-card">
-        <div class="apps-upsell-card__badge">✨ Included with 12- &amp; 24-Month Memberships</div>
-        <div class="apps-upsell-card__head">
-          <div class="apps-upsell-card__title">Included Free Digital Partner Apps</div>
-          <span class="apps-upsell-card__value">Save up to 15 € / mo</span>
+      <div class="apps-upsell-strip">
+        <div class="apps-upsell-strip__info">
+          <div class="apps-upsell-strip__title">
+            <span>✨ Digital apps included free on 12- &amp; 24-month plans</span>
+            <span class="apps-upsell-strip__tag">Save ~15 € / mo</span>
+          </div>
+          <p class="apps-upsell-strip__sub">1 app on 12-month, 2 on 24-month &middot; Switch between apps anytime in your USC account.</p>
         </div>
-        <p class="apps-upsell-card__desc">Choose from top partner apps for yoga, running cadence, recovery coaching, and sleep. You can switch between apps anytime in your USC account.</p>
-        <div class="apps-upsell-card__actions">
+        <div class="apps-upsell-strip__actions">
           <button class="btn btn--sm btn--primary" type="button" data-commit="annual">
-            ${icon('checkThin', 14)} Switch to 12-month (1 app included)
+            Switch to 12-mo
           </button>
           <button class="btn btn--sm btn--secondary" type="button" data-commit="biennial">
-            Switch to 24-month (2 apps included)
+            24-mo (2 apps)
           </button>
         </div>
       </div>
       ` : slots === 1 ? `
-      <div class="apps-status-card">
-        <div class="apps-status-card__icon">${icon('checkThin', 14)}</div>
-        <div class="apps-status-card__text">
-          <strong>1 digital app included with your 12-month plan.</strong> Tap any app below to see features. You can activate and switch apps whenever you like.
+      <div class="apps-status-strip">
+        <div class="apps-status-strip__text">
+          <strong>✓ 1 digital app included with your 12-month plan.</strong> Tap any app below to see details.
         </div>
         <button class="linkish font-bold" type="button" data-commit="biennial">Want 2 apps? 24-mo plan &rarr;</button>
       </div>
       ` : `
-      <div class="apps-status-card">
-        <div class="apps-status-card__icon">${icon('checkThin', 14)}</div>
-        <div class="apps-status-card__text">
-          <strong>2 digital apps included with your 24-month plan.</strong> Maximum digital allowance — activate and switch between any two apps at will.
+      <div class="apps-status-strip">
+        <div class="apps-status-strip__text">
+          <strong>✓ 2 digital apps included with your 24-month plan.</strong> Maximum digital allowance active.
         </div>
       </div>
       `}
@@ -1600,6 +1531,7 @@ function appsBlock() {
         <span class="apps__note">${ranked.matched && groups.length
           ? `Closest to ${esc(groupWords(groups))} first`
           : `From the published catalogue`} &middot; Tap any app for details</span>
+      </div>
     </div>
   </details>`;
 }

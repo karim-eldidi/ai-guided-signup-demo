@@ -2011,185 +2011,211 @@ button.appcard:hover .appcard__info-icon {
   opacity: 1;
 }
 
-/* App Catalog Upsell & Status Banners */
-.apps-upsell-card {
-  background: linear-gradient(135deg, #fffbee 0%, #fff 100%);
-  border: 1.5px solid #f2d16b;
-  border-radius: var(--radius-lg);
-  padding: 16px 20px;
-  margin-bottom: 16px;
+/* App Catalog Upsell & Status Strips */
+.apps-upsell-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: #fdfbf7;
+  border: 1px solid #ebdcb0;
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  margin-bottom: 14px;
   width: 100%;
 }
-.apps-upsell-card__badge {
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: .06em;
-  color: #925c00;
-  text-transform: uppercase;
-  margin-bottom: 6px;
+.apps-upsell-strip__info {
+  flex: 1 1 auto;
+  min-width: 0;
 }
-.apps-upsell-card__head {
+.apps-upsell-strip__title {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--ink);
   flex-wrap: wrap;
 }
-.apps-upsell-card__title {
-  font-size: 16px;
-  font-weight: 800;
-  color: var(--ink);
-}
-.apps-upsell-card__value {
-  font-size: 12px;
+.apps-upsell-strip__tag {
+  font-size: 11px;
   font-weight: 700;
   color: #0d8a4e;
   background: #eafaf1;
-  padding: 3px 8px;
+  padding: 2px 7px;
   border-radius: 999px;
 }
-.apps-upsell-card__desc {
-  font-size: 13.5px;
-  color: var(--navy);
-  line-height: 1.45;
-  margin: 6px 0 14px;
+.apps-upsell-strip__sub {
+  font-size: 12px;
+  color: var(--navy-soft);
+  margin: 3px 0 0;
+  line-height: 1.35;
 }
-.apps-upsell-card__actions {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-.apps-status-card {
+.apps-upsell-strip__actions {
   display: flex;
   align-items: center;
-  gap: 12px;
-  background: #eefcf4;
-  border: 1px solid #b7ecd0;
-  border-radius: var(--radius-md);
-  padding: 12px 16px;
-  margin-bottom: 16px;
-  width: 100%;
-  font-size: 13.5px;
-  color: var(--navy);
-}
-.apps-status-card__icon {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: #0d8a4e;
-  color: #fff;
-  display: grid;
-  place-items: center;
+  gap: 8px;
   flex: 0 0 auto;
-  font-weight: 800;
-  font-size: 13px;
 }
-.apps-status-card__text {
+.apps-upsell-strip__actions .btn {
+  height: 34px !important;
+  padding: 0 14px !important;
+  font-size: 12.5px !important;
+  font-weight: 700 !important;
+  border-radius: 999px !important;
+  white-space: nowrap;
+}
+.apps-status-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: #f2fbf6;
+  border: 1px solid #c2ebd5;
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  width: 100%;
+  font-size: 13px;
+  color: var(--ink);
+}
+.apps-status-strip__text {
   flex: 1 1 auto;
   min-width: 0;
 }
 
-/* App Detail Sheet Modal */
-.sheet--app .sheet__panel {
-  max-width: 520px;
-  padding: 28px 24px 24px;
+@media (max-width: 600px) {
+  .apps-upsell-strip {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .apps-upsell-strip__actions {
+    width: 100%;
+  }
+  .apps-upsell-strip__actions .btn {
+    flex: 1 1 auto;
+    text-align: center;
+  }
 }
-.app-sheet__head {
+
+/* App Detail Pop-up Sheet */
+.sheet--app .sheet__panel {
+  max-width: 420px;
+  padding: 24px 22px 20px;
+  border-radius: 20px 20px 0 0;
+}
+@media (min-width: 600px) {
+  .sheet--app .sheet__panel {
+    border-radius: 20px;
+  }
+}
+.app-popup {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.app-popup__head {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 18px;
+  gap: 14px;
 }
-.app-sheet__logo-wrap {
-  width: 60px;
-  height: 60px;
-  border-radius: 14px;
+.app-popup__logo-box {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
   background: var(--yellow-pale);
   display: grid;
   place-items: center;
   flex: 0 0 auto;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
 }
-.app-sheet__logo-wrap .appcard__logo {
-  width: 60px;
-  height: 60px;
+.app-popup__logo-box .appcard__logo {
+  width: 50px;
+  height: 50px;
   border-radius: 0;
 }
-.app-sheet__logo-wrap .appcard__logo img {
-  padding: 6px;
+.app-popup__logo-box .appcard__logo img {
+  padding: 5px;
 }
-.app-sheet__logo-wrap .appcard__logo b {
-  font-size: 24px;
+.app-popup__logo-box .appcard__logo b {
+  font-size: 20px;
 }
-.app-sheet__info {
+.app-popup__title-group {
   flex: 1 1 auto;
   min-width: 0;
 }
-.app-sheet__cat-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 4px;
-}
-.app-sheet__cat {
-  font-size: 11.5px;
+.app-popup__cat {
+  display: inline-block;
+  font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: .04em;
+  letter-spacing: .05em;
   color: var(--navy-soft);
+  margin-bottom: 2px;
 }
-.app-sheet__title {
-  font-size: 22px;
+.app-popup__name {
+  font-size: 20px;
   font-weight: 800;
   letter-spacing: -.02em;
   margin: 0;
   color: var(--ink);
+  line-height: 1.2;
 }
-.app-sheet__blurb {
-  font-size: 15.5px;
-  font-weight: 700;
-  line-height: 1.4;
+.app-popup__pitch {
+  font-size: 14.5px;
+  font-weight: 600;
+  line-height: 1.45;
   color: var(--ink);
-  margin: 0 0 10px;
+  margin: 0;
 }
-.app-sheet__details {
-  font-size: 14px;
-  color: var(--navy);
-  line-height: 1.5;
-  margin: 0 0 16px;
-}
-.app-sheet__perks-card {
+.app-popup__facts {
   background: var(--cream);
   border: 1px solid var(--cream-line);
-  border-radius: var(--radius-md);
-  padding: 14px 16px;
-  margin-bottom: 20px;
-}
-.app-sheet__perks-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13.5px;
-  font-weight: 800;
-  color: var(--ink);
-  margin-bottom: 8px;
-}
-.app-sheet__perks-list {
-  margin: 0;
-  padding-left: 18px;
-  font-size: 12.5px;
-  line-height: 1.5;
-  color: var(--navy);
-}
-.app-sheet__perks-list li {
-  margin-bottom: 4px;
-}
-.app-sheet__actions {
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;
+}
+.app-popup__fact {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--navy);
+}
+.app-popup__fact-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ink);
+  flex: 0 0 auto;
+  transform: translateY(-2px);
+}
+.app-popup__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+.app-popup__cta {
+  height: 38px !important;
+  padding: 0 18px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  border-radius: 999px !important;
+  flex: 1 1 auto;
+}
+.app-popup__dismiss {
+  font-size: 12.5px;
+  color: var(--navy-soft);
+  flex: 0 0 auto;
+  padding: 6px;
 }
 
 .apps__foot {
