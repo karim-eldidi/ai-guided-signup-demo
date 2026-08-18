@@ -24,6 +24,8 @@ export const icons = {
   chevronDown: (s) => wrap('<path d="M5 9l7 7 7-7"/>', s),
   tag: (s) => wrap('<path d="M12.6 3.5H20v7.4l-9 9-8-8Z"/><circle cx="16.2" cy="7.3" r="1.5"/>', s),
   card: (s) => wrap('<rect x="3" y="5.5" width="18" height="13" rx="2.2"/><path d="M3 10h18"/>', s),
+  paypal: (s) => wrap('<path d="M6.5 20.5l1.6-11h4.4c2.8 0 4.6 1.4 4.2 4.1-.4 2.8-2.5 4.6-5.3 4.6h-2l-.9 5.3h-2z"/>', s),
+  wallet: (s) => wrap('<rect x="3" y="6" width="18" height="12" rx="2.2"/><path d="M15 12h3"/>', s),
   bank: (s) => wrap('<path d="M4 10 12 4.5 20 10"/><path d="M5.5 10v9h13v-9"/><path d="M4 19.5h16"/>', s),
   lock: (s) => wrap('<rect x="5" y="10.5" width="14" height="9.5" rx="2"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5"/>', s),
   info: (s) => wrap('<circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5M12 8.2v.1"/>', s),

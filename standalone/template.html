@@ -204,6 +204,8 @@ const ICONS = {
   arrowRight:'<path d="M4 12h15"/><path d="M13 6l6 6-6 6"/>', chevron:'<path d="M9 5l7 7-7 7"/>', chevronDown:'<path d="M5 9l7 7 7-7"/>', back:'<path d="M15 19l-7-7 7-7"/>',
   tag:'<path d="M12.6 3.5H20v7.4l-9 9-8-8Z"/><circle cx="16.2" cy="7.3" r="1.5"/>',
   card:'<rect x="3" y="5.5" width="18" height="13" rx="2.2"/><path d="M3 10h18"/>',
+  paypal:'<path d="M6.5 20.5l1.6-11h4.4c2.8 0 4.6 1.4 4.2 4.1-.4 2.8-2.5 4.6-5.3 4.6h-2l-.9 5.3h-2z"/>',
+  wallet:'<rect x="3" y="6" width="18" height="12" rx="2.2"/><path d="M15 12h3"/>',
   bank:'<path d="M3.5 20.5h17M5 20.5V10m14 10.5V10M3 10l9-5.5L21 10M9.5 20.5v-5.2h5v5.2"/>',
   lock:'<rect x="5" y="10.5" width="14" height="9.5" rx="2"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5"/>',
   info:'<circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5M12 8.2v.1"/>',
@@ -3112,7 +3114,7 @@ function paymentScreen() {
   const plan = currentPlan(), commitment = commitmentById(S.commitmentId), price = priceFor(plan,S.commitmentId);
   const each = perSession(price, S.answers.frequency, plan);
   const renewal = commitment.renewal;
-  const method = FIELDS.method||'sepa';
+  const method = FIELDS.method||'card';
   const match = matchVenues(A());
   const where = whereName(match);
   const memberName = ((S.details.firstName||'')+' '+(S.details.lastName||'')).trim()||'New Member';
@@ -3134,14 +3136,6 @@ function paymentScreen() {
               <span>Choose payment method</span>
             </div>
             <div class="options">
-              <label class="option-card ${method==='sepa'?'is-selected':''}" data-card>
-                <input class="option-card__input" type="radio" name="method" value="sepa" ${method==='sepa'?'checked':''}>
-                <span class="option-card__icon">${icon('bank',21)}<span class="option-card__check">${icon('checkThin',17)}</span></span>
-                <span class="option-card__label">
-                  <strong>SEPA direct debit</strong>
-                  <span class="xsmall muted" style="display:block;font-weight:400;margin-top:2px">DE standard &middot; Eurozone bank account</span>
-                </span>
-              </label>
               <label class="option-card ${method==='card'?'is-selected':''}" data-card>
                 <input class="option-card__input" type="radio" name="method" value="card" ${method==='card'?'checked':''}>
                 <span class="option-card__icon">${icon('card',21)}<span class="option-card__check">${icon('checkThin',17)}</span></span>
@@ -3150,9 +3144,25 @@ function paymentScreen() {
                   <span class="xsmall muted" style="display:block;font-weight:400;margin-top:2px">Visa, Mastercard, Amex</span>
                 </span>
               </label>
+              <label class="option-card ${method==='paypal'?'is-selected':''}" data-card>
+                <input class="option-card__input" type="radio" name="method" value="paypal" ${method==='paypal'?'checked':''}>
+                <span class="option-card__icon">${icon('paypal',21)}<span class="option-card__check">${icon('checkThin',17)}</span></span>
+                <span class="option-card__label">
+                  <strong>PayPal</strong>
+                  <span class="xsmall muted" style="display:block;font-weight:400;margin-top:2px">Fast &amp; secure checkout with PayPal</span>
+                </span>
+              </label>
+              <label class="option-card ${method==='wallet'?'is-selected':''}" data-card>
+                <input class="option-card__input" type="radio" name="method" value="wallet" ${method==='wallet'?'checked':''}>
+                <span class="option-card__icon">${icon('wallet',21)}<span class="option-card__check">${icon('checkThin',17)}</span></span>
+                <span class="option-card__label">
+                  <strong>Apple Pay &amp; Google Pay</strong>
+                  <span class="xsmall muted" style="display:block;font-weight:400;margin-top:2px">1-tap device checkout</span>
+                </span>
+              </label>
             </div>
             <div class="pay-mock-notice">
-              ${icon('lock',14)} <span>In production, this is where the secure Adyen drop-in is embedded. Payment is simulated in this pilot.</span>
+              ${icon('lock',14)} <span>Powered by Adyen. In production, this is where the secure Adyen drop-in is embedded. Payment is simulated in this pilot.</span>
             </div>
           </div>
 
@@ -3446,7 +3456,7 @@ function confirmationScreen() {
               </div>
               <div class="confirm-receipt-row">
                 <span class="muted">Payment</span>
-                <span>${FIELDS.method==='card'?'Card':'SEPA Debit'}</span>
+                <span>${FIELDS.method==='paypal'?'PayPal':FIELDS.method==='wallet'?'Apple / Google Pay':'Credit / Debit Card'}</span>
               </div>
               <div class="confirm-receipt-row">
                 <span class="muted">Email</span>
@@ -4763,7 +4773,7 @@ document.addEventListener('submit', e => {
   }
 
   if (kind === 'payment') {
-    FIELDS.method = fd.get('method')||'sepa';
+    FIELDS.method = fd.get('method')||'card';
     S.paid = true; S.lastStep = 'converted';
     log('payment_simulated',{ method:FIELDS.method, planId:S.chosenPlanId }); log('converted',{ planId:S.chosenPlanId });
     go('confirmation'); return;

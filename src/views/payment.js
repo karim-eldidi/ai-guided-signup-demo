@@ -6,7 +6,7 @@ import { planById, priceFor, commitmentById } from '../recommend.js';
  * Payment screen — the full order summary before anything is confirmed.
  * Non-production: no card data is collected, nothing is charged, no PSP is contacted.
  */
-export function paymentPage({ planId, commitmentId, details, startDate, method = 'sepa', errors = {} }) {
+export function paymentPage({ planId, commitmentId, details, startDate, method = 'card', errors = {} }) {
   const plan = planById(planId);
   const commitment = commitmentById(commitmentId);
   const price = priceFor(plan, commitmentId);
@@ -49,20 +49,26 @@ export function paymentPage({ planId, commitmentId, details, startDate, method =
       <div class="card">
         <div class="fitpanel__label">Payment method</div>
         <div class="options">
-          <label class="option-card ${method === 'sepa' ? 'is-selected' : ''}">
-            <input type="radio" name="method" value="sepa" ${method === 'sepa' ? 'checked' : ''} style="position:absolute;opacity:0;width:0;height:0">
-            <span class="option-card__icon">${icon('bank', 21)}</span>
-            <span class="option-card__label">SEPA direct debit <span class="xsmall muted strong" style="display:block;font-weight:400">Most common in Germany</span></span>
-            <span class="option-card__check">${icon('checkThin', 17)}</span>
-          </label>
           <label class="option-card ${method === 'card' ? 'is-selected' : ''}">
             <input type="radio" name="method" value="card" ${method === 'card' ? 'checked' : ''} style="position:absolute;opacity:0;width:0;height:0">
             <span class="option-card__icon">${icon('card', 21)}</span>
-            <span class="option-card__label">Card <span class="xsmall muted strong" style="display:block;font-weight:400">Visa, Mastercard</span></span>
+            <span class="option-card__label">Credit or debit card <span class="xsmall muted strong" style="display:block;font-weight:400">Visa, Mastercard, Amex</span></span>
+            <span class="option-card__check">${icon('checkThin', 17)}</span>
+          </label>
+          <label class="option-card ${method === 'paypal' ? 'is-selected' : ''}">
+            <input type="radio" name="method" value="paypal" ${method === 'paypal' ? 'checked' : ''} style="position:absolute;opacity:0;width:0;height:0">
+            <span class="option-card__icon">${icon('paypal', 21)}</span>
+            <span class="option-card__label">PayPal <span class="xsmall muted strong" style="display:block;font-weight:400">Fast and secure checkout</span></span>
+            <span class="option-card__check">${icon('checkThin', 17)}</span>
+          </label>
+          <label class="option-card ${method === 'wallet' ? 'is-selected' : ''}">
+            <input type="radio" name="method" value="wallet" ${method === 'wallet' ? 'checked' : ''} style="position:absolute;opacity:0;width:0;height:0">
+            <span class="option-card__icon">${icon('wallet', 21)}</span>
+            <span class="option-card__label">Apple Pay &amp; Google Pay <span class="xsmall muted strong" style="display:block;font-weight:400">1-tap device checkout</span></span>
             <span class="option-card__check">${icon('checkThin', 17)}</span>
           </label>
         </div>
-        <p class="xsmall muted" style="margin-top:16px">${icon('lock', 14)} In production this is where the existing Adyen drop-in would be embedded. It is deliberately left out of the pilot.</p>
+        <p class="xsmall muted" style="margin-top:16px">${icon('lock', 14)} Powered by Adyen. In production this is where the existing Adyen drop-in would be embedded.</p>
         ${errors.method ? `<div class="field-error">${esc(errors.method)}</div>` : ''}
       </div>
 

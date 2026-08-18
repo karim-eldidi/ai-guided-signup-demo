@@ -494,7 +494,7 @@ const server = createServer(async (req, res) => {
       if (!session.details) return redirect(res, '/details');
 
       const form = await readBody(req);
-      const method = form.method === 'card' ? 'card' : 'sepa';
+      const method = form.method || 'card';
 
       // Simulated only. No payment provider is contacted and no card data is collected.
       updateSession(session.id, { payment_status: 'simulated_paid', last_step: 'converted' });
