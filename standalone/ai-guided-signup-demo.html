@@ -2788,70 +2788,139 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   text-transform: none; letter-spacing: 0; font-size: 15px; color: var(--navy);
 }
 
-/* Unified Story Container */
-.reco-story-card {
-  background: #fff; border: 1px solid rgba(0,0,0,0.07);
-  border-radius: var(--radius-xl); padding: 22px 24px; margin-bottom: 24px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+/* Reco Top Tabs (Underline Style) */
+.reco-tabs {
+  display: flex; gap: 24px; border-bottom: 1.5px solid rgba(0,0,0,0.08); margin: 0 0 20px;
 }
-.reco-story-card .reco-hero__title {
-  margin: 4px 0 16px; font-size: 26px; line-height: 1.2;
+.reco-tab {
+  background: none; border: 0; padding: 10px 0; font-size: 16px; font-weight: 700;
+  color: var(--navy-soft); cursor: pointer; border-bottom: 2.5px solid transparent;
+  margin-bottom: -2px; display: inline-flex; align-items: center; gap: 8px;
+  transition: all .15s ease;
 }
-.reco-story-card .reco-switcher {
-  margin: 0 0 16px;
+.reco-tab:hover { color: var(--ink); }
+.reco-tab.is-active {
+  color: var(--ink); border-bottom-color: var(--ink); font-weight: 800;
 }
-.reco-story-card .chips-row {
-  margin: 0 0 18px; padding-bottom: 16px; border-bottom: 1px solid rgba(0,0,0,0.06);
-}
-.reco-story-card__canvas .pillar-card {
-  box-shadow: none; border: 1px solid rgba(0,0,0,0.07); background: #fafafa;
-}
-.reco-story-card__canvas .pillar-venue {
-  background: #fff; border: 1px solid rgba(0,0,0,0.04);
+.reco-tab__badge {
+  background: var(--yellow-pale); color: #855800; font-size: 11.5px; font-weight: 800;
+  padding: 2px 7px; border-radius: 9999px;
 }
 
-/* Recommendation View Switcher (Clean Segmented Control) */
-.reco-switcher {
-  display: inline-flex; gap: 4px; background: rgba(0,0,0,0.05);
-  padding: 4px; border-radius: 9999px; margin-bottom: 18px; max-width: 100%;
+/* Made For You Section */
+.made-for-you {
+  margin-bottom: 24px;
 }
-.reco-switcher__tab {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: transparent; border: 0; padding: 8px 18px; border-radius: 9999px;
-  font-size: 13.5px; font-weight: 700; color: var(--navy); cursor: pointer; transition: all .16s ease;
+.made-for-you__head {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 14px;
 }
-.reco-switcher__tab:hover { color: var(--ink); }
-.reco-switcher__tab.is-active {
-  background: #fff; color: var(--ink); box-shadow: 0 1px 4px rgba(0,0,0,0.08); font-weight: 800;
+.made-for-you__title {
+  font-size: 21px; font-weight: 800; margin: 0; color: var(--ink); letter-spacing: -.01em;
+}
+.made-for-you__sub {
+  font-size: 13px; color: var(--navy-soft); margin: 2px 0 0;
+}
+.made-for-you__why {
+  font-size: 13px; font-weight: 700; color: var(--navy); display: inline-flex; align-items: center; gap: 4px;
 }
 
-/* Activity Freedom Pillars */
-.pillars-section {
-  margin-bottom: 22px;
+/* Category Filter Pills (Horizontal Scroll) */
+.category-pills {
+  display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 18px;
+  scrollbar-width: none;
 }
-.pillars-list {
-  display: flex; flex-direction: column; gap: 12px;
+.category-pills::-webkit-scrollbar { display: none; }
+.category-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: #fff; border: 1px solid rgba(0,0,0,0.1); border-radius: 9999px;
+  padding: 6px 14px; font-size: 13px; font-weight: 700; color: var(--ink);
+  cursor: pointer; white-space: nowrap; transition: all .16s ease;
 }
-.pillar-card {
-  background: #fff; border: 1px solid rgba(0,0,0,0.07);
-  border-radius: var(--radius-lg); padding: 16px 18px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+.category-pill:hover {
+  background: var(--yellow-pale); border-color: var(--cream-line);
 }
-.pillar-card__head {
-  display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+.category-pill.is-active {
+  background: var(--ink); color: #fff; border-color: var(--ink); font-weight: 800;
 }
-.pillar-card__icon {
-  flex: 0 0 auto; width: 32px; height: 32px; border-radius: 50%;
-  background: var(--yellow-pale); display: grid; place-items: center; color: var(--ink);
+
+/* Activity Cards Gallery (Responsive Grid / Cards) */
+.activity-gallery {
+  margin-bottom: 16px;
 }
-.pillar-card__titlebox {
-  display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex: 1 1 auto;
+.activity-gallery__track {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px;
 }
-.pillar-card__title {
-  font-size: 15.5px; font-weight: 800; margin: 0; color: var(--ink);
+@media (max-width: 600px) {
+  .activity-gallery__track {
+    display: flex; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 10px;
+  }
+  .activity-card {
+    flex: 0 0 220px; scroll-snap-align: start;
+  }
 }
-.pillar-card__allowance {
-  font-size: 12.5px; color: var(--navy-soft); font-weight: 600;
+.activity-card {
+  background: #fff; border: 1px solid rgba(0,0,0,0.08); border-radius: 14px;
+  overflow: hidden; position: relative; display: flex; flex-direction: column;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02); transition: transform .15s ease, box-shadow .15s ease;
+}
+.activity-card:hover {
+  transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+}
+.activity-card__badge {
+  position: absolute; top: 8px; left: 8px; z-index: 2;
+  background: rgba(253, 243, 207, 0.95); color: #855800; font-size: 11px; font-weight: 800;
+  padding: 3px 8px; border-radius: 6px; backdrop-filter: blur(4px);
+}
+.activity-card__media-btn {
+  position: relative; width: 100%; aspect-ratio: 4/3; background: #f0f2f5;
+  border: 0; padding: 0; cursor: pointer; overflow: hidden;
+}
+.activity-card__media {
+  position: absolute; inset: 0; width: 100%; height: 100%; display: block;
+}
+.activity-card__media img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+}
+.activity-card__icon-badge {
+  position: absolute; bottom: 8px; left: 10px; z-index: 3;
+  width: 30px; height: 30px; border-radius: 50%; background: var(--yellow-pale);
+  border: 2px solid #fff; display: grid; place-items: center; color: var(--ink);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+}
+.activity-card__content {
+  padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 3px; flex: 1 1 auto;
+}
+.activity-card__activity {
+  font-size: 14.5px; font-weight: 800; color: var(--ink);
+}
+.activity-card__vname {
+  font-size: 13px; color: var(--navy-soft); text-align: left;
+  background: none; border: 0; padding: 0; cursor: pointer;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.activity-card__vname:hover {
+  text-decoration: underline; color: var(--ink);
+}
+.activity-card__meta {
+  font-size: 12px; color: var(--navy-soft); margin-bottom: 8px;
+  display: flex; align-items: center; gap: 6px;
+}
+.activity-card .btn-pill {
+  margin-top: auto; width: 100%; justify-content: center;
+  background: #fff; border: 1px solid rgba(0,0,0,0.12); font-weight: 700;
+}
+.activity-card .btn-pill:hover {
+  background: var(--yellow-pale); border-color: var(--ink);
+}
+.made-for-you__foot {
+  margin-top: 14px; text-align: center;
+}
+
+.rowcard--explore .rowcard__link-btn {
+  margin-left: auto; font-size: 14px; font-weight: 700; color: var(--navy);
+}
+.rowcard--explore:hover .rowcard__link-btn {
+  color: var(--ink); text-decoration: underline;
 }
 .pillar-card__remove {
   background: none; border: 0; color: var(--navy-soft); cursor: pointer; font-size: 14px; padding: 2px 6px; border-radius: 4px;
@@ -3685,7 +3754,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 18 Aug 08:00 UTC</span>
+  <span class="demo-banner__build">build 18 Aug 11:10 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -4550,10 +4619,11 @@ let VENUEQ='';
 /* The venue page. WHEREPICK is its location picker, SEEALL is whether the row of places
    has been opened out into the full list. Neither is an answer, so neither lives in S. */
 let WHEREPICK=false, SEEALL=false;
-let RECO_VIEW='pillars'; /* 'pillars' (activity & freedom) or 'week' (day-by-day schedule) */
+let RECO_VIEW='pillars'; /* 'pillars' (activities gallery) or 'week' (day-by-day schedule) */
 let EXPANDED_PILLARS={};
 let CUSTOMIZER_OPEN=false;
 let EXCLUDED_VENUES=new Set();
+let ACTIVE_CATEGORY_FILTER='all';
 /* In production the neighbourhood comes from the browser or the IP. The pilot has no map
    service, so the page starts from one real Berlin area and says out loud that it guessed
    — the same contract the city chip already keeps (rules 6 and 26). It is never written
@@ -5935,84 +6005,87 @@ function recommendationScreen() {
       &mdash; the ${esc(gap.activity.toLowerCase())} option that completes your week.</span></p>`:''}
   </section>` : '';
 
-  const unchosenGroups = ACTIVITY_GROUPS.filter(g => !groups.some(cg => (cg.id||cg) === g.id));
-  const addSportsShelf = unchosenGroups.length ? `<div class="add-sports-shelf">
-    <span class="add-sports-shelf__label">Add another sport:</span>
-    <div class="add-sports-shelf__pills">
-      ${unchosenGroups.map(g => `<button class="add-sport-btn" type="button" data-add-activity="${esc(g.id)}">${icon(g.icon, 13)} <span>+ ${esc(g.label)}</span></button>`).join('')}
-    </div>
-  </div>` : '';
+  const displayGroups = ACTIVE_CATEGORY_FILTER === 'all' 
+    ? (groups.length ? groups : ACTIVITY_GROUPS.slice(0, 4))
+    : ACTIVITY_GROUPS.filter(g => g.id === ACTIVE_CATEGORY_FILTER);
 
-  const pillarsBlock = groups.length ? `<section class="pillars-section" data-drop-freedom="true">
-    <div class="pillars-list">
-      ${groups.map(g => {
-        const grp = groupById(g.id || g);
-        if (!grp) return '';
-        const grpAllVenues = pool.filter(v => venueInGroup(v, grp) && !EXCLUDED_VENUES.has(v.id));
-        const isExp = Boolean(EXPANDED_PILLARS[grp.id]);
-        const grpVenues = isExp ? grpAllVenues.slice(0, 6) : grpAllVenues.slice(0, 2);
-        const moreCount = grpAllVenues.length - 2;
-        return `<div class="pillar-card" data-activity-id="${esc(grp.id)}" draggable="true" data-drag-pillar="${esc(grp.id)}" title="Drag away or click 🗑️ to remove this sport">
-          <div class="pillar-card__head">
-            <span class="pillar-card__icon">${icon(grp.icon, 18)}</span>
-            <div class="pillar-card__titlebox">
-              <h3 class="pillar-card__title">${esc(grp.label)}</h3>
-              <span class="pillar-card__allowance">4 visits / mo per venue &middot; Included in ${esc(plan.name)}</span>
+  const curatedCards = [];
+  displayGroups.forEach(g => {
+    const grp = groupById(g.id || g);
+    if (!grp) return;
+    const grpVenues = pool.filter(v => venueInGroup(v, grp) && !EXCLUDED_VENUES.has(v.id));
+    const take = ACTIVE_CATEGORY_FILTER === 'all' ? grpVenues.slice(0, 2) : grpVenues;
+    take.forEach(v => {
+      curatedCards.push({ grp, v });
+    });
+  });
+
+  const matchingActivitiesCount = groups.length || ACTIVITY_GROUPS.length;
+  const matchingVenuesCount = (hereT && hereT.included) ? hereT.included : (wanted.length || pool.length);
+
+  const activitiesGalleryBlock = `<section class="made-for-you">
+    <div class="made-for-you__head">
+      <div>
+        <h2 class="made-for-you__title">Made for you</h2>
+        <p class="made-for-you__sub">${matchingActivitiesCount} activities &middot; ${matchingVenuesCount} places &middot; Based on your goals</p>
+      </div>
+      <button class="made-for-you__why linkish strong" type="button" data-more="why">Why these? ${icon('info', 14)}</button>
+    </div>
+
+    <div class="category-pills" role="tablist" aria-label="Filter by sport">
+      <button class="category-pill ${ACTIVE_CATEGORY_FILTER === 'all' ? 'is-active' : ''}" type="button" data-filter-category="all">
+        ${icon('grid', 13)} <span>All</span>
+      </button>
+      ${ACTIVITY_GROUPS.map(g => `
+        <button class="category-pill ${ACTIVE_CATEGORY_FILTER === g.id ? 'is-active' : ''}" type="button" data-filter-category="${esc(g.id)}">
+          ${icon(g.icon, 13)} <span>${esc(g.label)}</span>
+        </button>
+      `).join('')}
+    </div>
+
+    <div class="activity-gallery">
+      <div class="activity-gallery__track">
+        ${curatedCards.map(({ grp, v }) => {
+          const inPlan = includedIn(v, plan.id);
+          const tier = v.tier ? (v.tier === 'premium' ? 'Premium' : v.tier === 'plus' ? 'Plus' : 'Standard') : '';
+          const tierBadge = tier ? `<span class="tier-tag tier-tag--${v.tier}">${tier}</span>` : '';
+          const baseScore = 97 - Math.round(v.distanceKm * 2.2) - (v.tier === 'premium' ? 3 : v.tier === 'plus' ? 1 : 0);
+          const matchPct = Math.max(89, Math.min(98, baseScore));
+          const areaLabel = v.nearestArea ? v.nearestArea.name : (AREAS.find(a=>a.id===v.area)||{}).name || '';
+          const distLabel = areaLabel ? `${v.distanceKm} km from ${esc(areaLabel)}` : `${v.distanceKm} km away`;
+          return `<div class="activity-card ${inPlan ? '' : 'is-locked'}" draggable="true" data-drag-venue="${esc(v.id)}" data-drag-name="${esc(v.name)}" title="Drag onto your week or click to view">
+            <div class="activity-card__badge">${matchPct}% match</div>
+            <button class="activity-card__media-btn" data-venue="${esc(v.id)}" aria-label="Details about ${esc(v.name)}">
+              <span class="activity-card__media">${venueMedia(v)}</span>
+              <span class="activity-card__icon-badge">${icon(grp.icon, 16)}</span>
+            </button>
+            <div class="activity-card__content">
+              <div class="activity-card__activity"><b>${esc(grp.label)}</b></div>
+              <button class="activity-card__vname linkish" data-venue="${esc(v.id)}">${esc(v.name)}</button>
+              <div class="activity-card__meta">
+                <span>${v.distanceKm} km</span>
+                ${tierBadge ? `&middot; ${tierBadge}` : ''}
+              </div>
+              <button class="btn-pill btn-pill--sm btn-pill--block" data-open-add-venue="${esc(v.id)}" title="Add to week">
+                ${icon('plus', 11)} <span>Add to week</span>
+              </button>
             </div>
-            ${groups.length > 1 ? `<button class="pillar-card__trash" type="button" data-remove-activity="${esc(grp.id)}" aria-label="Remove ${esc(grp.label)}" title="Remove this sport from plan">${icon('trash', 14)} <span>Remove</span></button>` : ''}
-          </div>
-          <div class="pillar-card__venues">
-            ${grpVenues.map(v => {
-              const inPlan = includedIn(v, plan.id);
-              const tier = v.tier ? (v.tier === 'premium' ? 'Premium' : v.tier === 'plus' ? 'Plus' : 'Standard') : '';
-              const tierBadge = tier ? `<span class="tier-tag tier-tag--${v.tier}">${tier}</span>` : '';
-              const areaLabel = v.nearestArea ? v.nearestArea.name : (AREAS.find(a=>a.id===v.area)||{}).name || '';
-              const distLabel = areaLabel ? `${v.distanceKm} km from ${esc(areaLabel)}` : `${v.distanceKm} km away`;
-              let accessText = '';
-              if (!inPlan) {
-                const needs = firstPlanWithAccess(v);
-                accessText = `<span class="pillar-venue__needs">Needs ${needs ? esc(needs.name) : 'upgrade'}</span>`;
-              } else if (v.tier === 'plus' || v.tier === 'premium') {
-                accessText = `<span class="pillar-venue__plus-tag">Included &middot; 1 of ${plan.plusCheckIns || 4} Plus visits</span>`;
-              } else {
-                accessText = `Included &middot; Regular check-in`;
-              }
-              return `<div class="pillar-venue ${inPlan ? '' : 'is-locked'}" draggable="true" data-drag-venue="${esc(v.id)}" data-drag-name="${esc(v.name)}" title="Drag onto your week or click to view details">
-                <button class="pillar-venue__media-btn" data-venue="${esc(v.id)}" aria-label="Details about ${esc(v.name)}">
-                  <span class="venue-card__media">${venueMedia(v)}</span>
-                </button>
-                <div class="pillar-venue__info">
-                  <div class="pillar-venue__top">
-                    <button class="pillar-venue__name" data-venue="${esc(v.id)}"><b>${esc(v.name)}</b></button>
-                    ${tierBadge}
-                  </div>
-                  <div class="pillar-venue__sub">${distLabel} &middot; ${accessText}</div>
-                </div>
-                <div class="pillar-venue__action">
-                  <button class="pillar-venue__trash" type="button" data-exclude-venue="${esc(v.id)}" aria-label="Remove ${esc(v.name)}" title="Remove this studio from routine">${icon('trash', 13)}</button>
-                </div>
-              </div>`;
-            }).join('')}
-          </div>
-          ${(!isExp && moreCount > 0) ? `
-          <div class="pillar-card__foot">
-            <button class="pillar-card__expand linkish strong" type="button" data-expand-pillar="${esc(grp.id)}">See ${moreCount} more ${esc(grp.label.toLowerCase())} places &rarr;</button>
-          </div>` : (isExp && moreCount > 0 ? `
-          <div class="pillar-card__foot">
-            <button class="pillar-card__expand linkish strong" type="button" data-expand-pillar="${esc(grp.id)}">Show fewer places &uarr;</button>
-          </div>` : '')}
-        </div>`;
-      }).join('')}
+          </div>`;
+        }).join('')}
+      </div>
     </div>
-    ${addSportsShelf}
-  </section>` : '';
 
-  const viewSwitcher = `<div class="reco-switcher" role="tablist" aria-label="Recommendation view format">
-    <button class="reco-switcher__tab ${RECO_VIEW==='pillars'?'is-active':''}" type="button" data-set-reco-view="pillars" aria-selected="${RECO_VIEW==='pillars'}">
-      ${icon('sparkle',16)} <span>Activity Freedom</span>
+    <div class="made-for-you__foot">
+      <button class="linkish strong" type="button" data-toggle-places>See all activities &rarr;</button>
+    </div>
+  </section>`;
+
+  const recoTabs = `<div class="reco-tabs" role="tablist" aria-label="Recommendation view format">
+    <button class="reco-tab ${RECO_VIEW==='pillars'?'is-active':''}" type="button" data-set-reco-view="pillars" aria-selected="${RECO_VIEW==='pillars'}">
+      Activities
     </button>
-    <button class="reco-switcher__tab ${RECO_VIEW==='week'?'is-active':''}" type="button" data-set-reco-view="week" aria-selected="${RECO_VIEW==='week'}">
-      ${icon('calendar',16)} <span>Week Schedule</span>
+    <button class="reco-tab ${RECO_VIEW==='week'?'is-active':''}" type="button" data-set-reco-view="week" aria-selected="${RECO_VIEW==='week'}">
+      My week <span class="reco-tab__badge">${wp.sessions.length}</span>
     </button>
   </div>`;
 
@@ -6079,12 +6152,10 @@ function recommendationScreen() {
   })() : '';
 
   const planAside = `<div class="planbox">
-    <div class="planbox__head">
-      <div class="planbox__badge">${isRec?'Recommended for you':'Your choice'}</div>
-      <div class="planbox__idrow">
-        <div class="planbox__name">${esc(plan.name)}</div>
-        <div class="planbox__price"><b>${price} €</b><span>/mo</span></div>
-      </div>
+    <div class="planbox__badge">RECOMMENDED FOR YOU</div>
+    <div class="planbox__idrow">
+      <div class="planbox__name">${esc(plan.name)}</div>
+      <div class="planbox__price"><b>${price} €</b><small>/mo</small></div>
     </div>
     <div class="termpick" role="group" aria-label="How long you commit for">
       ${COMMITMENTS.map(c=>{
@@ -6095,12 +6166,13 @@ function recommendationScreen() {
     </div>
     <div class="planbox__factshead">Why this fits you</div>
     <ul class="planbox__facts">
-      ${groups.length ? `<li>${icon('checkThin',16)}<span>Covers your <b>${esc(groups.map(g=>g.label).join(' & '))}</b> routine</span></li>` : ''}
-      ${hereT&&hereT.nearby?`<li>${icon('checkThin',16)}<span>Opens <b>${hereT.included===hereT.nearby ? 'all '+hereT.nearby : hereT.included+' of '+hereT.nearby}</b> places near ${esc(whereName(match))}</span></li>`:''}
-      ${wp.perMonth?`<li>${icon('checkThin',16)}<span>Matches your <b>${plural(wp.perMonth,'visit','visits')} / wk goal</b></span></li>`:''}
-      ${each?`<li>${icon('checkThin',16)}<span>About <b>${each} €</b> a session</span></li>`:''}
+      <li>${icon('checkThin',16)} <span>All <b>${hereT && hereT.included ? hereT.included : 6} places</b> are included</span></li>
+      <li>${icon('checkThin',16)} <span><b>${visitsFor(plan)} visits</b> each month</span></li>
+      ${wp.perMonth?`<li>${icon('checkThin',16)} <span>Matches your <b>${wp.perMonth} visits / wk goal</b></span></li>`:''}
+      ${each?`<li>${icon('checkThin',16)} <span>About <b>${each} €</b> a session</span></li>`:''}
+      <li>${icon('checkThin',16)} <span>Flexible &ndash; cancel anytime</span></li>
     </ul>
-    <div class="planbox__cta desktop-cta"><button class="btn btn--primary btn--block" data-go="details">Continue with ${esc(plan.name)}</button></div>
+    <div class="planbox__cta"><button class="btn btn--primary btn--block" data-go="details">Continue with ${esc(plan.name)}</button></div>
     <div class="planbox__foot">
       <p class="planbox__fine">${esc(commitment.label)} &middot; no payment yet</p>
       ${S.email?'':`<button class="linkish planbox__save" type="button" data-go="save">Save this and come back later</button>`}
@@ -6109,19 +6181,17 @@ function recommendationScreen() {
     ${allPlans}
   </div>`;
 
-  const placesSection = `<details class="rowcard rowcard--places"${PLACESOPEN || nq ? ' open' : ''}>
+  const placesSection = `<details class="rowcard rowcard--explore"${PLACESOPEN || nq ? ' open' : ''}>
     <summary class="rowcard__head" data-toggle-places>
       <span class="rowcard__icon">${icon('pin', 22)}</span>
       <div class="rowcard__text">
-        <b>${allVenues.length} studios in ${esc(where)}</b>
-        <div class="rowcard__sub">Drag &amp; drop or tap to add more studios and sports to your plan</div>
+        <b>Looking for something else?</b>
+        <div class="rowcard__sub">Browse all venues in ${esc(where)} and nearby.</div>
       </div>
-      <span class="rowcard__cta btn-pill btn-pill--sm">${icon('plus', 11)} <span>Browse &amp; Add</span> ${icon('chevron', 14)}</span>
+      <span class="rowcard__link-btn strong">Browse all venues &rarr;</span>
+      <span class="rowcard__chev">${icon('chevron', 20)}</span>
     </summary>
     <div class="rowcard__body">
-      <div class="places-tray__hint">
-        ${icon('sparkle', 14)} <span><b>Pro-tip:</b> Drag any studio card straight into your routine above, or tap to explore details and add it.</span>
-      </div>
       <form class="venuesearch places-tray__search" data-form="venue-filter" novalidate style="margin-bottom:14px">
         <span class="venuesearch__icon">${icon('search',15)}</span>
         <input type="search" name="vq" value="${esc(VENUEQ)}" autocomplete="off"
@@ -6179,13 +6249,11 @@ function recommendationScreen() {
 
   return `${topbar(1)}<div class="two-col two-col--reco"><main class="two-col__main" id="main">
     ${heroBlock}
-    <section class="reco-story-card">
-      ${viewSwitcher}
-      ${chipsBlock}
-      <div class="reco-story-card__canvas">
-        ${RECO_VIEW==='pillars' ? pillarsBlock : weekBlock}
-      </div>
-    </section>
+    ${chipsBlock}
+    ${recoTabs}
+    <div class="reco-main-canvas">
+      ${RECO_VIEW==='pillars' ? activitiesGalleryBlock : weekBlock}
+    </div>
     ${placesSection}
     ${appsBlock()}
     ${moreRow}
@@ -6880,8 +6948,15 @@ document.addEventListener('change', e => {
   renderInPlace();
 });
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-change-city],[data-city],[data-unsure],[data-open-ask],[data-rail],[data-radius],[data-toggle-venues],[data-toggle-apps],[data-toggle-week],[data-toggle-places],[data-toggle-more],[data-more],[data-toggle-alt],[data-toggle-plan-details],[data-open-days],[data-day],[data-swap],[data-change-week],[data-add-week],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula],[data-search-example],[data-venue-clear],[data-venue-search-all],[data-toggle-where],[data-where],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-add-activity],[data-remove-activity],[data-expand-pillar],[data-toggle-routine-customizer],[data-remove-day],[data-exclude-venue]');
+  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-change-city],[data-city],[data-unsure],[data-open-ask],[data-rail],[data-radius],[data-toggle-venues],[data-toggle-apps],[data-toggle-week],[data-toggle-places],[data-toggle-more],[data-more],[data-toggle-alt],[data-toggle-plan-details],[data-open-days],[data-day],[data-swap],[data-change-week],[data-add-week],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula],[data-search-example],[data-venue-clear],[data-venue-search-all],[data-toggle-where],[data-where],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-add-activity],[data-remove-activity],[data-expand-pillar],[data-toggle-routine-customizer],[data-remove-day],[data-exclude-venue],[data-filter-category]');
   if (!t) return;
+
+  if (t.dataset.filterCategory) {
+    ACTIVE_CATEGORY_FILTER = t.dataset.filterCategory;
+    log('category_filtered', { category: ACTIVE_CATEGORY_FILTER });
+    render(false);
+    return;
+  }
 
   if (t.dataset.toggleRoutineCustomizer !== undefined) {
     CUSTOMIZER_OPEN = !CUSTOMIZER_OPEN;

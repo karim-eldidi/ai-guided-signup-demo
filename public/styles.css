@@ -2774,70 +2774,139 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   text-transform: none; letter-spacing: 0; font-size: 15px; color: var(--navy);
 }
 
-/* Unified Story Container */
-.reco-story-card {
-  background: #fff; border: 1px solid rgba(0,0,0,0.07);
-  border-radius: var(--radius-xl); padding: 22px 24px; margin-bottom: 24px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+/* Reco Top Tabs (Underline Style) */
+.reco-tabs {
+  display: flex; gap: 24px; border-bottom: 1.5px solid rgba(0,0,0,0.08); margin: 0 0 20px;
 }
-.reco-story-card .reco-hero__title {
-  margin: 4px 0 16px; font-size: 26px; line-height: 1.2;
+.reco-tab {
+  background: none; border: 0; padding: 10px 0; font-size: 16px; font-weight: 700;
+  color: var(--navy-soft); cursor: pointer; border-bottom: 2.5px solid transparent;
+  margin-bottom: -2px; display: inline-flex; align-items: center; gap: 8px;
+  transition: all .15s ease;
 }
-.reco-story-card .reco-switcher {
-  margin: 0 0 16px;
+.reco-tab:hover { color: var(--ink); }
+.reco-tab.is-active {
+  color: var(--ink); border-bottom-color: var(--ink); font-weight: 800;
 }
-.reco-story-card .chips-row {
-  margin: 0 0 18px; padding-bottom: 16px; border-bottom: 1px solid rgba(0,0,0,0.06);
-}
-.reco-story-card__canvas .pillar-card {
-  box-shadow: none; border: 1px solid rgba(0,0,0,0.07); background: #fafafa;
-}
-.reco-story-card__canvas .pillar-venue {
-  background: #fff; border: 1px solid rgba(0,0,0,0.04);
+.reco-tab__badge {
+  background: var(--yellow-pale); color: #855800; font-size: 11.5px; font-weight: 800;
+  padding: 2px 7px; border-radius: 9999px;
 }
 
-/* Recommendation View Switcher (Clean Segmented Control) */
-.reco-switcher {
-  display: inline-flex; gap: 4px; background: rgba(0,0,0,0.05);
-  padding: 4px; border-radius: 9999px; margin-bottom: 18px; max-width: 100%;
+/* Made For You Section */
+.made-for-you {
+  margin-bottom: 24px;
 }
-.reco-switcher__tab {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: transparent; border: 0; padding: 8px 18px; border-radius: 9999px;
-  font-size: 13.5px; font-weight: 700; color: var(--navy); cursor: pointer; transition: all .16s ease;
+.made-for-you__head {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 14px;
 }
-.reco-switcher__tab:hover { color: var(--ink); }
-.reco-switcher__tab.is-active {
-  background: #fff; color: var(--ink); box-shadow: 0 1px 4px rgba(0,0,0,0.08); font-weight: 800;
+.made-for-you__title {
+  font-size: 21px; font-weight: 800; margin: 0; color: var(--ink); letter-spacing: -.01em;
+}
+.made-for-you__sub {
+  font-size: 13px; color: var(--navy-soft); margin: 2px 0 0;
+}
+.made-for-you__why {
+  font-size: 13px; font-weight: 700; color: var(--navy); display: inline-flex; align-items: center; gap: 4px;
 }
 
-/* Activity Freedom Pillars */
-.pillars-section {
-  margin-bottom: 22px;
+/* Category Filter Pills (Horizontal Scroll) */
+.category-pills {
+  display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 18px;
+  scrollbar-width: none;
 }
-.pillars-list {
-  display: flex; flex-direction: column; gap: 12px;
+.category-pills::-webkit-scrollbar { display: none; }
+.category-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: #fff; border: 1px solid rgba(0,0,0,0.1); border-radius: 9999px;
+  padding: 6px 14px; font-size: 13px; font-weight: 700; color: var(--ink);
+  cursor: pointer; white-space: nowrap; transition: all .16s ease;
 }
-.pillar-card {
-  background: #fff; border: 1px solid rgba(0,0,0,0.07);
-  border-radius: var(--radius-lg); padding: 16px 18px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+.category-pill:hover {
+  background: var(--yellow-pale); border-color: var(--cream-line);
 }
-.pillar-card__head {
-  display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+.category-pill.is-active {
+  background: var(--ink); color: #fff; border-color: var(--ink); font-weight: 800;
 }
-.pillar-card__icon {
-  flex: 0 0 auto; width: 32px; height: 32px; border-radius: 50%;
-  background: var(--yellow-pale); display: grid; place-items: center; color: var(--ink);
+
+/* Activity Cards Gallery (Responsive Grid / Cards) */
+.activity-gallery {
+  margin-bottom: 16px;
 }
-.pillar-card__titlebox {
-  display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex: 1 1 auto;
+.activity-gallery__track {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px;
 }
-.pillar-card__title {
-  font-size: 15.5px; font-weight: 800; margin: 0; color: var(--ink);
+@media (max-width: 600px) {
+  .activity-gallery__track {
+    display: flex; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 10px;
+  }
+  .activity-card {
+    flex: 0 0 220px; scroll-snap-align: start;
+  }
 }
-.pillar-card__allowance {
-  font-size: 12.5px; color: var(--navy-soft); font-weight: 600;
+.activity-card {
+  background: #fff; border: 1px solid rgba(0,0,0,0.08); border-radius: 14px;
+  overflow: hidden; position: relative; display: flex; flex-direction: column;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02); transition: transform .15s ease, box-shadow .15s ease;
+}
+.activity-card:hover {
+  transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+}
+.activity-card__badge {
+  position: absolute; top: 8px; left: 8px; z-index: 2;
+  background: rgba(253, 243, 207, 0.95); color: #855800; font-size: 11px; font-weight: 800;
+  padding: 3px 8px; border-radius: 6px; backdrop-filter: blur(4px);
+}
+.activity-card__media-btn {
+  position: relative; width: 100%; aspect-ratio: 4/3; background: #f0f2f5;
+  border: 0; padding: 0; cursor: pointer; overflow: hidden;
+}
+.activity-card__media {
+  position: absolute; inset: 0; width: 100%; height: 100%; display: block;
+}
+.activity-card__media img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+}
+.activity-card__icon-badge {
+  position: absolute; bottom: 8px; left: 10px; z-index: 3;
+  width: 30px; height: 30px; border-radius: 50%; background: var(--yellow-pale);
+  border: 2px solid #fff; display: grid; place-items: center; color: var(--ink);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+}
+.activity-card__content {
+  padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 3px; flex: 1 1 auto;
+}
+.activity-card__activity {
+  font-size: 14.5px; font-weight: 800; color: var(--ink);
+}
+.activity-card__vname {
+  font-size: 13px; color: var(--navy-soft); text-align: left;
+  background: none; border: 0; padding: 0; cursor: pointer;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.activity-card__vname:hover {
+  text-decoration: underline; color: var(--ink);
+}
+.activity-card__meta {
+  font-size: 12px; color: var(--navy-soft); margin-bottom: 8px;
+  display: flex; align-items: center; gap: 6px;
+}
+.activity-card .btn-pill {
+  margin-top: auto; width: 100%; justify-content: center;
+  background: #fff; border: 1px solid rgba(0,0,0,0.12); font-weight: 700;
+}
+.activity-card .btn-pill:hover {
+  background: var(--yellow-pale); border-color: var(--ink);
+}
+.made-for-you__foot {
+  margin-top: 14px; text-align: center;
+}
+
+.rowcard--explore .rowcard__link-btn {
+  margin-left: auto; font-size: 14px; font-weight: 700; color: var(--navy);
+}
+.rowcard--explore:hover .rowcard__link-btn {
+  color: var(--ink); text-decoration: underline;
 }
 .pillar-card__remove {
   background: none; border: 0; color: var(--navy-soft); cursor: pointer; font-size: 14px; padding: 2px 6px; border-radius: 4px;
