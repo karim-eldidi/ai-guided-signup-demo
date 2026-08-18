@@ -57,7 +57,9 @@ with sync_playwright() as p:
     else: bad("Enter on card still does nothing")
 
     # 5. focus lands on content not header
-    pg.locator('.option-card:has-text("Move more")').click(); cont(pg)
+    if not pg.locator('.option-card.is-selected:has-text("Move more")').count():
+        pg.locator('.option-card:has-text("Move more")').click()
+    cont(pg)
     focused=pg.evaluate("() => (document.activeElement.tagName||'')")
     good(f"After advancing, focus is on {focused} (content heading)") if focused=="H1" else bad(f"Focus is on {focused}, not the heading")
 
@@ -66,7 +68,9 @@ with sync_playwright() as p:
         pg.locator("[data-back]:visible").first.click()
         pg.wait_for_timeout(400)
         good(f"Back inside the flow returns to '{h1(pg)}'")
-        pg.locator('.option-card:has-text("Move more")').click(); cont(pg)
+        if not pg.locator('.option-card.is-selected:has-text("Move more")').count():
+            pg.locator('.option-card:has-text("Move more")').click()
+        cont(pg)
     else: bad("No Back button on question 2")
 
     # 7. browser Back stays in the journey
@@ -121,7 +125,7 @@ with sync_playwright() as p:
     # now actually save: it ends on the saved confirmation, with the link back
     pg.locator('[data-go="save"]').first.click(); pg.wait_for_timeout(500)
     pg.fill('input[name="email"]','alex@example.com'); pg.check('#marketing')
-    pg.locator('form[data-form="save"] button[type="submit"]').click(); pg.wait_for_timeout(700)
+    pg.locator('form[data-form="save"] button[type="submit"]').first.click(); pg.wait_for_timeout(700)
     good(f"Saving with an email lands on '{h1(pg)}'")
     if pg.locator('#exit-modal [data-copy-resume]').count(): good("and the private return link is right there")
     else: bad("no return link after saving")

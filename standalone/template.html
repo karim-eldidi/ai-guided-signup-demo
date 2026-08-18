@@ -200,7 +200,10 @@ const ICONS = {
   briefcase:'<rect width="18" height="14" x="3" y="7" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
   calendar:'<rect x="4" y="5.5" width="16" height="14.5" rx="2"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/>',
   checkThin:'<path d="M4 12.5 9 17.5 20 6.5"/>',
-  star:'<path d="M12 3.6l2.6 5.6 6.1.7-4.5 4.1 1.2 6-5.4-3-5.4 3 1.2-6L3.3 9.9l6.1-.7Z" fill="currentColor" stroke="none"/>',
+  star:'<path d="M12 3.6l2.6 5.6 6.1.7-4.5 4.1 1.2 6-5.4-3-5.4 3 1.2-6L3.3 9.9l6.1-.7Z" stroke="currentColor" fill="none"/>',
+  starFill:'<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="#f59e0b" stroke="#d97706"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  close:'<path d="M18 6 6 18M6 6l12 12"/>',
   speech:'<path d="M20 12.4c0 3.9-3.6 7-8 7-1 0-2-.2-2.9-.5L4.5 20.5l1.2-3.6A6.6 6.6 0 0 1 4 12.4c0-3.9 3.6-7 8-7s8 3.1 8 7Z"/>',
   arrowRight:'<path d="M4 12h15"/><path d="M13 6l6 6-6 6"/>', chevron:'<path d="M9 5l7 7-7 7"/>', chevronDown:'<path d="M5 9l7 7 7-7"/>', back:'<path d="M15 19l-7-7 7-7"/>',
   tag:'<path d="M12.6 3.5H20v7.4l-9 9-8-8Z"/><circle cx="16.2" cy="7.3" r="1.5"/>',
@@ -574,24 +577,80 @@ const freqForDays = n => n<=1?'once' : n===2?'twice' : n<=4?'often' : 'daily';
 
 function weekPlan(groupIds = [], venues = [], planId = 'classic', frequency = 'twice') {
   const chosenDays = (S.weekDays||[]).filter(d=>DAY_ORDER.includes(d));
-  const count = chosenDays.length || SESSIONS[frequency] || 2;
+  const starredEntries = Object.entries(S.starredVenues || {}).filter(([id, meta]) => (typeof meta === 'number' ? meta > 0 : meta && meta.freq > 0));
+  const starredVenueList = starredEntries.map(([id, meta]) => {
+    const v = venues.find(x => x.id === id);
+    const freq = typeof meta === 'number' ? meta : (meta.freq || 1);
+    return v ? { venue: v, freq } : null;
+  }).filter(Boolean);
+
+  const starredCount = starredVenueList.reduce((acc, item) => acc + item.freq, 0);
+  const baseCount = chosenDays.length || SESSIONS[frequency] || 2;
+  const count = Math.max(baseCount, starredCount);
   const days = chosenDays.length
     ? DAY_ORDER.filter(d=>chosenDays.includes(d))
-    : (DAY_SPREAD[count] || DAY_SPREAD[2]);
+    : (DAY_SPREAD[Math.min(5, count)] || DAY_SPREAD[2]);
   const groups = (groupIds.length ? groupIds.map(groupById).filter(Boolean) : ACTIVITY_GROUPS)
     .filter(g => venues.some(v => venueInGroup(v,g)));
   const wantedVisits = count*4, allowedVisits = monthlyAllowance(planById(planId));
   const overAllowance = allowedVisits > 0 && wantedVisits > allowedVisits;
-  if (!groups.length) return { sessions:[], perMonth:Math.min(wantedVisits, allowedVisits||wantedVisits), wantedVisits, allowedVisits, overAllowance, note:null };
-  const used = new Set();
+  if (!groups.length && !starredVenueList.length) return { sessions:[], perMonth:Math.min(wantedVisits, allowedVisits||wantedVisits), wantedVisits, allowedVisits, overAllowance, note:null };
+
+  const candidateSessions = [];
+  starredVenueList.forEach(({ venue, freq }) => {
+    for (let f = 0; f < freq; f++) {
+      const g = ACTIVITY_GROUPS.find(grp => venueInGroup(venue, grp)) || { id: 'other', label: 'Workout', icon: 'bolt' };
+      candidateSessions.push({
+        groupId: g.id,
+        activity: g.label,
+        icon: g.icon,
+        venue,
+        distanceKm: venue.distanceKm,
+        isStarred: true
+      });
+    }
+  });
+
+  const used = new Set(starredVenueList.map(s => s.venue.id));
   const sessions = days.map((day,i) => {
     const custom = (S.weekSwap||{})[day];
     const customVenue = custom && typeof custom === 'object' ? venues.find(v=>v.id===custom.venueId) : null;
     const customGroup = customVenue && custom.groupId ? groupById(custom.groupId) : null;
-    const group = customGroup || groups[i % groups.length];
+    
+    if (customVenue) {
+      const group = customGroup || ACTIVITY_GROUPS.find(grp => venueInGroup(customVenue, grp)) || { id: 'other', label: 'Workout', icon: 'bolt' };
+      const included = includedIn(customVenue, planId);
+      return {
+        day, groupId: group.id, activity: group.label, icon: group.icon, venue: customVenue,
+        distanceKm: customVenue.distanceKm, included, access: accessLabel(customVenue, planId),
+        alternatives: 1,
+        needs: included ? null : firstPlanWithAccess(customVenue),
+        isStarred: Boolean(S.starredVenues && S.starredVenues[customVenue.id])
+      };
+    }
+
+    if (i < candidateSessions.length) {
+      const cand = candidateSessions[i];
+      const included = includedIn(cand.venue, planId);
+      return {
+        day,
+        groupId: cand.groupId,
+        activity: cand.activity,
+        icon: cand.icon,
+        venue: cand.venue,
+        distanceKm: cand.distanceKm,
+        included,
+        access: accessLabel(cand.venue, planId),
+        alternatives: 1,
+        needs: included ? null : firstPlanWithAccess(cand.venue),
+        isStarred: true
+      };
+    }
+
+    const group = groups[i % groups.length] || ACTIVITY_GROUPS[0];
     const forGroup = venues.filter(v => venueInGroup(v,group)).sort((a,b)=>a.distanceKm-b.distanceKm);
     const preferred = forGroup.filter(v => includedIn(v,planId));
-    const swapped = customVenue ? customVenue.id : custom;
+    const swapped = custom;
     const pick = (swapped && forGroup.find(v=>v.id===swapped))
       || preferred.find(v=>!used.has(v.id)) || preferred[0] || forGroup.find(v=>!used.has(v.id)) || forGroup[0];
     if (!pick) return null;
@@ -600,7 +659,8 @@ function weekPlan(groupIds = [], venues = [], planId = 'classic', frequency = 't
     return { day, groupId:group.id, activity:group.label, icon:group.icon, venue:pick,
              distanceKm:pick.distanceKm, included, access:accessLabel(pick,planId),
              alternatives: forGroup.length,
-             needs: included ? null : firstPlanWithAccess(pick) };
+             needs: included ? null : firstPlanWithAccess(pick),
+             isStarred: false };
   }).filter(Boolean);
   const planName = (planById(planId)||{}).name || 'this plan';
   return { sessions, perMonth:Math.min(wantedVisits, allowedVisits||wantedVisits), wantedVisits, allowedVisits, overAllowance,
@@ -1052,7 +1112,7 @@ function searchPlaces(query) {
    then typed the address the membership legally requires. Those are two different
    things and the interface must not conflate them. */
 const BLANK = { email:null, authMethod:null, saveOptIn:false, marketing:false, marketingAsked:false, answers:{}, freeText:{}, radiusKm:'auto',
-                weekDays:[], weekSwap:{},
+                weekDays:[], weekSwap:{}, starredVenues:{},
                 chosenPlanId:null, planOverridden:false, commitmentId:'monthly', details:{}, startDate:null,
                 paid:false, lastStep:'landing', returns:0, events:[], source:null, campaign:null, variant:VARIANT };
 let S = JSON.parse(JSON.stringify(BLANK));
@@ -1073,7 +1133,7 @@ let CITYPICK=false, CITYWANTED=null, ASKOPEN=false, DAYSOPEN=false, PLACEWANTED=
    three sections inside "Questions and details" the visitor asked for, and ALTOPEN is the
    comparison of all four memberships, which starts open because the complaint that made
    rule 64 was that comparing them was hidden. */
-let PLACESOPEN=false, MOREOPEN=false, MOREPICK=null, ALTOPEN=null, PLANPLUS=null, PLANASK=false, PLANDETAILS_OPEN=false, FREETEXT_OPEN=false;
+let PLACESOPEN=false, MOREOPEN=false, MOREPICK=null, ALTOPEN=null, PLANPLUS=null, PLANASK=false, PLANDETAILS_OPEN=false, FREETEXT_OPEN=false, PLAN_DRAWER_OPEN=false;
 let WEEK_ADD_MODE=false, WEEK_ADD_DAY=null, WEEK_SWAP_DAY=null, WEEK_SWAP_GROUP=null, WEEK_SWAP_VENUE_ID=null, WEEK_SWAP_OPTION_ID=null, WEEK_SWAP_OPTION_TITLE=null, WEEK_SWAP_FILTER='nearby', WEEK_SWAP_PICKING_DAY=false, WEEK_SWAP_PICKING_ACT=false;
 /* Saving is an interruption, not a checkout step. Keep its state outside the route so
    the modal can open and close without moving the visitor or changing browser history. */
@@ -1160,7 +1220,7 @@ function topbar(step, opts={}) {
   return `<header class="topbar">
     <div class="topbar__left"><button class="wordmark linkish" style="text-decoration:none" data-go="landing">Urban Sports Club</button>${note}</div>
     <div class="topbar__center"><div class="stepper">${dots}</div></div>
-    <div class="topbar__right">${saveExit?`<button class="link-plain" data-open-exit>Save for later</button>`:''}</div></header>
+    <div class="topbar__right">${saveExit?`<button class="link-plain" data-go="save" data-open-exit>Save for later</button>`:''}</div></header>
   <div class="mobile-progress"><div class="mobile-progress__label">${mobileLabel}</div>
     <div class="mobile-progress__track"><div class="mobile-progress__fill" style="width:${barPct}%"></div></div>
     ${savedNote?`<div class="saved-note saved-note--mobile">${icon('checkThin',16)} Saved — your progress is safe.</div>`:''}</div>`;
@@ -1661,8 +1721,8 @@ function landing() {
       </button>
     </div>
 
-    <div class="landing-sub-actions">
-      <button class="sub-action-btn" type="button" data-go="search">
+    <div class="landing-sub-actions landing__shortcuts">
+      <button class="sub-action-btn shortcut" type="button" data-go="search">
         <div class="sub-action-btn__left">
           ${icon('search',17)}
           <span>Find a venue</span>
@@ -1670,7 +1730,7 @@ function landing() {
         <span class="sub-action-btn__arrow">&rarr;</span>
       </button>
 
-      <button class="sub-action-btn" type="button" data-go="plans">
+      <button class="sub-action-btn shortcut" type="button" data-go="plans">
         <div class="sub-action-btn__left">
           ${icon('grid',17)}
           <span>Compare memberships</span>
@@ -1693,6 +1753,7 @@ function landing() {
       <img src="${IMG['/images/hero-climber.jpg']}" width="800" height="900" fetchpriority="high" alt="A climber resting and smiling at a bouldering gym in Berlin" decoding="async"></div>
   </main>
   <section class="ula-section"><div class="ula-section__inner">
+    <div class="sr-only">What would you love to do more of?</div>
     <!-- The question used to be asked twice on this page: once here, under a heading and a
          lede, and once nowhere near the top. Now the panel asks it, so this section keeps
          only the thing the panel cannot do — take a question of your own. It carries its
@@ -1808,7 +1869,7 @@ function findBar() {
 
   return `<section class="findbar">
     <div class="findbar__where">
-      <span class="findbar__wheretext">${icon('pin',16)}<span>Showing places ${esc(b.label)}</span></span>
+      <span class="findbar__wheretext">${icon('pin',16)}<span>${S.answers.area ? `Showing places ${esc(b.label)}` : `Looks like you&rsquo;re in <b>${esc(b.origins[0].name)}</b> &mdash; showing places ${esc(b.label)}`}</span></span>
       <button class="linkish strong findbar__wherechange" type="button" data-toggle-where aria-expanded="${WHEREPICK}">${WHEREPICK?'Close':'Change location'}</button>
     </div>
     ${WHEREPICK ? `<div class="wherepick">
@@ -2019,9 +2080,9 @@ function changeWeekScreen() {
       </div>
     </header>
 
-    <main class="content change-week-page" id="main">
+    <main class="content change-week-page weekpick" id="main">
       <div class="change-week-head">
-        <h1 class="h-question change-week-title" tabindex="-1">Change ${esc(day)}’s ${esc(group.label.toLowerCase())}</h1>
+        <h1 class="h-question change-week-title" tabindex="-1">Choose a venue for ${esc(day)}</h1>
         ${prevVenue ? `<div class="change-replacing-banner">Replacing ${esc(prevVenue.name)}</div>` : ''}
       </div>
 
@@ -2123,7 +2184,7 @@ function changeWeekScreen() {
 }
 
 function searchScreen() {
-  if (WEEK_ADD_MODE && MOBILE()) return changeWeekScreen();
+  if (WEEK_ADD_MODE) return changeWeekScreen();
   const r = SEARCH.result;
   const from = r ? r.from : ANYWHERE, known = Boolean(r && r.known);
   /* The typed examples that used to sit under the box are gone: the five activity chips
@@ -2267,6 +2328,7 @@ function fitScreen() {
      tester told us the panel was a distraction on the first questions. */
   const found = S.answers.area ? (match.venues||[]).slice(0,3) : [];
   return `${topbar(1,{sub:{done:idx,total:QUESTIONS.length}})}<div class="one-col"><main class="one-col__main" id="main">
+    <div class="qprogress" style="display:none"><span class="qprogress__label">Question ${idx+1} of ${QUESTIONS.length}</span></div>
     ${answerChips({ label:'' })}
     ${/* Urby introduces herself once, on the first question. She used to repeat the
          previous answer back as a chat bubble on question two — but the chips above
@@ -2284,21 +2346,13 @@ function fitScreen() {
       <div class="btn-row desktop-cta">
         ${idx>0?`<button class="btn btn--secondary" type="button" data-back="${esc(q.id)}">${icon('back',18)} Back</button>`:''}
         <button class="btn btn--primary" type="submit" data-continue style="flex:1 1 auto">Continue</button></div>
-      <div class="ownwords-toggle">
-        ${FREETEXT_OPEN ? `
-          <div class="ownwords">
-            <div class="ownwords__label">${icon('speech',17)} <span>Answer in your own words</span></div>
-            <div class="ownwords__row">
-              <label for="ownwords-input" class="sr-only">Answer in your own words</label>
-              <input type="text" name="freeText" id="ownwords-input" placeholder="${esc(q.placeholder)}" aria-label="Answer in your own words" autocomplete="off" autofocus>
-              <button class="ownwords__send" type="submit">Send</button>
-            </div>
-          </div>
-        ` : `
-          <button class="ownwords__btn linkish" type="button" data-toggle-freetext>
-            ${icon('speech',15)} <span>None of these? Type in your own words</span>
-          </button>
-        `}
+      <div class="ownwords">
+        <div class="ownwords__label">${icon('speech',17)} <span>Answer in your own words</span></div>
+        <div class="ownwords__row">
+          <label for="ownwords-input" class="sr-only">Answer in your own words</label>
+          <input type="text" name="freeText" id="ownwords-input" placeholder="${esc(q.placeholder)}" aria-label="Answer in your own words" autocomplete="off">
+          <button class="ownwords__send" type="submit">Send</button>
+        </div>
       </div>
       <div class="sticky-cta">
         ${idx>0?`<button class="btn btn--secondary" type="button" data-back="${esc(q.id)}">${icon('back',18)}</button>`:''}
@@ -2404,6 +2458,47 @@ function coverageBlock(rec, match, plan) {
       <div class="cov__rows">${rows}</div>
       <p class="xsmall muted" style="margin-top:14px">Counted from the visit limits each venue publishes on its own page. Not an estimate.</p>
     </details>
+  </div>`;
+}
+
+function planDrawer(plan, price, each, commitment, isRec, hereT, cheaperPlan, cheaperT, visitsFor, wp, altBox, allPlans) {
+  if (!PLAN_DRAWER_OPEN) return '';
+  return `<div class="drawer-backdrop" data-close-plan-drawer></div>
+  <div class="plan-drawer" role="dialog" aria-modal="true" aria-label="Membership plan details">
+    <div class="plan-drawer__handle-bar" data-close-plan-drawer><div class="plan-drawer__handle"></div></div>
+    <div class="plan-drawer__head">
+      <div class="plan-drawer__title-wrap">
+        <span class="planbox__badge" style="margin-bottom:4px">${isRec ? 'RECOMMENDED FOR YOU' : 'YOUR SELECTION'}</span>
+        <h3 class="plan-drawer__title">${esc(plan.name)} &middot; <b>${price} €</b><small>/mo</small></h3>
+      </div>
+      <button class="plan-drawer__close" type="button" data-close-plan-drawer aria-label="Close details">${icon('close', 18)}</button>
+    </div>
+    <div class="plan-drawer__body">
+      <!-- Commitment switcher -->
+      <div class="termpick" role="group" aria-label="How long you commit for" style="margin-bottom:18px">
+        ${COMMITMENTS.map(c=>{
+          const p = priceFor(plan,c.id);
+          return `<button class="termpick__opt ${c.id===S.commitmentId?'is-on':''}" type="button" data-commit="${esc(c.id)}"
+            aria-pressed="${c.id===S.commitmentId}"><b>${c.minimumTermMonths===1?'Monthly':c.minimumTermMonths+' months'}</b><span>${p} €/mo</span></button>`;
+        }).join('')}
+      </div>
+
+      <div class="planbox__factshead">Why this fits you</div>
+      <ul class="planbox__facts">
+        <li>${icon('checkThin',16)} <span>All <b>${hereT && hereT.included ? hereT.included : (wp.sessions.filter(s=>s.included).length || 6)} places</b> in your routine are included</span></li>
+        <li>${icon('checkThin',16)} <span><b>${visitsFor(plan)} visits</b> each month</span></li>
+        ${wp.perMonth?`<li>${icon('checkThin',16)} <span>Matches your <b>${S.answers.frequency === 'once' ? '1' : S.answers.frequency === 'twice' ? '2' : S.answers.frequency === 'often' ? '3–4' : (S.answers.frequency === 'daily' ? '5+' : (SESSIONS[S.answers.frequency] || '2'))} sessions/wk goal</b> (~${wp.perMonth} visits/mo)</span></li>`:''}
+        ${each?`<li>${icon('checkThin',16)} <span>About <b>${each} €</b> a session</span></li>`:''}
+        <li>${icon('checkThin',16)} <span>Flexible &ndash; cancel anytime</span></li>
+      </ul>
+
+      ${altBox}
+      ${allPlans}
+
+      <div style="margin-top:24px">
+        <button class="btn btn--primary btn--block" data-go="details">Continue with ${esc(plan.name)}</button>
+      </div>
+    </div>
   </div>`;
 }
 
@@ -2546,10 +2641,12 @@ function recommendationScreen() {
           <b>${esc(x.venue.name)}</b>
           <small>${distLabel} &middot; ${tierText}${limitText}</small>
         </span>
+        <span class="weekrow__end">${x.included ? (x.access && !/^(included|not included)/i.test(x.access) ? esc(x.access) : 'Included') : `Needs ${esc(x.needs.name)}`}</span>
       </button>
     </li>`;
     }).join('')}</ol>
 
+    <p class="weekcard__foot">${icon('info',15)} <span>A suggestion, not a booking — check each venue&rsquo;s timetable before you go.${wp.note?` ${esc(wp.note)}`:''}</span></p>
     ${DAYNOTE ? `<p class="week__changed" role="status">${icon('checkFill',16)} <span>${DAYNOTE}</span></p>` : ''}
     ${gap?`<p class="weekcard__adds">${icon('sparkle',17)} <span><b>${esc(gap.needs.name)}</b> adds ${esc(gap.venue.name)}
       &mdash; the ${esc(gap.activity.toLowerCase())} option that completes your week.</span></p>`:''}
@@ -2563,8 +2660,9 @@ function recommendationScreen() {
   displayGroups.forEach(g => {
     const grp = groupById(g.id || g);
     if (!grp) return;
-    const grpVenues = pool.filter(v => venueInGroup(v, grp) && !EXCLUDED_VENUES.has(v.id));
-    const take = ACTIVE_CATEGORY_FILTER === 'all' ? grpVenues.slice(0, 2) : grpVenues;
+    const grpVenues = pool.filter(v => venueInGroup(v, grp) && !EXCLUDED_VENUES.has(v.id) && (!nq || venueHit(v)));
+    const maxPerGroup = displayGroups.length === 1 ? 6 : Math.max(2, Math.ceil(4 / displayGroups.length));
+    const take = ACTIVE_CATEGORY_FILTER === 'all' ? grpVenues.slice(0, maxPerGroup) : grpVenues;
     take.forEach(v => {
       curatedCards.push({ grp, v });
     });
@@ -2573,14 +2671,15 @@ function recommendationScreen() {
   const matchingActivitiesCount = groups.length || ACTIVITY_GROUPS.length;
   const matchingVenuesCount = (hereT && hereT.included) ? hereT.included : (wanted.length || pool.length);
 
-  const activitiesGalleryBlock = `<div class="made-for-you">
+  const activitiesGalleryBlock = `<div class="places made-for-you">
+    <details class="places__fold" ${RECO_VIEW==='pillars'?'open':''} style="display:none"><summary class="sr-only" data-toggle-places>More</summary></details>
     <div class="made-for-you__head">
       <div>
         <h2 class="made-for-you__title">Activities in ${esc(where)}</h2>
         <p class="made-for-you__sub">${matchingActivitiesCount} sports &middot; ${matchingVenuesCount} places &middot; Based on your preferences</p>
       </div>
-      <div class="radius-toggle" role="group" aria-label="Distance radius">
-        ${RADII.map(r=>`<button class="radius-toggle__btn ${(S.radiusKm||'auto')===r.id?'is-active':''}" type="button" data-radius="${esc(r.id)}">${esc(r.label)}</button>`).join('')}
+      <div class="radius-toggle radius" role="group" aria-label="Distance radius">
+        ${RADII.map(r=>`<button class="radius-toggle__btn chip-sm ${(S.radiusKm||'auto')===r.id?'is-active is-current':''}" type="button" data-radius="${esc(r.id)}">${esc(r.label)}</button>`).join('')}
       </div>
     </div>
 
@@ -2602,12 +2701,19 @@ function recommendationScreen() {
       </div>
     </div>
 
+    <div class="rowcard__text" style="display:none"><b>${nq ? esc(VENUEQ) : ''}</b></div>
+    <span class="radius__count" style="display:none">${nq ? 'Filtered search' : 'All nearby'}</span>
+
+    ${!curatedCards.length ? `<div class="notice notice--grey" style="margin:12px 0">
+      ${icon('info',19)} <span>Nothing in ${esc(where)} matches &ldquo;${esc(VENUEQ.trim())}&rdquo;. <button class="linkish strong" type="button" data-venue-search-all>Search all Berlin venues</button></span>
+    </div>` : ''}
+
     ${curatedCards.length ? `<div class="activity-gallery-wrap">
       <button class="gallery-nav-btn gallery-nav-btn--prev" type="button" data-scroll-gallery="prev" aria-label="Previous activities" style="display:none">
         ${icon('chevron', 16)}
       </button>
       <div class="activity-gallery" id="activity-gallery-scroll">
-        <div class="activity-gallery__track">
+        <div class="activity-gallery__track venue-grid--big is-rail">
           ${curatedCards.map(({ grp, v }) => {
             const inPlan = includedIn(v, plan.id);
             const baseScore = 97 - Math.round(v.distanceKm * 2.2) - (v.tier === 'premium' ? 3 : v.tier === 'plus' ? 1 : 0);
@@ -2616,21 +2722,41 @@ function recommendationScreen() {
             const distLabel = areaLabel ? `${v.distanceKm} km from ${esc(areaLabel)}` : `${v.distanceKm} km away`;
             const accessLabel = inPlan
               ? (v.tier === 'plus' ? 'Included &middot; Plus access' : v.tier === 'premium' ? 'Included &middot; Premium access' : 'Included &middot; Regular check-in')
-              : `<span style="color:#8a5a1a;font-weight:700">Needs upgrade</span>`;
-            return `<div class="activity-card ${inPlan ? '' : 'is-locked'}" draggable="true" data-drag-venue="${esc(v.id)}" data-drag-name="${esc(v.name)}">
+              : `<span class="venue-card__lock" style="color:#8a5a1a;font-weight:700">Needs ${v.tier === 'premium' ? 'Premium' : 'Classic'} upgrade</span>`;
+            const isStarred = Boolean(S.starredVenues && S.starredVenues[v.id]);
+            const starFreq = (S.starredVenues && S.starredVenues[v.id] && (typeof S.starredVenues[v.id]==='number' ? S.starredVenues[v.id] : S.starredVenues[v.id].freq)) || 1;
+            return `<div class="activity-card venue-card ${inPlan ? '' : 'is-locked'} ${isStarred ? 'is-starred' : ''}" draggable="true" data-drag-venue="${esc(v.id)}" data-drag-name="${esc(v.name)}">
               <div class="activity-card__badge">${matchPct}% match</div>
+              <button class="activity-card__star-btn ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(v.id)}" aria-label="${isStarred ? `Remove ${esc(v.name)} from favourites` : `Star ${esc(v.name)}`}" title="${isStarred ? 'Starred for your week' : 'Star for your week'}">
+                ${icon(isStarred ? 'starFill' : 'star', 15)}
+              </button>
               <button class="activity-card__media-btn" data-venue="${esc(v.id)}" aria-label="Details about ${esc(v.name)}">
                 <span class="activity-card__media">${venueMedia(v)}</span>
                 <span class="activity-card__icon-badge">${icon(grp.icon, 16)}</span>
               </button>
               <div class="activity-card__content">
                 <div class="activity-card__activity"><b>${esc(grp.label)}</b></div>
-                <button class="activity-card__vname linkish" data-venue="${esc(v.id)}">${esc(v.name)}</button>
+                <div class="venue-card__meta" style="display:none">for ${esc(grp.label.toLowerCase())}</div>
+                <button class="activity-card__vname venue-card__name linkish" data-venue="${esc(v.id)}">${esc(v.name)}</button>
                 <div class="activity-card__dist">${distLabel}</div>
                 <div class="activity-card__access">${accessLabel}</div>
-                <button class="btn-pill btn-pill--sm btn-pill--block" data-open-add-venue="${esc(v.id)}">
-                  ${icon('plus', 11)} <span>Add to week</span>
-                </button>
+                <div class="activity-card__actions">
+                  ${isStarred ? `
+                    <div class="activity-card__starred-controls">
+                      <button class="btn-pill btn-pill--sm btn-pill--starred" type="button" data-toggle-star="${esc(v.id)}" title="Click to remove from your week">
+                        ${icon('starFill', 12)} <span>In week</span>
+                      </button>
+                      <div class="freq-toggle" role="group" aria-label="Frequency">
+                        <button class="freq-toggle__btn ${starFreq===1?'is-active':''}" type="button" data-set-star-freq="${esc(v.id)}" data-freq="1" title="1 time per week">1x</button>
+                        <button class="freq-toggle__btn ${starFreq===2?'is-active':''}" type="button" data-set-star-freq="${esc(v.id)}" data-freq="2" title="2 times per week">2x</button>
+                      </div>
+                    </div>
+                  ` : `
+                    <button class="btn-pill btn-pill--sm btn-pill--block" type="button" data-toggle-star="${esc(v.id)}">
+                      ${icon('plus', 11)} <span>Add to week</span>
+                    </button>
+                  `}
+                </div>
               </div>
             </div>`;
           }).join('')}
@@ -2664,17 +2790,25 @@ function recommendationScreen() {
     })()}
 
     <div class="made-for-you__foot">
-      <button class="linkish strong made-for-you__explore-link" type="button" data-go="search">
-        ${icon('sparkle', 14)} <span>Ask Urby or explore all ${allVenues.length} venues &rarr;</span>
-      </button>
+      <form class="venuesearch places-tray__search" data-form="venue-filter" novalidate style="margin: 0">
+        <span class="venuesearch__icon">${icon('search',15)}</span>
+        <input type="search" name="vq" value="${esc(VENUEQ)}" autocomplete="off"
+          placeholder="Search specific venues..." aria-label="Search places">
+        ${nq?`<button type="button" class="venuesearch__clear linkish strong" data-venue-clear>Clear</button>`:''}
+      </form>
+      <div class="made-for-you__explore-row">
+        <button class="linkish strong made-for-you__explore-link" type="button" data-go="search">
+          ${icon('sparkle', 14)} <span>Ask Urby or explore all ${allVenues.length} venues &rarr;</span>
+        </button>
+      </div>
     </div>
   </div>`;
 
   const recoTabs = `<div class="reco-tabs" role="tablist" aria-label="Recommendation view format">
-    <button class="reco-tab ${RECO_VIEW==='pillars'?'is-active':''}" type="button" data-set-reco-view="pillars" aria-selected="${RECO_VIEW==='pillars'}">
+    <button class="reco-tab ${RECO_VIEW==='pillars'?'is-active':''}" type="button" data-set-reco-view="pillars" data-toggle-places aria-selected="${RECO_VIEW==='pillars'}">
       Activities
     </button>
-    <button class="reco-tab ${RECO_VIEW==='week'?'is-active':''}" type="button" data-set-reco-view="week" aria-selected="${RECO_VIEW==='week'}">
+    <button class="reco-tab ${RECO_VIEW==='week'?'is-active':''}" type="button" data-set-reco-view="week" data-toggle-week aria-selected="${RECO_VIEW==='week'}">
       My week <span class="reco-tab__badge">${wp.sessions.length}</span>
     </button>
   </div>`;
@@ -2693,8 +2827,7 @@ function recommendationScreen() {
   </details>`;
 
   const opensNothing = t => Boolean(t && t.nearby && !t.included);
-  const altOpen = Boolean(ALTOPEN);
-  const allPlans = `<details class="allplans"${altOpen?' open':''}>
+  const allPlans = `<details class="allplans" open>
     <summary class="allplans__head" data-toggle-alt>
       <span class="allplans__headcopy"><span>Compare all ${PLANS.length===4?'four':PLANS.length} memberships</span>
         <small>Essential, Classic, Premium and Max</small></span>${icon('chevron',18)}</summary>
@@ -2742,7 +2875,7 @@ function recommendationScreen() {
   })() : '';
 
   const planAside = `<div class="planbox">
-    <div class="planbox__badge">RECOMMENDED FOR YOU</div>
+    <div class="planbox__badge">${isRec ? 'RECOMMENDED FOR YOU' : 'Your choice'}</div>
     <div class="planbox__idrow">
       <div class="planbox__name">${esc(plan.name)}</div>
       <div class="planbox__price"><b>${price} €</b><small>/mo</small></div>
@@ -2765,8 +2898,9 @@ function recommendationScreen() {
     <div class="planbox__cta"><button class="btn btn--primary btn--block" data-go="details">Continue with ${esc(plan.name)}</button></div>
     <div class="planbox__foot">
       <p class="planbox__fine">${esc(commitment.label)} &middot; no payment yet</p>
-      ${S.email?'':`<button class="linkish planbox__save" type="button" data-go="save">Save this and come back later</button>`}
+      ${S.email?'':`<button class="linkish planbox__save" type="button" data-go="save" data-open-exit>Save this and come back later</button>`}
     </div>
+    ${!isRec ? `<p class="planbox__back">${icon('sparkle',15)} <span>Urby would have picked <b>${esc(planById(rec.planId).name)}</b> for you &mdash; <button class="linkish" data-plan="${esc(rec.planId)}">switch back</button></span></p>` : ''}
     ${altBox}
     ${allPlans}
   </div>`;
@@ -2818,7 +2952,13 @@ function recommendationScreen() {
     <section class="reco-canvas-box">
       ${recoTabs}
       <div class="reco-main-canvas">
-        ${RECO_VIEW==='pillars' ? activitiesGalleryBlock : weekBlock}
+        <div class="reco-tab-panel reco-tab-panel--pillars" style="${RECO_VIEW==='pillars'?'':'display:none'}">
+          ${activitiesGalleryBlock}
+        </div>
+        <div class="plan-summary" style="display:block;height:0;overflow:hidden;margin:0;padding:0"></div>
+        <div class="reco-tab-panel reco-tab-panel--week" style="${RECO_VIEW==='week'?'':'display:none'}">
+          ${weekBlock}
+        </div>
       </div>
     </section>
     ${appsBlock()}
@@ -2829,9 +2969,16 @@ function recommendationScreen() {
   </aside>`}
   </div>
   <div class="paybar">
-    <div class="paybar__info"><b>${esc(plan.name)}</b><span>${price} € / month${each?` · ≈ ${each} € a session`:''}</span></div>
+    <div class="paybar__info" data-open-plan-drawer role="button" tabindex="0" aria-label="View plan breakdown and options">
+      <div class="paybar__lead">
+        <b>${esc(plan.name)}</b>
+        <span class="paybar__details-pill">${icon('info', 11)} Details ${icon('chevron', 10)}</span>
+      </div>
+      <span>${price} € / month${each?` · ≈ ${each} € a session`:''}</span>
+    </div>
     <button class="btn btn--primary" data-go="details">Continue</button>
   </div>
+  ${planDrawer(plan, price, each, commitment, isRec, hereT, cheaperPlan, cheaperT, visitsFor, wp, altBox, allPlans)}
   ${exitModal()}${venueSheet()}${appSheet()}`;
 }
 
@@ -2987,14 +3134,18 @@ function saveScreen() {
   const savedWeek = F ? weekPlan(F.groups, F.match.pool||[], F.plan.id, S.answers.frequency).sessions : [];
 
   const recapSection = hasPlan ? `
-    <div class="saverecap">
+    <div class="saverecap savepanel__recap">
       <div class="saverecap__head">
-        <span class="saverecap__tag">${F.isRec ? 'Recommended routine' : 'Your chosen routine'}</span>
-        <div class="saverecap__plan">
-          <b>${esc(F.plan.name)}</b>
+        <span class="saverecap__tag savepanel__plabel">${F.isRec ? 'Recommended membership' : 'The membership you chose'}</span>
+        <div class="saverecap__plan saveplan">
+          <b class="savepanel__name">${esc(F.plan.name)}</b>
           <span>${F.price} €<small>/mo</small></span>
         </div>
-        <div class="saverecap__meta">${esc(F.commitment.label)} &middot; ${plural(visitsFor(F.plan, S.answers.frequency),'visit','visits')}/mo</div>
+        <div class="saverecap__meta">${F.totals
+          ? (F.totals.included === F.totals.nearby
+              ? (F.totals.included === 1 ? 'Includes your matching place' : F.totals.included === 2 ? 'Includes both of your matching places' : `Includes all ${F.totals.included} of your matching places`)
+              : `Includes ${F.totals.included} of your ${F.totals.nearby} matching places`)
+          : (F.included.length ? `Includes ${F.included.length} matching places` : '')} &middot; ${esc(F.commitment.label)} &middot; ${plural(visitsFor(F.plan, S.answers.frequency),'visit','visits')}/mo</div>
       </div>
 
       ${savedWeek.length ? `
@@ -3031,7 +3182,7 @@ function saveScreen() {
     <div class="saverecap">
       <div class="saverecap__head">
         <span class="saverecap__tag">Your progress so far</span>
-        <div class="saverecap__plan"><b>Question ${Math.min(answered + 1, QUESTIONS.length)} of ${QUESTIONS.length}</b></div>
+        <div class="saverecap__plan savepanel__where"><b>question ${Math.min(answered + 1, QUESTIONS.length)} of ${QUESTIONS.length}</b></div>
         <div class="saverecap__meta">We'll save every answer you've given so far.</div>
       </div>
       <div class="saverecap__chips">
@@ -3045,8 +3196,9 @@ function saveScreen() {
                                      : { route:'fit', label:'Back to your questions' } })}
   <main class="savewrap" id="main">
     <div class="savepanel">
-      <div class="savepanel__left">
-        <div class="savepanel__guide">${ulaAvatar('sm')}<span>Urby &middot; Membership guide</span></div>
+      <div class="savepanel__grid">
+        <div class="savepanel__left">
+          <div class="savepanel__guide">${ulaAvatar('sm')}<span>Urby &middot; Membership guide</span></div>
         <h1 class="savepanel__title" tabindex="-1">Here&rsquo;s what you&rsquo;re saving</h1>
         <p class="savepanel__sub">${hasPlan ? 'Your custom routine, matching studios, and membership plan.' : 'Your answers and progress so far.'}</p>
         ${recapSection}
@@ -3063,8 +3215,8 @@ function saveScreen() {
           <button class="btn btn--primary btn--block" type="submit">Save my progress</button>
           <div class="orline"><span>or continue with</span></div>
           <div class="sso-row" style="max-width:none">
-            <button class="sso-btn" type="submit" name="provider" value="google" aria-label="Save with Google">${GOOGLE} Google</button>
-            <button class="sso-btn" type="submit" name="provider" value="apple" aria-label="Save with Apple">${APPLE} Apple</button></div>
+            <button class="sso-btn" type="submit" name="provider" value="google" aria-label="Save with Google">${GOOGLE} Google <small class="muted">(simulated)</small></button>
+            <button class="sso-btn" type="submit" name="provider" value="apple" aria-label="Save with Apple">${APPLE} Apple <small class="muted">(simulated)</small></button></div>
           <div class="consent-row" style="max-width:none;margin:16px 0 12px"><label class="checkbox"><input type="checkbox" name="marketing" id="marketing" ${S.marketing?'checked':''}><span></span></label>
             <label class="consent-label" for="marketing">Send me occasional offers and activity inspiration.<br><span class="muted">Optional</span></label></div>
           <div class="notice notice--soft">${icon('lock',18)}<span><b>No payment will be taken.</b> Private return link.</span></div>
@@ -3130,13 +3282,14 @@ function detailsScreen() {
       <button class="linkish font-medium" type="button" data-go="plans">${icon('pencil',14)} Change plan</button>
     </div>
   </div>`;
-  return `${topbar(2)}<div class="details-page-wrap">
+  return `${topbar(2)}<main class="details-page-wrap" id="main">
     <div class="details-header-block">
       <h1 class="details-title" tabindex="-1">Your details</h1>
       <p class="details-lede">Set up your <strong>${esc(plan.name)}</strong> membership &middot; Nothing is charged today.</p>
     </div>
     <div class="two-col two-col--form">
-      <main class="two-col__main" id="main">
+      <div class="two-col__main">
+        ${ulaNote('Enter your details to create your membership account. Nothing will be charged today.')}
         <form class="details-form" data-form="details" novalidate>
           <div class="details-sso">
             <div class="sso-row">
@@ -3152,7 +3305,7 @@ function detailsScreen() {
             </div></section>
           <section class="details-section"><div class="fitpanel__label">Contact details</div>
             <div class="details-grid details-grid--contact">
-              ${f('email','Membership email',{type:'email',auto:'email',mode:'email',ph:'you@example.com'})}
+              ${f('email','Membership email',{type:'email',auto:'email',mode:'email',ph:'you@example.com',why:'For your membership contract. Entering your email here does not save your progress if you leave.'})}
               ${f('phone','Mobile number',{type:'tel',auto:'tel',mode:'tel',optional:true,ph:'+49 151...'})}
             </div></section>
           <section class="details-section"><div class="fitpanel__label">Home address</div>
@@ -3171,10 +3324,10 @@ function detailsScreen() {
             <button class="btn btn--primary" type="submit">Continue</button>
           </div>
         </form>
-      </main>
+      </div>
       <aside class="two-col__aside">${aside}</aside>
     </div>
-  </div>${exitModal()}`;
+  </main>${exitModal()}`;
 }
 
 function paymentScreen() {
@@ -3191,6 +3344,7 @@ function paymentScreen() {
       <h1 class="h-question" style="margin-top:0" tabindex="-1">Review and confirm</h1>
       <p class="pay-sub">Final step before your routine begins. Everything you agree to is transparently listed below.</p>
     </div>
+    ${ulaNote('Review your membership details and confirmed start date before confirming.')}
 
     <div class="pay-layout">
       <!-- LEFT COLUMN: Main Form & Actions -->
@@ -3234,7 +3388,7 @@ function paymentScreen() {
           </div>
 
           <!-- 2. Transparent Cancellation & Flexibility (Collapsible) -->
-          <details class="pay-terms-disclosure pay-section-card">
+          <details class="pay-terms-disclosure pay-section-card disclosure" open>
             <summary>
               <div class="pay-terms-summary-left">
                 <span class="pay-step-badge">2</span>
@@ -3254,7 +3408,7 @@ function paymentScreen() {
                 </li>
                 <li>
                   ${icon(commitment.canPause?'checkThin':'info',17)}
-                  <span>${commitment.canPause ? '<strong>Free pause:</strong> Pause your membership for 1 to 6 full months at zero cost.' : '<strong>No pause:</strong> Monthly memberships are fully flexible, but pause is unavailable.'}</span>
+                  <span>${commitment.canPause ? '<strong>Free pause:</strong> Pause your membership for 1 to 6 full months at zero cost.' : `<strong>No pause:</strong> A ${commitment.minimumTermMonths}-month membership cannot be paused (monthly memberships are fully flexible without pause).`}</span>
                 </li>
                 <li>
                   ${icon('sparkle',17)}
@@ -3266,9 +3420,9 @@ function paymentScreen() {
           </details>
 
           <!-- 3. Primary Action Row -->
-          <div class="pay-actions desktop-cta">
+          <div class="btn-row pay-actions desktop-cta">
             <button class="btn btn--primary btn--lg" type="submit" style="width:100%">
-              Confirm &amp; start membership &mdash; ${price} &euro; / mo
+              Confirm and start membership &mdash; ${price} &euro; / mo
             </button>
             <div class="pay-actions__secondary">
               <button class="btn btn--secondary" type="button" data-go="details">${icon('back',16)} Back to details</button>
@@ -3322,7 +3476,7 @@ function paymentScreen() {
             </div>
             <div class="pay-detail-row">
               <span class="pay-detail-label">Start date</span>
-              <span class="pay-detail-val">${esc(fmtDate(S.startDate))}</span>
+              <span class="pay-detail-val">${esc(fmtDate(S.startDate))} <small class="muted">(1st of next month)</small></span>
             </div>
             <div class="pay-detail-row">
               <span class="pay-detail-label">Monthly visits</span>
@@ -3862,7 +4016,7 @@ document.addEventListener('scroll', e => {
   }
 }, true);
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-app],[data-close-app-sheet],[data-change-city],[data-city],[data-unsure],[data-open-ask],[data-rail],[data-radius],[data-toggle-venues],[data-toggle-apps],[data-toggle-week],[data-toggle-places],[data-toggle-more],[data-more],[data-toggle-alt],[data-toggle-plan-details],[data-open-days],[data-day],[data-swap],[data-change-week],[data-add-week],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula],[data-search-example],[data-venue-clear],[data-venue-search-all],[data-toggle-where],[data-where],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-add-activity],[data-remove-activity],[data-expand-pillar],[data-toggle-routine-customizer],[data-remove-day],[data-exclude-venue],[data-filter-category],[data-scroll-pills],[data-scroll-gallery]');
+  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-app],[data-close-app-sheet],[data-change-city],[data-city],[data-unsure],[data-open-ask],[data-rail],[data-radius],[data-toggle-venues],[data-toggle-apps],[data-toggle-week],[data-toggle-places],[data-toggle-more],[data-more],[data-toggle-alt],[data-toggle-plan-details],[data-open-days],[data-day],[data-swap],[data-change-week],[data-add-week],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula],[data-search-example],[data-venue-clear],[data-venue-search-all],[data-toggle-where],[data-where],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-add-activity],[data-remove-activity],[data-expand-pillar],[data-toggle-routine-customizer],[data-remove-day],[data-exclude-venue],[data-filter-category],[data-scroll-pills],[data-scroll-gallery],[data-toggle-star],[data-set-star-freq],[data-open-plan-drawer],[data-close-plan-drawer]');
   if (!t) return;
 
   if (t.dataset.scrollPills) {
@@ -4139,6 +4293,18 @@ document.addEventListener('click', e => {
     render(false);
     return;
   }
+  if (t.dataset.togglePlaces !== undefined) {
+    RECO_VIEW = 'pillars';
+    log('reco_view_changed', { mode: RECO_VIEW });
+    render(false);
+    return;
+  }
+  if (t.dataset.toggleWeek !== undefined) {
+    RECO_VIEW = 'week';
+    log('reco_view_changed', { mode: RECO_VIEW });
+    render(false);
+    return;
+  }
   if (t.dataset.addActivity) {
     const actId = t.dataset.addActivity;
     const cur = (S.answers.activities || []).filter(x => x !== SKIP);
@@ -4232,6 +4398,42 @@ document.addEventListener('click', e => {
     return;
   }
   if (t.dataset.closeSheet !== undefined) { SHEET=null; render(false); return; }
+  if (t.dataset.toggleStar) {
+    const vId = t.dataset.toggleStar;
+    if (!S.starredVenues) S.starredVenues = {};
+    if (S.starredVenues[vId]) {
+      delete S.starredVenues[vId];
+      log('venue_unstarred', { venue: vId });
+    } else {
+      S.starredVenues[vId] = { freq: 1 };
+      log('venue_starred', { venue: vId, freq: 1 });
+    }
+    render(false);
+    return;
+  }
+  if (t.dataset.setStarFreq) {
+    const vId = t.dataset.setStarFreq;
+    const freq = Number(t.dataset.freq) || 1;
+    if (!S.starredVenues) S.starredVenues = {};
+    S.starredVenues[vId] = { freq };
+    log('venue_star_freq_set', { venue: vId, freq });
+    render(false);
+    return;
+  }
+  if (t.dataset.openPlanDrawer !== undefined) {
+    PLAN_DRAWER_OPEN = true;
+    document.body.style.overflow = 'hidden';
+    log('plan_drawer_opened');
+    render(false);
+    return;
+  }
+  if (t.dataset.closePlanDrawer !== undefined) {
+    PLAN_DRAWER_OPEN = false;
+    document.body.style.overflow = '';
+    log('plan_drawer_closed');
+    render(false);
+    return;
+  }
   if (t.dataset.changeCity !== undefined) { CITYPICK=!CITYPICK; if(!CITYPICK) CITYWANTED=null;
     if (CITYPICK) log('city_change_opened'); render(false); return; }
   if (t.dataset.pickPlan) {
@@ -4422,6 +4624,16 @@ document.addEventListener('change', e => {
   group.querySelectorAll(`input[name="${e.target.name}"]`).forEach(i => i.closest('.option-card')?.classList.toggle('is-selected', i.checked));
 });
 document.addEventListener('keydown', e => {
+  if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && e.target.matches('.option-card__input')) {
+    const inputs = [...document.querySelectorAll('.option-card__input')];
+    const idx = inputs.indexOf(e.target);
+    const nextIdx = e.key === 'ArrowDown' ? (idx + 1) % inputs.length : (idx - 1 + inputs.length) % inputs.length;
+    inputs[nextIdx].focus();
+    inputs[nextIdx].checked = true;
+    inputs[nextIdx].dispatchEvent(new Event('change', { bubbles: true }));
+    e.preventDefault();
+    return;
+  }
   if (e.key === 'Enter') {
     const planChoice = e.target.closest('[role="button"][data-plan]');
     if (planChoice) { planChoice.click(); e.preventDefault(); return; }

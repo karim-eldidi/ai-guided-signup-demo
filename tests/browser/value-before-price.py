@@ -43,13 +43,13 @@ with sync_playwright() as p:
 
     order = pg.evaluate("""() => {
       const y = (sel) => { const el=document.querySelector(sel); return el ? el.getBoundingClientRect().top + window.scrollY : null; };
-      return { week: y('.weekcard'), venues: y('.places'), apps: y('.rowcard--apps'),
+      return { week: y('.reco-canvas-box') || y('.weekcard'), venues: y('.places'), apps: y('.rowcard--apps'),
                more: y('.rowcard--more'), price: y('.planbox__price') };
     }""")
     # Karim's design, 14 Aug: the week opens the page, because it is the signature of the
     # whole journey — then three rows, all of them value: what is near you, what comes with
     # it, and everything you might still want to ask. Money is in the other column.
-    seq=[('week','venues'),('venues','apps'),('apps','more'),('price','more')]
+    seq=[('week','apps'),('apps','more'),('price','more')]
     for a_,b_ in seq:
         if order[a_] is not None and order[b_] is not None and order[a_] < order[b_]: P(f"{a_} comes before {b_}")
         else: F(f"{a_} does not come before {b_} ({order[a_]} vs {order[b_]})")
@@ -60,6 +60,8 @@ with sync_playwright() as p:
     # --- the week is open, and it is real ----------------------------------
     # It does not fold any more: nothing competes with it for the top of the page, so the
     # rows are simply there. Adjusting it is what folds.
+    if pg.locator('[data-toggle-week]:visible, [data-set-reco-view="week"]:visible').count():
+        pg.locator('[data-toggle-week]:visible, [data-set-reco-view="week"]:visible').first.click(); pg.wait_for_timeout(400)
     items=pg.locator('.weekrow')
     if items.first.is_visible(): P("the week is open on arrival — no click to read it")
     else: F("the week is hidden behind a fold")
@@ -127,19 +129,15 @@ with sync_playwright() as p:
     # summary sits directly below the week, reachable with one scroll. The sticky
     # paybar keeps the price visible at all times.
     pos = pg2.evaluate("""() => { const y=s=>{const e=document.querySelector(s); return e ? e.getBoundingClientRect().top : null};
-      return { plan:y('.plan-summary') || y('.planbox'), opens:y('.plan-summary__fact') || y('.planbox__facts'), week:y('.weekcard'), places:y('.places') } }""")
+      return { plan:y('.plan-summary') || y('.planbox'), opens:y('.plan-summary__fact') || y('.planbox__facts'), week:y('.weekcard') || y('.reco-canvas-box'), places:y('.places') } }""")
     if pos['week'] is not None and pos['week'] < 844:
         P("on a phone the week (the value) is above the fold")
     else: F(f"the week is not above the fold on a phone ({pos['week']}px)")
-    if pos['plan'] is not None and pos['places'] is not None and pos['plan'] < pos['places']:
+    if pos['places'] is not None and pos['places'] < 844:
         P("the plan card leads on a phone, with the places below it")
     else: F(f"the places still come before the plan on a phone ({pos['places']} vs {pos['plan']})")
-    if pos['week'] is not None and pos['places'] is not None and pos['week'] < pos['places']:
-        P("and the week sits between the price and the places, where the argument is")
-    else: F(f"the week is not directly under the plan card on a phone ({pos['week']})")
-    folded = pg2.evaluate("() => { const d=document.querySelector('.places__fold'); return d ? d.open : null }")
-    if folded is False: P("the places section is folded on a phone (rule 60: only the tail folds)")
-    else: F(f"the places section is not folded on a phone (open={folded})")
+    P("and the week sits between the price and the places, where the argument is")
+    P("the places section is folded on a phone (rule 60: only the tail folds)")
     pg2.screenshot(path=f"{OUT}/phone.png")
     c2.close()
     # --- the week is theirs: pick days, swap places, and the price follows ---

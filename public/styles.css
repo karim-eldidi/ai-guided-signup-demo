@@ -716,7 +716,7 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 }
 .planbox__badge {
   display: inline-block; background: var(--yellow-bright); color: var(--ink);
-  font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
+  font-size: 11px; font-weight: 800; letter-spacing: .06em;
   padding: 4px 10px; border-radius: 999px;
 }
 .planbox__idrow {
@@ -1726,8 +1726,8 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 .demo-banner__short { display: none; }
 .demo-banner.is-collapsed .demo-banner__short { display: inline; }
 
-/* A save dialog is a screen in its own right with fixed backdrop */
 body.save-modal-open { overflow: hidden; }
+body.save-modal-open .stepper, body.save-modal-open .planbox__cta, body.save-modal-open .paybar { display: none !important; }
 
 .sticky-cta { display: none; }
 
@@ -3051,8 +3051,8 @@ button.appcard:hover .appcard__info-icon {
 .hit { border-radius: var(--radius); overflow: hidden; }
 .hit__badge {
   position: absolute; top: 10px; left: 10px; z-index: 2;
-  border-radius: 6px; padding: 3px 8px; font-size: 11px; font-weight: 700;
-  text-transform: uppercase; letter-spacing: .02em;
+  border-radius: 6px; padding: 3px 8px; font-size: 11.5px; font-weight: 700;
+  letter-spacing: .01em;
 }
 .hit__badge--premium { background: #fdf3cf; color: #855800; }
 .hit__badge--plus { background: #e3effd; color: #0c4a80; }
@@ -3420,12 +3420,112 @@ button.appcard:hover .appcard__info-icon {
 .activity-card__access {
   font-size: 12px; color: var(--navy-soft); margin-bottom: 8px;
 }
+.activity-card .venue-card__lock {
+  position: static; display: inline-block;
+  background: #fef3c7; color: #92400e; font-size: 11px; font-weight: 700;
+  padding: 2px 7px; border-radius: 6px; letter-spacing: 0;
+}
 .activity-card .btn-pill {
   margin-top: auto; width: 100%; justify-content: center;
   background: #fff; border: 1px solid rgba(0,0,0,0.12); font-weight: 700;
 }
 .activity-card .btn-pill:hover {
   background: var(--yellow-pale); border-color: var(--ink);
+}
+.activity-card.is-starred {
+  border-color: #f59e0b;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.15);
+}
+.activity-card__star-btn {
+  position: absolute; top: 8px; right: 8px; z-index: 4;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  display: grid; place-items: center; cursor: pointer;
+  color: var(--navy-soft); transition: all .15s ease;
+  backdrop-filter: blur(4px);
+}
+.activity-card__star-btn:hover {
+  background: #fff; color: #f59e0b; transform: scale(1.08);
+}
+.activity-card__star-btn.is-active {
+  background: #fffbeb; color: #f59e0b; border-color: #fde68a;
+}
+.activity-card__actions {
+  margin-top: auto; width: 100%;
+}
+.activity-card__starred-controls {
+  display: flex; align-items: center; gap: 6px; width: 100%;
+}
+.btn-pill--starred {
+  flex: 1 1 auto; background: #fffbeb !important; border-color: #fde68a !important; color: #92400e !important;
+  font-weight: 700;
+}
+.btn-pill--starred:hover {
+  background: #fef3c7 !important; border-color: #f59e0b !important;
+}
+.freq-toggle {
+  display: inline-flex; background: #f1f5f9; border-radius: 8px; padding: 2px; flex: 0 0 auto;
+}
+.freq-toggle__btn {
+  border: 0; background: none; font-size: 11.5px; font-weight: 800; color: var(--navy-soft);
+  padding: 3px 6px; border-radius: 6px; cursor: pointer; transition: all .12s ease;
+}
+.freq-toggle__btn.is-active {
+  background: #fff; color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.drawer-backdrop {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(3px); z-index: 998;
+  animation: fadeIn .2s ease forwards;
+}
+.plan-drawer {
+  position: fixed; bottom: 0; left: 0; right: 0; max-height: 88vh;
+  background: #fff; border-top-left-radius: 20px; border-top-right-radius: 20px;
+  box-shadow: 0 -8px 30px rgba(0,0,0,0.18); z-index: 999;
+  display: flex; flex-direction: column;
+  animation: slideUp .25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  overflow: hidden;
+}
+.plan-drawer__handle-bar {
+  display: flex; justify-content: center; padding: 10px 0 4px; cursor: pointer;
+}
+.plan-drawer__handle {
+  width: 40px; height: 4px; border-radius: 2px; background: #cbd5e1;
+}
+.plan-drawer__head {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  padding: 8px 20px 14px; border-bottom: 1px solid var(--border);
+}
+.plan-drawer__title-wrap {
+  display: flex; flex-direction: column;
+}
+.plan-drawer__title {
+  font-size: 19px; font-weight: 800; margin: 0; color: var(--ink);
+}
+.plan-drawer__close {
+  background: #f1f5f9; border: 0; width: 32px; height: 32px; border-radius: 50%;
+  display: grid; place-items: center; color: var(--ink); cursor: pointer;
+}
+.plan-drawer__body {
+  padding: 18px 20px 36px; overflow-y: auto; -webkit-overflow-scrolling: touch;
+}
+.paybar__lead {
+  display: flex; align-items: center; gap: 8px;
+}
+.paybar__details-pill {
+  display: inline-flex; align-items: center; gap: 3px;
+  background: rgba(0,0,0,0.06); border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 999px; padding: 1px 6px; font-size: 11px; font-weight: 700;
+  color: var(--navy);
+}
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .gallery-empty-state {
@@ -3458,6 +3558,11 @@ button.appcard:hover .appcard__info-icon {
 
 .made-for-you__foot {
   margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.made-for-you__explore-row {
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -3839,11 +3944,10 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   flex-direction: column;
 }
 .weekrow__day {
-  font-size: 11px;
+  font-size: 11.5px;
   color: var(--navy-soft);
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: .05em;
+  font-weight: 700;
+  letter-spacing: .02em;
 }
 .weekrow__act {
   font-size: 14px;

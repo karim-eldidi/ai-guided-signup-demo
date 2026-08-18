@@ -37,9 +37,18 @@ const DAY_SPREAD = {
  * @param {string}   frequency answer id
  * @returns {{sessions: object[], perMonth: number, note: string|null}}
  */
-export function weekPlan(groupIds = [], venues = [], planId = 'classic', frequency = 'twice') {
-  const count = SESSIONS[frequency] || 2;
-  const days = DAY_SPREAD[count] || DAY_SPREAD[2];
+export function weekPlan(groupIds = [], venues = [], planId = 'classic', frequency = 'twice', starredVenues = {}) {
+  const starredEntries = Object.entries(starredVenues || {}).filter(([id, meta]) => (typeof meta === 'number' ? meta > 0 : meta && meta.freq > 0));
+  const starredVenueList = starredEntries.map(([id, meta]) => {
+    const v = venues.find((x) => x.id === id);
+    const freq = typeof meta === 'number' ? meta : (meta.freq || 1);
+    return v ? { venue: v, freq } : null;
+  }).filter(Boolean);
+
+  const baseCount = SESSIONS[frequency] || 2;
+  const starredCount = starredVenueList.reduce((acc, item) => acc + item.freq, 0);
+  const count = Math.max(baseCount, starredCount);
+  const days = DAY_SPREAD[Math.min(5, count)] || DAY_SPREAD[2];
   const groups = (groupIds.length ? groupIds.map(groupById).filter(Boolean) : ACTIVITY_GROUPS)
     .filter((g) => venues.some((v) => venueInGroup(v, g)));
 
@@ -47,13 +56,42 @@ export function weekPlan(groupIds = [], venues = [], planId = 'classic', frequen
   const allowedVisits = monthlyAllowance(planById(planId));
   const overAllowance = allowedVisits > 0 && wantedVisits > allowedVisits;
   const perMonth = Math.min(wantedVisits, allowedVisits || wantedVisits);
-  if (!groups.length) return { sessions: [], perMonth, wantedVisits, allowedVisits, overAllowance, note: null };
+  if (!groups.length && !starredVenueList.length) return { sessions: [], perMonth, wantedVisits, allowedVisits, overAllowance, note: null };
 
-  /* Round-robin the activities so a two-session week does two different things,
-     and don't send someone to the same venue twice while another one is free. */
-  const used = new Set();
-  const sessions = days.map((day, i) => {
-    const group = groups[i % groups.length];
+  const candidateSessions = [];
+  starredVenueList.forEach(({ venue, freq }) => {
+    for (let f = 0; f < freq; f++) {
+      const g = ACTIVITY_GROUPS.find((grp) => venueInGroup(venue, grp)) || { id: 'other', label: 'Workout', icon: 'bolt' };
+      candidateSessions.push({
+        groupId: g.id,
+        activity: g.label,
+        icon: g.icon,
+        venue,
+        distanceKm: venue.distanceKm,
+        isStarred: true
+      });
+    }
+  });
+
+  const used = new Set(starredVenueList.map((s) => s.venue.id));
+  const sessions = days.slice(0, count).map((day, i) => {
+    if (i < candidateSessions.length) {
+      const cand = candidateSessions[i];
+      const included = includedIn(cand.venue, planId);
+      return {
+        day,
+        groupId: cand.groupId,
+        activity: cand.activity,
+        icon: cand.icon,
+        venue: cand.venue,
+        distanceKm: cand.distanceKm,
+        included,
+        access: accessLabel(cand.venue, planId),
+        needs: included ? null : firstPlanWithAccess(cand.venue),
+        isStarred: true
+      };
+    }
+    const group = groups[i % groups.length] || ACTIVITY_GROUPS[0];
     const forGroup = venues
       .filter((v) => venueInGroup(v, group))
       .sort((a, b) => a.distanceKm - b.distanceKm);
@@ -75,7 +113,8 @@ export function weekPlan(groupIds = [], venues = [], planId = 'classic', frequen
       distanceKm: pick.distanceKm,
       included,
       access: accessLabel(pick, planId),
-      needs: included ? null : firstPlanWithAccess(pick)
+      needs: included ? null : firstPlanWithAccess(pick),
+      isStarred: false
     };
   }).filter(Boolean);
 

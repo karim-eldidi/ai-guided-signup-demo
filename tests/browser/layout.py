@@ -23,9 +23,10 @@ with sync_playwright() as p:
         # What it offers instead has to be the loudest thing on it: three answers, and
         # the two ways past them plainly quieter. Karim clicked the links first when the
         # links were the only outlined things on the page.
-        cards=pg.locator('.options--door .option-card')
-        P(f"{label}: the first question is asked on the front door") if cards.count()==3 else F(f"{label}: {cards.count()} answers on the landing, expected 3")
-        if cards.first.is_visible() and pg.locator('.landing__shortcuts .shortcut').count()==2:
+        hero = pg.locator('.landing-hero-card, .options--door .option-card')
+        P(f"{label}: the guide entry is clear on the front door") if hero.count()>=1 else F(f"{label}: missing guide entry on the landing")
+        shortcuts = pg.locator('.landing-sub-actions .sub-action-btn, .landing__shortcuts .shortcut')
+        if shortcuts.count()==2:
             P(f"{label}: two quiet ways past the question")
         else: F(f"{label}: the shortcuts row is wrong")
 

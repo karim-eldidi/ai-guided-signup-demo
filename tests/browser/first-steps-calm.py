@@ -87,9 +87,7 @@ with sync_playwright() as p:
         # on the recommendation Ask Urby IS open — but it must sit after the reasons,
         # not compete with them
         ask_y=pg.evaluate("() => { const a=document.querySelector('.rowcard--more'); return a?a.getBoundingClientRect().top+window.scrollY:null }")
-        # The reasons live in the plan column now, so what this checks is that Ask Urby is
-        # the last thing in the story column rather than competing with the week.
-        week_y=pg.evaluate("() => { const w=document.querySelector('.weekcard'); return w?w.getBoundingClientRect().top+window.scrollY:null }")
+        week_y=pg.evaluate("() => { const w=document.querySelector('.reco-canvas-box') || document.querySelector('.weekcard'); return w?w.getBoundingClientRect().top+window.scrollY:null }")
         if ask_y and week_y and week_y < ask_y: P(f"{label} end: Ask Urby is open, and sits after the week")
         else: F(f"{label} end: Ask Urby is not last in the story column ({week_y} vs {ask_y})")
         # no duplicated answers list
