@@ -3610,6 +3610,195 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   .weekcard__title { flex: 1 1 100%; }
 }
 
+/* --- Recommendation Screen Mobile Optimizations (Streamlined Viewport) --- */
+@media (max-width: 768px) {
+  /* Reco Container & Spacing */
+  .two-col--reco {
+    padding-bottom: 96px;
+  }
+  .two-col--reco .two-col__main {
+    padding: 12px 14px 40px;
+  }
+
+  /* Reco Hero & Avatar */
+  .reco-hero__title {
+    font-size: 20px;
+    font-weight: 800;
+    margin: 2px 0 6px;
+    line-height: 1.25;
+    letter-spacing: -.01em;
+  }
+  .reco-hero__title + .chips-row {
+    margin-bottom: 12px;
+  }
+  .chips-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .chips-row::-webkit-scrollbar {
+    display: none;
+  }
+  .chips-row__label {
+    display: none;
+  }
+  .chips-row .chip {
+    flex: 0 0 auto;
+    padding: 4px 10px;
+    font-size: 12px;
+    border-radius: 9999px;
+  }
+
+  /* Main Canvas Box */
+  .reco-canvas-box {
+    padding: 14px 14px 16px;
+    border-radius: 16px;
+    margin-bottom: 14px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+  }
+
+  /* Reco Tabs */
+  .reco-tabs {
+    margin: 0 0 12px;
+    gap: 16px;
+    border-bottom: 1.5px solid rgba(0,0,0,0.06);
+  }
+  .reco-tab {
+    padding: 4px 0 8px;
+    font-size: 15px;
+  }
+
+  /* Made For You Section Header */
+  .made-for-you__head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .made-for-you__meta {
+    width: 100%;
+  }
+  .made-for-you__title {
+    font-size: 16.5px;
+    font-weight: 800;
+    line-height: 1.25;
+    margin: 0;
+  }
+  .made-for-you__sub {
+    font-size: 12px;
+    color: var(--navy-soft);
+    margin: 2px 0 0;
+  }
+  .radius-toggle {
+    align-self: flex-start;
+    padding: 2px;
+    margin-top: 2px;
+  }
+  .radius-toggle__btn {
+    padding: 3px 9px;
+    font-size: 11.5px;
+  }
+
+  /* Category Filter Pills */
+  .category-pills-wrap {
+    margin-bottom: 12px;
+  }
+  .category-pills {
+    padding: 1px 36px 2px 1px;
+    gap: 6px;
+  }
+  .category-pill {
+    padding: 5px 11px;
+    font-size: 12px;
+    gap: 5px;
+  }
+
+  /* Activity Carousel & Cards */
+  .activity-gallery-wrap {
+    margin-bottom: 10px;
+  }
+  .activity-gallery {
+    padding: 2px 2px 8px;
+  }
+  .activity-card {
+    flex: 0 0 195px;
+    border-radius: 12px;
+  }
+  .activity-card__badge {
+    top: 6px;
+    left: 6px;
+    font-size: 10.5px;
+    padding: 2px 6px;
+  }
+  .activity-card__media-btn {
+    aspect-ratio: 16 / 11;
+  }
+  .activity-card__icon-badge {
+    width: 26px;
+    height: 26px;
+    bottom: 6px;
+    left: 8px;
+  }
+  .activity-card__content {
+    padding: 8px 10px 10px;
+    gap: 2px;
+  }
+  .activity-card__activity {
+    font-size: 13px;
+  }
+  .activity-card__vname {
+    font-size: 12px;
+  }
+  .activity-card__dist {
+    font-size: 11px;
+    margin-top: 1px;
+  }
+  .activity-card__access {
+    font-size: 11px;
+    margin-bottom: 4px;
+  }
+  .activity-card .btn-pill {
+    padding: 5px 8px;
+    font-size: 11.5px;
+    margin-top: 2px;
+  }
+
+  /* Made for you footer link */
+  .made-for-you__foot {
+    margin-top: 10px;
+    justify-content: flex-start;
+  }
+  .made-for-you__explore-link {
+    font-size: 12.5px;
+    padding: 5px 12px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Sticky Paybar on Mobile */
+  .paybar {
+    padding: 10px 16px env(safe-area-inset-bottom, 12px);
+    gap: 12px;
+  }
+  .paybar__info b {
+    font-size: 15px;
+  }
+  .paybar__info span {
+    font-size: 12px;
+  }
+  .paybar .btn {
+    padding: 10px 22px;
+    font-size: 15px;
+    border-radius: 9999px;
+  }
+}
+
 /* --- Change Week / Venue & Class Selection ---------------- */
 .change-week-topbar {
   display: flex; align-items: center; justify-content: space-between;
