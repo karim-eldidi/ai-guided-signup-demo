@@ -250,7 +250,10 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
   grid-template-columns: 1fr auto 1fr;
   align-items: start;
   gap: 20px;
-  padding: 26px clamp(20px, 3vw, 44px) 22px;
+  padding: 24px clamp(20px, 3vw, 44px) 20px;
+  max-width: 1320px;
+  margin: 0 auto;
+  width: 100%;
 }
 .topbar__left  { display: flex; flex-direction: column; gap: 7px; }
 .topbar__right { justify-self: end; }
@@ -671,19 +674,20 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 /* The page used to open with a price. It now opens with a week, and the plan sits
    in a sticky column beside it — a consequence of the value, not the pitch. */
 /* The value column earns the width here; the plan needs only enough to be clear. */
-.two-col--reco { grid-template-columns: minmax(0, 1fr) 400px; }
+.two-col--reco {
+  max-width: 1280px;
+  margin: 0 auto;
+  grid-template-columns: minmax(0, 1fr) 400px;
+  gap: 40px;
+  padding: 0 24px;
+  width: 100%;
+}
 /* The bonus material is a third grid region rather than the tail of the story column,
    so the reading order is right on both shapes: on a desktop it flows back under the
    story, on a phone it lands after the plan box instead of ahead of it. */
-/* The tail sits in row 2 of column 1. Without the aside spanning both rows, the plan
-   column defined the height of row 1 on its own, so the tail began below the whole
-   plan column and left ~400px of empty page under the week. Spanning it means row 1 is
-   as tall as the story and the tail follows straight on. */
-.reco-tail { grid-column: 1; grid-row: 2; padding: 0 clamp(20px, 3.4vw, 60px) 80px; max-width: 860px; }
-/* The story column carries the whole page now — the three rows at the foot are rows of
-   it rather than a third grid region — so it keeps its own bottom padding. */
-.two-col--reco .two-col__main { grid-column: 1; grid-row: 1; padding-bottom: 80px; }
-.two-col--reco .two-col__aside { grid-column: 2; grid-row: 1 / span 2; }
+.reco-tail { grid-column: 1; grid-row: 2; padding: 0 0 80px; max-width: 100%; }
+.two-col--reco .two-col__main { grid-column: 1; grid-row: 1; padding: 8px 0 80px; max-width: 100%; }
+.two-col--reco .two-col__aside { grid-column: 2; grid-row: 1 / span 2; margin: 4px 0 24px 0; }
 /* Karim: "I have to get to the bottom of the page to see the rest of the side menu."
    A sticky column taller than the viewport is unreachable until you scroll past it. It
    now caps at the viewport and scrolls itself, so the plan, the alternative and the
@@ -1498,8 +1502,16 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 
 /* The details form and its summary. Narrower aside than the recommendation's: it
    carries no argument, only a reminder of the one already won. */
-.two-col--form { grid-template-columns: minmax(0, 1fr) 360px; }
-.two-col--form .two-col__main { padding-bottom: 60px; }
+.two-col--form {
+  max-width: 1100px;
+  margin: 0 auto;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 36px;
+  padding: 0 24px;
+  width: 100%;
+}
+.two-col--form .two-col__main { padding: 8px 0 60px; max-width: 100%; }
+.two-col--form .two-col__aside { margin: 4px 0 24px 0; }
 .ordercard {
   background: var(--cream); border: 1px solid var(--cream-line);
   border-radius: var(--radius-lg); padding: 20px 20px 22px;
