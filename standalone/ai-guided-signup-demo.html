@@ -987,14 +987,7 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 /* --- detected city ------------------------------------------------------- */
 /* The location we assume, shown as a correctable statement rather than a
    silent default. In production the city comes from IP or browser location. */
-.geoblock { margin: -4px 0 16px; }
-.geochip-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 10px;
-}
+.geoblock { margin: 12px 0 16px; }
 .geochip {
   display: inline-flex; align-items: center; gap: 9px;
   background: var(--cream); border: 1px solid var(--cream-line);
@@ -1006,25 +999,32 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 }
 .geochip__change:hover { border-color: var(--ink); }
 
+.qhint--with-pills {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
 .area-visual-pills {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  vertical-align: middle;
 }
 .area-visual-pill {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
   background: #f4f5f7;
   border: 1px solid var(--border);
   border-radius: 999px;
-  padding: 5px 11px;
-  font-size: 12.5px;
+  padding: 3px 9px;
+  font-size: 13px;
   font-weight: 600;
-  color: var(--navy);
+  color: var(--ink);
 }
 .area-visual-pill svg {
-  color: var(--navy-soft);
+  color: var(--navy);
 }
 
 .option-card__label {
@@ -5704,7 +5704,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 18 Aug 22:07 UTC</span>
+  <span class="demo-banner__build">build 18 Aug 22:09 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -6895,15 +6895,8 @@ function cityChip() {
         :`<p class="citypick__note">${icon('info',17)} <span>Only Berlin has venues loaded in this pilot. Pick any city and I&rsquo;ll tell you honestly what I can show.</span></p>`}
     </div>` : '';
   return `<div class="geoblock">
-    <div class="geochip-row">
-      <div class="geochip">${icon('pin',16)}<span>Looks like you&rsquo;re in <b>Berlin</b></span>
-        <button class="geochip__change" data-change-city aria-expanded="${CITYPICK}">${CITYPICK?'Close':'Change'}</button></div>
-      <div class="area-visual-pills">
-        <span class="area-visual-pill">${icon('home',13)} Home</span>
-        <span class="area-visual-pill">${icon('briefcase',13)} Work</span>
-        <span class="area-visual-pill">${icon('sparkle',13)} Routine</span>
-      </div>
-    </div>
+    <div class="geochip">${icon('pin',16)}<span>Looks like you&rsquo;re in <b>Berlin</b></span>
+      <button class="geochip__change" data-change-city aria-expanded="${CITYPICK}">${CITYPICK?'Close':'Change'}</button></div>
     ${picker}</div>`;
 }
 
@@ -7821,7 +7814,9 @@ function fitScreen() {
     ${TYPING?`<div class="typing" role="status" aria-label="Urby is typing"><span></span><span></span><span></span></div>`
       :`<form data-form="answer" data-qid="${esc(q.id)}">
       <h1 class="h-question" tabindex="-1">${esc(q.prompt)}</h1>
-      ${q.hint?`<p class="qhint">${q.hint}</p>`:''}
+      ${q.id==='area'
+        ? `<p class="qhint qhint--with-pills">Pick up to 3 neighbourhoods &mdash; <span class="area-visual-pills"><span class="area-visual-pill">${icon('home',13)} Home</span><span class="area-visual-pill">${icon('briefcase',13)} Work</span><span class="area-visual-pill">${icon('sparkle',13)} Routine</span></span></p>`
+        : (q.hint ? `<p class="qhint">${q.hint}</p>` : '')}
       ${q.id==='area'?cityChip():''}
       <div class="options ${opts.length>6?'options--compact':opts.length>4?'options--chips':'options--tiles'}${q.id==='frequency'?' options--stack-mobile':''}"${q.maxPick?` data-maxpick="${q.maxPick}"`:''}>${cards}</div>
       ${NOCHOICE?`<p class="field-error" role="alert">${q.multi?'Pick at least one, or tell Urby in your own words.':'Pick one of the options, or tell Urby in your own words.'}</p>`:''}

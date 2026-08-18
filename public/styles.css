@@ -973,14 +973,7 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 /* --- detected city ------------------------------------------------------- */
 /* The location we assume, shown as a correctable statement rather than a
    silent default. In production the city comes from IP or browser location. */
-.geoblock { margin: -4px 0 16px; }
-.geochip-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 10px;
-}
+.geoblock { margin: 12px 0 16px; }
 .geochip {
   display: inline-flex; align-items: center; gap: 9px;
   background: var(--cream); border: 1px solid var(--cream-line);
@@ -992,25 +985,32 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 }
 .geochip__change:hover { border-color: var(--ink); }
 
+.qhint--with-pills {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
 .area-visual-pills {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  vertical-align: middle;
 }
 .area-visual-pill {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
   background: #f4f5f7;
   border: 1px solid var(--border);
   border-radius: 999px;
-  padding: 5px 11px;
-  font-size: 12.5px;
+  padding: 3px 9px;
+  font-size: 13px;
   font-weight: 600;
-  color: var(--navy);
+  color: var(--ink);
 }
 .area-visual-pill svg {
-  color: var(--navy-soft);
+  color: var(--navy);
 }
 
 .option-card__label {
