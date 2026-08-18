@@ -1962,13 +1962,30 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
    row of app chips, so it takes its own line and is allowed to narrow — otherwise the
    last chips render outside the card they belong to. */
 .appgrid { flex: 1 1 100%; min-width: 0; display: flex; align-items: stretch; gap: 8px; flex-wrap: wrap; }
-.appgrid.is-locked .appcard { opacity: 1; }
+.appgrid.is-locked .appcard {
+  opacity: 0.5;
+  filter: grayscale(1);
+  background: #f7f7f7;
+  border-color: #e5e5e5;
+  color: #777;
+}
+.appgrid.is-locked .appcard:hover {
+  opacity: 0.85;
+  border-color: #999;
+  transform: translateY(-1px);
+}
+.appgrid.is-locked .appcard__logo {
+  background: #e8e8e8;
+}
+.appgrid.is-locked .appcard__cat {
+  color: #999;
+}
 button.appcard, .appcard {
   display: inline-flex; align-items: center; gap: 10px;
   background: #fff; border: 1px solid var(--border); border-radius: 999px;
   padding: 6px 14px 6px 6px; text-align: left; white-space: nowrap;
   cursor: pointer; text-decoration: none; color: inherit;
-  transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+  transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease, opacity .15s ease;
 }
 button.appcard:hover {
   border-color: var(--ink);
@@ -2082,10 +2099,28 @@ button.appcard:hover .appcard__info-icon {
 }
 
 @media (max-width: 650px) {
+  .rowcard--apps .rowcard__chips {
+    display: none;
+  }
   .apps-switcher-strip {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
     gap: 8px;
+    padding: 10px 12px;
+  }
+  .apps-switcher-strip__label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    width: 100%;
+  }
+  .apps-switcher-strip__title {
+    font-size: 13px;
+  }
+  .apps-switcher-strip__hint {
+    font-size: 11px;
+    text-align: right;
   }
   .apps-segmented-control {
     width: 100%;
@@ -2094,15 +2129,58 @@ button.appcard:hover .appcard__info-icon {
   .apps-seg-btn {
     flex: 1 1 0;
     justify-content: center;
-    padding: 0 6px;
-    font-size: 11.5px;
+    padding: 0 4px;
+    font-size: 11px;
+    height: 30px;
+  }
+  .appgrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  button.appcard, .appcard {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px 6px 6px;
+    border-radius: 12px;
+    width: 100%;
+    box-sizing: border-box;
+    white-space: normal;
+  }
+  .appcard__logo {
+    width: 28px;
+    height: 28px;
+    flex: 0 0 28px;
+    border-radius: 8px;
+  }
+  .appcard__text {
+    min-width: 0;
+    flex: 1 1 auto;
+    overflow: hidden;
+  }
+  .appcard__name {
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .appcard__cat {
+    font-size: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .appcard__info-icon {
+    display: none;
   }
 }
 
 /* App Detail Pop-up Sheet */
 .sheet--app .sheet__panel {
   max-width: 420px;
-  padding: 24px 22px 20px;
+  padding: 24px 22px max(24px, env(safe-area-inset-bottom));
   border-radius: 20px 20px 0 0;
 }
 @media (min-width: 600px) {
