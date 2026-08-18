@@ -3756,6 +3756,271 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 .change-sticky-bar__sub { font-size: 13px; color: var(--navy-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
 .change-sticky-bar__cta { flex: 0 0 auto; height: 48px; padding: 0 22px; font-size: 14.5px; }
 
+/* --- Modern Review & Pay 2-Column Checkout Layout --- */
+.pay-page {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 32px 24px 80px;
+}
+.pay-head {
+  margin-bottom: 24px;
+}
+.pay-sub {
+  font-size: 15px;
+  color: var(--navy-soft);
+  margin: 6px 0 0;
+}
+.pay-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.95fr);
+  gap: 32px;
+  align-items: start;
+}
+.pay-main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.pay-section-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.02);
+}
+.pay-section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -.01em;
+  color: var(--ink);
+  margin-bottom: 18px;
+}
+.pay-step-badge {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+}
+.pay-mock-notice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 10px 14px;
+  background: #f8fafc;
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  color: var(--navy-soft);
+  line-height: 1.4;
+}
+.pay-mock-notice svg {
+  flex: 0 0 auto;
+  color: var(--navy);
+}
+.pay-terms-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.pay-terms-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--ink);
+}
+.pay-terms-list svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  color: var(--ink);
+}
+.pay-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+.pay-actions .btn--lg {
+  height: 54px;
+  font-size: 16px;
+  font-weight: 800;
+  border-radius: var(--radius-md);
+}
+.pay-actions__secondary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+}
+.notice--simulated {
+  background: #fef9c3;
+  border: 1px solid #fde047;
+  color: #854d0e;
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  font-size: 13px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 12px;
+}
+.notice--simulated svg {
+  flex: 0 0 auto;
+  margin-top: 1px;
+}
+
+/* Sidebar Order Summary */
+.pay-sidebar {
+  position: sticky;
+  top: 84px;
+}
+.pay-summary-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+.pay-summary-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.pay-plan-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  background: #fef08a;
+  color: #854d0e;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  margin-bottom: 6px;
+}
+.pay-summary-title {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  margin: 0;
+  color: var(--ink);
+}
+.pay-summary-term {
+  font-size: 13px;
+  color: var(--navy-soft);
+}
+.pay-summary-price {
+  text-align: right;
+}
+.pay-summary-price b {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--ink);
+}
+.pay-summary-price small {
+  display: block;
+  font-size: 12px;
+  color: var(--navy-soft);
+}
+.pay-summary-divider {
+  height: 1px;
+  background: rgba(0,0,0,0.06);
+  margin: 18px 0;
+}
+.pay-summary-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.pay-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 13.5px;
+}
+.pay-detail-label {
+  color: var(--navy-soft);
+}
+.pay-detail-val {
+  color: var(--ink);
+  text-align: right;
+}
+.pay-receipt {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.pay-receipt-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: var(--ink);
+}
+.pay-free-tag {
+  font-weight: 700;
+  color: #16a34a;
+}
+.pay-receipt-total {
+  font-size: 16px;
+  font-weight: 800;
+  padding-top: 8px;
+  margin-top: 4px;
+  border-top: 1px dashed rgba(0,0,0,0.1);
+}
+.pay-receipt-subtext {
+  font-size: 12px;
+  color: var(--navy-soft);
+  margin-top: 4px;
+}
+.pay-urby-reassurance {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: #f8fafc;
+  border-radius: var(--radius);
+  padding: 12px 14px;
+}
+.pay-urby-reassurance p {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--navy);
+  line-height: 1.4;
+}
+
+@media (max-width: 900px) {
+  .pay-layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .pay-sidebar {
+    position: static;
+    order: -1;
+  }
+  .pay-actions.desktop-cta {
+    display: none;
+  }
+  .pay-page {
+    padding: 16px 14px 100px;
+  }
+  .pay-section-card, .pay-summary-card {
+    padding: 18px 16px;
+  }
+}
+
+
 /* ============================================================
    standalone-only additions
    ============================================================ */
@@ -3903,7 +4168,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 18 Aug 12:02 UTC</span>
+  <span class="demo-banner__build">build 18 Aug 12:15 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -6778,46 +7043,176 @@ function paymentScreen() {
   const each = perSession(price, S.answers.frequency, plan);
   const renewal = commitment.renewal;
   const method = FIELDS.method||'sepa';
-  return `${topbar(3)}<main class="content" id="main">
-    <h1 class="h-question" style="margin-top:14px" tabindex="-1">Review and pay</h1>
-    <div class="pay-preamble">
-      ${ulaNote('Everything you&rsquo;re agreeing to is on this screen. Nothing is hidden and nothing happens after you confirm that isn&rsquo;t listed here.')}
-      <div class="notice">${icon('info',19)}<span><strong>Simulated payment.</strong> This pilot never collects card details and nothing is charged.</span></div>
+  const match = matchVenues(A());
+  const where = whereName(match);
+  const memberName = ((S.details.firstName||'')+' '+(S.details.lastName||'')).trim()||'New Member';
+
+  return `${topbar(3)}<main class="content pay-page" id="main">
+    <div class="pay-head">
+      <h1 class="h-question" style="margin-top:0" tabindex="-1">Review and confirm</h1>
+      <p class="pay-sub">Final step before your routine begins. Everything you agree to is transparently listed below.</p>
     </div>
-    <div class="card"><div class="fitpanel__label">Your order</div><dl class="summary-list">
-      <div class="summary-row"><dt>Membership</dt><dd>${esc(plan.name)}</dd></div>
-      <div class="summary-row"><dt>Billing frequency</dt><dd>Monthly</dd></div>
-      <div class="summary-row"><dt>Commitment</dt><dd>${esc(commitment.label)}</dd></div>
-      <div class="summary-row"><dt>Start date</dt><dd>${esc(fmtDate(S.startDate))}<div class="xsmall muted" style="font-weight:400">the 1st of next month, so you pay for whole months</div></dd></div>
-      <div class="summary-row"><dt>Member</dt><dd>${esc(((S.details.firstName||'')+' '+(S.details.lastName||'')).trim()||'—')}</dd></div>
-      <div class="summary-row summary-row--total"><dt>Total each month</dt><dd>${price} €</dd></div></dl></div>
-    <form data-form="payment"><div class="card"><div class="fitpanel__label">Payment method</div>
-      <div class="options">
-        <label class="option-card ${method==='sepa'?'is-selected':''}" data-card><input class="option-card__input" type="radio" name="method" value="sepa" ${method==='sepa'?'checked':''}>
-          <span class="option-card__icon">${icon('bank',21)}<span class="option-card__check">${icon('checkThin',17)}</span></span>
-          <span class="option-card__label">SEPA direct debit <span class="xsmall muted" style="display:block;font-weight:400">Most common in Germany</span></span></label>
-        <label class="option-card ${method==='card'?'is-selected':''}" data-card><input class="option-card__input" type="radio" name="method" value="card" ${method==='card'?'checked':''}>
-          <span class="option-card__icon">${icon('card',21)}<span class="option-card__check">${icon('checkThin',17)}</span></span>
-          <span class="option-card__label">Card <span class="xsmall muted" style="display:block;font-weight:400">Visa, Mastercard</span></span></label></div>
-      <p class="xsmall muted" style="margin-top:16px">${icon('lock',14)} In production this is where the existing Adyen drop-in would be embedded. Deliberately left out of the pilot.</p></div>
-      <details class="disclosure"><summary>Cancellation, pause and renewal</summary>
-        <div class="disclosure__body"><ul class="reasons">
-          <li>${icon('checkThin',19)}<span>${esc(renewal)}</span></li>
-          <li>${icon('checkThin',19)}<span>${esc(RULES.cancellationNotice)}</span></li>
-          <li>${icon('checkThin',19)}<span>${esc(RULES.accessEnds)}</span></li>
-          <li>${icon(commitment.canPause?'checkThin':'info',19)}<span>${commitment.canPause?'This membership can be paused for 1 to 6 full months at no cost.':'<strong>This membership cannot be paused.</strong> Only monthly memberships can be paused.'}</span></li>
-          <li>${icon('info',19)}<span>${esc(RULES.downgrade)}</span></li></ul>
-        <p class="xsmall muted" style="margin-top:14px">Real published Urban Sports Club terms, retrieved ${esc(DATA.faqs.retrieved)}. Final wording still comes from Legal before any live test.</p></div></details>
-      <div class="btn-row desktop-cta">
-        <button class="btn btn--primary" type="submit">Confirm and start membership</button>
-        <button class="btn btn--secondary" type="button" data-go="details">Back</button>
+
+    <div class="pay-layout">
+      <!-- LEFT COLUMN: Main Form & Actions -->
+      <div class="pay-main">
+        <form data-form="payment">
+          <!-- 1. Payment Method Section -->
+          <div class="pay-section-card">
+            <div class="pay-section-title">
+              <span class="pay-step-badge">1</span>
+              <span>Choose payment method</span>
+            </div>
+            <div class="options">
+              <label class="option-card ${method==='sepa'?'is-selected':''}" data-card>
+                <input class="option-card__input" type="radio" name="method" value="sepa" ${method==='sepa'?'checked':''}>
+                <span class="option-card__icon">${icon('bank',21)}<span class="option-card__check">${icon('checkThin',17)}</span></span>
+                <span class="option-card__label">
+                  <strong>SEPA direct debit</strong>
+                  <span class="xsmall muted" style="display:block;font-weight:400;margin-top:2px">DE standard &middot; Eurozone bank account</span>
+                </span>
+              </label>
+              <label class="option-card ${method==='card'?'is-selected':''}" data-card>
+                <input class="option-card__input" type="radio" name="method" value="card" ${method==='card'?'checked':''}>
+                <span class="option-card__icon">${icon('card',21)}<span class="option-card__check">${icon('checkThin',17)}</span></span>
+                <span class="option-card__label">
+                  <strong>Credit or debit card</strong>
+                  <span class="xsmall muted" style="display:block;font-weight:400;margin-top:2px">Visa, Mastercard, Amex</span>
+                </span>
+              </label>
+            </div>
+            <div class="pay-mock-notice">
+              ${icon('lock',14)} <span>In production, this is where the secure Adyen drop-in is embedded. Payment is simulated in this pilot.</span>
+            </div>
+          </div>
+
+          <!-- 2. Transparent Cancellation & Flexibility -->
+          <div class="pay-section-card">
+            <div class="pay-section-title">
+              <span class="pay-step-badge">2</span>
+              <span>Flexibility &amp; terms</span>
+            </div>
+            <ul class="pay-terms-list">
+              <li>
+                ${icon('checkThin',17)}
+                <span><strong>${esc(renewal)}</strong></span>
+              </li>
+              <li>
+                ${icon('checkThin',17)}
+                <span><strong>Cancellation notice:</strong> ${esc(RULES.cancellationNotice)}</span>
+              </li>
+              <li>
+                ${icon(commitment.canPause?'checkThin':'info',17)}
+                <span>${commitment.canPause ? '<strong>Free pause:</strong> Pause your membership for 1 to 6 full months at zero cost.' : '<strong>No pause:</strong> Monthly memberships are fully flexible, but pause is unavailable.'}</span>
+              </li>
+              <li>
+                ${icon('sparkle',17)}
+                <span><strong>Instant access:</strong> Check in at any included venue via the USC app starting ${esc(fmtDate(S.startDate))}.</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- 3. Primary Action Row -->
+          <div class="pay-actions desktop-cta">
+            <button class="btn btn--primary btn--lg" type="submit" style="width:100%">
+              Confirm &amp; start membership &mdash; ${price} &euro; / mo
+            </button>
+            <div class="pay-actions__secondary">
+              <button class="btn btn--secondary" type="button" data-go="details">${icon('back',16)} Back to details</button>
+              <button class="linkish xsmall muted" type="button" data-go="save">Save progress for later</button>
+            </div>
+          </div>
+
+          <!-- 4. Honest Pilot Disclaimer -->
+          <div class="notice notice--simulated">
+            ${icon('info',18)}
+            <span><strong>Simulated checkout.</strong> Nothing is charged, no card details are collected, and no live contract is formed.</span>
+          </div>
+
+          <!-- Mobile Sticky Paybar -->
+          <div class="paybar">
+            <div class="paybar__info">
+              <b>${esc(plan.name)}</b>
+              <span>${price} &euro; / month${each?` &middot; &approx; ${each} &euro; / session`:''}</span>
+            </div>
+            <button class="btn btn--primary" type="submit">Confirm &amp; pay</button>
+          </div>
+        </form>
       </div>
-      <p class="xsmall muted" style="margin-top:16px">By confirming you accept the Terms and the cancellation conditions above.<span class="pay-sim-note"> Simulated payment: nothing is charged and no card details are collected.</span></p>
-      <div class="paybar">
-        <div class="paybar__info"><b>${esc(plan.name)}</b><span>${price} € / month${each?` · ≈ ${each} € a session`:''}</span></div>
-        <button class="btn btn--primary" type="submit">Confirm and pay</button>
-      </div>
-    </form></main>${exitModal()}`;
+
+      <!-- RIGHT COLUMN: Sticky Order Summary Sidebar -->
+      <aside class="pay-sidebar" aria-label="Order summary">
+        <div class="pay-summary-card">
+          <div class="pay-summary-head">
+            <div>
+              <span class="pay-plan-badge">${esc(plan.name)}</span>
+              <h2 class="pay-summary-title">${esc(plan.name)} Membership</h2>
+              <span class="pay-summary-term">${esc(commitment.label)}</span>
+            </div>
+            <div class="pay-summary-price">
+              <b>${price} &euro;</b>
+              <small>/ month</small>
+            </div>
+          </div>
+
+          <div class="pay-summary-divider"></div>
+
+          <!-- Highlights of what's included -->
+          <div class="pay-summary-details">
+            <div class="pay-detail-row">
+              <span class="pay-detail-label">Member</span>
+              <span class="pay-detail-val font-semibold">${esc(memberName)}</span>
+            </div>
+            <div class="pay-detail-row">
+              <span class="pay-detail-label">Email</span>
+              <span class="pay-detail-val">${esc(S.email || '—')}</span>
+            </div>
+            <div class="pay-detail-row">
+              <span class="pay-detail-label">Start date</span>
+              <span class="pay-detail-val">${esc(fmtDate(S.startDate))}</span>
+            </div>
+            <div class="pay-detail-row">
+              <span class="pay-detail-label">Monthly visits</span>
+              <span class="pay-detail-val font-semibold">${monthlyAllowance(plan)} visits / month</span>
+            </div>
+            ${where ? `
+            <div class="pay-detail-row">
+              <span class="pay-detail-label">Primary area</span>
+              <span class="pay-detail-val">${esc(where)}</span>
+            </div>` : ''}
+          </div>
+
+          <div class="pay-summary-divider"></div>
+
+          <!-- Receipt / Price Breakdown -->
+          <div class="pay-receipt">
+            <div class="pay-receipt-row">
+              <span>${esc(plan.name)} (Monthly)</span>
+              <span>${price}.00 &euro;</span>
+            </div>
+            <div class="pay-receipt-row">
+              <span>Activation fee</span>
+              <span class="pay-free-tag">FREE (0.00 &euro;)</span>
+            </div>
+            <div class="pay-receipt-row pay-receipt-total">
+              <span>Total due today</span>
+              <span>${price}.00 &euro;</span>
+            </div>
+            <div class="pay-receipt-subtext">
+              Billed monthly. Auto-renews unless cancelled.
+            </div>
+          </div>
+
+          <div class="pay-summary-divider"></div>
+
+          <div class="pay-urby-reassurance">
+            ${ulaAvatar('sm')}
+            <p>Everything is flexible. You can adjust your plan, switch commitments, or cancel whenever you need.</p>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>${exitModal()}`;
 }
 
 function confirmationScreen() {

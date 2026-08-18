@@ -3035,46 +3035,176 @@ function paymentScreen() {
   const each = perSession(price, S.answers.frequency, plan);
   const renewal = commitment.renewal;
   const method = FIELDS.method||'sepa';
-  return `${topbar(3)}<main class="content" id="main">
-    <h1 class="h-question" style="margin-top:14px" tabindex="-1">Review and pay</h1>
-    <div class="pay-preamble">
-      ${ulaNote('Everything you&rsquo;re agreeing to is on this screen. Nothing is hidden and nothing happens after you confirm that isn&rsquo;t listed here.')}
-      <div class="notice">${icon('info',19)}<span><strong>Simulated payment.</strong> This pilot never collects card details and nothing is charged.</span></div>
+  const match = matchVenues(A());
+  const where = whereName(match);
+  const memberName = ((S.details.firstName||'')+' '+(S.details.lastName||'')).trim()||'New Member';
+
+  return `${topbar(3)}<main class="content pay-page" id="main">
+    <div class="pay-head">
+      <h1 class="h-question" style="margin-top:0" tabindex="-1">Review and confirm</h1>
+      <p class="pay-sub">Final step before your routine begins. Everything you agree to is transparently listed below.</p>
     </div>
-    <div class="card"><div class="fitpanel__label">Your order</div><dl class="summary-list">
-      <div class="summary-row"><dt>Membership</dt><dd>${esc(plan.name)}</dd></div>
-      <div class="summary-row"><dt>Billing frequency</dt><dd>Monthly</dd></div>
-      <div class="summary-row"><dt>Commitment</dt><dd>${esc(commitment.label)}</dd></div>
-      <div class="summary-row"><dt>Start date</dt><dd>${esc(fmtDate(S.startDate))}<div class="xsmall muted" style="font-weight:400">the 1st of next month, so you pay for whole months</div></dd></div>
-      <div class="summary-row"><dt>Member</dt><dd>${esc(((S.details.firstName||'')+' '+(S.details.lastName||'')).trim()||'—')}</dd></div>
-      <div class="summary-row summary-row--total"><dt>Total each month</dt><dd>${price} €</dd></div></dl></div>
-    <form data-form="payment"><div class="card"><div class="fitpanel__label">Payment method</div>
-      <div class="options">
-        <label class="option-card ${method==='sepa'?'is-selected':''}" data-card><input class="option-card__input" type="radio" name="method" value="sepa" ${method==='sepa'?'checked':''}>
-          <span class="option-card__icon">${icon('bank',21)}<span class="option-card__check">${icon('checkThin',17)}</span></span>
-          <span class="option-card__label">SEPA direct debit <span class="xsmall muted" style="display:block;font-weight:400">Most common in Germany</span></span></label>
-        <label class="option-card ${method==='card'?'is-selected':''}" data-card><input class="option-card__input" type="radio" name="method" value="card" ${method==='card'?'checked':''}>
-          <span class="option-card__icon">${icon('card',21)}<span class="option-card__check">${icon('checkThin',17)}</span></span>
-          <span class="option-card__label">Card <span class="xsmall muted" style="display:block;font-weight:400">Visa, Mastercard</span></span></label></div>
-      <p class="xsmall muted" style="margin-top:16px">${icon('lock',14)} In production this is where the existing Adyen drop-in would be embedded. Deliberately left out of the pilot.</p></div>
-      <details class="disclosure"><summary>Cancellation, pause and renewal</summary>
-        <div class="disclosure__body"><ul class="reasons">
-          <li>${icon('checkThin',19)}<span>${esc(renewal)}</span></li>
-          <li>${icon('checkThin',19)}<span>${esc(RULES.cancellationNotice)}</span></li>
-          <li>${icon('checkThin',19)}<span>${esc(RULES.accessEnds)}</span></li>
-          <li>${icon(commitment.canPause?'checkThin':'info',19)}<span>${commitment.canPause?'This membership can be paused for 1 to 6 full months at no cost.':'<strong>This membership cannot be paused.</strong> Only monthly memberships can be paused.'}</span></li>
-          <li>${icon('info',19)}<span>${esc(RULES.downgrade)}</span></li></ul>
-        <p class="xsmall muted" style="margin-top:14px">Real published Urban Sports Club terms, retrieved ${esc(DATA.faqs.retrieved)}. Final wording still comes from Legal before any live test.</p></div></details>
-      <div class="btn-row desktop-cta">
-        <button class="btn btn--primary" type="submit">Confirm and start membership</button>
-        <button class="btn btn--secondary" type="button" data-go="details">Back</button>
+
+    <div class="pay-layout">
+      <!-- LEFT COLUMN: Main Form & Actions -->
+      <div class="pay-main">
+        <form data-form="payment">
+          <!-- 1. Payment Method Section -->
+          <div class="pay-section-card">
+            <div class="pay-section-title">
+              <span class="pay-step-badge">1</span>
+              <span>Choose payment method</span>
+            </div>
+            <div class="options">
+              <label class="option-card ${method==='sepa'?'is-selected':''}" data-card>
+                <input class="option-card__input" type="radio" name="method" value="sepa" ${method==='sepa'?'checked':''}>
+                <span class="option-card__icon">${icon('bank',21)}<span class="option-card__check">${icon('checkThin',17)}</span></span>
+                <span class="option-card__label">
+                  <strong>SEPA direct debit</strong>
+                  <span class="xsmall muted" style="display:block;font-weight:400;margin-top:2px">DE standard &middot; Eurozone bank account</span>
+                </span>
+              </label>
+              <label class="option-card ${method==='card'?'is-selected':''}" data-card>
+                <input class="option-card__input" type="radio" name="method" value="card" ${method==='card'?'checked':''}>
+                <span class="option-card__icon">${icon('card',21)}<span class="option-card__check">${icon('checkThin',17)}</span></span>
+                <span class="option-card__label">
+                  <strong>Credit or debit card</strong>
+                  <span class="xsmall muted" style="display:block;font-weight:400;margin-top:2px">Visa, Mastercard, Amex</span>
+                </span>
+              </label>
+            </div>
+            <div class="pay-mock-notice">
+              ${icon('lock',14)} <span>In production, this is where the secure Adyen drop-in is embedded. Payment is simulated in this pilot.</span>
+            </div>
+          </div>
+
+          <!-- 2. Transparent Cancellation & Flexibility -->
+          <div class="pay-section-card">
+            <div class="pay-section-title">
+              <span class="pay-step-badge">2</span>
+              <span>Flexibility &amp; terms</span>
+            </div>
+            <ul class="pay-terms-list">
+              <li>
+                ${icon('checkThin',17)}
+                <span><strong>${esc(renewal)}</strong></span>
+              </li>
+              <li>
+                ${icon('checkThin',17)}
+                <span><strong>Cancellation notice:</strong> ${esc(RULES.cancellationNotice)}</span>
+              </li>
+              <li>
+                ${icon(commitment.canPause?'checkThin':'info',17)}
+                <span>${commitment.canPause ? '<strong>Free pause:</strong> Pause your membership for 1 to 6 full months at zero cost.' : '<strong>No pause:</strong> Monthly memberships are fully flexible, but pause is unavailable.'}</span>
+              </li>
+              <li>
+                ${icon('sparkle',17)}
+                <span><strong>Instant access:</strong> Check in at any included venue via the USC app starting ${esc(fmtDate(S.startDate))}.</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- 3. Primary Action Row -->
+          <div class="pay-actions desktop-cta">
+            <button class="btn btn--primary btn--lg" type="submit" style="width:100%">
+              Confirm &amp; start membership &mdash; ${price} &euro; / mo
+            </button>
+            <div class="pay-actions__secondary">
+              <button class="btn btn--secondary" type="button" data-go="details">${icon('back',16)} Back to details</button>
+              <button class="linkish xsmall muted" type="button" data-go="save">Save progress for later</button>
+            </div>
+          </div>
+
+          <!-- 4. Honest Pilot Disclaimer -->
+          <div class="notice notice--simulated">
+            ${icon('info',18)}
+            <span><strong>Simulated checkout.</strong> Nothing is charged, no card details are collected, and no live contract is formed.</span>
+          </div>
+
+          <!-- Mobile Sticky Paybar -->
+          <div class="paybar">
+            <div class="paybar__info">
+              <b>${esc(plan.name)}</b>
+              <span>${price} &euro; / month${each?` &middot; &approx; ${each} &euro; / session`:''}</span>
+            </div>
+            <button class="btn btn--primary" type="submit">Confirm &amp; pay</button>
+          </div>
+        </form>
       </div>
-      <p class="xsmall muted" style="margin-top:16px">By confirming you accept the Terms and the cancellation conditions above.<span class="pay-sim-note"> Simulated payment: nothing is charged and no card details are collected.</span></p>
-      <div class="paybar">
-        <div class="paybar__info"><b>${esc(plan.name)}</b><span>${price} € / month${each?` · ≈ ${each} € a session`:''}</span></div>
-        <button class="btn btn--primary" type="submit">Confirm and pay</button>
-      </div>
-    </form></main>${exitModal()}`;
+
+      <!-- RIGHT COLUMN: Sticky Order Summary Sidebar -->
+      <aside class="pay-sidebar" aria-label="Order summary">
+        <div class="pay-summary-card">
+          <div class="pay-summary-head">
+            <div>
+              <span class="pay-plan-badge">${esc(plan.name)}</span>
+              <h2 class="pay-summary-title">${esc(plan.name)} Membership</h2>
+              <span class="pay-summary-term">${esc(commitment.label)}</span>
+            </div>
+            <div class="pay-summary-price">
+              <b>${price} &euro;</b>
+              <small>/ month</small>
+            </div>
+          </div>
+
+          <div class="pay-summary-divider"></div>
+
+          <!-- Highlights of what's included -->
+          <div class="pay-summary-details">
+            <div class="pay-detail-row">
+              <span class="pay-detail-label">Member</span>
+              <span class="pay-detail-val font-semibold">${esc(memberName)}</span>
+            </div>
+            <div class="pay-detail-row">
+              <span class="pay-detail-label">Email</span>
+              <span class="pay-detail-val">${esc(S.email || '—')}</span>
+            </div>
+            <div class="pay-detail-row">
+              <span class="pay-detail-label">Start date</span>
+              <span class="pay-detail-val">${esc(fmtDate(S.startDate))}</span>
+            </div>
+            <div class="pay-detail-row">
+              <span class="pay-detail-label">Monthly visits</span>
+              <span class="pay-detail-val font-semibold">${monthlyAllowance(plan)} visits / month</span>
+            </div>
+            ${where ? `
+            <div class="pay-detail-row">
+              <span class="pay-detail-label">Primary area</span>
+              <span class="pay-detail-val">${esc(where)}</span>
+            </div>` : ''}
+          </div>
+
+          <div class="pay-summary-divider"></div>
+
+          <!-- Receipt / Price Breakdown -->
+          <div class="pay-receipt">
+            <div class="pay-receipt-row">
+              <span>${esc(plan.name)} (Monthly)</span>
+              <span>${price}.00 &euro;</span>
+            </div>
+            <div class="pay-receipt-row">
+              <span>Activation fee</span>
+              <span class="pay-free-tag">FREE (0.00 &euro;)</span>
+            </div>
+            <div class="pay-receipt-row pay-receipt-total">
+              <span>Total due today</span>
+              <span>${price}.00 &euro;</span>
+            </div>
+            <div class="pay-receipt-subtext">
+              Billed monthly. Auto-renews unless cancelled.
+            </div>
+          </div>
+
+          <div class="pay-summary-divider"></div>
+
+          <div class="pay-urby-reassurance">
+            ${ulaAvatar('sm')}
+            <p>Everything is flexible. You can adjust your plan, switch commitments, or cancel whenever you need.</p>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>${exitModal()}`;
 }
 
 function confirmationScreen() {
