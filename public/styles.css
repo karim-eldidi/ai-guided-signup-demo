@@ -4047,11 +4047,11 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   }
 }
 
-/* --- Modern Confirmation & Routine Kickoff Page --- */
+/* --- Modern Confirmation & Routine Kickoff Page (2-Column) --- */
 .confirm-page {
-  max-width: 780px;
+  max-width: 1040px;
   margin: 0 auto;
-  padding: 32px 20px 80px;
+  padding: 32px 24px 80px;
 }
 .confirm-hero {
   display: flex;
@@ -4080,6 +4080,12 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 .confirm-hero__text {
   flex: 1 1 auto;
 }
+.confirm-hero__badge-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
 .confirm-hero__tag {
   display: inline-block;
   font-size: 11px;
@@ -4090,7 +4096,11 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   color: #15803d;
   padding: 3px 10px;
   border-radius: 9999px;
-  margin-bottom: 6px;
+}
+.confirm-hero__plan-tag {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--navy-soft);
 }
 .confirm-hero__title {
   font-size: 28px;
@@ -4106,12 +4116,23 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   line-height: 1.45;
 }
 
+.confirm-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(320px, 0.9fr);
+  gap: 32px;
+  align-items: start;
+}
+.confirm-main {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
 .confirm-card {
   background: #fff;
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
   padding: 24px;
-  margin-bottom: 20px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.02);
 }
 .confirm-card__head {
@@ -4149,139 +4170,41 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   margin: 0;
   color: var(--ink);
 }
-.confirm-card__sub {
-  font-size: 13.5px;
-  color: var(--navy-soft);
+
+/* Kickoff 3-Step Grid */
+.confirm-kickoff-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
-.confirm-card__note {
-  font-size: 12.5px;
-  font-weight: 600;
-  color: var(--navy);
+.confirm-kickoff-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 16px;
   background: #f8fafc;
-  padding: 6px 12px;
-  border-radius: 9999px;
-  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(0,0,0,0.04);
 }
-
-/* Routine List */
-.confirm-routine-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.confirm-routine-item {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  background: #fdfdfd;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 12px 14px;
-}
-.confirm-routine-day {
-  flex: 0 0 46px;
-}
-.confirm-routine-day__pill {
-  display: inline-block;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: .04em;
-  background: var(--ink);
-  color: #fff;
-  padding: 4px 8px;
-  border-radius: 6px;
-}
-.confirm-routine-thumb {
-  flex: 0 0 54px;
-  height: 54px;
-  border-radius: 8px;
-  overflow: hidden;
-  position: relative;
-  background: #eee;
-}
-.confirm-routine-thumb img, .confirm-routine-thumb picture {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-.confirm-routine-info {
-  flex: 1 1 auto;
-  min-width: 0;
-}
-.confirm-routine-name {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.confirm-routine-name b {
-  font-size: 15px;
-  color: var(--ink);
-  font-weight: 700;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.confirm-tier-badge {
-  font-size: 10.5px;
-  font-weight: 700;
-  padding: 2px 7px;
-  border-radius: 4px;
-  flex: 0 0 auto;
-}
-.confirm-routine-meta {
-  font-size: 13px;
-  color: var(--navy-soft);
-  margin-top: 2px;
-}
-.confirm-routine-footer {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  margin-top: 16px;
-  padding-top: 14px;
-  border-top: 1px solid rgba(0,0,0,0.06);
-  font-size: 13px;
-  color: var(--navy);
-  line-height: 1.45;
-}
-.confirm-routine-footer svg {
-  flex: 0 0 auto;
-  color: #16a34a;
-  margin-top: 1px;
-}
-
-/* 3-Step Guide */
-.confirm-steps {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-.confirm-step {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-}
-.confirm-step__num {
-  flex: 0 0 28px;
-  height: 28px;
+.confirm-kickoff-step__num {
+  flex: 0 0 26px;
+  height: 26px;
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: #f1f5f9;
-  color: var(--ink);
-  font-size: 13px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 12px;
   font-weight: 800;
 }
-.confirm-step__content {
+.confirm-kickoff-step__body {
   flex: 1 1 auto;
 }
-.confirm-step__content b {
-  display: block;
+.confirm-kickoff-step__body b {
   font-size: 15px;
   color: var(--ink);
 }
-.confirm-step__content p {
+.confirm-kickoff-step__body p {
   font-size: 13.5px;
   color: var(--navy-soft);
   margin: 3px 0 0;
@@ -4309,24 +4232,209 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   opacity: .9;
 }
 
-/* Receipt Grid */
-.confirm-receipt-grid {
+/* Visual Routine Gym Grid */
+.confirm-routine-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 14px;
-  margin-top: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
 }
-.confirm-receipt-item {
+.confirm-venue-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: #fff;
   display: flex;
   flex-direction: column;
-  gap: 3px;
 }
-.confirm-receipt-item b {
-  font-size: 14.5px;
+.confirm-venue-media {
+  aspect-ratio: 16 / 10;
+  position: relative;
+  overflow: hidden;
+  background: #f1f5f9;
+}
+.confirm-venue-media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.confirm-venue-day-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  background: var(--ink);
+  color: #fff;
+  padding: 3px 8px;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  z-index: 2;
+}
+.confirm-venue-card__body {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1 1 auto;
+}
+.confirm-venue-card__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 6px;
+}
+.confirm-venue-card__top b {
+  font-size: 14px;
   color: var(--ink);
+  font-weight: 700;
+  line-height: 1.3;
+}
+.confirm-tier-badge {
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  flex: 0 0 auto;
+}
+.confirm-venue-card__meta {
+  font-size: 12.5px;
+  color: var(--navy-soft);
+}
+.confirm-routine-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 16px;
+  padding: 12px 14px;
+  background: #f8fafc;
+  border-radius: var(--radius);
+  font-size: 12.5px;
+  color: var(--navy);
+  line-height: 1.45;
+}
+.confirm-routine-banner svg {
+  flex: 0 0 auto;
+  color: #16a34a;
+  margin-top: 1px;
 }
 
-@media (max-width: 600px) {
+/* Sidebar Elements */
+.confirm-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.confirm-receipt-disclosure {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.02);
+}
+.confirm-receipt-summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+}
+.confirm-receipt-summary::-webkit-details-marker {
+  display: none;
+}
+.confirm-receipt-summary__left {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.confirm-receipt-price {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--ink);
+}
+.confirm-receipt-chevron {
+  display: grid;
+  place-items: center;
+  color: var(--navy-soft);
+  transition: transform .2s ease;
+}
+.confirm-receipt-disclosure[open] .confirm-receipt-chevron {
+  transform: rotate(180deg);
+}
+.confirm-receipt-body {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(0,0,0,0.06);
+}
+.confirm-receipt-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.confirm-receipt-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 13.5px;
+}
+.confirm-receipt-footer {
+  font-size: 12px;
+  color: var(--navy-soft);
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(0,0,0,0.08);
+}
+.confirm-urby-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+}
+.confirm-urby-card b {
+  display: block;
+  font-size: 13.5px;
+  color: var(--ink);
+}
+.confirm-urby-card p {
+  margin: 3px 0 0;
+  font-size: 12.5px;
+  color: var(--navy-soft);
+  line-height: 1.4;
+}
+.confirm-demo-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 18px 20px;
+}
+.confirm-demo-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13.5px;
+}
+.confirm-demo-links li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (max-width: 900px) {
+  .confirm-layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
   .confirm-page {
     padding: 20px 14px 60px;
   }
@@ -4341,13 +4449,8 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   .confirm-card {
     padding: 18px 16px;
   }
-  .confirm-card__head {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
-  .confirm-card__note {
-    align-self: flex-start;
+  .confirm-routine-grid {
+    grid-template-columns: 1fr;
   }
   .confirm-app-badges {
     flex-direction: column;

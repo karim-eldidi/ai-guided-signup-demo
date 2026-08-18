@@ -4061,11 +4061,11 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   }
 }
 
-/* --- Modern Confirmation & Routine Kickoff Page --- */
+/* --- Modern Confirmation & Routine Kickoff Page (2-Column) --- */
 .confirm-page {
-  max-width: 780px;
+  max-width: 1040px;
   margin: 0 auto;
-  padding: 32px 20px 80px;
+  padding: 32px 24px 80px;
 }
 .confirm-hero {
   display: flex;
@@ -4094,6 +4094,12 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 .confirm-hero__text {
   flex: 1 1 auto;
 }
+.confirm-hero__badge-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
 .confirm-hero__tag {
   display: inline-block;
   font-size: 11px;
@@ -4104,7 +4110,11 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   color: #15803d;
   padding: 3px 10px;
   border-radius: 9999px;
-  margin-bottom: 6px;
+}
+.confirm-hero__plan-tag {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--navy-soft);
 }
 .confirm-hero__title {
   font-size: 28px;
@@ -4120,12 +4130,23 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   line-height: 1.45;
 }
 
+.confirm-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(320px, 0.9fr);
+  gap: 32px;
+  align-items: start;
+}
+.confirm-main {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
 .confirm-card {
   background: #fff;
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
   padding: 24px;
-  margin-bottom: 20px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.02);
 }
 .confirm-card__head {
@@ -4163,139 +4184,41 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   margin: 0;
   color: var(--ink);
 }
-.confirm-card__sub {
-  font-size: 13.5px;
-  color: var(--navy-soft);
+
+/* Kickoff 3-Step Grid */
+.confirm-kickoff-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
-.confirm-card__note {
-  font-size: 12.5px;
-  font-weight: 600;
-  color: var(--navy);
+.confirm-kickoff-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 16px;
   background: #f8fafc;
-  padding: 6px 12px;
-  border-radius: 9999px;
-  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(0,0,0,0.04);
 }
-
-/* Routine List */
-.confirm-routine-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.confirm-routine-item {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  background: #fdfdfd;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 12px 14px;
-}
-.confirm-routine-day {
-  flex: 0 0 46px;
-}
-.confirm-routine-day__pill {
-  display: inline-block;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: .04em;
-  background: var(--ink);
-  color: #fff;
-  padding: 4px 8px;
-  border-radius: 6px;
-}
-.confirm-routine-thumb {
-  flex: 0 0 54px;
-  height: 54px;
-  border-radius: 8px;
-  overflow: hidden;
-  position: relative;
-  background: #eee;
-}
-.confirm-routine-thumb img, .confirm-routine-thumb picture {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-.confirm-routine-info {
-  flex: 1 1 auto;
-  min-width: 0;
-}
-.confirm-routine-name {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.confirm-routine-name b {
-  font-size: 15px;
-  color: var(--ink);
-  font-weight: 700;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.confirm-tier-badge {
-  font-size: 10.5px;
-  font-weight: 700;
-  padding: 2px 7px;
-  border-radius: 4px;
-  flex: 0 0 auto;
-}
-.confirm-routine-meta {
-  font-size: 13px;
-  color: var(--navy-soft);
-  margin-top: 2px;
-}
-.confirm-routine-footer {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  margin-top: 16px;
-  padding-top: 14px;
-  border-top: 1px solid rgba(0,0,0,0.06);
-  font-size: 13px;
-  color: var(--navy);
-  line-height: 1.45;
-}
-.confirm-routine-footer svg {
-  flex: 0 0 auto;
-  color: #16a34a;
-  margin-top: 1px;
-}
-
-/* 3-Step Guide */
-.confirm-steps {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-.confirm-step {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-}
-.confirm-step__num {
-  flex: 0 0 28px;
-  height: 28px;
+.confirm-kickoff-step__num {
+  flex: 0 0 26px;
+  height: 26px;
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: #f1f5f9;
-  color: var(--ink);
-  font-size: 13px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 12px;
   font-weight: 800;
 }
-.confirm-step__content {
+.confirm-kickoff-step__body {
   flex: 1 1 auto;
 }
-.confirm-step__content b {
-  display: block;
+.confirm-kickoff-step__body b {
   font-size: 15px;
   color: var(--ink);
 }
-.confirm-step__content p {
+.confirm-kickoff-step__body p {
   font-size: 13.5px;
   color: var(--navy-soft);
   margin: 3px 0 0;
@@ -4323,24 +4246,209 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   opacity: .9;
 }
 
-/* Receipt Grid */
-.confirm-receipt-grid {
+/* Visual Routine Gym Grid */
+.confirm-routine-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 14px;
-  margin-top: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
 }
-.confirm-receipt-item {
+.confirm-venue-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: #fff;
   display: flex;
   flex-direction: column;
-  gap: 3px;
 }
-.confirm-receipt-item b {
-  font-size: 14.5px;
+.confirm-venue-media {
+  aspect-ratio: 16 / 10;
+  position: relative;
+  overflow: hidden;
+  background: #f1f5f9;
+}
+.confirm-venue-media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.confirm-venue-day-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  background: var(--ink);
+  color: #fff;
+  padding: 3px 8px;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  z-index: 2;
+}
+.confirm-venue-card__body {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1 1 auto;
+}
+.confirm-venue-card__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 6px;
+}
+.confirm-venue-card__top b {
+  font-size: 14px;
   color: var(--ink);
+  font-weight: 700;
+  line-height: 1.3;
+}
+.confirm-tier-badge {
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  flex: 0 0 auto;
+}
+.confirm-venue-card__meta {
+  font-size: 12.5px;
+  color: var(--navy-soft);
+}
+.confirm-routine-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 16px;
+  padding: 12px 14px;
+  background: #f8fafc;
+  border-radius: var(--radius);
+  font-size: 12.5px;
+  color: var(--navy);
+  line-height: 1.45;
+}
+.confirm-routine-banner svg {
+  flex: 0 0 auto;
+  color: #16a34a;
+  margin-top: 1px;
 }
 
-@media (max-width: 600px) {
+/* Sidebar Elements */
+.confirm-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.confirm-receipt-disclosure {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.02);
+}
+.confirm-receipt-summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+}
+.confirm-receipt-summary::-webkit-details-marker {
+  display: none;
+}
+.confirm-receipt-summary__left {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.confirm-receipt-price {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--ink);
+}
+.confirm-receipt-chevron {
+  display: grid;
+  place-items: center;
+  color: var(--navy-soft);
+  transition: transform .2s ease;
+}
+.confirm-receipt-disclosure[open] .confirm-receipt-chevron {
+  transform: rotate(180deg);
+}
+.confirm-receipt-body {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(0,0,0,0.06);
+}
+.confirm-receipt-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.confirm-receipt-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 13.5px;
+}
+.confirm-receipt-footer {
+  font-size: 12px;
+  color: var(--navy-soft);
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(0,0,0,0.08);
+}
+.confirm-urby-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+}
+.confirm-urby-card b {
+  display: block;
+  font-size: 13.5px;
+  color: var(--ink);
+}
+.confirm-urby-card p {
+  margin: 3px 0 0;
+  font-size: 12.5px;
+  color: var(--navy-soft);
+  line-height: 1.4;
+}
+.confirm-demo-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 18px 20px;
+}
+.confirm-demo-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13.5px;
+}
+.confirm-demo-links li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (max-width: 900px) {
+  .confirm-layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
   .confirm-page {
     padding: 20px 14px 60px;
   }
@@ -4355,13 +4463,8 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   .confirm-card {
     padding: 18px 16px;
   }
-  .confirm-card__head {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
-  .confirm-card__note {
-    align-self: flex-start;
+  .confirm-routine-grid {
+    grid-template-columns: 1fr;
   }
   .confirm-app-badges {
     flex-direction: column;
@@ -4520,7 +4623,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 18 Aug 12:25 UTC</span>
+  <span class="demo-banner__build">build 18 Aug 12:32 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -7594,144 +7697,182 @@ function confirmationScreen() {
         <span class="confirm-hero__sparkle">${icon('sparkle', 16)}</span>
       </div>
       <div class="confirm-hero__text">
-        <span class="confirm-hero__tag">Membership confirmed</span>
+        <div class="confirm-hero__badge-row">
+          <span class="confirm-hero__tag">Membership confirmed</span>
+          <span class="confirm-hero__plan-tag">${esc(plan.name)} &middot; ${monthlyAllowance(plan)} visits/mo</span>
+        </div>
         <h1 class="confirm-hero__title" tabindex="-1">You&rsquo;re all set, ${esc(first)}!</h1>
         <p class="confirm-hero__sub">
-          Your <strong>${esc(plan.name)}</strong> membership starts on <strong>${esc(fmtDate(S.startDate))}</strong>.
-          Your routine and saved gyms are ready in the app.
+          Your membership starts on <strong>${esc(fmtDate(S.startDate))}</strong>.
+          Everything is set up for your first workout.
         </p>
       </div>
     </div>
 
-    <!-- Saved Routine & Picked Gyms Gratification -->
-    ${sessions.length ? `
-    <div class="confirm-card confirm-routine-card">
-      <div class="confirm-card__head">
-        <div>
-          <div class="confirm-card__badge-row">
-            <span class="confirm-card__badge">Your initial routine</span>
-            <span class="confirm-card__subbadge">${sessions.length} sessions / week</span>
+    <div class="confirm-layout">
+      <!-- LEFT MAIN COLUMN: Kickoff & Visual Gyms (62%) -->
+      <div class="confirm-main">
+        
+        <!-- 1. Visual App & Kickoff Card -->
+        <div class="confirm-card confirm-kickoff-card">
+          <div class="confirm-card__head">
+            <h2 class="confirm-card__title">Ready for your first check-in</h2>
           </div>
-          <h2 class="confirm-card__title">The places you picked</h2>
-        </div>
-        <div class="confirm-card__note">
-          ${monthlyAllowance(plan)} visits / mo included
-        </div>
-      </div>
-      <div class="confirm-routine-list">
-        ${sessions.map(s => {
-          const areaLabel = s.venue.nearestArea ? s.venue.nearestArea.name : (AREAS.find(ar=>ar.id===s.venue.area)||{}).name || '';
-          const dist = s.distanceKm ? `${s.distanceKm} km` : '';
-          const tierClass = s.venue.tier === 'premium' ? 'badge--premium' : s.venue.tier === 'plus' ? 'badge--plus' : 'badge--standard';
-          const tierText = s.venue.tier === 'premium' ? 'Premium' : s.venue.tier === 'plus' ? 'Plus' : 'Included';
-          return `
-          <div class="confirm-routine-item">
-            <div class="confirm-routine-day">
-              <span class="confirm-routine-day__pill">${esc(s.day)}</span>
-            </div>
-            <div class="confirm-routine-thumb">
-              ${venueMedia(s.venue, (groupById(s.groupId)||{}).activities)}
-            </div>
-            <div class="confirm-routine-info">
-              <div class="confirm-routine-name">
-                <b>${esc(s.venue.name)}</b>
-                <span class="confirm-tier-badge ${tierClass}">${tierText}</span>
-              </div>
-              <div class="confirm-routine-meta">
-                <span>${esc(s.activity)}</span>
-                ${areaLabel ? ` &middot; <span>${esc(areaLabel)}</span>` : ''}
-                ${dist ? ` &middot; <span>${dist}</span>` : ''}
+          
+          <div class="confirm-kickoff-grid">
+            <div class="confirm-kickoff-step">
+              <div class="confirm-kickoff-step__num">1</div>
+              <div class="confirm-kickoff-step__body">
+                <b>Download the USC app</b>
+                <p>Your digital membership card lives in the app.</p>
+                <div class="confirm-app-badges">
+                  <a href="https://apps.apple.com/app/urban-sports-club/id974635677" target="_blank" rel="noopener" class="confirm-store-btn">${icon('apple', 15)} App Store</a>
+                  <a href="https://play.google.com/store/apps/details?id=com.urbansportsclub.urbansportsclub" target="_blank" rel="noopener" class="confirm-store-btn">${icon('phone', 15)} Google Play</a>
+                </div>
               </div>
             </div>
-          </div>`;
-        }).join('')}
-      </div>
-      <div class="confirm-routine-footer">
-        ${icon('checkThin', 16)}
-        <span>All ${sessions.length} studios accept your <strong>${esc(plan.name)}</strong> card. You can start with this routine on day one, or check in at any of the 14,800+ other partner venues across Europe.</span>
-      </div>
-    </div>` : ''}
 
-    <!-- 3-Step Guide to Start Using the Plan on Day One -->
-    <div class="confirm-card">
-      <div class="confirm-card__head">
-        <div>
-          <h2 class="confirm-card__title">Get ready for your first check-in</h2>
-          <p class="confirm-card__sub" style="margin:4px 0 0">Three quick steps to start visiting your gyms:</p>
-        </div>
-      </div>
-      <div class="confirm-steps">
-        <div class="confirm-step">
-          <div class="confirm-step__num">1</div>
-          <div class="confirm-step__content">
-            <b>Download the Urban Sports Club app</b>
-            <p>Available free for iPhone and Android. Check in, book classes, and track your visits.</p>
-            <div class="confirm-app-badges">
-              <a href="https://apps.apple.com/app/urban-sports-club/id974635677" target="_blank" rel="noopener" class="confirm-store-btn">${icon('apple', 16)} <span>App Store</span></a>
-              <a href="https://play.google.com/store/apps/details?id=com.urbansportsclub.urbansportsclub" target="_blank" rel="noopener" class="confirm-store-btn">${icon('phone', 16)} <span>Google Play</span></a>
+            <div class="confirm-kickoff-step">
+              <div class="confirm-kickoff-step__num">2</div>
+              <div class="confirm-kickoff-step__body">
+                <b>Log in with your email</b>
+                <p>Sign in with <strong class="text-ink">${esc(S.email||'your email')}</strong> to activate your card.</p>
+              </div>
+            </div>
+
+            <div class="confirm-kickoff-step">
+              <div class="confirm-kickoff-step__num">3</div>
+              <div class="confirm-kickoff-step__body">
+                <b>Scan the QR code &amp; work out</b>
+                <p>Scan the code at reception or book a class directly in the app.</p>
+              </div>
             </div>
           </div>
         </div>
-        <div class="confirm-step">
-          <div class="confirm-step__num">2</div>
-          <div class="confirm-step__content">
-            <b>Log in with your email</b>
-            <p>Sign in using <strong>${esc(S.email||'your email')}</strong>. Your routine and membership profile will be waiting for you.</p>
+
+        <!-- 2. Your Starting Routine & Chosen Studios -->
+        ${sessions.length ? `
+        <div class="confirm-card confirm-routine-card">
+          <div class="confirm-card__head">
+            <div>
+              <div class="confirm-card__badge-row">
+                <span class="confirm-card__badge">Your initial routine</span>
+                <span class="confirm-card__subbadge">${sessions.length} sessions / week</span>
+              </div>
+              <h2 class="confirm-card__title">The places you picked</h2>
+            </div>
+          </div>
+
+          <div class="confirm-routine-grid">
+            ${sessions.map(s => {
+              const areaLabel = s.venue.nearestArea ? s.venue.nearestArea.name : (AREAS.find(ar=>ar.id===s.venue.area)||{}).name || '';
+              const tierClass = s.venue.tier === 'premium' ? 'badge--premium' : s.venue.tier === 'plus' ? 'badge--plus' : 'badge--standard';
+              const tierText = s.venue.tier === 'premium' ? 'Premium' : s.venue.tier === 'plus' ? 'Plus' : 'Included';
+              return `
+              <div class="confirm-venue-card">
+                <div class="venue-card__media confirm-venue-media">
+                  ${venueMedia(s.venue, (groupById(s.groupId)||{}).activities)}
+                  <span class="confirm-venue-day-badge">${esc(s.day)}</span>
+                </div>
+                <div class="confirm-venue-card__body">
+                  <div class="confirm-venue-card__top">
+                    <b>${esc(s.venue.name)}</b>
+                    <span class="confirm-tier-badge ${tierClass}">${tierText}</span>
+                  </div>
+                  <div class="confirm-venue-card__meta">
+                    <span>${esc(s.activity)}</span>
+                    ${areaLabel ? ` &middot; <span>${esc(areaLabel)}</span>` : ''}
+                  </div>
+                </div>
+              </div>`;
+            }).join('')}
+          </div>
+
+          <div class="confirm-routine-banner">
+            ${icon('checkThin', 16)}
+            <span>Your routine is ready. You can follow these exact days or explore 14,800+ other partner venues anytime.</span>
+          </div>
+        </div>` : ''}
+
+      </div>
+
+      <!-- RIGHT SIDEBAR COLUMN: Collapsible Receipt & Demo Tools (38%) -->
+      <aside class="confirm-sidebar">
+        <!-- Collapsible Receipt Card -->
+        <details class="confirm-receipt-disclosure" open>
+          <summary class="confirm-receipt-summary">
+            <div class="confirm-receipt-summary__left">
+              <span class="fitpanel__label" style="margin:0">Order receipt</span>
+              <span class="confirm-receipt-price">${price}.00 &euro;</span>
+            </div>
+            <span class="confirm-receipt-chevron">${icon('chevronDown', 16)}</span>
+          </summary>
+          
+          <div class="confirm-receipt-body">
+            <div class="confirm-receipt-list">
+              <div class="confirm-receipt-row">
+                <span class="muted">Plan</span>
+                <b>${esc(plan.name)}</b>
+              </div>
+              <div class="confirm-receipt-row">
+                <span class="muted">Term</span>
+                <span>${esc(commitment.label)}</span>
+              </div>
+              <div class="confirm-receipt-row">
+                <span class="muted">Start date</span>
+                <span>${esc(fmtDate(S.startDate))}</span>
+              </div>
+              <div class="confirm-receipt-row">
+                <span class="muted">Monthly visits</span>
+                <span>${monthlyAllowance(plan)} visits / mo</span>
+              </div>
+              <div class="confirm-receipt-row">
+                <span class="muted">Member</span>
+                <span>${esc(memberName.trim()||first)}</span>
+              </div>
+              <div class="confirm-receipt-row">
+                <span class="muted">Payment</span>
+                <span>${FIELDS.method==='card'?'Card':'SEPA Debit'}</span>
+              </div>
+              <div class="confirm-receipt-row">
+                <span class="muted">Email</span>
+                <span class="text-truncate">${esc(S.email||'—')}</span>
+              </div>
+            </div>
+            <div class="confirm-receipt-footer">
+              ${esc(commitment.renewal.replace(/\.*$/, ''))}. Cancellation notice: ${esc(RULES.cancellationNotice.replace(/\.*$/, ''))}.
+            </div>
+          </div>
+        </details>
+
+        <!-- Urby Note Card -->
+        <div class="confirm-urby-card">
+          ${ulaAvatar('sm')}
+          <div>
+            <b>Need help or want to change?</b>
+            <p>You can pause, upgrade, or manage your membership anytime in the app.</p>
           </div>
         </div>
-        <div class="confirm-step">
-          <div class="confirm-step__num">3</div>
-          <div class="confirm-step__content">
-            <b>Scan the QR code at the desk</b>
-            <p>When you walk into any partner studio, scan the USC QR code with your camera at the front desk. That&rsquo;s it!</p>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- Order Summary & Receipt -->
-    <div class="confirm-card confirm-receipt-card">
-      <div class="fitpanel__label">Order summary &amp; receipt</div>
-      <div class="confirm-receipt-grid">
-        <div class="confirm-receipt-item">
-          <span class="muted small">Plan</span>
-          <b>${esc(plan.name)} (${esc(commitment.label)})</b>
+        <!-- Demo Tools Card -->
+        <div class="confirm-demo-card">
+          <div class="fitpanel__label">Demo tools</div>
+          <p class="xsmall muted" style="margin:4px 0 10px">Pilot testing utilities (not in production):</p>
+          <ul class="confirm-demo-links">
+            <li>${icon('refresh',16)} <button class="linkish" data-go="left">Your resume link</button></li>
+            <li>${icon('speech',16)} <button class="linkish" data-go="email">Follow-up email preview</button></li>
+            <li>${icon('grid',16)} <button class="linkish" data-go="data">Journey data</button></li>
+            <li>${icon('bolt',16)} <button class="linkish" data-reset>Start fresh visitor</button></li>
+          </ul>
         </div>
-        <div class="confirm-receipt-item">
-          <span class="muted small">Start date</span>
-          <b>${esc(fmtDate(S.startDate))}</b>
-        </div>
-        <div class="confirm-receipt-item">
-          <span class="muted small">Monthly rate</span>
-          <b>${price}.00 &euro; / month</b>
-        </div>
-        <div class="confirm-receipt-item">
-          <span class="muted small">Member</span>
-          <b>${esc(memberName.trim()||first)}</b>
-        </div>
-        <div class="confirm-receipt-item">
-          <span class="muted small">Payment method</span>
-          <b>${FIELDS.method==='card'?'Credit / debit card':'SEPA direct debit'}</b>
-        </div>
-        <div class="confirm-receipt-item">
-          <span class="muted small">Confirmation email</span>
-          <b>${esc(S.email||'—')}</b>
-        </div>
-      </div>
-      <p class="xsmall muted" style="margin:16px 0 0">
-        ${esc(commitment.renewal.replace(/\.*$/, ''))}. Cancellation notice: ${esc(RULES.cancellationNotice.replace(/\.*$/, ''))}.
-      </p>
-    </div>
 
-    <!-- Simulated Pilot Notice & Demo Tools -->
-    <div class="notice" style="margin-top:24px">${icon('info',19)}<span><strong>Simulated pilot handoff.</strong> In production this is where the journey hands over to the USC member dashboard &amp; app download. Nothing was charged.</span></div>
-    <div class="card" style="margin-top:16px"><div class="fitpanel__label">Demo tools</div>
-      <p class="small muted" style="margin-top:0">These exist to make the pilot demonstrable &mdash; they would not appear in a real journey.</p>
-      <ul class="reasons" style="margin-top:14px">
-        <li>${icon('refresh',19)}<span><button class="linkish" data-go="left">Your resume link</button> &mdash; proves progress survives leaving.</span></li>
-        <li>${icon('speech',19)}<span><button class="linkish" data-go="email">Follow-up email preview</button></span></li>
-        <li>${icon('grid',19)}<span><button class="linkish" data-go="data">Journey data</button></span></li>
-        <li>${icon('bolt',19)}<span><button class="linkish" data-reset>Start a fresh visitor</button></span></li></ul></div>
+        <!-- Honest Pilot Notice -->
+        <div class="notice notice--simulated" style="margin-top:14px">
+          ${icon('info',17)}
+          <span><strong>Simulated checkout.</strong> Nothing was charged and no membership exists.</span>
+        </div>
+      </aside>
+    </div>
   </main>`;
 }
 
