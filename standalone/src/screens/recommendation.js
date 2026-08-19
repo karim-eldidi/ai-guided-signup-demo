@@ -95,6 +95,12 @@ function coverageBlock(rec, match, plan) {
 
 function planDrawer(plan, price, each, commitment, isRec, hereT, cheaperPlan, cheaperT, visitsFor, wp, altBox, allPlans) {
   if (!PLAN_DRAWER_OPEN) return '';
+  const perkText = S.commitmentId === 'biennial'
+    ? 'Includes 2 free wellness apps (0 € extra)'
+    : S.commitmentId === 'annual'
+      ? 'Includes 1 free wellness app (0 € extra)'
+      : '12- and 24-month commitments include free wellness apps';
+
   return `<div class="drawer-backdrop" data-close-plan-drawer></div>
   <div class="plan-drawer" role="dialog" aria-modal="true" aria-label="Membership plan details">
     <div class="plan-drawer__handle-bar" data-close-plan-drawer><div class="plan-drawer__handle"></div></div>
@@ -107,12 +113,15 @@ function planDrawer(plan, price, each, commitment, isRec, hereT, cheaperPlan, ch
     </div>
     <div class="plan-drawer__body">
       <!-- Commitment switcher -->
-      <div class="termpick" role="group" aria-label="How long you commit for" style="margin-bottom:18px">
+      <div class="termpick" role="group" aria-label="How long you commit for" style="margin-bottom:8px">
         ${COMMITMENTS.map(c=>{
           const p = priceFor(plan,c.id);
           return `<button class="termpick__opt ${c.id===S.commitmentId?'is-on':''}" type="button" data-commit="${esc(c.id)}"
             aria-pressed="${c.id===S.commitmentId}"><b>${c.minimumTermMonths===1?'Monthly':c.minimumTermMonths+' months'}</b><span>${p} €/mo</span></button>`;
         }).join('')}
+      </div>
+      <div class="termpick__perk-banner" style="font-size:12.5px;color:var(--navy);background:var(--cream);border:1px solid var(--cream-line);padding:7px 12px;border-radius:var(--radius);margin-bottom:16px;display:flex;align-items:center;gap:6px">
+        ${icon('sparkle',13)} <span>${perkText}</span>
       </div>
 
       <div class="planbox__factshead">Why this fits you</div>
@@ -127,7 +136,7 @@ function planDrawer(plan, price, each, commitment, isRec, hereT, cheaperPlan, ch
       ${altBox}
       ${allPlans}
 
-      <div style="margin-top:24px">
+      <div style="margin-top:20px">
         <button class="btn btn--primary btn--block" data-go="details">Continue with ${esc(plan.name)}</button>
       </div>
     </div>
@@ -497,8 +506,7 @@ function recommendationScreen() {
       </div>
     </div>`;
   })() : '';
-
-  const planAside = `<div class="planbox">
+const planAside = `<div class="planbox">
     <div class="planbox__badge">${isRec ? 'RECOMMENDED FOR YOU' : 'Your choice'}</div>
     <div class="planbox__idrow">
       <div class="planbox__name">${esc(plan.name)}</div>
@@ -510,6 +518,9 @@ function recommendationScreen() {
         return `<button class="termpick__opt ${c.id===S.commitmentId?'is-on':''}" type="button" data-commit="${esc(c.id)}"
           aria-pressed="${c.id===S.commitmentId}"><b>${c.minimumTermMonths===1?'Monthly':c.minimumTermMonths+' months'}</b><span>${p} €/mo</span></button>`;
       }).join('')}
+    </div>
+    <div class="termpick__perk-banner" style="font-size:12.5px;color:var(--navy);background:var(--cream);border:1px solid var(--cream-line);padding:6px 10px;border-radius:var(--radius);margin-top:8px;margin-bottom:14px;display:flex;align-items:center;gap:6px">
+      ${icon('sparkle',13)} <span>${S.commitmentId==='biennial'?'Includes 2 free wellness apps (0 € extra)':S.commitmentId==='annual'?'Includes 1 free wellness app (0 € extra)':'12 & 24 mo include free partner apps'}</span>
     </div>
     <div class="planbox__factshead">Why this fits you</div>
     <ul class="planbox__facts">
@@ -537,15 +548,20 @@ function recommendationScreen() {
     <h1 class="h-question reco-hero__title" tabindex="-1">${MOBILE()
       ? 'Your week, made to fit'
       : (goalTitleStr ? `Your plan for ${goalTitleStr}` : `Your plan near ${esc(where)}`)}</h1>
-    ${match.reachedFurther?`<div class="notice notice--grey">${icon('info',19)}<span>Nothing in this pilot&rsquo;s venue set does ${esc(groupWords(groups))} right by ${esc(where)}, so I looked across the city. The distances below are real.</span></div>`:''}`;
+    ${match.reachedFurther?`<div class="notice notice--grey">${icon('info',19)}<span>Nothing in this pilot&rsquo;s venue data does ${esc(groupWords(groups))} right by ${esc(where)}, so I looked across the city. The distances below are real.</span></div>`:''}`;
   const chipsBlock = answerChips({ label:'You told us' });
 
   const moreRow = `<details class="rowcard rowcard--more"${MOREOPEN?' open':''}>
     <summary class="rowcard__head" data-toggle-more>
-      <span class="rowcard__icon">${icon('question',22)}</span>
-      <span class="rowcard__text"><b>Questions and details</b></span>
-      <span class="rowcard__links">
-        <button class="rowcard__link" type="button" data-more="why">${isRec?`Why ${esc(plan.name)} fits`:`What ${esc(plan.name)} means`}</button>
+      <span class="rowcard__icon">${icon('help',22)}</span>
+      <span class="rowcard__text">
+        <b>Need more detail?</b>
+        <small>The math, the whole network, Urby, terms</small>
+      </span>
+      <span class="rowcard__actions">
+        <button class="rowcard__link" type="button" data-go="plans">Compare plans</button>
+        <span aria-hidden="true">&middot;</span>
+        <button class="rowcard__link" type="button" data-more="why">Why ${esc(plan.name)}</button>
         <span aria-hidden="true">&middot;</span>
         <button class="rowcard__link" type="button" data-more="ask">Ask Urby</button>
         <span aria-hidden="true">&middot;</span>
@@ -596,7 +612,7 @@ function recommendationScreen() {
     <div class="paybar__info" data-open-plan-drawer role="button" tabindex="0" aria-label="View plan breakdown and options">
       <div class="paybar__lead">
         <b>${esc(plan.name)}</b>
-        <span class="paybar__details-pill">${icon('info', 11)} Details ${icon('chevron', 10)}</span>
+        <span class="paybar__details-pill">${icon('info', 11)} Plan &amp; pricing &uarr;</span>
       </div>
       <span>${price} € / month${each?` · ≈ ${each} € a session`:''}</span>
     </div>
@@ -645,7 +661,12 @@ function plansScreen() {
     const price=priceFor(pl,S.commitmentId), venues=parseInt(String(pl.venueCount).replace(/\D/g,''),10)||0;
     const access=Math.max(5,Math.min(100,venues/maxVenues*100));
     const daily=Boolean(pl.dailyCheckIn), plus=pl.plusCheckIns||0, selected=selectedPlan.id===pl.id;
-    const best={essential:'Trying a few activities',classic:'A regular weekly routine',premium:'Studios and recovery',max:'Frequent premium access'}[pl.id]||pl.bestFor;
+    const best={
+      essential:'Starter plan (4 visits/mo at standard gyms & pools)',
+      classic:'Daily check-ins across 14,800+ studios, gyms & pools',
+      premium:'Daily check-ins + 4 Plus visits (1 massage, spas, EMS)',
+      max:'Daily check-ins + 8 Plus visits (2 massages, luxury clubs)'
+    }[pl.id]||pl.bestFor;
     const plusCopy=plus ? `<button class="plancard__plus" type="button" data-plus-open="${esc(pl.id)}" aria-label="Explain Plus check-ins on ${esc(pl.name)}">
         <b>${plus} Plus check-ins / month</b><span>For premium studios, spas and EMS</span>
         <em>Includes ${pl.id==='max'?'2 massages':'1 massage'}</em><u>What are Plus check-ins?</u></button>`
@@ -699,6 +720,27 @@ function plansScreen() {
       <div class="plans-head"><h1 class="h-question" tabindex="-1">Compare memberships</h1>
         <p class="reco-lede">See how venue access, visit frequency and premium benefits change with each plan.</p></div>
       <div class="commit-row">${COMMITMENTS.map(c=>`<button class="chip-sm ${c.id===S.commitmentId?'is-current':''}" data-commit="${esc(c.id)}">${esc(c.minimumTermMonths===1?'Monthly':c.minimumTermMonths+' months')}</button>`).join('')}</div>
+      
+      <div class="plans-overview" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:20px 0 16px">
+        <div class="plans-overview__card" style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px">
+          <div style="font-weight:800;font-size:14px;color:var(--ink);margin-bottom:2px">Essential <span style="font-weight:600;color:var(--navy-soft)">35 €/mo</span></div>
+          <div style="font-size:12.5px;color:var(--navy-soft);line-height:1.4"><b>Starter</b> &middot; 4 visits a month at standard gyms &amp; pools.</div>
+        </div>
+        <div class="plans-overview__card" style="background:#fff;border:1.5px solid var(--ink);border-radius:var(--radius);padding:12px 14px;position:relative">
+          <span style="position:absolute;top:-8px;right:10px;background:var(--ink);color:#fff;font-size:10px;font-weight:800;padding:2px 6px;border-radius:999px;text-transform:uppercase">Popular</span>
+          <div style="font-weight:800;font-size:14px;color:var(--ink);margin-bottom:2px">Classic <span style="font-weight:600;color:var(--navy-soft)">75 €/mo</span></div>
+          <div style="font-size:12.5px;color:var(--navy-soft);line-height:1.4"><b>Most popular</b> &middot; 1 visit every day across 14,800+ venues.</div>
+        </div>
+        <div class="plans-overview__card" style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px">
+          <div style="font-weight:800;font-size:14px;color:var(--ink);margin-bottom:2px">Premium <span style="font-weight:600;color:var(--navy-soft)">115 €/mo</span></div>
+          <div style="font-size:12.5px;color:var(--navy-soft);line-height:1.4"><b>Spas &amp; Wellness</b> &middot; Daily visits + 4 Plus visits (1 massage, spas, EMS).</div>
+        </div>
+        <div class="plans-overview__card" style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px">
+          <div style="font-weight:800;font-size:14px;color:var(--ink);margin-bottom:2px">Max <span style="font-weight:600;color:var(--navy-soft)">165 €/mo</span></div>
+          <div style="font-size:12.5px;color:var(--navy-soft);line-height:1.4"><b>Ultimate access</b> &middot; Daily visits + 8 Plus visits (2 massages, luxury clubs).</div>
+        </div>
+      </div>
+
       <div class="plangrid-hint"><span>Swipe to compare all 4 plans &rarr;</span></div>
       <div class="plangrid">${cards}</div>${selection}
       <div class="plans-shared">${icon('checkThin',17)}<span>Every membership includes video on demand, wellbeing apps and online classes.</span>
@@ -710,10 +752,7 @@ function plansScreen() {
 }
 
 /* Saving and signing up are two different intentions, so they are two different screens.
-   They used to be one: "Continue with Classic" landed on an email form, which put an
-   address between the visitor and the checkout — the toll gate rule 25 exists to stop,
-   reintroduced one screen later. Now the plan's CTA goes straight to the details form and
-   this screen is reached only by someone who has decided to leave and come back.
+   This screen is reached only by someone who has decided to leave and come back.
 
    Both screens describe the same four facts — the answers, the plan, the term, and what it
    opens — so both read them from here and cannot drift apart.

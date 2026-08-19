@@ -5834,7 +5834,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 19 Aug 08:17 UTC</span>
+  <span class="demo-banner__build">build 19 Aug 08:48 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -7115,6 +7115,8 @@ function venueSheet() {
   const activeDay = WEEK_ADD_DAY || currentWeekDays[0] || 'Monday';
   if (!WEEK_ADD_DAY) WEEK_ADD_DAY = activeDay;
 
+  const isStarred = Boolean(S.starredVenues && S.starredVenues[v.id]);
+
   /* If opened via "Add to week", show a focused, lightweight Quick-Add bottom sheet */
   if (WEEK_ADD_MODE) {
     const areaLabel = v.nearestArea ? v.nearestArea.name : (AREAS.find(a=>a.id===v.area)||{}).name || '';
@@ -7128,7 +7130,12 @@ function venueSheet() {
           <div class="quickadd-head">
             <div class="quickadd-thumb">${venueMedia(v)}</div>
             <div class="quickadd-info">
-              <h2 id="quickadd-title" class="quickadd-title">${esc(v.name)}</h2>
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+                <h2 id="quickadd-title" class="quickadd-title">${esc(v.name)}</h2>
+                <button class="activity-card__star-btn ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(v.id)}" aria-label="${isStarred ? 'Remove from week' : 'Star for week'}" title="${isStarred ? 'Starred for week' : 'Star for week'}" style="position:static;box-shadow:none;flex:0 0 auto">
+                  ${icon(isStarred ? 'starFill' : 'star', 16)}
+                </button>
+              </div>
               <p class="quickadd-sub">${esc(v.tierLabel||'Venue')} &middot; ${distLabel}</p>
             </div>
           </div>
@@ -7167,11 +7174,19 @@ function venueSheet() {
       <button class="sheet__close" data-close-sheet aria-label="Close">&times;</button>
       <div class="sheet__media">${venueMedia(v)}</div>
       <div class="sheet__body">
-        <h2 id="sheet-title" style="font-size:22px;font-weight:800;letter-spacing:-.01em">${esc(v.name)}</h2>
-        <p class="small muted" style="margin:4px 0 0">${esc(v.tierLabel||'Venue')} · ${km} km from ${esc(match.anywhere?'the city centre':((found&&found.nearestArea)||match.area).name)}</p>
+        <div class="sheet__head-row" style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+          <div>
+            <h2 id="sheet-title" style="font-size:22px;font-weight:800;letter-spacing:-.01em;margin:0">${esc(v.name)}</h2>
+            <p class="small muted" style="margin:4px 0 0">${esc(v.tierLabel||'Venue')} · ${km} km from ${esc(match.anywhere?'the city centre':((found&&found.nearestArea)||match.area).name)}</p>
+          </div>
+          <button class="activity-card__star-btn ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(v.id)}" aria-label="${isStarred ? 'Remove from week' : 'Star for week'}" title="${isStarred ? 'Starred for week' : 'Star for week'}" style="position:static;box-shadow:none;flex:0 0 auto">
+            ${icon(isStarred ? 'starFill' : 'star', 18)}
+          </button>
+        </div>
         ${v.address?`<p class="small muted" style="margin:4px 0 0">${icon('pin',15)} ${esc(v.address)}</p>`:''}
         
         <div class="sheet__weekadd">
+          ${isStarred ? `<p class="small strong" style="color:var(--ink);margin:0 0 8px;display:flex;align-items:center;gap:5px">${icon('starFill',13)} Starred in your routine</p>` : ''}
           <p class="sheet__weekadd-title">Add to your week</p>
           <p class="sheet__weekadd-copy">Choose any day of the week to add this venue to your routine.</p>
           <div class="sheet__weekadd-days" role="group" aria-label="Choose a day">${DAY_ORDER.map(day=>{
@@ -7291,14 +7306,18 @@ function appsBlock() {
   return `<details class="rowcard rowcard--apps"${APPSOPEN?' open':''}>
     <summary class="rowcard__head" data-toggle-apps>
       <span class="rowcard__icon">${icon('device',22)}</span>
-      <span class="rowcard__text"><b>Plus ${all.length} fitness apps</b>
+      <span class="rowcard__text"><b>Free Digital Wellbeing Apps &middot; 0 &euro; extra</b>
         <small>${locked
-          ? 'with a 12- or 24-month membership'
-          : `${slots===1?'one':'two'} at a time, switchable, included in your term`}</small></span>
+          ? 'Included free with 12- or 24-month memberships (YogaEasy, Asana Rebel, Sleep Cycle & more)'
+          : `Included free in your plan &middot; 0 &euro; extra (${slots===1?'1 app':'2 apps'} active, switch anytime)`}</small></span>
       <span class="rowcard__chips">${ranked.list.slice(0,2).map(chip).join('')}</span>
-      <span class="rowcard__cta">See all apps ${icon('arrowRight',18)}</span>
+      <span class="rowcard__cta">Explore free apps ${icon('arrowRight',18)}</span>
     </summary>
     <div class="rowcard__body">
+      <div class="notice notice--cream" style="margin-bottom:14px;background:var(--cream);border:1px solid var(--cream-line);padding:12px 14px;border-radius:var(--radius);font-size:13px;line-height:1.45;color:var(--navy)">
+        <strong>100% Free with 12- &amp; 24-month memberships</strong> &middot; Urban Sports Club includes full access to premium wellness apps at no extra charge. 12-month memberships include 1 app active at a time; 24-month memberships include 2 apps. Switch between apps anytime.
+      </div>
+
       <div class="apps-switcher-strip">
         <div class="apps-switcher-strip__label">
           <span class="apps-switcher-strip__title">✨ Digital Partner Apps</span>
@@ -7306,8 +7325,8 @@ function appsBlock() {
         </div>
         <div class="apps-segmented-control" role="group" aria-label="Membership length">
           <button class="apps-seg-btn ${S.commitmentId==='monthly'?'is-active':''}" type="button" data-commit="monthly">Monthly <small>(no apps)</small></button>
-          <button class="apps-seg-btn ${S.commitmentId==='annual'?'is-active':''}" type="button" data-commit="annual">12 mo <small>(1 app)</small></button>
-          <button class="apps-seg-btn ${S.commitmentId==='biennial'?'is-active':''}" type="button" data-commit="biennial">24 mo <small>(2 apps)</small></button>
+          <button class="apps-seg-btn ${S.commitmentId==='annual'?'is-active':''}" type="button" data-commit="annual">12 mo <small>(1 free app)</small></button>
+          <button class="apps-seg-btn ${S.commitmentId==='biennial'?'is-active':''}" type="button" data-commit="biennial">24 mo <small>(2 free apps)</small></button>
         </div>
       </div>
 
@@ -7496,33 +7515,57 @@ function browsePlaces() {
    badge comes off rather than say the plan's name twice on one card (rule 33). */
 function placeCard(v, opts = {}) {
   const { known = true, from = null, focus = null, priced = false } = opts;
+  const plan = currentPlan();
+  const inPlan = includedIn(v, plan.id);
   const lowest = firstPlanWithAccess(v);
-  const tierClass = lowest ? (lowest.id === 'plus' ? 'hit__badge--plus' : lowest.id === 'premium' ? 'hit__badge--premium' : 'hit__badge--standard') : '';
+  const badge = !priced && lowest
+    ? `<span class="hit__badge hit__badge--${esc(lowest.id)}">${esc(lowest.name)}</span>` : '';
   const acts = v.activities.slice(0,3).map(a => ACTIVITY_LABELS[a]||a).join(', ');
-  /* Browsing, the place we measured from is named once under the row rather than on all
-     four cards (rule 33); a single searched result has no such line, so it carries it. */
   const where = known ? `${v.distanceKm} km${from?` from ${esc(from)}`:''}` : 'in Berlin';
-  const content = `<span class="hit__media">${venueMedia(v, focus ? [focus] : null)}${priced || !lowest ? ''
-      : `<span class="hit__badge ${tierClass}">${esc(lowest.name)}</span>`}</span>
-    <span class="hit__body">
-      <span class="hit__name">${esc(v.name)}</span>
-      <span class="hit__meta">${esc(acts)} &middot; ${where}</span>
-      ${priced
-        ? `<span class="hit__plan">${lowest
-            ? `${icon('checkThin',16)}<span>Included from <b>${esc(lowest.name)}</b><small>${priceFor(lowest,S.commitmentId)} &euro; a month</small></span>`
-            : `${icon('info',16)}<span>Not on any membership in this pilot&rsquo;s data</span>`}</span>`
-        : WEEK_ADD_MODE ? '' : `<span class="hit__view">View details ${icon('arrowRight',17)}</span>`}
-    </span>`;
-  if (WEEK_ADD_MODE) return `<article class="hit hit--week">
-    <button class="hit__details" data-venue="${esc(v.id)}" aria-label="More about ${esc(v.name)}">${content}</button>
-    <span class="hit__actions"><button class="hit__add" type="button" data-add-venue="${esc(v.id)}" ${WEEK_ADD_DAY?'':'disabled'}
-      aria-label="${WEEK_ADD_DAY?`Add ${esc(v.name)} to ${esc(WEEK_ADD_DAY)}`:'Choose a day before adding this venue'}">
-      ${WEEK_ADD_DAY?'Add':'Choose a day above'}</button>
-      <button class="linkish hit__more" type="button" data-venue="${esc(v.id)}">View details</button></span>
-  </article>`;
-  return `<button class="hit" data-venue="${esc(v.id)}" aria-label="More about ${esc(v.name)}">
-    ${content}
-  </button>`;
+  const grpLabel = v.activities.length ? (ACTIVITY_LABELS[v.activities[0]] || v.activities[0]) : 'Fitness';
+  const grpIcon = activityIcon(v.activities);
+
+  const isStarred = Boolean(S.starredVenues && S.starredVenues[v.id]);
+  const starFreq = (S.starredVenues && S.starredVenues[v.id] && (typeof S.starredVenues[v.id]==='number' ? S.starredVenues[v.id] : S.starredVenues[v.id].freq)) || 1;
+
+  const accessLabel = inPlan
+    ? (v.tier === 'plus' ? 'Included &middot; Plus access' : v.tier === 'premium' ? 'Included &middot; Premium access' : 'Included &middot; Regular check-in')
+    : (lowest ? `Included from ${esc(lowest.name)}, ${priceFor(lowest, S.commitmentId)} € a month` : `<span class="venue-card__lock" style="color:#8a5a1a;font-weight:700">Needs ${v.tier === 'premium' ? 'Premium' : 'Classic'} upgrade</span>`);
+
+  return `<div class="activity-card venue-card hit ${inPlan ? '' : 'is-locked'} ${isStarred ? 'is-starred' : ''}" draggable="true" data-drag-venue="${esc(v.id)}" data-drag-name="${esc(v.name)}">
+    ${badge}
+    <button class="activity-card__star-btn ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(v.id)}" aria-label="${isStarred ? `Remove ${esc(v.name)} from favourites` : `Star ${esc(v.name)}`}" title="${isStarred ? 'Starred for your week' : 'Star for your week'}">
+      ${icon(isStarred ? 'starFill' : 'star', 15)}
+    </button>
+    <button class="activity-card__media-btn hit__media" data-venue="${esc(v.id)}" aria-label="Details about ${esc(v.name)}">
+      <span class="activity-card__media">${venueMedia(v, focus ? [focus] : null)}</span>
+      <span class="activity-card__icon-badge">${icon(grpIcon, 16)}</span>
+    </button>
+    <div class="activity-card__content hit__body">
+      <div class="activity-card__activity"><b>${esc(grpLabel)}</b></div>
+      <button class="activity-card__vname venue-card__name hit__name linkish" data-venue="${esc(v.id)}">${esc(v.name)}</button>
+      <div class="activity-card__dist hit__meta">${where} &middot; ${esc(acts)}</div>
+      <div class="activity-card__access">${accessLabel}</div>
+      ${priced && lowest ? `<p class="hit__price">Included from <strong>${esc(lowest.name)}</strong>, ${priceFor(lowest, S.commitmentId)} € a month.</p>` : ''}
+      <div class="activity-card__actions">
+        ${isStarred ? `
+          <div class="activity-card__starred-controls">
+            <button class="btn-pill btn-pill--sm btn-pill--starred" type="button" data-toggle-star="${esc(v.id)}" title="Click to remove from your week">
+              ${icon('starFill', 12)} <span>In week</span>
+            </button>
+            <div class="freq-toggle" role="group" aria-label="Frequency">
+              <button class="freq-toggle__btn ${starFreq===1?'is-active':''}" type="button" data-set-star-freq="${esc(v.id)}" data-freq="1" title="1 time per week">1x</button>
+              <button class="freq-toggle__btn ${starFreq===2?'is-active':''}" type="button" data-set-star-freq="${esc(v.id)}" data-freq="2" title="2 times per week">2x</button>
+            </div>
+          </div>
+        ` : `
+          <button class="btn-pill btn-pill--sm btn-pill--block" type="button" data-toggle-star="${esc(v.id)}">
+            ${icon('plus', 11)} <span>Add to week</span>
+          </button>
+        `}
+      </div>
+    </div>
+  </div>`;
 }
 
 function weekPickBar() {
@@ -8152,6 +8195,12 @@ function coverageBlock(rec, match, plan) {
 
 function planDrawer(plan, price, each, commitment, isRec, hereT, cheaperPlan, cheaperT, visitsFor, wp, altBox, allPlans) {
   if (!PLAN_DRAWER_OPEN) return '';
+  const perkText = S.commitmentId === 'biennial'
+    ? 'Includes 2 free wellness apps (0 € extra)'
+    : S.commitmentId === 'annual'
+      ? 'Includes 1 free wellness app (0 € extra)'
+      : '12- and 24-month commitments include free wellness apps';
+
   return `<div class="drawer-backdrop" data-close-plan-drawer></div>
   <div class="plan-drawer" role="dialog" aria-modal="true" aria-label="Membership plan details">
     <div class="plan-drawer__handle-bar" data-close-plan-drawer><div class="plan-drawer__handle"></div></div>
@@ -8164,12 +8213,15 @@ function planDrawer(plan, price, each, commitment, isRec, hereT, cheaperPlan, ch
     </div>
     <div class="plan-drawer__body">
       <!-- Commitment switcher -->
-      <div class="termpick" role="group" aria-label="How long you commit for" style="margin-bottom:18px">
+      <div class="termpick" role="group" aria-label="How long you commit for" style="margin-bottom:8px">
         ${COMMITMENTS.map(c=>{
           const p = priceFor(plan,c.id);
           return `<button class="termpick__opt ${c.id===S.commitmentId?'is-on':''}" type="button" data-commit="${esc(c.id)}"
             aria-pressed="${c.id===S.commitmentId}"><b>${c.minimumTermMonths===1?'Monthly':c.minimumTermMonths+' months'}</b><span>${p} €/mo</span></button>`;
         }).join('')}
+      </div>
+      <div class="termpick__perk-banner" style="font-size:12.5px;color:var(--navy);background:var(--cream);border:1px solid var(--cream-line);padding:7px 12px;border-radius:var(--radius);margin-bottom:16px;display:flex;align-items:center;gap:6px">
+        ${icon('sparkle',13)} <span>${perkText}</span>
       </div>
 
       <div class="planbox__factshead">Why this fits you</div>
@@ -8184,7 +8236,7 @@ function planDrawer(plan, price, each, commitment, isRec, hereT, cheaperPlan, ch
       ${altBox}
       ${allPlans}
 
-      <div style="margin-top:24px">
+      <div style="margin-top:20px">
         <button class="btn btn--primary btn--block" data-go="details">Continue with ${esc(plan.name)}</button>
       </div>
     </div>
@@ -8554,8 +8606,7 @@ function recommendationScreen() {
       </div>
     </div>`;
   })() : '';
-
-  const planAside = `<div class="planbox">
+const planAside = `<div class="planbox">
     <div class="planbox__badge">${isRec ? 'RECOMMENDED FOR YOU' : 'Your choice'}</div>
     <div class="planbox__idrow">
       <div class="planbox__name">${esc(plan.name)}</div>
@@ -8567,6 +8618,9 @@ function recommendationScreen() {
         return `<button class="termpick__opt ${c.id===S.commitmentId?'is-on':''}" type="button" data-commit="${esc(c.id)}"
           aria-pressed="${c.id===S.commitmentId}"><b>${c.minimumTermMonths===1?'Monthly':c.minimumTermMonths+' months'}</b><span>${p} €/mo</span></button>`;
       }).join('')}
+    </div>
+    <div class="termpick__perk-banner" style="font-size:12.5px;color:var(--navy);background:var(--cream);border:1px solid var(--cream-line);padding:6px 10px;border-radius:var(--radius);margin-top:8px;margin-bottom:14px;display:flex;align-items:center;gap:6px">
+      ${icon('sparkle',13)} <span>${S.commitmentId==='biennial'?'Includes 2 free wellness apps (0 € extra)':S.commitmentId==='annual'?'Includes 1 free wellness app (0 € extra)':'12 & 24 mo include free partner apps'}</span>
     </div>
     <div class="planbox__factshead">Why this fits you</div>
     <ul class="planbox__facts">
@@ -8594,15 +8648,20 @@ function recommendationScreen() {
     <h1 class="h-question reco-hero__title" tabindex="-1">${MOBILE()
       ? 'Your week, made to fit'
       : (goalTitleStr ? `Your plan for ${goalTitleStr}` : `Your plan near ${esc(where)}`)}</h1>
-    ${match.reachedFurther?`<div class="notice notice--grey">${icon('info',19)}<span>Nothing in this pilot&rsquo;s venue set does ${esc(groupWords(groups))} right by ${esc(where)}, so I looked across the city. The distances below are real.</span></div>`:''}`;
+    ${match.reachedFurther?`<div class="notice notice--grey">${icon('info',19)}<span>Nothing in this pilot&rsquo;s venue data does ${esc(groupWords(groups))} right by ${esc(where)}, so I looked across the city. The distances below are real.</span></div>`:''}`;
   const chipsBlock = answerChips({ label:'You told us' });
 
   const moreRow = `<details class="rowcard rowcard--more"${MOREOPEN?' open':''}>
     <summary class="rowcard__head" data-toggle-more>
-      <span class="rowcard__icon">${icon('question',22)}</span>
-      <span class="rowcard__text"><b>Questions and details</b></span>
-      <span class="rowcard__links">
-        <button class="rowcard__link" type="button" data-more="why">${isRec?`Why ${esc(plan.name)} fits`:`What ${esc(plan.name)} means`}</button>
+      <span class="rowcard__icon">${icon('help',22)}</span>
+      <span class="rowcard__text">
+        <b>Need more detail?</b>
+        <small>The math, the whole network, Urby, terms</small>
+      </span>
+      <span class="rowcard__actions">
+        <button class="rowcard__link" type="button" data-go="plans">Compare plans</button>
+        <span aria-hidden="true">&middot;</span>
+        <button class="rowcard__link" type="button" data-more="why">Why ${esc(plan.name)}</button>
         <span aria-hidden="true">&middot;</span>
         <button class="rowcard__link" type="button" data-more="ask">Ask Urby</button>
         <span aria-hidden="true">&middot;</span>
@@ -8653,7 +8712,7 @@ function recommendationScreen() {
     <div class="paybar__info" data-open-plan-drawer role="button" tabindex="0" aria-label="View plan breakdown and options">
       <div class="paybar__lead">
         <b>${esc(plan.name)}</b>
-        <span class="paybar__details-pill">${icon('info', 11)} Details ${icon('chevron', 10)}</span>
+        <span class="paybar__details-pill">${icon('info', 11)} Plan &amp; pricing &uarr;</span>
       </div>
       <span>${price} € / month${each?` · ≈ ${each} € a session`:''}</span>
     </div>
@@ -8702,7 +8761,12 @@ function plansScreen() {
     const price=priceFor(pl,S.commitmentId), venues=parseInt(String(pl.venueCount).replace(/\D/g,''),10)||0;
     const access=Math.max(5,Math.min(100,venues/maxVenues*100));
     const daily=Boolean(pl.dailyCheckIn), plus=pl.plusCheckIns||0, selected=selectedPlan.id===pl.id;
-    const best={essential:'Trying a few activities',classic:'A regular weekly routine',premium:'Studios and recovery',max:'Frequent premium access'}[pl.id]||pl.bestFor;
+    const best={
+      essential:'Starter plan (4 visits/mo at standard gyms & pools)',
+      classic:'Daily check-ins across 14,800+ studios, gyms & pools',
+      premium:'Daily check-ins + 4 Plus visits (1 massage, spas, EMS)',
+      max:'Daily check-ins + 8 Plus visits (2 massages, luxury clubs)'
+    }[pl.id]||pl.bestFor;
     const plusCopy=plus ? `<button class="plancard__plus" type="button" data-plus-open="${esc(pl.id)}" aria-label="Explain Plus check-ins on ${esc(pl.name)}">
         <b>${plus} Plus check-ins / month</b><span>For premium studios, spas and EMS</span>
         <em>Includes ${pl.id==='max'?'2 massages':'1 massage'}</em><u>What are Plus check-ins?</u></button>`
@@ -8756,6 +8820,27 @@ function plansScreen() {
       <div class="plans-head"><h1 class="h-question" tabindex="-1">Compare memberships</h1>
         <p class="reco-lede">See how venue access, visit frequency and premium benefits change with each plan.</p></div>
       <div class="commit-row">${COMMITMENTS.map(c=>`<button class="chip-sm ${c.id===S.commitmentId?'is-current':''}" data-commit="${esc(c.id)}">${esc(c.minimumTermMonths===1?'Monthly':c.minimumTermMonths+' months')}</button>`).join('')}</div>
+      
+      <div class="plans-overview" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:20px 0 16px">
+        <div class="plans-overview__card" style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px">
+          <div style="font-weight:800;font-size:14px;color:var(--ink);margin-bottom:2px">Essential <span style="font-weight:600;color:var(--navy-soft)">35 €/mo</span></div>
+          <div style="font-size:12.5px;color:var(--navy-soft);line-height:1.4"><b>Starter</b> &middot; 4 visits a month at standard gyms &amp; pools.</div>
+        </div>
+        <div class="plans-overview__card" style="background:#fff;border:1.5px solid var(--ink);border-radius:var(--radius);padding:12px 14px;position:relative">
+          <span style="position:absolute;top:-8px;right:10px;background:var(--ink);color:#fff;font-size:10px;font-weight:800;padding:2px 6px;border-radius:999px;text-transform:uppercase">Popular</span>
+          <div style="font-weight:800;font-size:14px;color:var(--ink);margin-bottom:2px">Classic <span style="font-weight:600;color:var(--navy-soft)">75 €/mo</span></div>
+          <div style="font-size:12.5px;color:var(--navy-soft);line-height:1.4"><b>Most popular</b> &middot; 1 visit every day across 14,800+ venues.</div>
+        </div>
+        <div class="plans-overview__card" style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px">
+          <div style="font-weight:800;font-size:14px;color:var(--ink);margin-bottom:2px">Premium <span style="font-weight:600;color:var(--navy-soft)">115 €/mo</span></div>
+          <div style="font-size:12.5px;color:var(--navy-soft);line-height:1.4"><b>Spas &amp; Wellness</b> &middot; Daily visits + 4 Plus visits (1 massage, spas, EMS).</div>
+        </div>
+        <div class="plans-overview__card" style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px">
+          <div style="font-weight:800;font-size:14px;color:var(--ink);margin-bottom:2px">Max <span style="font-weight:600;color:var(--navy-soft)">165 €/mo</span></div>
+          <div style="font-size:12.5px;color:var(--navy-soft);line-height:1.4"><b>Ultimate access</b> &middot; Daily visits + 8 Plus visits (2 massages, luxury clubs).</div>
+        </div>
+      </div>
+
       <div class="plangrid-hint"><span>Swipe to compare all 4 plans &rarr;</span></div>
       <div class="plangrid">${cards}</div>${selection}
       <div class="plans-shared">${icon('checkThin',17)}<span>Every membership includes video on demand, wellbeing apps and online classes.</span>
@@ -8767,10 +8852,7 @@ function plansScreen() {
 }
 
 /* Saving and signing up are two different intentions, so they are two different screens.
-   They used to be one: "Continue with Classic" landed on an email form, which put an
-   address between the visitor and the checkout — the toll gate rule 25 exists to stop,
-   reintroduced one screen later. Now the plan's CTA goes straight to the details form and
-   this screen is reached only by someone who has decided to leave and come back.
+   This screen is reached only by someone who has decided to leave and come back.
 
    Both screens describe the same four facts — the answers, the plan, the term, and what it
    opens — so both read them from here and cannot drift apart.

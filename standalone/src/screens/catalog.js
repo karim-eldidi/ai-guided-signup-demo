@@ -29,33 +29,57 @@ function browsePlaces() {
    badge comes off rather than say the plan's name twice on one card (rule 33). */
 function placeCard(v, opts = {}) {
   const { known = true, from = null, focus = null, priced = false } = opts;
+  const plan = currentPlan();
+  const inPlan = includedIn(v, plan.id);
   const lowest = firstPlanWithAccess(v);
-  const tierClass = lowest ? (lowest.id === 'plus' ? 'hit__badge--plus' : lowest.id === 'premium' ? 'hit__badge--premium' : 'hit__badge--standard') : '';
+  const badge = !priced && lowest
+    ? `<span class="hit__badge hit__badge--${esc(lowest.id)}">${esc(lowest.name)}</span>` : '';
   const acts = v.activities.slice(0,3).map(a => ACTIVITY_LABELS[a]||a).join(', ');
-  /* Browsing, the place we measured from is named once under the row rather than on all
-     four cards (rule 33); a single searched result has no such line, so it carries it. */
   const where = known ? `${v.distanceKm} km${from?` from ${esc(from)}`:''}` : 'in Berlin';
-  const content = `<span class="hit__media">${venueMedia(v, focus ? [focus] : null)}${priced || !lowest ? ''
-      : `<span class="hit__badge ${tierClass}">${esc(lowest.name)}</span>`}</span>
-    <span class="hit__body">
-      <span class="hit__name">${esc(v.name)}</span>
-      <span class="hit__meta">${esc(acts)} &middot; ${where}</span>
-      ${priced
-        ? `<span class="hit__plan">${lowest
-            ? `${icon('checkThin',16)}<span>Included from <b>${esc(lowest.name)}</b><small>${priceFor(lowest,S.commitmentId)} &euro; a month</small></span>`
-            : `${icon('info',16)}<span>Not on any membership in this pilot&rsquo;s data</span>`}</span>`
-        : WEEK_ADD_MODE ? '' : `<span class="hit__view">View details ${icon('arrowRight',17)}</span>`}
-    </span>`;
-  if (WEEK_ADD_MODE) return `<article class="hit hit--week">
-    <button class="hit__details" data-venue="${esc(v.id)}" aria-label="More about ${esc(v.name)}">${content}</button>
-    <span class="hit__actions"><button class="hit__add" type="button" data-add-venue="${esc(v.id)}" ${WEEK_ADD_DAY?'':'disabled'}
-      aria-label="${WEEK_ADD_DAY?`Add ${esc(v.name)} to ${esc(WEEK_ADD_DAY)}`:'Choose a day before adding this venue'}">
-      ${WEEK_ADD_DAY?'Add':'Choose a day above'}</button>
-      <button class="linkish hit__more" type="button" data-venue="${esc(v.id)}">View details</button></span>
-  </article>`;
-  return `<button class="hit" data-venue="${esc(v.id)}" aria-label="More about ${esc(v.name)}">
-    ${content}
-  </button>`;
+  const grpLabel = v.activities.length ? (ACTIVITY_LABELS[v.activities[0]] || v.activities[0]) : 'Fitness';
+  const grpIcon = activityIcon(v.activities);
+
+  const isStarred = Boolean(S.starredVenues && S.starredVenues[v.id]);
+  const starFreq = (S.starredVenues && S.starredVenues[v.id] && (typeof S.starredVenues[v.id]==='number' ? S.starredVenues[v.id] : S.starredVenues[v.id].freq)) || 1;
+
+  const accessLabel = inPlan
+    ? (v.tier === 'plus' ? 'Included &middot; Plus access' : v.tier === 'premium' ? 'Included &middot; Premium access' : 'Included &middot; Regular check-in')
+    : (lowest ? `Included from ${esc(lowest.name)}, ${priceFor(lowest, S.commitmentId)} € a month` : `<span class="venue-card__lock" style="color:#8a5a1a;font-weight:700">Needs ${v.tier === 'premium' ? 'Premium' : 'Classic'} upgrade</span>`);
+
+  return `<div class="activity-card venue-card hit ${inPlan ? '' : 'is-locked'} ${isStarred ? 'is-starred' : ''}" draggable="true" data-drag-venue="${esc(v.id)}" data-drag-name="${esc(v.name)}">
+    ${badge}
+    <button class="activity-card__star-btn ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(v.id)}" aria-label="${isStarred ? `Remove ${esc(v.name)} from favourites` : `Star ${esc(v.name)}`}" title="${isStarred ? 'Starred for your week' : 'Star for your week'}">
+      ${icon(isStarred ? 'starFill' : 'star', 15)}
+    </button>
+    <button class="activity-card__media-btn hit__media" data-venue="${esc(v.id)}" aria-label="Details about ${esc(v.name)}">
+      <span class="activity-card__media">${venueMedia(v, focus ? [focus] : null)}</span>
+      <span class="activity-card__icon-badge">${icon(grpIcon, 16)}</span>
+    </button>
+    <div class="activity-card__content hit__body">
+      <div class="activity-card__activity"><b>${esc(grpLabel)}</b></div>
+      <button class="activity-card__vname venue-card__name hit__name linkish" data-venue="${esc(v.id)}">${esc(v.name)}</button>
+      <div class="activity-card__dist hit__meta">${where} &middot; ${esc(acts)}</div>
+      <div class="activity-card__access">${accessLabel}</div>
+      ${priced && lowest ? `<p class="hit__price">Included from <strong>${esc(lowest.name)}</strong>, ${priceFor(lowest, S.commitmentId)} € a month.</p>` : ''}
+      <div class="activity-card__actions">
+        ${isStarred ? `
+          <div class="activity-card__starred-controls">
+            <button class="btn-pill btn-pill--sm btn-pill--starred" type="button" data-toggle-star="${esc(v.id)}" title="Click to remove from your week">
+              ${icon('starFill', 12)} <span>In week</span>
+            </button>
+            <div class="freq-toggle" role="group" aria-label="Frequency">
+              <button class="freq-toggle__btn ${starFreq===1?'is-active':''}" type="button" data-set-star-freq="${esc(v.id)}" data-freq="1" title="1 time per week">1x</button>
+              <button class="freq-toggle__btn ${starFreq===2?'is-active':''}" type="button" data-set-star-freq="${esc(v.id)}" data-freq="2" title="2 times per week">2x</button>
+            </div>
+          </div>
+        ` : `
+          <button class="btn-pill btn-pill--sm btn-pill--block" type="button" data-toggle-star="${esc(v.id)}">
+            ${icon('plus', 11)} <span>Add to week</span>
+          </button>
+        `}
+      </div>
+    </div>
+  </div>`;
 }
 
 function weekPickBar() {

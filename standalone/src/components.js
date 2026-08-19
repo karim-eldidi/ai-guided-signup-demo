@@ -250,6 +250,8 @@ function venueSheet() {
   const activeDay = WEEK_ADD_DAY || currentWeekDays[0] || 'Monday';
   if (!WEEK_ADD_DAY) WEEK_ADD_DAY = activeDay;
 
+  const isStarred = Boolean(S.starredVenues && S.starredVenues[v.id]);
+
   /* If opened via "Add to week", show a focused, lightweight Quick-Add bottom sheet */
   if (WEEK_ADD_MODE) {
     const areaLabel = v.nearestArea ? v.nearestArea.name : (AREAS.find(a=>a.id===v.area)||{}).name || '';
@@ -263,7 +265,12 @@ function venueSheet() {
           <div class="quickadd-head">
             <div class="quickadd-thumb">${venueMedia(v)}</div>
             <div class="quickadd-info">
-              <h2 id="quickadd-title" class="quickadd-title">${esc(v.name)}</h2>
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+                <h2 id="quickadd-title" class="quickadd-title">${esc(v.name)}</h2>
+                <button class="activity-card__star-btn ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(v.id)}" aria-label="${isStarred ? 'Remove from week' : 'Star for week'}" title="${isStarred ? 'Starred for week' : 'Star for week'}" style="position:static;box-shadow:none;flex:0 0 auto">
+                  ${icon(isStarred ? 'starFill' : 'star', 16)}
+                </button>
+              </div>
               <p class="quickadd-sub">${esc(v.tierLabel||'Venue')} &middot; ${distLabel}</p>
             </div>
           </div>
@@ -302,11 +309,19 @@ function venueSheet() {
       <button class="sheet__close" data-close-sheet aria-label="Close">&times;</button>
       <div class="sheet__media">${venueMedia(v)}</div>
       <div class="sheet__body">
-        <h2 id="sheet-title" style="font-size:22px;font-weight:800;letter-spacing:-.01em">${esc(v.name)}</h2>
-        <p class="small muted" style="margin:4px 0 0">${esc(v.tierLabel||'Venue')} · ${km} km from ${esc(match.anywhere?'the city centre':((found&&found.nearestArea)||match.area).name)}</p>
+        <div class="sheet__head-row" style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+          <div>
+            <h2 id="sheet-title" style="font-size:22px;font-weight:800;letter-spacing:-.01em;margin:0">${esc(v.name)}</h2>
+            <p class="small muted" style="margin:4px 0 0">${esc(v.tierLabel||'Venue')} · ${km} km from ${esc(match.anywhere?'the city centre':((found&&found.nearestArea)||match.area).name)}</p>
+          </div>
+          <button class="activity-card__star-btn ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(v.id)}" aria-label="${isStarred ? 'Remove from week' : 'Star for week'}" title="${isStarred ? 'Starred for week' : 'Star for week'}" style="position:static;box-shadow:none;flex:0 0 auto">
+            ${icon(isStarred ? 'starFill' : 'star', 18)}
+          </button>
+        </div>
         ${v.address?`<p class="small muted" style="margin:4px 0 0">${icon('pin',15)} ${esc(v.address)}</p>`:''}
         
         <div class="sheet__weekadd">
+          ${isStarred ? `<p class="small strong" style="color:var(--ink);margin:0 0 8px;display:flex;align-items:center;gap:5px">${icon('starFill',13)} Starred in your routine</p>` : ''}
           <p class="sheet__weekadd-title">Add to your week</p>
           <p class="sheet__weekadd-copy">Choose any day of the week to add this venue to your routine.</p>
           <div class="sheet__weekadd-days" role="group" aria-label="Choose a day">${DAY_ORDER.map(day=>{
@@ -426,14 +441,18 @@ function appsBlock() {
   return `<details class="rowcard rowcard--apps"${APPSOPEN?' open':''}>
     <summary class="rowcard__head" data-toggle-apps>
       <span class="rowcard__icon">${icon('device',22)}</span>
-      <span class="rowcard__text"><b>Plus ${all.length} fitness apps</b>
+      <span class="rowcard__text"><b>Free Digital Wellbeing Apps &middot; 0 &euro; extra</b>
         <small>${locked
-          ? 'with a 12- or 24-month membership'
-          : `${slots===1?'one':'two'} at a time, switchable, included in your term`}</small></span>
+          ? 'Included free with 12- or 24-month memberships (YogaEasy, Asana Rebel, Sleep Cycle & more)'
+          : `Included free in your plan &middot; 0 &euro; extra (${slots===1?'1 app':'2 apps'} active, switch anytime)`}</small></span>
       <span class="rowcard__chips">${ranked.list.slice(0,2).map(chip).join('')}</span>
-      <span class="rowcard__cta">See all apps ${icon('arrowRight',18)}</span>
+      <span class="rowcard__cta">Explore free apps ${icon('arrowRight',18)}</span>
     </summary>
     <div class="rowcard__body">
+      <div class="notice notice--cream" style="margin-bottom:14px;background:var(--cream);border:1px solid var(--cream-line);padding:12px 14px;border-radius:var(--radius);font-size:13px;line-height:1.45;color:var(--navy)">
+        <strong>100% Free with 12- &amp; 24-month memberships</strong> &middot; Urban Sports Club includes full access to premium wellness apps at no extra charge. 12-month memberships include 1 app active at a time; 24-month memberships include 2 apps. Switch between apps anytime.
+      </div>
+
       <div class="apps-switcher-strip">
         <div class="apps-switcher-strip__label">
           <span class="apps-switcher-strip__title">✨ Digital Partner Apps</span>
@@ -441,8 +460,8 @@ function appsBlock() {
         </div>
         <div class="apps-segmented-control" role="group" aria-label="Membership length">
           <button class="apps-seg-btn ${S.commitmentId==='monthly'?'is-active':''}" type="button" data-commit="monthly">Monthly <small>(no apps)</small></button>
-          <button class="apps-seg-btn ${S.commitmentId==='annual'?'is-active':''}" type="button" data-commit="annual">12 mo <small>(1 app)</small></button>
-          <button class="apps-seg-btn ${S.commitmentId==='biennial'?'is-active':''}" type="button" data-commit="biennial">24 mo <small>(2 apps)</small></button>
+          <button class="apps-seg-btn ${S.commitmentId==='annual'?'is-active':''}" type="button" data-commit="annual">12 mo <small>(1 free app)</small></button>
+          <button class="apps-seg-btn ${S.commitmentId==='biennial'?'is-active':''}" type="button" data-commit="biennial">24 mo <small>(2 free apps)</small></button>
         </div>
       </div>
 
