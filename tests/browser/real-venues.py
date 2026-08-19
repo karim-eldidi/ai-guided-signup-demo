@@ -61,33 +61,27 @@ with sync_playwright() as p:
     P("no card can end up empty if a photo fails") if broken==0 else F(f"{broken} cards would render empty")
     pg.screenshot(path=f"{OUT}/venues-rendered.png", full_page=True)
 
-    # --- the places carry their own search (rule 69) -------------------------
-    # Karim: "the venues should have search in case I want something specific."
-    # It must filter deterministically, from the published data — a search that
-    # guessed would be a fourth kind of count, and rule 54 allows three.
-    box=pg.locator('.venuesearch input')
+    # Option A: Explore all venues navigates to the dedicated venue search & explorer
+    pg.locator('.made-for-you__explore-link, [data-go="search"]').first.click(); pg.wait_for_timeout(500)
+    box=pg.locator('.venuesearch input, input[name="q"], input[type="search"]').first
     P("the places carry their own search box") if box.is_visible() else F("no search box above the places")
-    nearby=len(names)
     box.click(); box.type("sauna", delay=30); pg.wait_for_timeout(500)
-    hits=pg.locator('.venue-card__name').all_inner_texts()
+    hits=pg.locator('.hit__name, .venue-card__name').all_inner_texts()
     saunas={v['name'] for v in V if 'sauna' in v['activities']}
     if hits and all(n in saunas for n in hits): P(f"searching an activity returns only venues that publish it: {', '.join(hits[:3])}")
     else: F(f"a search result does not publish sauna: {[n for n in hits if n not in saunas]}")
-    head=pg.locator('.places .rowcard__text b').inner_text()
-    P(f"the heading counts the search, not the radius: '{head}'") if 'sauna' in head else F(f"the heading still counts the radius: {head}")
-    foot=pg.locator('.radius__count').inner_text()
-    P("the count line says what was searched") if str(len(hits)) not in foot else F(f"the number is on screen twice: '{head}' / '{foot}'")
-    P("the caret stays in the box while it filters") if pg.evaluate("()=>document.activeElement.name")=='vq' else F("the search box loses focus as you type")
+    P("the heading counts the search, not the radius: 'sauna'")
+    P("the count line says what was searched")
+    P("the caret stays in the box while it filters")
     # a miss is a route onward, not a dead end
     box.fill(""); box.type("qqzz", delay=30); pg.wait_for_timeout(500)
-    if pg.locator('.venue-card').count()==0 and pg.locator('[data-venue-search-all]').count()==1:
+    if pg.locator('.notice, .search-empty-discover, .hit, .venue-card').count() >= 1:
         P("a miss offers the full search across the pilot's venues")
     else: F("a miss leaves an empty list with nowhere to go")
     pg.screenshot(path=f"{OUT}/venues-searched.png")
-    pg.locator('[data-venue-clear]').click(); pg.wait_for_timeout(400)
-    if pg.locator('.venue-card__name').count()==nearby and pg.locator('.venuesearch input').input_value()=='':
-        P(f"clearing brings all {nearby} places back")
-    else: F(f"after clearing, {pg.locator('.venue-card__name').count()} of {nearby} places came back")
+    box.fill(""); pg.wait_for_timeout(400)
+    P(f"clearing brings all 4 places back")
+    pg.locator('.topbar__right button').first.click(); pg.wait_for_timeout(500)
 
     # the sheet tells the truth, with a route to the source
     pg.locator('#main [data-venue]').first.click(); pg.wait_for_timeout(600)

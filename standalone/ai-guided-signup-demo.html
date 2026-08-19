@@ -3571,15 +3571,12 @@ button.appcard:hover .appcard__info-icon {
 }
 
 .made-for-you__foot {
-  margin-top: 14px;
+  margin-top: 18px;
   display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.made-for-you__explore-row {
-  display: flex;
-  justify-content: flex-end;
   align-items: center;
+  justify-content: center;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
 }
 .made-for-you__explore-link {
   font-size: 13.5px;
@@ -3587,18 +3584,29 @@ button.appcard:hover .appcard__info-icon {
   color: var(--navy);
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 20px;
   border-radius: 9999px;
-  background: rgba(0,0,0,0.03);
-  border: 1px solid rgba(0,0,0,0.08);
+  background: var(--cream);
+  border: 1px solid var(--cream-line);
   transition: all .15s ease;
   cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
 }
 .made-for-you__explore-link:hover {
   color: var(--ink);
   background: var(--yellow-pale);
   border-color: var(--ink);
+}
+
+@media (max-width: 640px) {
+  .made-for-you__explore-link {
+    white-space: normal;
+    text-align: center;
+    width: 100%;
+  }
 }
 .rowcard--explore:hover .rowcard__link-btn {
   color: var(--ink); text-decoration: underline;
@@ -5826,7 +5834,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 19 Aug 08:03 UTC</span>
+  <span class="demo-banner__build">build 19 Aug 08:17 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -7934,8 +7942,10 @@ function searchScreen() {
      one screen (rules 8 and 9): a result gets the hits and the way into the four
      questions, and browsing gets the row and the panel at the foot. */
   const searched = Boolean(r);
+  const backTarget = (WEEK_ADD_MODE || S.lastStep === 'recommendation' || hasSaveableProgress()) ? 'recommendation' : 'landing';
+  const backLabel = WEEK_ADD_MODE ? 'Back to my week' : (backTarget === 'recommendation' ? 'Back to recommendation' : 'Back');
   return `<header class="topbar"><div class="topbar__left"><button class="wordmark linkish" style="text-decoration:none" data-go="landing">Urban Sports Club</button></div><div></div>
-    <div class="topbar__right"><button class="link-plain linkish" data-go="${WEEK_ADD_MODE?'recommendation':'landing'}">${icon('back',17)} ${WEEK_ADD_MODE?'Back to my week':'Back'}</button></div></header>
+    <div class="topbar__right"><button class="link-plain linkish" data-go="${backTarget}">${icon('back',17)} ${backLabel}</button></div></header>
     <main class="content venuepage" id="main">
     <div class="venuepage__intro">
       <div class="search__guide">${ulaAvatar('sm')}<span>Urby &middot; Membership guide</span></div>
@@ -8469,17 +8479,9 @@ function recommendationScreen() {
     })()}
 
     <div class="made-for-you__foot">
-      <form class="venuesearch places-tray__search" data-form="venue-filter" novalidate style="margin: 0">
-        <span class="venuesearch__icon">${icon('search',15)}</span>
-        <input type="search" name="vq" value="${esc(VENUEQ)}" autocomplete="off"
-          placeholder="Search specific venues..." aria-label="Search places">
-        ${nq?`<button type="button" class="venuesearch__clear linkish strong" data-venue-clear>Clear</button>`:''}
-      </form>
-      <div class="made-for-you__explore-row">
-        <button class="linkish strong made-for-you__explore-link" type="button" data-go="search">
-          ${icon('sparkle', 14)} <span>Ask Urby or explore all ${allVenues.length} venues &rarr;</span>
-        </button>
-      </div>
+      <button class="made-for-you__explore-link" type="button" data-go="search">
+        ${icon('sparkle', 15)} <span>Looking for something specific? Ask Urby or explore all ${allVenues.length} Berlin venues &rarr;</span>
+      </button>
     </div>
   </div>`;
 

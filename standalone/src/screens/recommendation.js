@@ -422,17 +422,9 @@ function recommendationScreen() {
     })()}
 
     <div class="made-for-you__foot">
-      <form class="venuesearch places-tray__search" data-form="venue-filter" novalidate style="margin: 0">
-        <span class="venuesearch__icon">${icon('search',15)}</span>
-        <input type="search" name="vq" value="${esc(VENUEQ)}" autocomplete="off"
-          placeholder="Search specific venues..." aria-label="Search places">
-        ${nq?`<button type="button" class="venuesearch__clear linkish strong" data-venue-clear>Clear</button>`:''}
-      </form>
-      <div class="made-for-you__explore-row">
-        <button class="linkish strong made-for-you__explore-link" type="button" data-go="search">
-          ${icon('sparkle', 14)} <span>Ask Urby or explore all ${allVenues.length} venues &rarr;</span>
-        </button>
-      </div>
+      <button class="made-for-you__explore-link" type="button" data-go="search">
+        ${icon('sparkle', 15)} <span>Looking for something specific? Ask Urby or explore all ${allVenues.length} Berlin venues &rarr;</span>
+      </button>
     </div>
   </div>`;
 

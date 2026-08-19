@@ -475,8 +475,10 @@ function searchScreen() {
      one screen (rules 8 and 9): a result gets the hits and the way into the four
      questions, and browsing gets the row and the panel at the foot. */
   const searched = Boolean(r);
+  const backTarget = (WEEK_ADD_MODE || S.lastStep === 'recommendation' || hasSaveableProgress()) ? 'recommendation' : 'landing';
+  const backLabel = WEEK_ADD_MODE ? 'Back to my week' : (backTarget === 'recommendation' ? 'Back to recommendation' : 'Back');
   return `<header class="topbar"><div class="topbar__left"><button class="wordmark linkish" style="text-decoration:none" data-go="landing">Urban Sports Club</button></div><div></div>
-    <div class="topbar__right"><button class="link-plain linkish" data-go="${WEEK_ADD_MODE?'recommendation':'landing'}">${icon('back',17)} ${WEEK_ADD_MODE?'Back to my week':'Back'}</button></div></header>
+    <div class="topbar__right"><button class="link-plain linkish" data-go="${backTarget}">${icon('back',17)} ${backLabel}</button></div></header>
     <main class="content venuepage" id="main">
     <div class="venuepage__intro">
       <div class="search__guide">${ulaAvatar('sm')}<span>Urby &middot; Membership guide</span></div>

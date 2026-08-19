@@ -3557,15 +3557,12 @@ button.appcard:hover .appcard__info-icon {
 }
 
 .made-for-you__foot {
-  margin-top: 14px;
+  margin-top: 18px;
   display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.made-for-you__explore-row {
-  display: flex;
-  justify-content: flex-end;
   align-items: center;
+  justify-content: center;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
 }
 .made-for-you__explore-link {
   font-size: 13.5px;
@@ -3573,18 +3570,29 @@ button.appcard:hover .appcard__info-icon {
   color: var(--navy);
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 20px;
   border-radius: 9999px;
-  background: rgba(0,0,0,0.03);
-  border: 1px solid rgba(0,0,0,0.08);
+  background: var(--cream);
+  border: 1px solid var(--cream-line);
   transition: all .15s ease;
   cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
 }
 .made-for-you__explore-link:hover {
   color: var(--ink);
   background: var(--yellow-pale);
   border-color: var(--ink);
+}
+
+@media (max-width: 640px) {
+  .made-for-you__explore-link {
+    white-space: normal;
+    text-align: center;
+    width: 100%;
+  }
 }
 .rowcard--explore:hover .rowcard__link-btn {
   color: var(--ink); text-decoration: underline;
