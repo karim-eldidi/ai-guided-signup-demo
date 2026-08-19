@@ -243,64 +243,83 @@ function recommendationScreen() {
      because a claim must not go stale inside a closed drawer (rule 46). */
   /* The one session the plan on screen does not open, which is the honest argument for
      the plan above it. Rule 41: it says what the gap is, not only that there is one. */
-  const gap = wp.sessions.find(x=>!x.included && x.needs);
-  const weekBlock = wp.sessions.length ? `<div class="weekcard">
-    <div class="weekcard__head">
-      <div>
-        <h2 class="weekcard__title">A week that fits you</h2>
-        <p class="weekcard__sub">${wp.sessions.length} sessions &middot; Matches your goal in ${esc(where)}</p>
-      </div>
-    </div>
+  // Routine venues: user-starred places or curated starting places matching their routine
+  const starredKeys = Object.keys(S.starredVenues || {});
+  let routineVenues = [];
+  if (starredKeys.length) {
+    routineVenues = starredKeys.map(id => VENUES.find(v => v.id === id)).filter(Boolean);
+  } else {
+    // Default initial routine from matched venues in their goal/area
+    routineVenues = wanted.slice(0, 3);
+    if (!routineVenues.length && pool.length) routineVenues = pool.slice(0, 3);
+  }
 
-    <!-- 1-Row Day Selector at the Top -->
-    <div class="weekcard__days-bar">
-      <div class="week__days-row" role="group" aria-label="Select workout days">
-        ${DAY_ORDER.map(d=>{
-          const on = wp.sessions.some(x=>x.day===d);
-          return `<button class="daybtn ${on?'is-on':''}" data-day="${esc(d)}" aria-pressed="${on}" data-drop-day="${esc(d)}" title="${esc(d)}">${DAY_SHORT[d]}</button>`;
-        }).join('')}
-      </div>
-      <p class="weekcard__helper">Tap any day to toggle it in your routine.</p>
-    </div>
+  const routineItemsHtml = routineVenues.map(v => {
+    const inPlan = includedIn(v, plan.id);
+    const grp = ACTIVITY_GROUPS.find(g => venueInGroup(v, g)) || ACTIVITY_GROUPS[0];
+    const areaLabel = v.nearestArea ? v.nearestArea.name : (AREAS.find(a => a.id === v.area) || {}).name || '';
+    const distLabel = areaLabel ? `${v.distanceKm} km from ${esc(areaLabel)}` : `${v.distanceKm} km away`;
+    const tierText = v.tier === 'premium' ? 'Premium access' : v.tier === 'plus' ? 'Plus access' : 'Regular check-in';
+    const statusBadge = inPlan
+      ? `<span class="routine-item__badge routine-item__badge--included">${icon('checkThin', 12)} Included</span>`
+      : `<span class="routine-item__badge routine-item__badge--upgrade">Needs ${v.tier === 'premium' ? 'Premium' : 'Classic'} upgrade</span>`;
 
-    <ol class="weekcard__list">${wp.sessions.map(x=>{
-      const areaLabel = x.venue.nearestArea ? x.venue.nearestArea.name : (AREAS.find(a=>a.id===x.venue.area)||{}).name || '';
-      const distLabel = areaLabel ? `${x.distanceKm} km from ${esc(areaLabel)}` : `${x.distanceKm} km away`;
-      const tierText = x.venue.tier === 'premium' ? 'Premium access' : x.venue.tier === 'plus' ? 'Plus access' : 'Regular check-in';
-      const limitText = x.access && !/^(included|not included)/i.test(x.access) ? ` &middot; ${esc(x.access)}` : '';
-      return `<li class="weekrow ${x.included?'':'is-locked'}" data-drop-day="${esc(x.day)}">
-      <div class="weekrow__top">
-        <div class="weekrow__lead">
-          <span class="weekrow__icon">${icon(x.icon,15)}</span>
-          <div class="weekrow__meta">
-            <span class="weekrow__day">${esc(x.day)}</span>
-            <b class="weekrow__act">${esc(x.activity)}</b>
-          </div>
-        </div>
-        <div class="weekrow__actions">
-          <button class="weekrow__swap" data-change-week="${esc(x.day)}"
-            aria-label="Change activity or venue for ${esc(x.day)}">${icon('refresh',12)} <span>Swap</span></button>
-          <button class="weekrow__trash" data-remove-day="${esc(x.day)}" aria-label="Remove ${esc(x.day)}" title="Remove this day">
-            ${icon('trash',13)}
-          </button>
-        </div>
-      </div>
-      <button class="weekrow__place" data-venue="${esc(x.venue.id)}" aria-label="More about ${esc(x.venue.name)}">
-        <span class="venue-card__media weekrow__thumb">${venueMedia(x.venue, (groupById(x.groupId)||{}).activities)}</span>
-        <span class="weekrow__pname">
-          <b>${esc(x.venue.name)}</b>
-          <small>${distLabel} &middot; ${tierText}${limitText}</small>
-        </span>
-        <span class="weekrow__end">${x.included ? (x.access && !/^(included|not included)/i.test(x.access) ? esc(x.access) : 'Included') : `Needs ${esc(x.needs.name)}`}</span>
+    return `<li class="routine-item ${inPlan ? '' : 'is-upgrade'}">
+      <button class="routine-item__thumb-btn" type="button" data-venue="${esc(v.id)}" aria-label="Details about ${esc(v.name)}">
+        <span class="routine-item__thumb">${venueMedia(v)}</span>
+        <span class="routine-item__icon">${icon(grp.icon, 13)}</span>
       </button>
+      <div class="routine-item__content">
+        <div class="routine-item__meta-row">
+          <span class="routine-item__cat">${esc(grp.label)}</span>
+          ${statusBadge}
+        </div>
+        <button class="routine-item__title linkish" type="button" data-venue="${esc(v.id)}"><b>${esc(v.name)}</b></button>
+        <div class="routine-item__sub">${distLabel} &middot; ${tierText}</div>
+      </div>
+      <div class="routine-item__actions">
+        <button class="routine-item__remove-btn" type="button" data-toggle-star="${esc(v.id)}" aria-label="Remove ${esc(v.name)} from routine" title="Remove from routine">
+          ${icon('trash', 14)}
+        </button>
+      </div>
     </li>`;
-    }).join('')}</ol>
+  }).join('');
 
-    <p class="weekcard__foot">${icon('info',15)} <span>A suggestion, not a booking — check each venue&rsquo;s timetable before you go.${wp.note?` ${esc(wp.note)}`:''}</span></p>
-    ${DAYNOTE ? `<p class="week__changed" role="status">${icon('checkFill',16)} <span>${DAYNOTE}</span></p>` : ''}
-    ${gap?`<p class="weekcard__adds">${icon('sparkle',17)} <span><b>${esc(gap.needs.name)}</b> adds ${esc(gap.venue.name)}
-      &mdash; the ${esc(gap.activity.toLowerCase())} option that completes your week.</span></p>`:''}
-  </div>` : '';
+  const allRoutineIncluded = routineVenues.every(v => includedIn(v, plan.id));
+  const lockedCount = routineVenues.filter(v => !includedIn(v, plan.id)).length;
+
+  const routineBlock = `<div class="routine-card">
+    <div class="routine-card__head">
+      <div>
+        <h2 class="routine-card__title">My Routine</h2>
+        <p class="routine-card__sub">${routineVenues.length} saved places &middot; Matching your fitness routine in ${esc(where)}</p>
+      </div>
+      <button class="btn btn--secondary btn--sm" type="button" data-go="search">
+        ${icon('plus', 12)} <span>Add places</span>
+      </button>
+    </div>
+
+    ${allRoutineIncluded ? `
+      <div class="routine-card__status routine-card__status--all-in">
+        ${icon('checkFill', 15)}
+        <span><b>All ${routineVenues.length} places in your routine</b> are fully included in <b>${esc(plan.name)}</b>.</span>
+      </div>
+    ` : `
+      <div class="routine-card__status routine-card__status--upgrade">
+        ${icon('sparkle', 15)}
+        <span><b>${lockedCount} of your ${routineVenues.length} saved places</b> require a tier upgrade to access.</span>
+      </div>
+    `}
+
+    <ol class="routine-list">${routineItemsHtml}</ol>
+
+    <div class="routine-card__foot">
+      <p class="routine-card__tip">${icon('info', 14)} <span>Star any studio or sport across the app to add it to your routine. Your membership adjusts to cover your favorites.</span></p>
+      <button class="btn btn--ghost btn--sm" type="button" data-go="search">
+        <span>Explore all ${allVenues.length} Berlin venues &rarr;</span>
+      </button>
+    </div>
+  </div>`;
 
   const displayGroups = ACTIVE_CATEGORY_FILTER === 'all' 
     ? (groups.length ? groups : ACTIVITY_GROUPS.slice(0, 4))
@@ -373,10 +392,9 @@ function recommendationScreen() {
               ? (v.tier === 'plus' ? 'Included &middot; Plus access' : v.tier === 'premium' ? 'Included &middot; Premium access' : 'Included &middot; Regular check-in')
               : `<span class="venue-card__lock" style="color:#8a5a1a;font-weight:700">Needs ${v.tier === 'premium' ? 'Premium' : 'Classic'} upgrade</span>`;
             const isStarred = Boolean(S.starredVenues && S.starredVenues[v.id]);
-            const starFreq = (S.starredVenues && S.starredVenues[v.id] && (typeof S.starredVenues[v.id]==='number' ? S.starredVenues[v.id] : S.starredVenues[v.id].freq)) || 1;
             return `<div class="activity-card venue-card ${inPlan ? '' : 'is-locked'} ${isStarred ? 'is-starred' : ''}" draggable="true" data-drag-venue="${esc(v.id)}" data-drag-name="${esc(v.name)}">
               <div class="activity-card__badge">${matchPct}% match</div>
-              <button class="activity-card__star-btn ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(v.id)}" aria-label="${isStarred ? `Remove ${esc(v.name)} from favourites` : `Star ${esc(v.name)}`}" title="${isStarred ? 'Starred for your week' : 'Star for your week'}">
+              <button class="activity-card__star-btn ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(v.id)}" aria-label="${isStarred ? `Remove ${esc(v.name)} from routine` : `Add ${esc(v.name)} to routine`}" title="${isStarred ? 'In your routine' : 'Add to routine'}">
                 ${icon(isStarred ? 'starFill' : 'star', 15)}
               </button>
               <button class="activity-card__media-btn" data-venue="${esc(v.id)}" aria-label="Details about ${esc(v.name)}">
@@ -391,18 +409,12 @@ function recommendationScreen() {
                 <div class="activity-card__access">${accessLabel}</div>
                 <div class="activity-card__actions">
                   ${isStarred ? `
-                    <div class="activity-card__starred-controls">
-                      <button class="btn-pill btn-pill--sm btn-pill--starred" type="button" data-toggle-star="${esc(v.id)}" title="Click to remove from your week">
-                        ${icon('starFill', 12)} <span>In week</span>
-                      </button>
-                      <div class="freq-toggle" role="group" aria-label="Frequency">
-                        <button class="freq-toggle__btn ${starFreq===1?'is-active':''}" type="button" data-set-star-freq="${esc(v.id)}" data-freq="1" title="1 time per week">1x</button>
-                        <button class="freq-toggle__btn ${starFreq===2?'is-active':''}" type="button" data-set-star-freq="${esc(v.id)}" data-freq="2" title="2 times per week">2x</button>
-                      </div>
-                    </div>
+                    <button class="btn-pill btn-pill--sm btn-pill--starred btn-pill--block" type="button" data-toggle-star="${esc(v.id)}" title="Click to remove from routine">
+                      ${icon('starFill', 12)} <span>In routine</span>
+                    </button>
                   ` : `
                     <button class="btn-pill btn-pill--sm btn-pill--block" type="button" data-toggle-star="${esc(v.id)}">
-                      ${icon('plus', 11)} <span>Add to week</span>
+                      ${icon('plus', 11)} <span>Add to routine</span>
                     </button>
                   `}
                 </div>
@@ -445,12 +457,13 @@ function recommendationScreen() {
     </div>
   </div>`;
 
+  const routineCount = routineVenues.length;
   const recoTabs = `<div class="reco-tabs" role="tablist" aria-label="Recommendation view format">
-    <button class="reco-tab ${RECO_VIEW==='pillars'?'is-active':''}" type="button" data-set-reco-view="pillars" data-toggle-places aria-selected="${RECO_VIEW==='pillars'}">
+    <button class="reco-tab ${RECO_VIEW==='pillars'?'is-active':''}" type="button" data-set-reco-view="pillars" aria-selected="${RECO_VIEW==='pillars'}">
       Activities
     </button>
-    <button class="reco-tab ${RECO_VIEW==='week'?'is-active':''}" type="button" data-set-reco-view="week" data-toggle-week aria-selected="${RECO_VIEW==='week'}">
-      My week <span class="reco-tab__badge">${wp.sessions.length}</span>
+    <button class="reco-tab ${RECO_VIEW==='routine'||RECO_VIEW==='week'?'is-active':''}" type="button" data-set-reco-view="routine" data-toggle-routine aria-selected="${RECO_VIEW==='routine'||RECO_VIEW==='week'}">
+      My routine <span class="reco-tab__badge">${routineCount}</span>
     </button>
   </div>`;
 
@@ -604,8 +617,8 @@ const planAside = `<div class="planbox">
           ${activitiesGalleryBlock}
         </div>
         <div class="plan-summary" style="display:block;height:0;overflow:hidden;margin:0;padding:0"></div>
-        <div class="reco-tab-panel reco-tab-panel--week" style="${RECO_VIEW==='week'?'':'display:none'}">
-          ${weekBlock}
+        <div class="reco-tab-panel reco-tab-panel--routine reco-tab-panel--week" style="${RECO_VIEW==='routine'||RECO_VIEW==='week'?'':'display:none'}">
+          ${routineBlock}
         </div>
       </div>
     </section>

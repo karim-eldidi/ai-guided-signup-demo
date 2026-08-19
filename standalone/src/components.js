@@ -314,22 +314,11 @@ function venueSheet() {
             <h2 id="sheet-title" style="font-size:22px;font-weight:800;letter-spacing:-.01em;margin:0">${esc(v.name)}</h2>
             <p class="small muted" style="margin:4px 0 0">${esc(v.tierLabel||'Venue')} · ${km} km from ${esc(match.anywhere?'the city centre':((found&&found.nearestArea)||match.area).name)}</p>
           </div>
-          <button class="activity-card__star-btn ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(v.id)}" aria-label="${isStarred ? 'Remove from week' : 'Star for week'}" title="${isStarred ? 'Starred for week' : 'Star for week'}" style="position:static;box-shadow:none;flex:0 0 auto">
+          <button class="activity-card__star-btn ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(v.id)}" aria-label="${isStarred ? 'Remove from routine' : 'Add to routine'}" title="${isStarred ? 'In your routine' : 'Add to routine'}" style="position:static;box-shadow:none;flex:0 0 auto">
             ${icon(isStarred ? 'starFill' : 'star', 18)}
           </button>
         </div>
         ${v.address?`<p class="small muted" style="margin:4px 0 0">${icon('pin',15)} ${esc(v.address)}</p>`:''}
-        
-        <div class="sheet__weekadd">
-          ${isStarred ? `<p class="small strong" style="color:var(--ink);margin:0 0 8px;display:flex;align-items:center;gap:5px">${icon('starFill',13)} Starred in your routine</p>` : ''}
-          <p class="sheet__weekadd-title">Add to your week</p>
-          <p class="sheet__weekadd-copy">Choose any day of the week to add this venue to your routine.</p>
-          <div class="sheet__weekadd-days" role="group" aria-label="Choose a day">${DAY_ORDER.map(day=>{
-            const isSelected = WEEK_ADD_DAY === day;
-            return `<button class="daybtn ${isSelected ? 'is-on' : ''}" type="button" data-add-day="${esc(day)}" aria-pressed="${isSelected}">${DAY_SHORT[day]}</button>`;
-          }).join('')}</div>
-          <button class="btn btn--primary btn--block" type="button" data-add-venue="${esc(v.id)}">Add to ${esc(WEEK_ADD_DAY || 'my week')}</button>
-        </div>
 
         <p style="font-size:15px;line-height:1.45;margin:14px 0 0">${esc(v.blurb)}</p>
         <div class="chips">${v.activities.map(a=>`<span class="chip-sm">${esc(ACTIVITY_LABELS[a]||a)}</span>`).join('')}</div>
@@ -350,7 +339,12 @@ function venueSheet() {
                 ? `Included in <strong>${esc(plan.name)}</strong> — ${lowerFirst(plan.checkInModel)}.`
                 : `Needs a Plus check-in, which ${esc(plan.name)} doesn&rsquo;t include.`}</span></div>`}
         <p class="xsmall muted" style="margin-top:16px">Real venue data from ${v.url?`<a href="${esc(v.url)}" target="_blank" rel="noopener" style="text-decoration:underline">this venue&rsquo;s page on urbansportsclub.com</a>`:'urbansportsclub.com'}.</p>
-        <div class="btn-row" style="margin-top:18px"><button class="btn btn--secondary btn--block" data-close-sheet>Close</button></div>
+        <div class="btn-row" style="margin-top:18px;display:flex;gap:10px">
+          <button class="btn btn--secondary" style="flex:1" data-close-sheet>Close</button>
+          <button class="btn ${isStarred ? 'btn--secondary' : 'btn--primary'}" style="flex:2" type="button" data-toggle-star="${esc(v.id)}">
+            ${icon(isStarred ? 'starFill' : 'plus', 14)} <span>${isStarred ? 'Remove from routine' : 'Add to routine'}</span>
+          </button>
+        </div>
       </div></div></div>`;
 }
 

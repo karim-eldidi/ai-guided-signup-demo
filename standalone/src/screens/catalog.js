@@ -48,7 +48,7 @@ function placeCard(v, opts = {}) {
 
   return `<div class="activity-card venue-card hit ${inPlan ? '' : 'is-locked'} ${isStarred ? 'is-starred' : ''}" draggable="true" data-drag-venue="${esc(v.id)}" data-drag-name="${esc(v.name)}">
     ${badge}
-    <button class="activity-card__star-btn ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(v.id)}" aria-label="${isStarred ? `Remove ${esc(v.name)} from favourites` : `Star ${esc(v.name)}`}" title="${isStarred ? 'Starred for your week' : 'Star for your week'}">
+    <button class="activity-card__star-btn ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(v.id)}" aria-label="${isStarred ? `Remove ${esc(v.name)} from routine` : `Add ${esc(v.name)} to routine`}" title="${isStarred ? 'In your routine' : 'Add to routine'}">
       ${icon(isStarred ? 'starFill' : 'star', 15)}
     </button>
     <button class="activity-card__media-btn hit__media" data-venue="${esc(v.id)}" aria-label="Details about ${esc(v.name)}">
@@ -63,18 +63,12 @@ function placeCard(v, opts = {}) {
       ${priced && lowest ? `<p class="hit__price">Included from <strong>${esc(lowest.name)}</strong>, ${priceFor(lowest, S.commitmentId)} € a month.</p>` : ''}
       <div class="activity-card__actions">
         ${isStarred ? `
-          <div class="activity-card__starred-controls">
-            <button class="btn-pill btn-pill--sm btn-pill--starred" type="button" data-toggle-star="${esc(v.id)}" title="Click to remove from your week">
-              ${icon('starFill', 12)} <span>In week</span>
-            </button>
-            <div class="freq-toggle" role="group" aria-label="Frequency">
-              <button class="freq-toggle__btn ${starFreq===1?'is-active':''}" type="button" data-set-star-freq="${esc(v.id)}" data-freq="1" title="1 time per week">1x</button>
-              <button class="freq-toggle__btn ${starFreq===2?'is-active':''}" type="button" data-set-star-freq="${esc(v.id)}" data-freq="2" title="2 times per week">2x</button>
-            </div>
-          </div>
+          <button class="btn-pill btn-pill--sm btn-pill--starred btn-pill--block" type="button" data-toggle-star="${esc(v.id)}" title="Click to remove from routine">
+            ${icon('starFill', 12)} <span>In routine</span>
+          </button>
         ` : `
           <button class="btn-pill btn-pill--sm btn-pill--block" type="button" data-toggle-star="${esc(v.id)}">
-            ${icon('plus', 11)} <span>Add to week</span>
+            ${icon('plus', 11)} <span>Add to routine</span>
           </button>
         `}
       </div>

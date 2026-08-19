@@ -460,8 +460,8 @@ document.addEventListener('click', e => {
     render(false);
     return;
   }
-  if (t.dataset.toggleWeek !== undefined) {
-    RECO_VIEW = 'week';
+  if (t.dataset.toggleRoutine !== undefined || t.dataset.toggleWeek !== undefined) {
+    RECO_VIEW = 'routine';
     log('reco_view_changed', { mode: RECO_VIEW });
     render(false);
     return;

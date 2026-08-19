@@ -147,18 +147,12 @@ with sync_playwright() as p:
     cov = pg.locator('.cov__summary').inner_text() if pg.locator('.cov__summary').count() else ''
     covm = re.search(r'(\d+) of the (\d+) places?', cov)
 
-    # --- switch the days, then switch the plan -------------------------------
-    # Adjusting the week is what folds now, so ask for it the way a visitor would.
-    if pg.locator('[data-toggle-week]').count():
-        pg.locator('[data-toggle-week]').first.click(); pg.wait_for_timeout(400)
-    days = pg.locator('.daybtn:not(.is-on)')
-    if days.count():
-        days.first.click(); pg.wait_for_timeout(650)
-    note = pg.locator('.week__changed')
-    if note.count():
-        P(f"changing the days says so at that moment: '{note.inner_text().strip()}'")
+    # --- star a venue, then switch the plan -------------------------------
+    if pg.locator('.activity-card__star-btn:not(.is-active)').count():
+        pg.locator('.activity-card__star-btn:not(.is-active)').first.click(); pg.wait_for_timeout(400)
+        P("starred a venue to update routine")
     else:
-        P("changing the days produced no claim to go stale")
+        P("routine is populated")
 
     # The single alternative card merged into the comparison table, which is now open on
     # the card rather than behind a fold. Any row that is not the current plan is a

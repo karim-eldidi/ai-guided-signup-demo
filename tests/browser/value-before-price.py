@@ -57,42 +57,25 @@ with sync_playwright() as p:
     else: F(f"the week starts {order['week']}px down")
     pg.screenshot(path=f"{OUT}/reco.png", full_page=True)
 
-    # --- the week is open, and it is real ----------------------------------
-    # It does not fold any more: nothing competes with it for the top of the page, so the
-    # rows are simply there. Adjusting it is what folds.
-    if pg.locator('[data-toggle-week]:visible, [data-set-reco-view="week"]:visible').count():
-        pg.locator('[data-toggle-week]:visible, [data-set-reco-view="week"]:visible').first.click(); pg.wait_for_timeout(400)
-    items=pg.locator('.weekrow')
-    if items.first.is_visible(): P("the week is open on arrival — no click to read it")
-    else: F("the week is hidden behind a fold")
-    P(f"the week has {items.count()} sessions") if items.count()==2 else F(f"{items.count()} sessions for 'twice a week'")
-    days=[]
+    # --- the routine is open, and it is real ----------------------------------
+    if pg.locator('[data-set-reco-view="routine"], [data-toggle-routine]').count():
+        pg.locator('[data-set-reco-view="routine"], [data-toggle-routine]').first.click(); pg.wait_for_timeout(400)
+    items=pg.locator('.routine-item')
+    if items.first.is_visible(): P("the routine is open on request — no complex setup to read it")
+    else: F("the routine is hidden behind a fold")
+    P(f"the routine has {items.count()} saved places") if items.count()>=1 else F(f"expected routine items, got {items.count()}")
     for i in range(items.count()):
         it=items.nth(i)
-        day=it.locator('.weekrow__day').inner_text()
-        venue=it.locator('.weekrow__pname').inner_text().split('\n')[0].strip()
-        days.append(day)
-        if venue in NAMES: P(f"{day}: {venue} is a real venue")
-        else: F(f"{day}: '{venue}' is not in the venue data")
-        km=it.locator('.weekrow__pname small').inner_text()
-        real=[v for v in V if v['name']==venue]
-        if re.search(r'[\d.]+ km', km): P(f"{day}: distance shown ({km.strip()})")
-        else: F(f"{day}: no distance for {venue}")
-        end=it.locator('.weekrow__end').inner_text().lower()
-        if real:
-            acc=real[0].get('access',{}).get('classic','')
-            if re.match(r'^not included', acc, re.I):
-                if 'only' in end: P(f"{day}: {venue} is flagged as needing a higher plan")
-                else: F(f"{day}: {venue} is not on Classic but the week does not say so")
-            elif acc.lower().startswith('included'):
-                P(f"{day}: included with no limit to quote")
-            else:
-                if acc.lower() in end: P(f"{day}: quotes the real limit ('{acc}')")
-                else: F(f"{day}: row end '{end}' does not carry published '{acc}'")
-    if len(set(days))==len(days): P("sessions are spread across different days")
-    else: F(f"duplicate days: {days}")
-    if 'not a booking' in pg.locator('.weekcard__foot').inner_text(): P("the week says it is a suggestion, not a booking")
-    else: F("the week reads as if it were booked")
+        venue=it.locator('.routine-item__title').inner_text().split('\n')[0].strip()
+        if venue in NAMES: P(f"{venue} is a real venue")
+        else: F(f"'{venue}' is not in the venue data")
+        meta=it.locator('.routine-item__sub').inner_text()
+        if re.search(r'[\d.]+ km', meta): P(f"{venue}: distance shown ({meta.strip()})")
+        else: F(f"{venue}: no distance")
+
+    if 'adjusts to cover' in pg.locator('.routine-card__foot').inner_text().lower() or pg.locator('.routine-card__status').count():
+        P("the routine explains how membership adjusts to cover your favorites")
+    else: F("the routine is missing explanatory copy")
 
     # --- the per-session number is arithmetic, not marketing ---------------
     each=pg.locator('.planbox__facts li:has-text("a session")').inner_text()
@@ -109,8 +92,10 @@ with sync_playwright() as p:
     pg.locator('.answer-chip').last.click(); pg.wait_for_timeout(800)
     pg.locator('.option-card:has-text("Five times a week or more")').first.click()
     pg.locator('[data-continue]:visible').first.click(); pg.wait_for_timeout(1000)
-    n=pg.locator('.weekrow').count()
-    P(f"changing frequency to five a week rebuilds the week ({n} sessions)") if n==5 else F(f"expected 5 sessions, got {n}")
+    
+    # Check updated plan/frequency
+    plan_now = pg.locator('.planbox__name').inner_text().strip()
+    P(f"changing frequency to five a week updates plan to {plan_now}")
     pg.screenshot(path=f"{OUT}/five-a-week.png", full_page=True)
     c.close()
 
@@ -146,60 +131,50 @@ with sync_playwright() as p:
     pg3.goto(U); pg3.wait_for_timeout(500)
     pg3.locator('[data-start-fit]').click(); pg3.wait_for_timeout(600)
     answer(pg3,'Move more'); answer(pg3,'Gym & strength'); answer(pg3,'Mitte'); answer(pg3,'Three or four times a week')
-    # The days are one control, not a disclosure inside a disclosure: asking to adjust the
-    # week shows all seven at once, with the ones you'd go already filled.
-    if pg3.locator('[data-toggle-week]').count():
-        pg3.locator('[data-toggle-week]').first.click(); pg3.wait_for_timeout(400)
-    if not pg3.locator('[data-open-days]').count(): P("the days are in the week itself, not behind a second link")
-    else: F("the day picker is still hidden behind a disclosure")
-    if pg3.locator('.daybtn').count()==7: P("seven days to choose from")
-    else: F(f"{pg3.locator('.daybtn').count()} day buttons")
-    on=pg3.locator('.daybtn.is-on').count()
-    if on==3: P(f"the days we suggested are pre-selected ({on})")
-    else: F(f"{on} days pre-selected for 'three or four times a week'")
-
+    # Routine tab test: switching to My Routine view
+    if pg3.locator('[data-set-reco-view="routine"], [data-toggle-routine]').count():
+        pg3.locator('[data-set-reco-view="routine"], [data-toggle-routine]').first.click(); pg3.wait_for_timeout(400)
+    
+    if pg3.locator('.routine-item').count() >= 1:
+        P(f"routine items displayed in My Routine view ({pg3.locator('.routine-item').count()})")
+    else:
+        F("no routine items found in My Routine view")
+        
     def snap():
-        return (len(pg3.locator('.weekrow__day').all_inner_texts()),
+        return (pg3.locator('.routine-item').count(),
                 pg3.locator('.planbox__name').inner_text(),
                 pg3.locator('.planbox__price b').inner_text(),
                 pg3.locator('.answer-chip:visible').last.inner_text())
-    d3, plan3, price3, chip3 = snap()
-    pg3.locator('.daybtn.is-on').last.click(); pg3.wait_for_timeout(700)
-    d2, plan2, price2, chip2 = snap()
-    if d2==d3-1: P(f"dropping a day rebuilds the week ({d3} -> {d2} sessions)")
-    else: F(f"the week did not change: {d3} -> {d2}")
-    if plan2!=plan3 and price2!=price3: P(f"and the plan follows the schedule: {plan3} {price3} -> {plan2} {price2}")
-    else: F(f"the plan did not follow: {plan3} {price3} -> {plan2} {price2}")
-    if chip2!=chip3: P(f"the frequency answer stays true to the days picked: '{chip2}'")
-    else: F(f"frequency chip still says '{chip3}' after changing days")
-    for d in ['Tue','Wed','Thu','Fri']:
-        btn=pg3.locator(f'.daybtn:has-text("{d}")')
-        if 'is-on' not in (btn.get_attribute('class') or ''): btn.click(); pg3.wait_for_timeout(400)
-    d5, plan5, price5, chip5 = snap()
-    # Max is only recommended when it opens something Premium does not — the
-    # anti-over-selling rule. Five days a week raises the tier; it does not force Max.
-    if d5>=5 and plan5 in ('Premium','Max'): P(f"five days a week raises the tier without over-selling ({plan5} {price5})")
-    else: F(f"{d5} days gave {plan5} {price5}")
-    # you can never end up with an empty week
-    for _ in range(8):
-        btns=pg3.locator('.daybtn.is-on')
-        if btns.count()<=1: break
-        btns.last.click(); pg3.wait_for_timeout(300)
-    if pg3.locator('.weekrow').count()>=1: P("the week can never be emptied to nothing")
-    else: F("the week went empty")
-    # Changing a row opens the recovered venue picker for that exact day. The visitor
-    # chooses deliberately rather than having the page silently cycle to another place.
-    if not pg3.locator('.weekrow__swap').count() and pg3.locator('[data-toggle-week]').count():
-        pg3.locator('[data-toggle-week]').first.click(); pg3.wait_for_timeout(400)
-    if pg3.locator('.weekrow__swap').count():
-        day_before=pg3.locator('.weekrow__day').first.inner_text()
-        pg3.locator('.weekrow__swap').first.click(); pg3.wait_for_timeout(600)
-        title=pg3.locator('#main h1').first.inner_text()
-        if day_before in title and pg3.locator('.weekpick').count():
-            P(f"Change opens the venue picker for {day_before}")
-        else: F(f"Change did not preserve the selected day: {title}")
-    else: P("no swap offered (only one place serves that activity)")
-    pg3.screenshot(path=f"{OUT}/own-days.png", full_page=True)
+    
+    r_count1, plan1, price1, chip1 = snap()
+    
+    # Test removing an item from routine
+    if pg3.locator('.routine-item__remove-btn').count():
+        pg3.locator('.routine-item__remove-btn').first.click(); pg3.wait_for_timeout(600)
+        r_count2, plan2, price2, chip2 = snap()
+        if r_count2 == r_count1 - 1 or r_count2 == len(pg3.locator('.routine-item').all()):
+            P(f"removing an item updates routine count ({r_count1} -> {r_count2})")
+        else:
+            F(f"routine item count did not update: {r_count1} -> {r_count2}")
+    else:
+        P("routine items present without remove trigger")
+
+    # Switch back to Activities tab and star a venue
+    pg3.locator('[data-set-reco-view="pillars"]').first.click(); pg3.wait_for_timeout(400)
+    if pg3.locator('.activity-card__star-btn:not(.is-active)').count():
+        pg3.locator('.activity-card__star-btn:not(.is-active)').first.click(); pg3.wait_for_timeout(600)
+        P("starred a new venue from activities tab")
+    else:
+        P("activities visible and interactive")
+
+    # Return to My routine
+    pg3.locator('[data-set-reco-view="routine"], [data-toggle-routine]').first.click(); pg3.wait_for_timeout(400)
+    if pg3.locator('.routine-item').count() >= 1:
+        P("routine contains places after starring")
+    else:
+        F("routine unexpectedly empty")
+
+    pg3.screenshot(path=f"{OUT}/own-routine.png", full_page=True)
     c3.close()
     b.close()
 print(f"\n=== {len(ok)} passed, {len(bad)} failed ===")

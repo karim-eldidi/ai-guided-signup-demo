@@ -3473,21 +3473,228 @@ button.appcard:hover .appcard__info-icon {
   display: flex; align-items: center; gap: 6px; width: 100%;
 }
 .btn-pill--starred {
-  flex: 1 1 auto; background: #fffbeb !important; border-color: #fde68a !important; color: #92400e !important;
+  background: #fffbeb !important; border-color: #fde68a !important; color: #92400e !important;
   font-weight: 700;
 }
 .btn-pill--starred:hover {
   background: #fef3c7 !important; border-color: #f59e0b !important;
 }
-.freq-toggle {
-  display: inline-flex; background: #f1f5f9; border-radius: 8px; padding: 2px; flex: 0 0 auto;
+
+/* --- Routine ("My Routine / Wishlist") Card & Items --- */
+.routine-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg, 16px);
+  padding: 24px;
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0,0,0,0.05));
 }
-.freq-toggle__btn {
-  border: 0; background: none; font-size: 11.5px; font-weight: 800; color: var(--navy-soft);
-  padding: 3px 6px; border-radius: 6px; cursor: pointer; transition: all .12s ease;
+.routine-card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
 }
-.freq-toggle__btn.is-active {
-  background: #fff; color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+.routine-card__title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--ink);
+  margin: 0;
+}
+.routine-card__sub {
+  font-size: 13.5px;
+  color: var(--navy-soft);
+  margin: 4px 0 0;
+}
+.routine-card__status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: var(--radius, 10px);
+  font-size: 13px;
+  line-height: 1.4;
+  margin-bottom: 18px;
+}
+.routine-card__status--all-in {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #166534;
+}
+.routine-card__status--upgrade {
+  background: var(--cream);
+  border: 1px solid var(--cream-line);
+  color: var(--navy);
+}
+.routine-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.routine-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  background: var(--bg-soft, #f8fafc);
+  border: 1px solid var(--border);
+  border-radius: var(--radius, 10px);
+  transition: all .15s ease;
+}
+.routine-item:hover {
+  background: #fff;
+  border-color: #cbd5e1;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.routine-item.is-upgrade {
+  border-left: 3px solid #f59e0b;
+}
+.routine-item__thumb-btn {
+  position: relative;
+  width: 58px;
+  height: 58px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 0;
+  padding: 0;
+  flex: 0 0 auto;
+  cursor: pointer;
+  background: #e2e8f0;
+}
+.routine-item__thumb {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.routine-item__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.routine-item__icon {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  display: grid;
+  place-items: center;
+  color: var(--ink);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+.routine-item__content {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.routine-item__meta-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+}
+.routine-item__cat {
+  font-weight: 700;
+  color: var(--navy-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.routine-item__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+.routine-item__badge--included {
+  background: #dcfce7;
+  color: #15803d;
+}
+.routine-item__badge--upgrade {
+  background: #fef3c7;
+  color: #92400e;
+}
+.routine-item__title {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--ink);
+  text-align: left;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.routine-item__title:hover {
+  text-decoration: underline;
+}
+.routine-item__sub {
+  font-size: 12px;
+  color: var(--navy-soft);
+}
+.routine-item__actions {
+  flex: 0 0 auto;
+}
+.routine-item__remove-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--navy-soft);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: all .15s ease;
+}
+.routine-item__remove-btn:hover {
+  background: #fee2e2;
+  color: #dc2626;
+  border-color: #fecaca;
+}
+.routine-card__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.routine-card__tip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--navy-soft);
+  margin: 0;
+  flex: 1 1 240px;
+}
+@media (max-width: 640px) {
+  .routine-card {
+    padding: 16px;
+  }
+  .routine-item {
+    gap: 10px;
+    padding: 10px 12px;
+  }
+  .routine-item__thumb-btn {
+    width: 48px;
+    height: 48px;
+  }
 }
 .drawer-backdrop {
   position: fixed; inset: 0; background: rgba(0,0,0,0.45);
@@ -5840,7 +6047,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 19 Aug 09:38 UTC</span>
+  <span class="demo-banner__build">build 19 Aug 09:49 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -7185,22 +7392,11 @@ function venueSheet() {
             <h2 id="sheet-title" style="font-size:22px;font-weight:800;letter-spacing:-.01em;margin:0">${esc(v.name)}</h2>
             <p class="small muted" style="margin:4px 0 0">${esc(v.tierLabel||'Venue')} · ${km} km from ${esc(match.anywhere?'the city centre':((found&&found.nearestArea)||match.area).name)}</p>
           </div>
-          <button class="activity-card__star-btn ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(v.id)}" aria-label="${isStarred ? 'Remove from week' : 'Star for week'}" title="${isStarred ? 'Starred for week' : 'Star for week'}" style="position:static;box-shadow:none;flex:0 0 auto">
+          <button class="activity-card__star-btn ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(v.id)}" aria-label="${isStarred ? 'Remove from routine' : 'Add to routine'}" title="${isStarred ? 'In your routine' : 'Add to routine'}" style="position:static;box-shadow:none;flex:0 0 auto">
             ${icon(isStarred ? 'starFill' : 'star', 18)}
           </button>
         </div>
         ${v.address?`<p class="small muted" style="margin:4px 0 0">${icon('pin',15)} ${esc(v.address)}</p>`:''}
-        
-        <div class="sheet__weekadd">
-          ${isStarred ? `<p class="small strong" style="color:var(--ink);margin:0 0 8px;display:flex;align-items:center;gap:5px">${icon('starFill',13)} Starred in your routine</p>` : ''}
-          <p class="sheet__weekadd-title">Add to your week</p>
-          <p class="sheet__weekadd-copy">Choose any day of the week to add this venue to your routine.</p>
-          <div class="sheet__weekadd-days" role="group" aria-label="Choose a day">${DAY_ORDER.map(day=>{
-            const isSelected = WEEK_ADD_DAY === day;
-            return `<button class="daybtn ${isSelected ? 'is-on' : ''}" type="button" data-add-day="${esc(day)}" aria-pressed="${isSelected}">${DAY_SHORT[day]}</button>`;
-          }).join('')}</div>
-          <button class="btn btn--primary btn--block" type="button" data-add-venue="${esc(v.id)}">Add to ${esc(WEEK_ADD_DAY || 'my week')}</button>
-        </div>
 
         <p style="font-size:15px;line-height:1.45;margin:14px 0 0">${esc(v.blurb)}</p>
         <div class="chips">${v.activities.map(a=>`<span class="chip-sm">${esc(ACTIVITY_LABELS[a]||a)}</span>`).join('')}</div>
@@ -7221,7 +7417,12 @@ function venueSheet() {
                 ? `Included in <strong>${esc(plan.name)}</strong> — ${lowerFirst(plan.checkInModel)}.`
                 : `Needs a Plus check-in, which ${esc(plan.name)} doesn&rsquo;t include.`}</span></div>`}
         <p class="xsmall muted" style="margin-top:16px">Real venue data from ${v.url?`<a href="${esc(v.url)}" target="_blank" rel="noopener" style="text-decoration:underline">this venue&rsquo;s page on urbansportsclub.com</a>`:'urbansportsclub.com'}.</p>
-        <div class="btn-row" style="margin-top:18px"><button class="btn btn--secondary btn--block" data-close-sheet>Close</button></div>
+        <div class="btn-row" style="margin-top:18px;display:flex;gap:10px">
+          <button class="btn btn--secondary" style="flex:1" data-close-sheet>Close</button>
+          <button class="btn ${isStarred ? 'btn--secondary' : 'btn--primary'}" style="flex:2" type="button" data-toggle-star="${esc(v.id)}">
+            ${icon(isStarred ? 'starFill' : 'plus', 14)} <span>${isStarred ? 'Remove from routine' : 'Add to routine'}</span>
+          </button>
+        </div>
       </div></div></div>`;
 }
 
@@ -7538,7 +7739,7 @@ function placeCard(v, opts = {}) {
 
   return `<div class="activity-card venue-card hit ${inPlan ? '' : 'is-locked'} ${isStarred ? 'is-starred' : ''}" draggable="true" data-drag-venue="${esc(v.id)}" data-drag-name="${esc(v.name)}">
     ${badge}
-    <button class="activity-card__star-btn ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(v.id)}" aria-label="${isStarred ? `Remove ${esc(v.name)} from favourites` : `Star ${esc(v.name)}`}" title="${isStarred ? 'Starred for your week' : 'Star for your week'}">
+    <button class="activity-card__star-btn ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(v.id)}" aria-label="${isStarred ? `Remove ${esc(v.name)} from routine` : `Add ${esc(v.name)} to routine`}" title="${isStarred ? 'In your routine' : 'Add to routine'}">
       ${icon(isStarred ? 'starFill' : 'star', 15)}
     </button>
     <button class="activity-card__media-btn hit__media" data-venue="${esc(v.id)}" aria-label="Details about ${esc(v.name)}">
@@ -7553,18 +7754,12 @@ function placeCard(v, opts = {}) {
       ${priced && lowest ? `<p class="hit__price">Included from <strong>${esc(lowest.name)}</strong>, ${priceFor(lowest, S.commitmentId)} € a month.</p>` : ''}
       <div class="activity-card__actions">
         ${isStarred ? `
-          <div class="activity-card__starred-controls">
-            <button class="btn-pill btn-pill--sm btn-pill--starred" type="button" data-toggle-star="${esc(v.id)}" title="Click to remove from your week">
-              ${icon('starFill', 12)} <span>In week</span>
-            </button>
-            <div class="freq-toggle" role="group" aria-label="Frequency">
-              <button class="freq-toggle__btn ${starFreq===1?'is-active':''}" type="button" data-set-star-freq="${esc(v.id)}" data-freq="1" title="1 time per week">1x</button>
-              <button class="freq-toggle__btn ${starFreq===2?'is-active':''}" type="button" data-set-star-freq="${esc(v.id)}" data-freq="2" title="2 times per week">2x</button>
-            </div>
-          </div>
+          <button class="btn-pill btn-pill--sm btn-pill--starred btn-pill--block" type="button" data-toggle-star="${esc(v.id)}" title="Click to remove from routine">
+            ${icon('starFill', 12)} <span>In routine</span>
+          </button>
         ` : `
           <button class="btn-pill btn-pill--sm btn-pill--block" type="button" data-toggle-star="${esc(v.id)}">
-            ${icon('plus', 11)} <span>Add to week</span>
+            ${icon('plus', 11)} <span>Add to routine</span>
           </button>
         `}
       </div>
@@ -8347,64 +8542,83 @@ function recommendationScreen() {
      because a claim must not go stale inside a closed drawer (rule 46). */
   /* The one session the plan on screen does not open, which is the honest argument for
      the plan above it. Rule 41: it says what the gap is, not only that there is one. */
-  const gap = wp.sessions.find(x=>!x.included && x.needs);
-  const weekBlock = wp.sessions.length ? `<div class="weekcard">
-    <div class="weekcard__head">
-      <div>
-        <h2 class="weekcard__title">A week that fits you</h2>
-        <p class="weekcard__sub">${wp.sessions.length} sessions &middot; Matches your goal in ${esc(where)}</p>
-      </div>
-    </div>
+  // Routine venues: user-starred places or curated starting places matching their routine
+  const starredKeys = Object.keys(S.starredVenues || {});
+  let routineVenues = [];
+  if (starredKeys.length) {
+    routineVenues = starredKeys.map(id => VENUES.find(v => v.id === id)).filter(Boolean);
+  } else {
+    // Default initial routine from matched venues in their goal/area
+    routineVenues = wanted.slice(0, 3);
+    if (!routineVenues.length && pool.length) routineVenues = pool.slice(0, 3);
+  }
 
-    <!-- 1-Row Day Selector at the Top -->
-    <div class="weekcard__days-bar">
-      <div class="week__days-row" role="group" aria-label="Select workout days">
-        ${DAY_ORDER.map(d=>{
-          const on = wp.sessions.some(x=>x.day===d);
-          return `<button class="daybtn ${on?'is-on':''}" data-day="${esc(d)}" aria-pressed="${on}" data-drop-day="${esc(d)}" title="${esc(d)}">${DAY_SHORT[d]}</button>`;
-        }).join('')}
-      </div>
-      <p class="weekcard__helper">Tap any day to toggle it in your routine.</p>
-    </div>
+  const routineItemsHtml = routineVenues.map(v => {
+    const inPlan = includedIn(v, plan.id);
+    const grp = ACTIVITY_GROUPS.find(g => venueInGroup(v, g)) || ACTIVITY_GROUPS[0];
+    const areaLabel = v.nearestArea ? v.nearestArea.name : (AREAS.find(a => a.id === v.area) || {}).name || '';
+    const distLabel = areaLabel ? `${v.distanceKm} km from ${esc(areaLabel)}` : `${v.distanceKm} km away`;
+    const tierText = v.tier === 'premium' ? 'Premium access' : v.tier === 'plus' ? 'Plus access' : 'Regular check-in';
+    const statusBadge = inPlan
+      ? `<span class="routine-item__badge routine-item__badge--included">${icon('checkThin', 12)} Included</span>`
+      : `<span class="routine-item__badge routine-item__badge--upgrade">Needs ${v.tier === 'premium' ? 'Premium' : 'Classic'} upgrade</span>`;
 
-    <ol class="weekcard__list">${wp.sessions.map(x=>{
-      const areaLabel = x.venue.nearestArea ? x.venue.nearestArea.name : (AREAS.find(a=>a.id===x.venue.area)||{}).name || '';
-      const distLabel = areaLabel ? `${x.distanceKm} km from ${esc(areaLabel)}` : `${x.distanceKm} km away`;
-      const tierText = x.venue.tier === 'premium' ? 'Premium access' : x.venue.tier === 'plus' ? 'Plus access' : 'Regular check-in';
-      const limitText = x.access && !/^(included|not included)/i.test(x.access) ? ` &middot; ${esc(x.access)}` : '';
-      return `<li class="weekrow ${x.included?'':'is-locked'}" data-drop-day="${esc(x.day)}">
-      <div class="weekrow__top">
-        <div class="weekrow__lead">
-          <span class="weekrow__icon">${icon(x.icon,15)}</span>
-          <div class="weekrow__meta">
-            <span class="weekrow__day">${esc(x.day)}</span>
-            <b class="weekrow__act">${esc(x.activity)}</b>
-          </div>
-        </div>
-        <div class="weekrow__actions">
-          <button class="weekrow__swap" data-change-week="${esc(x.day)}"
-            aria-label="Change activity or venue for ${esc(x.day)}">${icon('refresh',12)} <span>Swap</span></button>
-          <button class="weekrow__trash" data-remove-day="${esc(x.day)}" aria-label="Remove ${esc(x.day)}" title="Remove this day">
-            ${icon('trash',13)}
-          </button>
-        </div>
-      </div>
-      <button class="weekrow__place" data-venue="${esc(x.venue.id)}" aria-label="More about ${esc(x.venue.name)}">
-        <span class="venue-card__media weekrow__thumb">${venueMedia(x.venue, (groupById(x.groupId)||{}).activities)}</span>
-        <span class="weekrow__pname">
-          <b>${esc(x.venue.name)}</b>
-          <small>${distLabel} &middot; ${tierText}${limitText}</small>
-        </span>
-        <span class="weekrow__end">${x.included ? (x.access && !/^(included|not included)/i.test(x.access) ? esc(x.access) : 'Included') : `Needs ${esc(x.needs.name)}`}</span>
+    return `<li class="routine-item ${inPlan ? '' : 'is-upgrade'}">
+      <button class="routine-item__thumb-btn" type="button" data-venue="${esc(v.id)}" aria-label="Details about ${esc(v.name)}">
+        <span class="routine-item__thumb">${venueMedia(v)}</span>
+        <span class="routine-item__icon">${icon(grp.icon, 13)}</span>
       </button>
+      <div class="routine-item__content">
+        <div class="routine-item__meta-row">
+          <span class="routine-item__cat">${esc(grp.label)}</span>
+          ${statusBadge}
+        </div>
+        <button class="routine-item__title linkish" type="button" data-venue="${esc(v.id)}"><b>${esc(v.name)}</b></button>
+        <div class="routine-item__sub">${distLabel} &middot; ${tierText}</div>
+      </div>
+      <div class="routine-item__actions">
+        <button class="routine-item__remove-btn" type="button" data-toggle-star="${esc(v.id)}" aria-label="Remove ${esc(v.name)} from routine" title="Remove from routine">
+          ${icon('trash', 14)}
+        </button>
+      </div>
     </li>`;
-    }).join('')}</ol>
+  }).join('');
 
-    <p class="weekcard__foot">${icon('info',15)} <span>A suggestion, not a booking — check each venue&rsquo;s timetable before you go.${wp.note?` ${esc(wp.note)}`:''}</span></p>
-    ${DAYNOTE ? `<p class="week__changed" role="status">${icon('checkFill',16)} <span>${DAYNOTE}</span></p>` : ''}
-    ${gap?`<p class="weekcard__adds">${icon('sparkle',17)} <span><b>${esc(gap.needs.name)}</b> adds ${esc(gap.venue.name)}
-      &mdash; the ${esc(gap.activity.toLowerCase())} option that completes your week.</span></p>`:''}
-  </div>` : '';
+  const allRoutineIncluded = routineVenues.every(v => includedIn(v, plan.id));
+  const lockedCount = routineVenues.filter(v => !includedIn(v, plan.id)).length;
+
+  const routineBlock = `<div class="routine-card">
+    <div class="routine-card__head">
+      <div>
+        <h2 class="routine-card__title">My Routine</h2>
+        <p class="routine-card__sub">${routineVenues.length} saved places &middot; Matching your fitness routine in ${esc(where)}</p>
+      </div>
+      <button class="btn btn--secondary btn--sm" type="button" data-go="search">
+        ${icon('plus', 12)} <span>Add places</span>
+      </button>
+    </div>
+
+    ${allRoutineIncluded ? `
+      <div class="routine-card__status routine-card__status--all-in">
+        ${icon('checkFill', 15)}
+        <span><b>All ${routineVenues.length} places in your routine</b> are fully included in <b>${esc(plan.name)}</b>.</span>
+      </div>
+    ` : `
+      <div class="routine-card__status routine-card__status--upgrade">
+        ${icon('sparkle', 15)}
+        <span><b>${lockedCount} of your ${routineVenues.length} saved places</b> require a tier upgrade to access.</span>
+      </div>
+    `}
+
+    <ol class="routine-list">${routineItemsHtml}</ol>
+
+    <div class="routine-card__foot">
+      <p class="routine-card__tip">${icon('info', 14)} <span>Star any studio or sport across the app to add it to your routine. Your membership adjusts to cover your favorites.</span></p>
+      <button class="btn btn--ghost btn--sm" type="button" data-go="search">
+        <span>Explore all ${allVenues.length} Berlin venues &rarr;</span>
+      </button>
+    </div>
+  </div>`;
 
   const displayGroups = ACTIVE_CATEGORY_FILTER === 'all' 
     ? (groups.length ? groups : ACTIVITY_GROUPS.slice(0, 4))
@@ -8477,10 +8691,9 @@ function recommendationScreen() {
               ? (v.tier === 'plus' ? 'Included &middot; Plus access' : v.tier === 'premium' ? 'Included &middot; Premium access' : 'Included &middot; Regular check-in')
               : `<span class="venue-card__lock" style="color:#8a5a1a;font-weight:700">Needs ${v.tier === 'premium' ? 'Premium' : 'Classic'} upgrade</span>`;
             const isStarred = Boolean(S.starredVenues && S.starredVenues[v.id]);
-            const starFreq = (S.starredVenues && S.starredVenues[v.id] && (typeof S.starredVenues[v.id]==='number' ? S.starredVenues[v.id] : S.starredVenues[v.id].freq)) || 1;
             return `<div class="activity-card venue-card ${inPlan ? '' : 'is-locked'} ${isStarred ? 'is-starred' : ''}" draggable="true" data-drag-venue="${esc(v.id)}" data-drag-name="${esc(v.name)}">
               <div class="activity-card__badge">${matchPct}% match</div>
-              <button class="activity-card__star-btn ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(v.id)}" aria-label="${isStarred ? `Remove ${esc(v.name)} from favourites` : `Star ${esc(v.name)}`}" title="${isStarred ? 'Starred for your week' : 'Star for your week'}">
+              <button class="activity-card__star-btn ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(v.id)}" aria-label="${isStarred ? `Remove ${esc(v.name)} from routine` : `Add ${esc(v.name)} to routine`}" title="${isStarred ? 'In your routine' : 'Add to routine'}">
                 ${icon(isStarred ? 'starFill' : 'star', 15)}
               </button>
               <button class="activity-card__media-btn" data-venue="${esc(v.id)}" aria-label="Details about ${esc(v.name)}">
@@ -8495,18 +8708,12 @@ function recommendationScreen() {
                 <div class="activity-card__access">${accessLabel}</div>
                 <div class="activity-card__actions">
                   ${isStarred ? `
-                    <div class="activity-card__starred-controls">
-                      <button class="btn-pill btn-pill--sm btn-pill--starred" type="button" data-toggle-star="${esc(v.id)}" title="Click to remove from your week">
-                        ${icon('starFill', 12)} <span>In week</span>
-                      </button>
-                      <div class="freq-toggle" role="group" aria-label="Frequency">
-                        <button class="freq-toggle__btn ${starFreq===1?'is-active':''}" type="button" data-set-star-freq="${esc(v.id)}" data-freq="1" title="1 time per week">1x</button>
-                        <button class="freq-toggle__btn ${starFreq===2?'is-active':''}" type="button" data-set-star-freq="${esc(v.id)}" data-freq="2" title="2 times per week">2x</button>
-                      </div>
-                    </div>
+                    <button class="btn-pill btn-pill--sm btn-pill--starred btn-pill--block" type="button" data-toggle-star="${esc(v.id)}" title="Click to remove from routine">
+                      ${icon('starFill', 12)} <span>In routine</span>
+                    </button>
                   ` : `
                     <button class="btn-pill btn-pill--sm btn-pill--block" type="button" data-toggle-star="${esc(v.id)}">
-                      ${icon('plus', 11)} <span>Add to week</span>
+                      ${icon('plus', 11)} <span>Add to routine</span>
                     </button>
                   `}
                 </div>
@@ -8549,12 +8756,13 @@ function recommendationScreen() {
     </div>
   </div>`;
 
+  const routineCount = routineVenues.length;
   const recoTabs = `<div class="reco-tabs" role="tablist" aria-label="Recommendation view format">
-    <button class="reco-tab ${RECO_VIEW==='pillars'?'is-active':''}" type="button" data-set-reco-view="pillars" data-toggle-places aria-selected="${RECO_VIEW==='pillars'}">
+    <button class="reco-tab ${RECO_VIEW==='pillars'?'is-active':''}" type="button" data-set-reco-view="pillars" aria-selected="${RECO_VIEW==='pillars'}">
       Activities
     </button>
-    <button class="reco-tab ${RECO_VIEW==='week'?'is-active':''}" type="button" data-set-reco-view="week" data-toggle-week aria-selected="${RECO_VIEW==='week'}">
-      My week <span class="reco-tab__badge">${wp.sessions.length}</span>
+    <button class="reco-tab ${RECO_VIEW==='routine'||RECO_VIEW==='week'?'is-active':''}" type="button" data-set-reco-view="routine" data-toggle-routine aria-selected="${RECO_VIEW==='routine'||RECO_VIEW==='week'}">
+      My routine <span class="reco-tab__badge">${routineCount}</span>
     </button>
   </div>`;
 
@@ -8708,8 +8916,8 @@ const planAside = `<div class="planbox">
           ${activitiesGalleryBlock}
         </div>
         <div class="plan-summary" style="display:block;height:0;overflow:hidden;margin:0;padding:0"></div>
-        <div class="reco-tab-panel reco-tab-panel--week" style="${RECO_VIEW==='week'?'':'display:none'}">
-          ${weekBlock}
+        <div class="reco-tab-panel reco-tab-panel--routine reco-tab-panel--week" style="${RECO_VIEW==='routine'||RECO_VIEW==='week'?'':'display:none'}">
+          ${routineBlock}
         </div>
       </div>
     </section>
@@ -10081,8 +10289,8 @@ document.addEventListener('click', e => {
     render(false);
     return;
   }
-  if (t.dataset.toggleWeek !== undefined) {
-    RECO_VIEW = 'week';
+  if (t.dataset.toggleRoutine !== undefined || t.dataset.toggleWeek !== undefined) {
+    RECO_VIEW = 'routine';
     log('reco_view_changed', { mode: RECO_VIEW });
     render(false);
     return;
