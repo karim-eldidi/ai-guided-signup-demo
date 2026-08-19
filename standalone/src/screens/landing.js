@@ -44,7 +44,8 @@ function landing() {
   const guideFirst = `
     <div class="landing-hero-card">
       <div class="landing-hero-card__badge">${icon('sparkle',12)} <span>RECOMMENDED</span></div>
-      <h2 class="landing-hero-card__title">Help me choose</h2>
+      <h2 class="landing-hero-card__title">Build your routine &amp; find your plan</h2>
+      <p class="landing-hero-card__value">Match your sports, explore studios near you, and discover the exact membership that covers your routine.</p>
       <div class="landing-hero-card__meta">
         <span class="meta-item">${icon('question',15)} <span>4 questions</span></span>
         <span class="meta-dot">&middot;</span>
@@ -53,7 +54,7 @@ function landing() {
         <span class="meta-item">${icon('lock',14)} <span>No email needed</span></span>
       </div>
       <button class="btn btn--primary btn--block landing-hero-card__btn" type="button" data-start-fit>
-        <span>Start guide</span> ${icon('arrowRight',18)}
+        <span>Start routine guide</span> ${icon('arrowRight',18)}
       </button>
     </div>
 
@@ -81,7 +82,7 @@ function landing() {
         <button class="login-link login-link--mobile linkish" data-go="login">Log in</button></div>
       <div class="landing__body">
         <h1 class="h-hero" tabindex="-1">Find your way<br>to move.</h1>
-        <p class="lede">Choose how you&rsquo;d like to start today.</p>
+        <p class="lede">Build your fitness routine and find the membership that covers it.</p>
         ${S.returns?`<div class="notice" style="max-width:560px">${icon('checkThin',20)}<span>Welcome back. Your answers are saved — continue where you left off.</span></div>`:''}
         ${primary}
       </div></div>

@@ -26,7 +26,7 @@ let CITYPICK=false, CITYWANTED=null, ASKOPEN=false, DAYSOPEN=false, PLACEWANTED=
    three sections inside "Questions and details" the visitor asked for, and ALTOPEN is the
    comparison of all four memberships, which starts open because the complaint that made
    rule 64 was that comparing them was hidden. */
-let PLACESOPEN=false, MOREOPEN=false, MOREPICK=null, ALTOPEN=null, PLANPLUS=null, PLANASK=false, PLANDETAILS_OPEN=false, FREETEXT_OPEN=false, PLAN_DRAWER_OPEN=false;
+let PLACESOPEN=false, MOREOPEN=false, MOREPICK=null, ALTOPEN=null, PLANPLUS=null, PLANASK=false, PLANDETAILS_OPEN=false, FREETEXT_OPEN=false, PLAN_DRAWER_OPEN=false, ORDER_SUMMARY_OPEN=false;
 let WEEK_ADD_MODE=false, WEEK_ADD_DAY=null, WEEK_SWAP_DAY=null, WEEK_SWAP_GROUP=null, WEEK_SWAP_VENUE_ID=null, WEEK_SWAP_OPTION_ID=null, WEEK_SWAP_OPTION_TITLE=null, WEEK_SWAP_FILTER='nearby', WEEK_SWAP_PICKING_DAY=false, WEEK_SWAP_PICKING_ACT=false;
 /* Saving is an interruption, not a checkout step. Keep its state outside the route so
    the modal can open and close without moving the visitor or changing browser history. */

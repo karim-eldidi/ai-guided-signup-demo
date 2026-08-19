@@ -243,15 +243,32 @@ function recommendationScreen() {
      because a claim must not go stale inside a closed drawer (rule 46). */
   /* The one session the plan on screen does not open, which is the honest argument for
      the plan above it. Rule 41: it says what the gap is, not only that there is one. */
+  const resolveVenue = rawV => {
+    if (!rawV) return null;
+    let v = rawV;
+    if (typeof v.distanceKm !== 'number') {
+      const from = (match.areas && match.areas.length) ? match.areas : [match.area || ANYWHERE];
+      const km = Math.round(Math.min(...from.map(a => distanceKm(a, v))) * 10) / 10;
+      const nearestArea = from.reduce((best, a) => distanceKm(a, v) < distanceKm(best, v) ? a : best, from[0]);
+      v = { ...v, distanceKm: km, nearestArea };
+    }
+    return v;
+  };
+
+  const getTierTag = v => {
+    if (v.tier === 'premium') return `<span class="tier-tag tier-tag--premium">✨ Premium studio</span>`;
+    if (v.tier === 'plus') return `<span class="tier-tag tier-tag--plus">⚡ Plus studio</span>`;
+    return `<span class="tier-tag tier-tag--standard">Classic studio</span>`;
+  };
+
   // Routine venues: user-starred places or curated starting places matching their routine
   const starredKeys = Object.keys(S.starredVenues || {});
   let routineVenues = [];
   if (starredKeys.length) {
-    routineVenues = starredKeys.map(id => VENUES.find(v => v.id === id)).filter(Boolean);
+    routineVenues = starredKeys.map(id => resolveVenue(VENUES.find(v => v.id === id))).filter(Boolean);
   } else {
     // Default initial routine from matched venues in their goal/area
-    routineVenues = wanted.slice(0, 3);
-    if (!routineVenues.length && pool.length) routineVenues = pool.slice(0, 3);
+    routineVenues = (wanted.length ? wanted : pool).slice(0, 3).map(resolveVenue).filter(Boolean);
   }
 
   const routineItemsHtml = routineVenues.map(v => {
@@ -259,10 +276,15 @@ function recommendationScreen() {
     const grp = ACTIVITY_GROUPS.find(g => venueInGroup(v, g)) || ACTIVITY_GROUPS[0];
     const areaLabel = v.nearestArea ? v.nearestArea.name : (AREAS.find(a => a.id === v.area) || {}).name || '';
     const distLabel = areaLabel ? `${v.distanceKm} km from ${esc(areaLabel)}` : `${v.distanceKm} km away`;
-    const tierText = v.tier === 'premium' ? 'Premium access' : v.tier === 'plus' ? 'Plus access' : 'Regular check-in';
+    const tierTag = getTierTag(v);
     const statusBadge = inPlan
-      ? `<span class="routine-item__badge routine-item__badge--included">${icon('checkThin', 12)} Included</span>`
-      : `<span class="routine-item__badge routine-item__badge--upgrade">Needs ${v.tier === 'premium' ? 'Premium' : 'Classic'} upgrade</span>`;
+      ? `<span class="routine-item__badge routine-item__badge--included">${icon('checkThin', 12)} Included in ${esc(plan.name)}</span>`
+      : `<span class="routine-item__badge routine-item__badge--upgrade">Needs ${v.tier === 'premium' ? 'Premium' : 'Classic'}</span>`;
+    const tierNote = v.tier === 'premium' 
+      ? 'High-end studio with premium access'
+      : v.tier === 'plus' 
+      ? 'Includes Plus check-ins'
+      : 'Standard check-in';
 
     return `<li class="routine-item ${inPlan ? '' : 'is-upgrade'}">
       <button class="routine-item__thumb-btn" type="button" data-venue="${esc(v.id)}" aria-label="Details about ${esc(v.name)}">
@@ -272,10 +294,11 @@ function recommendationScreen() {
       <div class="routine-item__content">
         <div class="routine-item__meta-row">
           <span class="routine-item__cat">${esc(grp.label)}</span>
+          ${tierTag}
           ${statusBadge}
         </div>
         <button class="routine-item__title linkish" type="button" data-venue="${esc(v.id)}"><b>${esc(v.name)}</b></button>
-        <div class="routine-item__sub">${distLabel} &middot; ${tierText}</div>
+        <div class="routine-item__sub">${distLabel} &middot; <span class="routine-item__note">${tierNote}</span></div>
       </div>
       <div class="routine-item__actions">
         <button class="routine-item__remove-btn" type="button" data-toggle-star="${esc(v.id)}" aria-label="Remove ${esc(v.name)} from routine" title="Remove from routine">
@@ -290,12 +313,12 @@ function recommendationScreen() {
 
   const routineBlock = `<div class="routine-card">
     <div class="routine-card__head">
-      <div>
+      <div class="routine-card__head-lead">
         <h2 class="routine-card__title">My Routine</h2>
         <p class="routine-card__sub">${routineVenues.length} saved places &middot; Matching your fitness routine in ${esc(where)}</p>
       </div>
-      <button class="btn btn--secondary btn--sm" type="button" data-go="search">
-        ${icon('plus', 12)} <span>Add places</span>
+      <button class="routine-card__add-btn" type="button" data-go="search" aria-label="Browse and add places to routine">
+        ${icon('plus', 13)} <span>Add places</span>
       </button>
     </div>
 
@@ -313,10 +336,14 @@ function recommendationScreen() {
 
     <ol class="routine-list">${routineItemsHtml}</ol>
 
+    <div class="routine-card__tip">
+      <span class="routine-card__tip-icon">${icon('info', 14)}</span>
+      <span>Star any studio or sport across the app to add it to your routine. Your membership adjusts to cover your favorites.</span>
+    </div>
+
     <div class="routine-card__foot">
-      <p class="routine-card__tip">${icon('info', 14)} <span>Star any studio or sport across the app to add it to your routine. Your membership adjusts to cover your favorites.</span></p>
-      <button class="btn btn--ghost btn--sm" type="button" data-go="search">
-        <span>Explore all ${allVenues.length} Berlin venues &rarr;</span>
+      <button class="made-for-you__explore-link" type="button" data-go="search">
+        ${icon('sparkle', 14)} <span>Looking for a specific studio? Explore all ${allVenues.length} Berlin venues &rarr;</span>
       </button>
     </div>
   </div>`;
@@ -383,37 +410,42 @@ function recommendationScreen() {
       <div class="activity-gallery" id="activity-gallery-scroll">
         <div class="activity-gallery__track venue-grid--big is-rail">
           ${curatedCards.map(({ grp, v }) => {
-            const inPlan = includedIn(v, plan.id);
-            const baseScore = 97 - Math.round(v.distanceKm * 2.2) - (v.tier === 'premium' ? 3 : v.tier === 'plus' ? 1 : 0);
+            const vResolved = resolveVenue(v);
+            const inPlan = includedIn(vResolved, plan.id);
+            const baseScore = 97 - Math.round(vResolved.distanceKm * 2.2) - (vResolved.tier === 'premium' ? 3 : vResolved.tier === 'plus' ? 1 : 0);
             const matchPct = Math.max(89, Math.min(98, baseScore));
-            const areaLabel = v.nearestArea ? v.nearestArea.name : (AREAS.find(a=>a.id===v.area)||{}).name || '';
-            const distLabel = areaLabel ? `${v.distanceKm} km from ${esc(areaLabel)}` : `${v.distanceKm} km away`;
+            const areaLabel = vResolved.nearestArea ? vResolved.nearestArea.name : (AREAS.find(a=>a.id===vResolved.area)||{}).name || '';
+            const distLabel = areaLabel ? `${vResolved.distanceKm} km from ${esc(areaLabel)}` : `${vResolved.distanceKm} km away`;
+            const tierTag = getTierTag(vResolved);
             const accessLabel = inPlan
-              ? (v.tier === 'plus' ? 'Included &middot; Plus access' : v.tier === 'premium' ? 'Included &middot; Premium access' : 'Included &middot; Regular check-in')
-              : `<span class="venue-card__lock" style="color:#8a5a1a;font-weight:700">Needs ${v.tier === 'premium' ? 'Premium' : 'Classic'} upgrade</span>`;
-            const isStarred = Boolean(S.starredVenues && S.starredVenues[v.id]);
-            return `<div class="activity-card venue-card ${inPlan ? '' : 'is-locked'} ${isStarred ? 'is-starred' : ''}" draggable="true" data-drag-venue="${esc(v.id)}" data-drag-name="${esc(v.name)}">
-              <div class="activity-card__badge">${matchPct}% match</div>
-              <button class="activity-card__star-btn ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(v.id)}" aria-label="${isStarred ? `Remove ${esc(v.name)} from routine` : `Add ${esc(v.name)} to routine`}" title="${isStarred ? 'In your routine' : 'Add to routine'}">
+              ? (vResolved.tier === 'plus' ? `<span class="access-pill access-pill--included">${icon('checkThin', 11)} Included &middot; Plus access</span>` : vResolved.tier === 'premium' ? `<span class="access-pill access-pill--included">${icon('checkThin', 11)} Included &middot; Premium access</span>` : `<span class="access-pill access-pill--included">${icon('checkThin', 11)} Included &middot; Regular check-in</span>`)
+              : `<span class="access-pill access-pill--locked venue-card__lock">${icon('lock', 11)} Needs ${vResolved.tier === 'premium' ? 'Premium' : 'Classic'} upgrade</span>`;
+            const isStarred = Boolean(S.starredVenues && S.starredVenues[vResolved.id]);
+            return `<div class="activity-card venue-card ${inPlan ? '' : 'is-locked'} ${isStarred ? 'is-starred' : ''}" draggable="true" data-drag-venue="${esc(vResolved.id)}" data-drag-name="${esc(vResolved.name)}">
+              <div class="activity-card__badges">
+                <span class="activity-card__badge">${matchPct}% match</span>
+                ${tierTag}
+              </div>
+              <button class="activity-card__star-btn ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(vResolved.id)}" aria-label="${isStarred ? `Remove ${esc(vResolved.name)} from routine` : `Add ${esc(vResolved.name)} to routine`}" title="${isStarred ? 'In your routine' : 'Add to routine'}">
                 ${icon(isStarred ? 'starFill' : 'star', 15)}
               </button>
-              <button class="activity-card__media-btn" data-venue="${esc(v.id)}" aria-label="Details about ${esc(v.name)}">
-                <span class="activity-card__media">${venueMedia(v)}</span>
+              <button class="activity-card__media-btn" data-venue="${esc(vResolved.id)}" aria-label="Details about ${esc(vResolved.name)}">
+                <span class="activity-card__media">${venueMedia(vResolved)}</span>
                 <span class="activity-card__icon-badge">${icon(grp.icon, 16)}</span>
               </button>
               <div class="activity-card__content">
                 <div class="activity-card__activity"><b>${esc(grp.label)}</b></div>
                 <div class="venue-card__meta" style="display:none">for ${esc(grp.label.toLowerCase())}</div>
-                <button class="activity-card__vname venue-card__name linkish" data-venue="${esc(v.id)}">${esc(v.name)}</button>
+                <button class="activity-card__vname venue-card__name linkish" data-venue="${esc(vResolved.id)}">${esc(vResolved.name)}</button>
                 <div class="activity-card__dist">${distLabel}</div>
                 <div class="activity-card__access">${accessLabel}</div>
                 <div class="activity-card__actions">
                   ${isStarred ? `
-                    <button class="btn-pill btn-pill--sm btn-pill--starred btn-pill--block" type="button" data-toggle-star="${esc(v.id)}" title="Click to remove from routine">
+                    <button class="btn-pill btn-pill--sm btn-pill--starred btn-pill--block" type="button" data-toggle-star="${esc(vResolved.id)}" title="Click to remove from routine">
                       ${icon('starFill', 12)} <span>In routine</span>
                     </button>
                   ` : `
-                    <button class="btn-pill btn-pill--sm btn-pill--block" type="button" data-toggle-star="${esc(v.id)}">
+                    <button class="btn-pill btn-pill--sm btn-pill--block" type="button" data-toggle-star="${esc(vResolved.id)}">
                       ${icon('plus', 11)} <span>Add to routine</span>
                     </button>
                   `}
@@ -785,25 +817,54 @@ function fitSummary() {
   const plan = currentPlan(), match = matchVenues(A());
   const groups = (A().activities||[]).filter(x=>x!==SKIP);
   const pool = match.pool||[];
+  const from = (match.areas && match.areas.length) ? match.areas : [match.area || ANYWHERE];
   const cov = groups.length && pool.length ? coverage(groups, pool, plan.id) : null;
-  const included = cov
-    ? [...new Map(cov.rows.flatMap(r=>r.included).map(v=>[v.id,v])).values()].sort((a,b)=>a.distanceKm-b.distanceKm)
-    : [];
-  return { plan, match, groups, included, totals: cov?cov.totals:null, where: whereName(match),
+  const totals = cov ? cov.totals : null;
+
+  // Resolve routine venues first if user starred places!
+  const starredKeys = Object.keys(S.starredVenues || {});
+  let included = [];
+  if (starredKeys.length) {
+    included = starredKeys.map(id => {
+      const p = pool.find(x => x.id === id);
+      if (p) return p;
+      const raw = VENUES.find(x => x.id === id);
+      if (!raw) return null;
+      const km = Math.round(Math.min(...from.map(x => distanceKm(x, raw))) * 10) / 10;
+      return { ...raw, distanceKm: km };
+    }).filter(Boolean);
+  } else {
+    included = cov
+      ? [...new Map(cov.rows.flatMap(r=>r.included).map(v=>[v.id,v])).values()].sort((a,b)=>(a.distanceKm||0)-(b.distanceKm||0))
+      : [];
+  }
+
+  return { plan, match, groups, included, totals, where: whereName(match),
            commitment: commitmentById(S.commitmentId), price: priceFor(plan,S.commitmentId),
            isRec: !S.planOverridden };
 }
 /* A photograph, a name and a distance. Nothing tappable: this is a receipt for a decision
    already made, and a card that opens a sheet here would take you off the form. */
-const asideVenue = v => `<div class="asidevenue"><div class="asidevenue__media">${venueMedia(v)}</div>
-  <div><div class="asidevenue__name">${esc(v.name)}</div><div class="asidevenue__meta">${v.distanceKm} km away</div></div></div>`;
+const asideVenue = v => {
+  const kmLabel = typeof v.distanceKm === 'number' ? `${v.distanceKm} km away` : 'in Berlin';
+  const tierTag = v.tier === 'premium'
+    ? '<span class="tier-tag tier-tag--premium" style="font-size:10px;padding:1px 5px;margin-left:4px">Premium</span>'
+    : v.tier === 'plus'
+    ? '<span class="tier-tag tier-tag--plus" style="font-size:10px;padding:1px 5px;margin-left:4px">Plus</span>'
+    : '';
+  return `<div class="asidevenue"><div class="asidevenue__media">${venueMedia(v)}</div>
+  <div><div class="asidevenue__name">${esc(v.name)}${tierTag}</div><div class="asidevenue__meta">${kmLabel}</div></div></div>`;
+};
 
 /* A place in the recap: the photograph large enough to recognise, the name, the
    distance. Nothing tappable — this is a receipt for a decision already made, and a
    card that opened a sheet from here would take you off the form. */
-const saveVenue = v => `<div class="savevenue"><div class="savevenue__media">${venueMedia(v)}</div>
+const saveVenue = v => {
+  const kmLabel = typeof v.distanceKm === 'number' ? `${v.distanceKm} km away` : 'in Berlin';
+  return `<div class="savevenue"><div class="savevenue__media">${venueMedia(v)}</div>
   <div class="savevenue__text"><div class="savevenue__name">${esc(v.name)}</div>
-    <div class="savevenue__meta">${v.distanceKm} km away</div></div></div>`;
+    <div class="savevenue__meta">${kmLabel}</div></div></div>`;
+};
 
 /* the way out — show what is being kept before asking for anywhere to send it.
    Rule 71: it is reachable from anywhere, so it says only what is true at the point
@@ -813,9 +874,12 @@ function saveScreen() {
   const hasPlan = fitComplete(S.answers) || S.planOverridden;
   const F = hasPlan ? fitSummary() : null;
   const answered = QUESTIONS.filter(q => isAnswered(S.answers[q.id])).length;
-  const shownVenues = F ? F.included.slice(0, 3) : [];
-  const moreVenues = F ? Math.max(0, F.included.length - shownVenues.length) : 0;
-  const savedWeek = F ? weekPlan(F.groups, F.match.pool||[], F.plan.id, S.answers.frequency).sessions : [];
+  
+  const starredKeys = Object.keys(S.starredVenues || {});
+  const savedRoutine = F ? (starredKeys.length
+    ? starredKeys.map(id => F.included.find(v => v.id === id) || VENUES.find(v => v.id === id)).filter(Boolean)
+    : F.included.slice(0, 3)) : [];
+  const morePlaces = F ? Math.max(0, F.included.length - savedRoutine.length) : 0;
 
   const recapSection = hasPlan ? `
     <div class="saverecap savepanel__recap">
@@ -829,37 +893,30 @@ function saveScreen() {
           ? (F.totals.included === F.totals.nearby
               ? (F.totals.included === 1 ? 'Includes your matching place' : F.totals.included === 2 ? 'Includes both of your matching places' : `Includes all ${F.totals.included} of your matching places`)
               : `Includes ${F.totals.included} of your ${F.totals.nearby} matching places`)
-          : (F.included.length ? `Includes ${F.included.length} matching places` : '')} &middot; ${esc(F.commitment.label)} &middot; ${plural(visitsFor(F.plan, S.answers.frequency),'visit','visits')}/mo</div>
+          : (savedRoutine.length ? `Includes ${savedRoutine.length} places in your routine` : '')} &middot; ${esc(F.commitment.label)} &middot; ${plural(visitsFor(F.plan, S.answers.frequency),'visit','visits')}/mo</div>
       </div>
 
-      ${savedWeek.length ? `
-      <div class="saverecap__week">
-        <div class="saverecap__label">Your planned week</div>
-        <div class="saverecap__days">
-          ${savedWeek.slice(0, 3).map(s => `
-            <div class="saverecap__day-row">
-              <span class="saverecap__day-name">${esc(s.day.slice(0,3))}</span>
-              <span class="saverecap__day-act"><b>${esc(s.activity)}</b> at ${esc(s.venue.name)}</span>
-            </div>
-          `).join('')}
-        </div>
-      </div>` : ''}
-
-      ${shownVenues.length ? `
+      ${savedRoutine.length ? `
       <div class="saverecap__venues">
-        <div class="saverecap__label">Included places near ${esc(F.where)}</div>
+        <div class="saverecap__label">Your saved routine (${savedRoutine.length} ${plural(savedRoutine.length, 'place', 'places')})</div>
         <div class="saverecap__venue-grid">
-          ${shownVenues.map(v => `
-            <div class="saverecap__venue-card">
+          ${savedRoutine.map(v => {
+            const tierTag = v.tier === 'premium'
+              ? '<span class="tier-tag tier-tag--premium" style="font-size:10px;padding:1px 5px">✨ Premium</span>'
+              : v.tier === 'plus'
+              ? '<span class="tier-tag tier-tag--plus" style="font-size:10px;padding:1px 5px">⚡ Plus</span>'
+              : '<span class="tier-tag tier-tag--standard" style="font-size:10px;padding:1px 5px">Classic</span>';
+            const kmLabel = typeof v.distanceKm === 'number' ? `${v.distanceKm} km away` : 'in Berlin';
+            return `<div class="saverecap__venue-card">
               <div class="saverecap__venue-img">${venueMedia(v)}</div>
               <div class="saverecap__venue-info">
                 <span class="saverecap__venue-title">${esc(v.name)}</span>
-                <span class="saverecap__venue-dist">${v.distanceKm} km away</span>
+                <span class="saverecap__venue-dist">${kmLabel} &middot; ${tierTag}</span>
               </div>
-            </div>
-          `).join('')}
+            </div>`;
+          }).join('')}
         </div>
-        ${moreVenues ? `<div class="saverecap__more">+${moreVenues} more matching ${plural(moreVenues,'place','places')}</div>` : ''}
+        ${morePlaces ? `<div class="saverecap__more">+${morePlaces} more matching ${plural(morePlaces,'place','places')} included</div>` : ''}
       </div>` : ''}
     </div>
   ` : `
@@ -880,9 +937,8 @@ function saveScreen() {
                                      : { route:'fit', label:'Back to your questions' } })}
   <main class="savewrap" id="main">
     <div class="savepanel">
-      <div class="savepanel__grid">
-        <div class="savepanel__left">
-          <div class="savepanel__guide">${ulaAvatar('sm')}<span>Urby &middot; Membership guide</span></div>
+      <div class="savepanel__left">
+        <div class="savepanel__guide">${ulaAvatar('sm')}<span>Urby &middot; Membership guide</span></div>
         <h1 class="savepanel__title" tabindex="-1">Here&rsquo;s what you&rsquo;re saving</h1>
         <p class="savepanel__sub">${hasPlan ? 'Your custom routine, matching studios, and membership plan.' : 'Your answers and progress so far.'}</p>
         ${recapSection}

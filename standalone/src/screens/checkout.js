@@ -49,19 +49,44 @@
             </div></section>
           <div class="details-form__actions"><button class="btn btn--primary btn--wide desktop-cta" type="submit">Continue to payment</button>
             <p class="reassure">${icon('lock',15)} Nothing is charged yet.</p></div>
-          <!-- Rule 9: on a phone the inline button above is hidden and this bar is the one
-               main CTA, so the action is always reachable without scrolling the form to its
-               end — and the plan and price ride along with it instead of sitting in a card
-               a thousand pixels further down. -->
           <div class="paybar">
-            <div class="paybar__info"><b>${esc(plan.name)}</b><span>${F.price} € / month${each?` · ≈ ${each} € a session`:''}</span></div>
+            <div class="paybar__info" data-open-order-summary role="button" tabindex="0" aria-label="View order summary details">
+              <div class="paybar__lead">
+                <span class="paybar__plan"><b>${esc(plan.name)}</b></span>
+                <span class="paybar__details-trigger">Summary ▾</span>
+              </div>
+              <div class="paybar__subtext">
+                <span class="paybar__price"><b>${F.price} €</b> / month</span>
+                ${each ? `<span class="paybar__per-visit">&approx; ${each} €/visit</span>` : ''}
+              </div>
+            </div>
             <button class="btn btn--primary" type="submit">Continue</button>
           </div>
         </form>
       </div>
       <aside class="two-col__aside">${aside}</aside>
     </div>
-  </main>${exitModal()}`;
+  </main>
+  ${orderSummaryDrawer(aside)}
+  ${exitModal()}`;
+}
+
+function orderSummaryDrawer(aside) {
+  if (!ORDER_SUMMARY_OPEN) return '';
+  return `<div class="drawer-backdrop" data-close-order-summary></div>
+  <div class="plan-drawer" role="dialog" aria-modal="true" aria-label="Order summary details">
+    <div class="plan-drawer__handle-bar" data-close-order-summary><div class="plan-drawer__handle"></div></div>
+    <div class="plan-drawer__head">
+      <h3 class="plan-drawer__title">Order summary</h3>
+      <button class="plan-drawer__close" type="button" data-close-order-summary aria-label="Close summary">${icon('close', 18)}</button>
+    </div>
+    <div class="plan-drawer__body" style="padding-bottom:24px">
+      ${aside}
+      <div style="margin-top:16px">
+        <button class="btn btn--secondary btn--block" type="button" data-close-order-summary>Close</button>
+      </div>
+    </div>
+  </div>`;
 }
 
 function paymentScreen() {

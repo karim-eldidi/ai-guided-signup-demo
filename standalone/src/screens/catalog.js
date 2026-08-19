@@ -42,12 +42,21 @@ function placeCard(v, opts = {}) {
   const isStarred = Boolean(S.starredVenues && S.starredVenues[v.id]);
   const starFreq = (S.starredVenues && S.starredVenues[v.id] && (typeof S.starredVenues[v.id]==='number' ? S.starredVenues[v.id] : S.starredVenues[v.id].freq)) || 1;
 
+  const tierTag = v.tier === 'premium'
+    ? `<span class="tier-tag tier-tag--premium">✨ Premium studio</span>`
+    : v.tier === 'plus'
+    ? `<span class="tier-tag tier-tag--plus">⚡ Plus studio</span>`
+    : `<span class="tier-tag tier-tag--standard">Classic studio</span>`;
+
   const accessLabel = inPlan
-    ? (v.tier === 'plus' ? 'Included &middot; Plus access' : v.tier === 'premium' ? 'Included &middot; Premium access' : 'Included &middot; Regular check-in')
-    : (lowest ? `Included from ${esc(lowest.name)}, ${priceFor(lowest, S.commitmentId)} € a month` : `<span class="venue-card__lock" style="color:#8a5a1a;font-weight:700">Needs ${v.tier === 'premium' ? 'Premium' : 'Classic'} upgrade</span>`);
+    ? (v.tier === 'plus' ? `<span class="access-pill access-pill--included">${icon('checkThin', 11)} Included &middot; Plus access</span>` : v.tier === 'premium' ? `<span class="access-pill access-pill--included">${icon('checkThin', 11)} Included &middot; Premium access</span>` : `<span class="access-pill access-pill--included">${icon('checkThin', 11)} Included &middot; Regular check-in</span>`)
+    : (lowest ? `<span class="access-pill access-pill--locked">${icon('lock', 11)} Included from ${esc(lowest.name)} (${priceFor(lowest, S.commitmentId)} €/mo)</span>` : `<span class="access-pill access-pill--locked">${icon('lock', 11)} Needs ${v.tier === 'premium' ? 'Premium' : 'Classic'}</span>`);
 
   return `<div class="activity-card venue-card hit ${inPlan ? '' : 'is-locked'} ${isStarred ? 'is-starred' : ''}" draggable="true" data-drag-venue="${esc(v.id)}" data-drag-name="${esc(v.name)}">
-    ${badge}
+    <div class="activity-card__badges">
+      ${badge}
+      ${tierTag}
+    </div>
     <button class="activity-card__star-btn ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(v.id)}" aria-label="${isStarred ? `Remove ${esc(v.name)} from routine` : `Add ${esc(v.name)} to routine`}" title="${isStarred ? 'In your routine' : 'Add to routine'}">
       ${icon(isStarred ? 'starFill' : 'star', 15)}
     </button>

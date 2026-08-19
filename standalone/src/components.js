@@ -441,10 +441,6 @@ function appsBlock() {
       <span class="rowcard__cta">Explore free apps ${icon('arrowRight',18)}</span>
     </summary>
     <div class="rowcard__body">
-      <div class="notice notice--cream" style="margin-bottom:12px;background:var(--cream);border:1px solid var(--cream-line);padding:10px 12px;border-radius:var(--radius);font-size:12.5px;line-height:1.4;color:var(--navy)">
-        <strong>100% Free with 12- &amp; 24-month memberships</strong> &middot; Get full access to top wellness apps at 0 &euro; extra (1 app with 12 mo, 2 apps with 24 mo, switch anytime).
-      </div>
-
       <div class="apps-switcher-strip">
         <div class="apps-switcher-strip__label">
           <span class="apps-switcher-strip__title">✨ Digital Partner Apps</span>
