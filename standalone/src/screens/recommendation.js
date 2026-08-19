@@ -547,7 +547,13 @@ function recommendationScreen() {
   const spendsPlus = v => Boolean(noPlusTier && v) && includedIn(v, plan.id) && !includedIn(v, noPlusTier.id);
   const plusWanted = plan.plusCheckIns
     ? wp.sessions.filter(s => spendsPlus(s.venue)).length * 4 : 0;
-  const plusShort = Boolean(topPlan.plusCheckIns > plan.plusCheckIns && plusWanted > plan.plusCheckIns);
+  /* Karim, 19 Aug: trigger when the week reaches the allowance, not only when it passes it.
+     A visitor whose month already spends all four Plus check-ins has no headroom left — one
+     extra spa week and they are short — so "at the cap" is the honest moment to mention the
+     bigger allowance. `plusWanted > 0` matters: without it a plan that publishes no Plus
+     allowance at all (Classic, 0) would satisfy 0 >= 0 and upsell on nothing. */
+  const plusShort = Boolean(topPlan.plusCheckIns > plan.plusCheckIns
+    && plusWanted > 0 && plusWanted >= plan.plusCheckIns);
   /* It is also listed whenever it is genuinely on the table: the visitor switched to it, or
      the rules chose it. Hiding the plan somebody is looking at would be the worse lie. */
   const showTop = plusShort || plan.id === topPlan.id || rec.planId === topPlan.id;
@@ -644,6 +650,22 @@ function recommendationScreen() {
         <button class="linkish strong" type="button" data-plan="${esc(topPlan.id)}">Switch to ${esc(topPlan.name)}</button></p>
     </div>`;
   })() : '';
+
+  /* Karim, 19 Aug: some visitors just want the top tier, whatever the answers say, and that is
+     a real intention rather than a mistake to protect them from. So there is always a quiet
+     way to take it — but it stays a choice the visitor makes, never a recommendation, and it
+     says outright that Urby did not pick it. It routes through the existing `data-plan`
+     override, so the "Urby would have picked X — switch back" line appears by itself
+     (rule 67). Suppressed whenever the top tier is already on screen or already offered
+     above, because saying it twice in one column is rule 33. */
+  const topAlreadyOffered = Boolean(maxUpsell) || altIsTop
+    || plan.id === topPlan.id || rec.planId === topPlan.id;
+  const splurge = topAlreadyOffered ? '' : `<p class="planbox__fine">
+      Want the most we offer? <b>${esc(topPlan.name)}</b> is ${priceFor(topPlan, S.commitmentId)} €/mo &mdash;
+      ${esc(lowerFirst(plusLine(topPlan)))}, and ${esc(topPlan.venueCount)} venues.
+      Urby did not pick it from your answers.
+      <button class="linkish strong" type="button" data-plan="${esc(topPlan.id)}">Choose ${esc(topPlan.name)}</button>
+    </p>`;
 const planAside = `<div class="planbox">
     <div class="planbox__badge">${isRec ? 'RECOMMENDED FOR YOU' : 'Your choice'}</div>
     <div class="planbox__idrow">
@@ -680,6 +702,7 @@ const planAside = `<div class="planbox">
     ${!isRec ? `<p class="planbox__back">${icon('sparkle',15)} <span>Urby would have picked <b>${esc(planById(rec.planId).name)}</b> for you &mdash; <button class="linkish" data-plan="${esc(rec.planId)}">switch back</button></span></p>` : ''}
     ${altBox}
     ${maxUpsell}
+    ${splurge}
     ${allPlans}
   </div>`;
 
