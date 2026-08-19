@@ -276,10 +276,13 @@ function recommendationScreen() {
     const grp = ACTIVITY_GROUPS.find(g => venueInGroup(v, g)) || ACTIVITY_GROUPS[0];
     const areaLabel = v.nearestArea ? v.nearestArea.name : (AREAS.find(a => a.id === v.area) || {}).name || '';
     const distLabel = areaLabel ? `${v.distanceKm} km from ${esc(areaLabel)}` : `${v.distanceKm} km away`;
-    const tierTag = getTierTag(v);
     const statusBadge = inPlan
-      ? `<span class="routine-item__badge routine-item__badge--included">${icon('checkThin', 11)} Included in ${esc(plan.name)}</span>`
-      : `<span class="routine-item__badge routine-item__badge--upgrade">Needs ${v.tier === 'premium' ? 'Premium' : 'Classic'}</span>`;
+      ? (v.tier === 'plus'
+          ? `<span class="routine-item__badge routine-item__badge--plus">${icon('checkThin', 11)} Plus included</span>`
+          : v.tier === 'premium'
+          ? `<span class="routine-item__badge routine-item__badge--premium">${icon('checkThin', 11)} Included in Premium</span>`
+          : `<span class="routine-item__badge routine-item__badge--included">${icon('checkThin', 11)} Included in ${esc(plan.name)}</span>`)
+      : `<span class="routine-item__badge routine-item__badge--upgrade">${icon('lock', 11)} Needs ${v.tier === 'premium' ? 'Premium' : 'Classic'}</span>`;
 
     return `<li class="routine-item ${inPlan ? '' : 'is-upgrade'}">
       <button class="routine-item__thumb-btn" type="button" data-venue="${esc(v.id)}" aria-label="Details about ${esc(v.name)}">

@@ -3659,6 +3659,14 @@ button.appcard:hover .appcard__info-icon {
   background: #dcfce7;
   color: #15803d;
 }
+.routine-item__badge--plus {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+.routine-item__badge--premium {
+  background: #fdf4ff;
+  color: #86198f;
+}
 .routine-item__badge--upgrade {
   background: #fef3c7;
   color: #92400e;
