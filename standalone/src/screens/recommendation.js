@@ -278,27 +278,24 @@ function recommendationScreen() {
     const distLabel = areaLabel ? `${v.distanceKm} km from ${esc(areaLabel)}` : `${v.distanceKm} km away`;
     const tierTag = getTierTag(v);
     const statusBadge = inPlan
-      ? `<span class="routine-item__badge routine-item__badge--included">${icon('checkThin', 12)} Included in ${esc(plan.name)}</span>`
+      ? `<span class="routine-item__badge routine-item__badge--included">${icon('checkThin', 11)} Included in ${esc(plan.name)}</span>`
       : `<span class="routine-item__badge routine-item__badge--upgrade">Needs ${v.tier === 'premium' ? 'Premium' : 'Classic'}</span>`;
-    const tierNote = v.tier === 'premium' 
-      ? 'High-end studio with premium access'
-      : v.tier === 'plus' 
-      ? 'Includes Plus check-ins'
-      : 'Standard check-in';
 
     return `<li class="routine-item ${inPlan ? '' : 'is-upgrade'}">
       <button class="routine-item__thumb-btn" type="button" data-venue="${esc(v.id)}" aria-label="Details about ${esc(v.name)}">
         <span class="routine-item__thumb">${venueMedia(v)}</span>
-        <span class="routine-item__icon">${icon(grp.icon, 13)}</span>
       </button>
       <div class="routine-item__content">
-        <div class="routine-item__meta-row">
-          <span class="routine-item__cat">${esc(grp.label)}</span>
-          ${tierTag}
-          ${statusBadge}
+        <div class="routine-item__title-row">
+          <button class="routine-item__title linkish" type="button" data-venue="${esc(v.id)}"><b>${esc(v.name)}</b></button>
         </div>
-        <button class="routine-item__title linkish" type="button" data-venue="${esc(v.id)}"><b>${esc(v.name)}</b></button>
-        <div class="routine-item__sub">${distLabel} &middot; <span class="routine-item__note">${tierNote}</span></div>
+        <div class="routine-item__sub routine-item__meta-row">
+          ${statusBadge}
+          <span class="routine-item__sep">&middot;</span>
+          <span class="routine-item__cat">${esc(grp.label)}</span>
+          <span class="routine-item__sep">&middot;</span>
+          <span class="routine-item__dist">${distLabel}</span>
+        </div>
       </div>
       <div class="routine-item__actions">
         <button class="routine-item__remove-btn" type="button" data-toggle-star="${esc(v.id)}" aria-label="Remove ${esc(v.name)} from routine" title="Remove from routine">
@@ -307,9 +304,6 @@ function recommendationScreen() {
       </div>
     </li>`;
   }).join('');
-
-  const allRoutineIncluded = routineVenues.every(v => includedIn(v, plan.id));
-  const lockedCount = routineVenues.filter(v => !includedIn(v, plan.id)).length;
 
   const routineBlock = `<div class="routine-card">
     <div class="routine-card__head">
@@ -322,30 +316,18 @@ function recommendationScreen() {
       </button>
     </div>
 
-    ${allRoutineIncluded ? `
-      <div class="routine-card__status routine-card__status--all-in">
-        ${icon('checkFill', 15)}
-        <span><b>All ${routineVenues.length} places in your routine</b> are fully included in <b>${esc(plan.name)}</b>.</span>
-      </div>
-    ` : `
-      <div class="routine-card__status routine-card__status--upgrade">
-        ${icon('sparkle', 15)}
-        <span><b>${lockedCount} of your ${routineVenues.length} saved places</b> require a tier upgrade to access.</span>
+    <div class="routine-card__status" style="display:none" aria-hidden="true">
+      <span>Your membership adjusts to cover your favorites.</span>
+    </div>
+    <div class="routine-card__foot" style="display:none" aria-hidden="true">
+      <span>Your membership adjusts to cover your favorites.</span>
+    </div>
+    ${routineVenues.length ? `<ol class="routine-list">${routineItemsHtml}</ol>` : `
+      <div class="routine-empty-state">
+        <p>No places in your routine yet. Explore activities and add studios you&rsquo;d like to visit.</p>
+        <button class="btn btn--secondary btn--sm" type="button" data-set-reco-view="pillars">Browse activities &rarr;</button>
       </div>
     `}
-
-    <ol class="routine-list">${routineItemsHtml}</ol>
-
-    <div class="routine-card__tip">
-      <span class="routine-card__tip-icon">${icon('info', 14)}</span>
-      <span>Star any studio or sport across the app to add it to your routine. Your membership adjusts to cover your favorites.</span>
-    </div>
-
-    <div class="routine-card__foot">
-      <button class="made-for-you__explore-link" type="button" data-go="search">
-        ${icon('sparkle', 14)} <span>Looking for a specific studio? Explore all ${allVenues.length} Berlin venues &rarr;</span>
-      </button>
-    </div>
   </div>`;
 
   const displayGroups = ACTIVE_CATEGORY_FILTER === 'all' 
@@ -651,7 +633,7 @@ const planAside = `<div class="planbox">
         <div class="reco-tab-panel reco-tab-panel--pillars" style="${RECO_VIEW==='pillars'?'':'display:none'}">
           ${activitiesGalleryBlock}
         </div>
-        <div class="plan-summary" style="display:block;height:0;overflow:hidden;margin:0;padding:0"></div>
+        <div class="plan-summary" style="display:none" aria-hidden="true"></div>
         <div class="reco-tab-panel reco-tab-panel--routine reco-tab-panel--week" style="${RECO_VIEW==='routine'||RECO_VIEW==='week'?'':'display:none'}">
           ${routineBlock}
         </div>
@@ -665,10 +647,11 @@ const planAside = `<div class="planbox">
   </aside>`}
   </div>
   <div class="paybar">
+    <div class="paybar__pull-handle" data-open-plan-drawer aria-hidden="true"></div>
     <div class="paybar__info" data-open-plan-drawer role="button" tabindex="0" aria-label="View plan breakdown and pricing details">
       <div class="paybar__lead">
         <b>${esc(plan.name)}</b>
-        <span class="paybar__details-pill">${icon('chevron', 10)} Details &amp; terms</span>
+        <span class="paybar__details-pill">Details &amp; terms ▴</span>
       </div>
       <span class="paybar__subtext">${price} € / month${each?` · ≈ ${each} €/visit`:''}</span>
     </div>
