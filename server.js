@@ -19,11 +19,12 @@
  *   GET  /left                  progress-saved screen with the resume link
  *   GET  /resume/:token         resume a saved journey
  *   GET  /preview/email         follow-up email preview
- *   GET  /admin/journeys        journey data for the demo
+ *   GET  /admin/journeys        journey data for the demo (needs ADMIN_TOKEN; off without it)
  *   GET  /reset                 clear this browser's session
  */
 
 import { createServer } from 'node:http';
+import { timingSafeEqual } from 'node:crypto';
 import { readFile, stat } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, normalize, extname } from 'node:path';
@@ -124,6 +125,29 @@ function baseUrl(req) {
   return `${proto}://${host}`;
 }
 
+/* Constant-time compare: timingSafeEqual throws when the buffers differ in length,
+   so the length check comes first and a mismatch is simply "no". */
+function tokensMatch(supplied, expected) {
+  const a = Buffer.from(String(supplied), 'utf8');
+  const b = Buffer.from(String(expected), 'utf8');
+  if (a.length !== b.length) return false;
+  return timingSafeEqual(a, b);
+}
+
+/**
+ * The journey-data page carries real visitor details, so it is gated on ADMIN_TOKEN and has
+ * no open fallback: no token configured means the page is off rather than public.
+ * The token may arrive as an Authorization: Bearer header (preferred) or as ?token=, because
+ * the demo banner links to the page with a plain anchor and cannot send a header.
+ */
+function adminTokenOk(req, url) {
+  const expected = process.env.ADMIN_TOKEN || '';
+  if (!expected) return false;
+  const bearer = /^Bearer\s+(.+)$/i.exec(req.headers.authorization || '');
+  const supplied = bearer ? bearer[1].trim() : url.searchParams.get('token') || '';
+  return tokensMatch(supplied, expected);
+}
+
 function validEmail(value) {
   return typeof value === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value.trim());
 }
@@ -173,7 +197,10 @@ const MIME = {
   '.png': 'image/png',
   '.svg': 'image/svg+xml',
   '.ico': 'image/x-icon',
-  '.webp': 'image/webp'
+  '.webp': 'image/webp',
+  /* Without this the self-hosted typeface is served as application/octet-stream, which some
+     browsers refuse to use for @font-face. */
+  '.woff2': 'font/woff2'
 };
 
 async function serveStatic(pathname, res) {
@@ -308,18 +335,21 @@ const server = createServer(async (req, res) => {
         answers[question.id] = chosen[0];
         recordEvent(session.id, 'answer_given', { question: question.id, value: chosen[0], mode: 'choice' });
       } else if (rawText) {
-        const interpreted = await interpretFreeText(question.id, rawText, options);
+        const interpreted = await interpretFreeText(question.id, rawText, options, Boolean(question.multi));
         if (!interpreted.optionId) {
           recordEvent(session.id, 'free_text_unclear', { question: question.id, text: rawText });
           return redirect(res, `/fit?edit=${question.id}&unclear=1`);
         }
-        answers[question.id] = question.multi
+        const interpretedValue = question.multi
           ? (interpreted.optionIds || [interpreted.optionId])
           : interpreted.optionId;
+        answers[question.id] = interpretedValue;
         answers._freeText = { ...(answers._freeText || {}), [question.id]: rawText };
         recordEvent(session.id, 'answer_given', {
           question: question.id,
-          value: interpreted.optionId,
+          /* The stored value, not just the first id, so the journey data cannot
+             under-report a multi-select answer. */
+          value: interpretedValue,
           mode: 'free_text',
           interpretedBy: interpreted.source,
           text: rawText
@@ -594,6 +624,33 @@ const server = createServer(async (req, res) => {
 
     /* ---------- journey data ---------- */
     if (path === '/admin/journeys' && req.method === 'GET') {
+      if (!process.env.ADMIN_TOKEN) {
+        return html(
+          res,
+          simplePage({
+            title: 'Journey data',
+            heading: 'Journey data is switched off',
+            paragraphs: [
+              'This page lists what visitors typed in — email address, name, date of birth, address and every step they took — so the pilot keeps it closed until the demo owner sets an <code>ADMIN_TOKEN</code> environment variable when starting the server.',
+              'Nothing else is affected: the rest of the demo works exactly as before. The README explains how to switch this page on.'
+            ]
+          }),
+          403
+        );
+      }
+      if (!adminTokenOk(req, url)) {
+        return html(
+          res,
+          simplePage({
+            title: 'Journey data',
+            heading: 'That admin token is not right',
+            paragraphs: [
+              'Add the token this server was started with, either as <code>?token=…</code> on this address or as an <code>Authorization: Bearer …</code> header.'
+            ]
+          }),
+          403
+        );
+      }
       const body = adminPage({ sessions: allSessions(200), counts: eventCounts(), areas: AREAS, aiState });
       return html(res, body, 200);
     }

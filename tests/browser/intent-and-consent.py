@@ -102,10 +102,36 @@ with sync_playwright() as p:
     # Karim, 14 Aug: "comparing the plans is nice but hidden." The single alternative
     # card and the compare fold merged into one table that is simply on the card, so
     # every alternative is visible without opening anything. Rule 64.
+    # Karim, 19 Aug: rule 64's "all four in the grid" is PARTLY SUPERSEDED. Four plans
+    # confuse visitors and Max is chosen by very few, so the grid carries Essential,
+    # Classic and Premium and Max joins them only when the visitor's own answers ask for
+    # it. What survives of rule 64 is asserted here: the comparison is on the plan card,
+    # open on arrival, and every row it lists is visible without opening anything.
+    # The name cell also carries the "Recommended" / "Your choice" tag with no space
+    # between them, so read the membership off the front of it rather than splitting.
+    PLAN_NAMES=['Essential','Classic','Premium','Max']
+    def grid_plans(page):
+        rows=page.locator('.allplans__row')
+        out=[]
+        for i in range(rows.count()):
+            t=' '.join(rows.nth(i).locator('.allplans__name').inner_text().split())
+            out.append(next((n for n in PLAN_NAMES if t.startswith(n)), t))
+        return out
     rows=pg.locator('.allplans__row')
     shown=pg.locator('.allplans__row:visible').count()
-    if rows.count()==4 and shown==4: P("all four memberships are on the card, open on arrival")
+    names=grid_plans(pg)
+    if rows.count() and shown==rows.count(): P(f"every membership on the card is visible on arrival: {', '.join(names)}")
     else: F(f"{shown} of {rows.count()} memberships are visible on the card")
+    if all(n in names for n in ['Essential','Classic','Premium']): P("the three primary memberships are always on the card")
+    else: F(f"a primary membership is missing from the card: {names}")
+    # Swimming near Neukölln twice a week is recommended Classic, which publishes no Plus
+    # allowance at all — there is nothing to upgrade from, so Max must not be on the card,
+    # and the way to it is the quiet link to the full plans screen.
+    if 'Max' not in names: P("Max stays off the card when the answers do not call for it")
+    else: F(f"Max is on the card with nothing in the answers to justify it: {names}")
+    foot=pg.locator('.allplans__foot').inner_text()
+    if 'Max' in foot: P(f"and the card still says where to find it: '{' '.join(foot.split())}'")
+    else: F(f"the hidden membership is not reachable from the card: {foot!r}")
     # One of them is also spotlit as the cheaper option, in the open beside the pick
     alt=pg.locator('.altbox__card')
     if alt.count() and 'visits' in alt.inner_text(): P(f"a cheaper option is in the open: '{' '.join(alt.inner_text().split())[:60]}'")
@@ -130,6 +156,109 @@ with sync_playwright() as p:
     if 'Your choice' in pg.locator('.planbox__badge').inner_text(): P("the plan column marks it as your choice, not a recommendation")
     else: F("still labelled as recommended after an override")
     pg.screenshot(path=f"{OUT}/after-switch.png")
+    c.close()
+
+    # --- C2. the fourth membership appears only when the answers pay for it ----
+    # Sauna & spa near Kreuzberg five or more times a week: the week Urby lays out spends
+    # about 8 Plus check-ins a month against the 4 Premium publishes, so the shortfall is
+    # real and the upgrade answers it. This is the half of rule 64 that Karim's 19 Aug
+    # decision supersedes — Max is contextual, not a permanent fourth row. Two things must
+    # stay true: the rules still choose the plan (rule 1 — the upsell is presentation, and
+    # can never make Max the recommendation), and the upgrade is never a second filled
+    # black button (rule 9).
+    c=b.new_context(viewport={'width':1440,'height':900}); pg=c.new_page()
+    pg.on("pageerror", lambda e: F(f"JS ERROR: {e}"))
+    # The triggering journey is SEARCHED FOR, not named. Which places a week lands on depends
+    # on the venue dataset, and the single journey hardcoded here stopped triggering the moment
+    # the pilot grew from 46 to 193 venues — while the feature itself still worked. A fixture
+    # that rots on every data import teaches people to ignore this suite, so try candidates and
+    # fail only if NONE of them can reach the upgrade, which would mean it is genuinely dead.
+    CANDIDATES=[['Unwind','Sauna & spa','Kreuzberg','Five times a week or more'],
+                ['Unwind','Sauna & spa','Mitte','Five times a week or more'],
+                ['Unwind','Sauna & spa','Prenzlauer Berg','Five times a week or more'],
+                ['Unwind','Yoga & pilates','Kreuzberg','Five times a week or more'],
+                ['Move more','Gym & strength','Mitte','Five times a week or more'],
+                ['Unwind','Sauna & spa','Friedrichshain','Five times a week or more'],
+                ['Move more','Swimming','Neukölln','Five times a week or more'],
+                ['Unwind','Sauna & spa','Kreuzberg','Three or four times a week']]
+    trigger=None; names=[]; recd=''
+    for cand in CANDIDATES:
+        pg.goto(U); pg.wait_for_timeout(400)
+        pg.locator('[data-start-fit]').click(); pg.wait_for_timeout(700)
+        try:
+            for lab in cand: answer(pg, lab)
+        except Exception:
+            continue                      # an option label this dataset does not offer
+        names=grid_plans(pg)
+        if 'Max' in names:
+            trigger=cand; recd=pg.locator('.planbox__name').inner_text().strip(); break
+    # The invariant is CONDITIONAL, and the negative half is the one that matters: Max must
+    # never be offered without evidence in the visitor's own week. Only 29 of the venues in the
+    # dataset actually spend a Plus check-in (Premium opens them, Classic does not) against 144
+    # that Classic already includes, so at realistic density almost no week exhausts Premium's
+    # four — and declining to upsell is then the CORRECT behaviour, not a broken feature.
+    # Requiring a shortfall to exist would be a test demanding we upsell somebody.
+    up=pg.locator('.planbox .altbox').filter(has_text='Optional upgrade')
+    if trigger:
+        P(f"Max joins the card when the answers justify it ({' / '.join(trigger)}): {', '.join(names)}")
+        if recd=='Premium': P(f"the rules still choose the plan, and it is not the top tier: '{recd}'")
+        else: F(f"expected the engine to recommend Premium on a triggering journey, got '{recd}'")
+        # Stated once (rule 33) and quiet: a text link, never a competing CTA.
+        if up.count()==1: P(f"the upgrade is offered exactly once: '{' '.join(up.inner_text().split())[:70]}'")
+        else: F(f"{up.count()} optional-upgrade boxes in the plan column")
+        if 'Plus check-ins' in up.inner_text(): P("and it argues on the published Plus allowance, not on visit counts")
+        else: F("the upgrade does not name the allowance it is answering")
+        if up.locator('.btn--primary').count()==0: P("the upgrade is a quiet link, not a second primary button")
+        else: F("the upgrade competes with the primary CTA")
+    else:
+        P(f"no week in this dataset outruns Premium's Plus allowance, so Max is not pushed — "
+          f"{len(CANDIDATES)} journeys tried, none justified it")
+        if 'Max' not in names: P(f"and Max stays off the card without evidence for it: {', '.join(names)}")
+        else: F(f"Max is on the card with no shortfall to justify it: {names}")
+        if up.count()==0: P("and no optional-upgrade box is shown without a shortfall")
+        else: F(f"{up.count()} upgrade boxes shown with nothing in the answers to justify them")
+    if pg.locator('.allplans__row:visible').count()==len(names): P("every row on the card is visible")
+    else: F("rows on the card are hidden")
+    prim=pg.locator('.btn--primary:visible').count()
+    if prim==1: P("exactly one filled primary button is visible on the recommendation (rule 9)")
+    else: F(f"{prim} primary buttons visible on the recommendation")
+    pg.screenshot(path=f"{OUT}/max-upsell.png", full_page=True)
+    c.close()
+
+    # --- C3. the same upgrade is never offered twice (rule 33) -----------------
+    # Indoor cycling near Mitte: the only place that does it is a Plus partner, so Classic
+    # opens nothing and rule 32 makes the alternative box compare UPWARDS — and the plan it
+    # lands on is Max. Offering Max again as its own box would state the same thing twice,
+    # so the Plus shortfall becomes a line inside that box instead.
+    c=b.new_context(viewport={'width':1440,'height':900}); pg=c.new_page()
+    pg.on("pageerror", lambda e: F(f"JS ERROR: {e}"))
+    pg.goto(U); pg.wait_for_timeout(500)
+    pg.locator('[data-start-fit]').click(); pg.wait_for_timeout(800)
+    for lab in ['Move more','Indoor cycling','Mitte','Twice a week']: answer(pg, lab)
+    boxes=pg.locator('.planbox .altbox__head')
+    heads=[boxes.nth(i).inner_text().strip() for i in range(boxes.count())]
+    if 'Opens more near you' in heads: P(f"rule 32 still compares upwards when the cheaper tier opens nothing: {heads}")
+    else: F(f"expected an upward comparison on this journey: {heads}")
+    if 'Optional upgrade' not in heads: P("and the upgrade is not offered a second time beside it (rule 33)")
+    else: F(f"the same membership is offered twice in one column: {heads}")
+    # Which plan the upward box lands on depends on the dataset: it is the next tier up from
+    # the one on screen, so it is Max only when Premium is recommended. What must hold for any
+    # of them is that the box gives a reason drawn from published data — a Plus allowance, a
+    # counted coverage gain, or a visit allowance — and never just a higher price.
+    alt=pg.locator('.altbox__card')
+    alt_text=' '.join(alt.inner_text().split())
+    import re as _re
+    reason=('Plus check-ins' in alt_text or 'more place' in alt_text
+            or bool(_re.search(r'opens \d+ of \d+', alt_text)))
+    if reason: P(f"the upward option carries a published reason: '{alt_text[-70:]}'")
+    else: F(f"the upward option gives no published reason: {alt_text}")
+    # Whatever plan it names has to be on the card too, or it is offered without being listed.
+    named=next((n for n in ['Essential','Classic','Premium','Max'] if alt_text.startswith(n)), None)
+    grid=grid_plans(pg)
+    if named and any(g.startswith(named) for g in grid):
+        P(f"and the plan it offers is on the card: {named}")
+    else: F(f"the alternative offers {named} but the card lists {grid}")
+    pg.screenshot(path=f"{OUT}/max-as-alternative.png", full_page=True)
     c.close()
 
     # --- D. the way out opens from anywhere (rule 71) -------------------------

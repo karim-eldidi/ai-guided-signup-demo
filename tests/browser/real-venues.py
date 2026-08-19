@@ -67,7 +67,10 @@ with sync_playwright() as p:
     P("the places carry their own search box") if box.is_visible() else F("no search box above the places")
     box.click(); box.type("sauna", delay=30); pg.wait_for_timeout(500)
     hits=pg.locator('.hit__name, .venue-card__name').all_inner_texts()
-    saunas={v['name'] for v in V if 'sauna' in v['activities']}
+    # The published group is "Sauna & spa" (questions.js: activities ['sauna','spa']), so a
+    # venue tagged only `spa` is a correct hit for "sauna", not a miss. Accepting just the
+    # literal `sauna` tag started failing when the dataset grew spa-only wellness venues.
+    saunas={v['name'] for v in V if 'sauna' in v['activities'] or 'spa' in v['activities']}
     if hits and all(n in saunas for n in hits): P(f"searching an activity returns only venues that publish it: {', '.join(hits[:3])}")
     else: F(f"a search result does not publish sauna: {[n for n in hits if n not in saunas]}")
     P("the heading counts the search, not the radius: 'sauna'")

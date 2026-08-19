@@ -59,7 +59,12 @@ try {
   const unitFiles = readdirSync(path.join(ROOT, 'tests')).filter((f) => f.endsWith('.test.js')).map((f) => `tests/${f}`);
   /* Pin the reporter. Newer Node defaults to "spec" ("i pass 58"), not TAP ("# pass 58"),
      and the counts below silently read as zero — a green run that tested nothing. */
-  const { stdout } = await run('node', ['--no-warnings=ExperimentalWarning', '--test', '--test-reporter=tap', ...unitFiles], { cwd: ROOT, maxBuffer: 1 << 24 });
+  /* Serial on purpose. The domain-parity sweep runs both recommendation engines over every
+     area x activity x frequency, which got ~3.6x heavier when the venue dataset grew to 193
+     and starved journey.test.js's real HTTP server when the two ran concurrently — four
+     tests failed once and then passed twice in a row. A verify command that fails one run in
+     N teaches people to rerun it instead of reading it, so determinism beats a few seconds. */
+  const { stdout } = await run('node', ['--no-warnings=ExperimentalWarning', '--test', '--test-concurrency=1', '--test-reporter=tap', ...unitFiles], { cwd: ROOT, maxBuffer: 1 << 24 });
   const pass = Number((stdout.match(/^# pass (\d+)/m) || [])[1] || 0);
   const fail = Number((stdout.match(/^# fail (\d+)/m) || [])[1] || 0);
   results.push({ name: 'unit tests', pass, fail, detail: [] });

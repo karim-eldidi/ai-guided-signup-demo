@@ -26,6 +26,7 @@ Differences from the full app, by design:
 import base64
 import json
 import os
+import subprocess
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -60,10 +61,30 @@ def read(*parts):
         return fh.read()
 
 
+def git(*args):
+    """Run one read-only git command, or answer None when git cannot tell us anything."""
+    try:
+        done = subprocess.run(("git",) + args, cwd=ROOT,
+                              capture_output=True, text=True, timeout=10)
+    except (OSError, subprocess.SubprocessError):
+        return None                     # no git on the machine, or it hung
+    if done.returncode != 0:
+        return None                     # not a repository, or no commits yet
+    return done.stdout.strip()
+
+
 def build_stamp():
-    """A visible version, so a tester can tell whether they are on the latest build."""
-    from datetime import datetime, timezone
-    return datetime.now(timezone.utc).strftime("%d %b %H:%M UTC")
+    """The commit the build came from, so a tester can tell which build they are on.
+
+    Deliberately not a clock. The generated file is committed, so a timestamp rewrote
+    ~11,000 lines on every build whether or not anything had changed, and `git diff` was
+    never readable. A commit hash moves only when the content does. Uncommitted work is
+    named out loud, because that is exactly when the hash on its own would mislead.
+    """
+    head = git("rev-parse", "--short", "HEAD")
+    if not head:
+        return "dev"                    # no git, or not a repository — say so honestly
+    return f"{head} + local edits" if git("status", "--porcelain") else head
 
 
 def data_url(name):
@@ -72,6 +93,25 @@ def data_url(name):
     path = optimised if os.path.exists(optimised) else os.path.join(ROOT, "public", "images", name)
     with open(path, "rb") as fh:
         return "data:image/jpeg;base64," + base64.b64encode(fh.read()).decode()
+
+
+def font_data_url(name):
+    with open(os.path.join(ROOT, "public", "fonts", name), "rb") as fh:
+        return "data:font/woff2;base64," + base64.b64encode(fh.read()).decode()
+
+
+def inline_fonts(css):
+    """Carry the typeface in the file rather than fetching it.
+
+    public/styles.css points at real /fonts/*.woff2 URLs so the Node server can serve them,
+    but the standalone demo is opened straight off a laptop or a USB stick, where a request
+    to fonts.googleapis.com fails and Figtree silently falls back to Helvetica — in which
+    weights 600 through 900 all render as one bold face and the type hierarchy disappears.
+    ~40 KB of base64 buys a demo whose typography survives with no network at all.
+    """
+    for name in ("figtree-latin.woff2", "figtree-latin-ext.woff2"):
+        css = css.replace("url('/fonts/%s')" % name, "url('%s')" % font_data_url(name))
+    return css
 
 
 def load_app_js():
@@ -102,7 +142,7 @@ def main():
 
     html = (
         template
-        .replace("/*__CSS__*/", read("public", "styles.css"))
+        .replace("/*__CSS__*/", inline_fonts(read("public", "styles.css")))
         .replace("/*__DATA__*/", json.dumps(payload, ensure_ascii=False))
         .replace("/*__IMAGES__*/", json.dumps(images))
         .replace("/*__BUILD__*/", build_stamp())

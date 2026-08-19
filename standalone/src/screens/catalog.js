@@ -34,9 +34,13 @@ function placeCard(v, opts = {}) {
   const lowest = firstPlanWithAccess(v);
   const badge = !priced && lowest
     ? `<span class="hit__badge hit__badge--${esc(lowest.id)}">${esc(lowest.name)}</span>` : '';
+  /* Testers could not tell whether this card was a place or a class they could book here.
+     The line above the name is the biggest type on the card and it read "yoga" — an activity
+     word, so it read as a class. It now names what the card is, in the dataset's published
+     wording (see venueKindLabel), and the activities stay where they were, underneath. */
+  const kindLabel = venueKindLabel(v);
   const acts = v.activities.slice(0,3).map(a => ACTIVITY_LABELS[a]||a).join(', ');
   const where = known ? `${v.distanceKm} km${from?` from ${esc(from)}`:''}` : 'in Berlin';
-  const grpLabel = v.activities.length ? (ACTIVITY_LABELS[v.activities[0]] || v.activities[0]) : 'Fitness';
   const grpIcon = activityIcon(v.activities);
 
   const isStarred = Boolean(S.starredVenues && S.starredVenues[v.id]);
@@ -61,9 +65,9 @@ function placeCard(v, opts = {}) {
       <span class="activity-card__icon-badge">${icon(grpIcon, 16)}</span>
     </button>
     <div class="activity-card__content hit__body">
-      <div class="activity-card__activity"><b>${esc(grpLabel)}</b></div>
+      <div class="activity-card__activity"><b>${esc(kindLabel)}</b></div>
       <button class="activity-card__vname venue-card__name hit__name linkish" data-venue="${esc(v.id)}">${esc(v.name)}</button>
-      <div class="activity-card__dist hit__meta">${where} &middot; ${esc(acts)}</div>
+      <div class="activity-card__dist hit__meta">${where}${acts?` &middot; ${esc(acts)}`:''}</div>
       ${priced && lowest ? `<p class="hit__price">Included from <strong>${esc(lowest.name)}</strong>, ${priceFor(lowest, S.commitmentId)} € a month.</p>` : ''}
       <div class="activity-card__actions">
         ${isStarred ? `
@@ -135,6 +139,63 @@ function findBar() {
   </section>`;
 }
 
+/* Testers keep asking for a map, and the only map this pilot could honestly draw is this
+   one. There is no map service and no tile host — adding either would break the offline
+   promise and put a network dependency in front of the funnel — so nothing here is
+   surveyed geography: it is the published latitude and longitude of each venue, projected
+   linearly into a square box, and it says so on the handle. One scale is used for both
+   axes (kilometres, with longitude corrected for this latitude) so the distances between
+   pins are the real relative ones rather than a stretched picture of them. The pins are
+   the same `data-venue` control the cards use, so tapping one opens the same venue detail,
+   and they are real buttons in nearest-first order so the keyboard reaches them. */
+function schematicMap(b) {
+  /* Nearest first, and capped: with every venue in range this became one black blob, and a
+     picture nobody can read is worse than no picture. The cap is stated under the box rather
+     than hidden, so the map never implies it is showing everything. */
+  const pts = b.within.slice(0, 30);
+  const hidden = b.within.length - pts.length;
+  /* One pin is a picture of nothing the card above does not already say. */
+  if (pts.length < 2) return '';
+  const all = [...pts, ...b.origins];
+  const lat0 = all.reduce((s,p)=>s+p.lat,0)/all.length;
+  const lng0 = all.reduce((s,p)=>s+p.lng,0)/all.length;
+  const kmPerLat = 110.6, kmPerLng = 111.32 * Math.cos(lat0 * Math.PI/180);
+  const span = Math.max(0.5, ...all.map(p => Math.max(
+    Math.abs((p.lng-lng0)*kmPerLng), Math.abs((p.lat-lat0)*kmPerLat))));
+  const at = p => {
+    const x = (p.lng-lng0)*kmPerLng, y = (p.lat-lat0)*kmPerLat;
+    return { left: (50 + x/span*40).toFixed(1), top: (50 - y/span*40).toFixed(1) };
+  };
+  const dot = 'position:absolute;transform:translate(-50%,-50%);border-radius:50%;box-shadow:0 1px 4px rgba(8,9,10,.3)';
+  const px = pts.length > 18 ? 18 : 22;
+  const pins = pts.map(v => { const p = at(v);
+    return `<button type="button" data-venue="${esc(v.id)}" title="${esc(v.name)} — ${v.distanceKm} km"
+      aria-label="${esc(v.name)}, ${v.distanceKm} km away — open details"
+      style="${dot};left:${p.left}%;top:${p.top}%;width:${px}px;height:${px}px;padding:0;border:2px solid #fff;background:var(--ink);cursor:pointer"></button>`;
+  }).join('');
+  const marks = b.origins.map(a => { const p = at(a);
+    return `<span style="${dot};left:${p.left}%;top:${p.top}%;width:26px;height:26px;border:2px solid var(--ink);background:var(--yellow-bright);z-index:2"
+      role="img" aria-label="${esc(a.name)}, where these distances are measured from"></span>`;
+  }).join('');
+  return `<details class="rowcard" style="margin-top:18px">
+    <summary class="rowcard__head">
+      <span class="rowcard__icon">${icon('pin',22)}</span>
+      <span class="rowcard__text"><b style="white-space:normal">See these places on a map</b>
+        <small>Relative positions from published coordinates &mdash; not a street map</small></span>
+      <span class="rowcard__cta" aria-hidden="true">${icon('arrowRight',18)}</span>
+    </summary>
+    <div class="rowcard__body">
+      <div style="position:relative;width:100%;max-width:420px;aspect-ratio:1/1;margin:0 auto;background:var(--cream);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden">
+        ${marks}${pins}
+      </div>
+      <p class="xsmall muted" style="margin:12px auto 0;max-width:420px">Each pin sits where that venue&rsquo;s
+        published coordinates put it, scaled to fit the box${hidden ? `, and these are the ${pts.length} nearest of ${b.within.length}` : ''}.
+        Tap a pin for the venue. The yellow marker is the area you are looking from. No routes,
+        travel times or live availability.</p>
+    </div>
+  </details>`;
+}
+
 /* The row of places, its two filters and the way to open it out. Everything here is a
    control rather than a claim: how far we looked is in km and it is a dropdown, what we
    looked for is the activity answer, and the line under it says what it counted (rules
@@ -180,6 +241,7 @@ function nearbyRow() {
       : `<div class="notice notice--grey">${icon('info',19)}<span>${b.list.length
           ? `The nearest is <b>${esc(b.list[0].name)}</b>, ${b.list[0].distanceKm} km away. Widen the distance above and it comes into range.`
           : `Nothing in the pilot&rsquo;s ${VENUES.length} venues does that. Try another activity, or search for the place by name.`}</span></div>`}
+    ${schematicMap(b)}
   </section>`;
 }
 

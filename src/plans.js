@@ -43,8 +43,13 @@ export const monthlyAllowance = (plan) =>
   !plan ? 0 : (plan.dailyCheckIn ? 30 : (plan.checkInsPerMonth || 0));
 export const SESSIONS_PER_WEEK = { once: 1, twice: 2, often: 3, daily: 5 };
 export const visitsWanted = (frequency) => (SESSIONS_PER_WEEK[frequency] || 2) * 4;
+/* No `!frequency` short-circuit. `visitsWanted` already reads a missing answer as the
+   default two sessions a week, and treating "they have not said yet" as "no constraint"
+   made this engine offer Essential's four check-ins mid-flow where the standalone offered
+   Classic — the same visitor, two different plans. On no information, assume the default
+   rather than the smallest allowance. Matches standalone/src/domain.js. */
 export const carriesFrequency = (plan, frequency) =>
-  !frequency || monthlyAllowance(plan) >= visitsWanted(frequency);
+  monthlyAllowance(plan) >= visitsWanted(frequency);
 /* The cheapest plan whose allowance can carry this frequency. */
 export const allowanceFloor = (frequency) =>
   PLANS.filter((p) => carriesFrequency(p, frequency)).sort((a, b) => a.rank - b.rank)[0] || null;

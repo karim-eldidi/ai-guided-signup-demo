@@ -93,7 +93,7 @@ function coverageBlock(rec, match, plan) {
   </div>`;
 }
 
-function planDrawer(plan, price, each, commitment, isRec, hereT, cheaperPlan, cheaperT, visitsFor, wp, altBox, allPlans) {
+function planDrawer(plan, price, each, commitment, isRec, hereT, cheaperPlan, cheaperT, visitsFor, wp, altBox, allPlans, maxUpsell) {
   if (!PLAN_DRAWER_OPEN) return '';
   const perkText = S.commitmentId === 'biennial'
     ? 'Includes 2 free wellness apps (0 € extra)'
@@ -126,11 +126,26 @@ function planDrawer(plan, price, each, commitment, isRec, hereT, cheaperPlan, ch
 
       <div class="planbox__factshead" style="font-size:13px;font-weight:700;margin-bottom:8px">Included with ${esc(plan.name)}</div>
       <ul class="planbox__facts" style="margin-bottom:14px">
-        <li>${icon('checkThin',15)} <span>All <b>${hereT && hereT.included ? hereT.included : (wp.sessions.filter(s=>s.included).length || 6)} places</b> in your routine included</span></li>
+        ${(() => {
+          /* Never print a place count we did not count. The old fallback said "6 places"
+             whenever coverage could not be computed, which is a number nobody counted. */
+          const n = hereT && typeof hereT.included === 'number' ? hereT.included
+                  : (wp && wp.sessions ? wp.sessions.filter(s => s.included).length : null);
+          if (n === null) return '';
+          /* "All 1 place are included" — the count and the verb have to agree. */
+          const phrase = n === 1
+            ? 'The <b>one place</b> in your routine is included'
+            : `All <b>${n} places</b> in your routine are included`;
+          return `<li>${icon('checkThin',15)} <span>${phrase}</span></li>`;
+        })()}
         <li>${icon('checkThin',15)} <span><b>${visitsFor(plan)} visits</b> each month</span></li>
         ${each?`<li>${icon('checkThin',15)} <span>About <b>${each} €</b> a session</span></li>`:''}
         <li>${icon('checkThin',15)} <span>Flexible &ndash; cancel anytime</span></li>
       </ul>
+
+      <!-- On a phone the plan column is not rendered at all, so the optional upgrade has to
+           live here or the shortfall it answers would only ever be visible on a desktop. -->
+      ${maxUpsell || ''}
 
       ${altBox || allPlans ? `
         <details class="drawer-compare" style="margin-top:10px;margin-bottom:14px;border:1px solid var(--border);border-radius:var(--radius);background:#fff">
@@ -402,8 +417,6 @@ function recommendationScreen() {
           ${curatedCards.map(({ grp, v }) => {
             const vResolved = resolveVenue(v);
             const inPlan = includedIn(vResolved, plan.id);
-            const baseScore = 97 - Math.round(vResolved.distanceKm * 2.2) - (vResolved.tier === 'premium' ? 3 : vResolved.tier === 'plus' ? 1 : 0);
-            const matchPct = Math.max(89, Math.min(98, baseScore));
             const areaLabel = vResolved.nearestArea ? vResolved.nearestArea.name : (AREAS.find(a=>a.id===vResolved.area)||{}).name || '';
             const distLabel = areaLabel ? `${vResolved.distanceKm} km from ${esc(areaLabel)}` : `${vResolved.distanceKm} km away`;
             const isStarred = Boolean(S.starredVenues && S.starredVenues[vResolved.id]);
@@ -414,11 +427,12 @@ function recommendationScreen() {
                   : vResolved.tier === 'premium'
                   ? `<span class="access-pill access-pill--premium-overlay">${icon('checkThin', 11)} Premium</span>`
                   : `<span class="access-pill access-pill--included-overlay">${icon('checkThin', 11)} Included</span>`)
-              : `<span class="access-pill access-pill--locked-overlay venue-card__lock">${icon('lock', 11)} Needs ${vResolved.tier === 'premium' ? 'Premium' : 'Classic'}</span>`;
+              /* The tier is not the access map. Ask which published plan actually opens this
+                 venue instead of inferring it, or the badge lies whenever the two disagree. */
+              : `<span class="access-pill access-pill--locked-overlay venue-card__lock">${icon('lock', 11)} Needs ${esc((firstPlanWithAccess(vResolved) || {}).name || 'a higher plan')}</span>`;
 
             return `<div class="activity-card venue-card ${inPlan ? '' : 'is-locked'} ${isStarred ? 'is-starred' : ''}" draggable="true" data-drag-venue="${esc(vResolved.id)}" data-drag-name="${esc(vResolved.name)}">
               <div class="activity-card__badges">
-                <span class="activity-card__badge">${matchPct}% match</span>
                 ${accessBadge}
               </div>
               <button class="activity-card__star-btn ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(vResolved.id)}" aria-label="${isStarred ? `Remove ${esc(vResolved.name)} from routine` : `Add ${esc(vResolved.name)} to routine`}" title="${isStarred ? 'In your routine' : 'Add to routine'}">
@@ -501,12 +515,58 @@ function recommendationScreen() {
   </details>`;
 
   const opensNothing = t => Boolean(t && t.nearby && !t.included);
+
+  /* Rule 32: a cheaper plan that opens none of their places is not a saving, it is a trap.
+     The box used to show it anyway and then admit it opened nothing, which is the one
+     alternative nobody can act on. When the tier below loses everything we compare upwards. */
+  const upgradePlan = PLANS.filter(p => p.rank > plan.rank).sort((x, y) => x.rank - y.rank)[0] || null;
+  const compareUp = opensNothing(cheaperT);
+  const altPlan = compareUp ? upgradePlan : cheaperPlan;
+  const altT = compareUp ? totalsFor(upgradePlan) : cheaperT;
+
+  /* ---- the top tier is contextual, not a fourth column ----
+     Karim, 19 Aug: four plans confuse visitors and almost nobody picks the top one, so the
+     grid offers the three that fit nearly everyone and the top tier appears only when this
+     visitor's own answers ask for it. This is presentation. `recommend()` still owns the
+     recommendation and nothing here can change it (rule 1).
+
+     The trigger is the published Plus allowance, because that is the only thing the top two
+     tiers actually differ on: both are "one check-in per day", so the honest question is not
+     how many visits but how many *Plus* visits. What spends a Plus check-in is not guessed
+     from a venue's tier either — it is read off the access maps. The tier below that
+     publishes `plusCheckIns: 0` states outright that Plus partners are not included, so a
+     place this plan opens and that tier does not can only be reached with one of this plan's
+     Plus check-ins. Count the sessions in the week this page is already showing that land on
+     such a place, multiply by the four weeks every other figure here uses (`visitsWanted`),
+     and compare it with `plan.plusCheckIns`. Over the allowance there is a real shortfall to
+     answer; at or under it the plan on screen already covers them and the upgrade would be
+     sold on nothing. No score, no keyword count, no invented percentage. */
+  const topPlan = PLANS.slice().sort((x, y) => y.rank - x.rank)[0] || plan;
+  const noPlusTier = PLANS.filter(p => p.rank < plan.rank && !p.plusCheckIns)
+    .sort((x, y) => y.rank - x.rank)[0] || null;
+  const spendsPlus = v => Boolean(noPlusTier && v) && includedIn(v, plan.id) && !includedIn(v, noPlusTier.id);
+  const plusWanted = plan.plusCheckIns
+    ? wp.sessions.filter(s => spendsPlus(s.venue)).length * 4 : 0;
+  const plusShort = Boolean(topPlan.plusCheckIns > plan.plusCheckIns && plusWanted > plan.plusCheckIns);
+  /* It is also listed whenever it is genuinely on the table: the visitor switched to it, or
+     the rules chose it. Hiding the plan somebody is looking at would be the worse lie. */
+  const showTop = plusShort || plan.id === topPlan.id || rec.planId === topPlan.id;
+  const gridPlans = (showTop ? PLANS.slice() : PLANS.filter(pl => pl.id !== topPlan.id))
+    .sort((x, y) => x.rank - y.rank);
+  const COUNTWORDS = { 1:'one', 2:'two', 3:'three', 4:'four', 5:'five', 6:'six' };
+  /* Counted from what is rendered, so the heading can never claim a row that is not there. */
+  const gridCount = COUNTWORDS[gridPlans.length] || String(gridPlans.length);
+
+  /* Rule 64 said all four sit in the grid. That half is superseded by the decision above;
+     the rest of it stands — the grid is on the plan card, one tap from the recommendation,
+     every row it lists is visible, and the `plans` screen is still one link away for the
+     tier this grid is leaving out. */
   const allPlans = `<details class="allplans" open>
     <summary class="allplans__head" data-toggle-alt>
-      <span class="allplans__headcopy"><span>Compare all ${PLANS.length===4?'four':PLANS.length} memberships</span>
-        <small>Essential, Classic, Premium and Max</small></span>${icon('chevron',18)}</summary>
+      <span class="allplans__headcopy"><span>Compare ${gridPlans.length===PLANS.length?'all ':''}${gridCount} memberships</span>
+        <small>${esc(listWords(gridPlans.map(pl=>pl.name)))}</small></span>${icon('chevron',18)}</summary>
     <div class="allplans__grid">
-      ${PLANS.slice().sort((x,y)=>x.rank-y.rank).map(pl => {
+      ${gridPlans.map(pl => {
         const p = priceFor(pl, S.commitmentId), t = totalsFor(pl), here = pl.id === plan.id;
         const tag = here ? (isRec ? 'Recommended' : 'Your choice') : (pl.id===rec.planId ? 'Urby&rsquo;s pick' : '');
         const short = a.frequency && !carriesFrequency(pl, a.frequency)
@@ -525,26 +585,63 @@ function recommendationScreen() {
         </div>`;
       }).join('')}
     </div>
-    <p class="allplans__foot"><button class="linkish" type="button" data-go="plans">See everything each plan includes</button></p>
+    <p class="allplans__foot"><button class="linkish" type="button" data-go="plans">See everything each plan includes${
+      showTop?'':`, ${esc(topPlan.name)} included`}</button></p>
   </details>`;
 
-  const altBox = cheaperPlan ? (() => {
-    const p = priceFor(cheaperPlan, S.commitmentId);
-    const short = a.frequency && !carriesFrequency(cheaperPlan, a.frequency)
+  /* Rule 33, say a thing once: when the tier below opens nothing the alternative box is
+     already comparing upwards, and the plan it lands on is this same top tier. Two boxes
+     offering the same switch is the duplication that rule exists to stop, so the shortfall
+     becomes a line inside that box instead of a second box beside it. */
+  const altIsTop = Boolean(altPlan && altPlan.id === topPlan.id);
+  const plusNote = plusShort
+    ? `Your week would use about ${plusWanted} Plus check-ins a month, and ${plan.name} includes ${plan.plusCheckIns}.`
+    : '';
+
+  const altBox = altPlan ? (() => {
+    const p = priceFor(altPlan, S.commitmentId);
+    const short = a.frequency && !carriesFrequency(altPlan, a.frequency)
       ? `Not enough for your ${visitsWanted(a.frequency)}-visit routine` : '';
+    const opens = altT && altT.nearby
+      ? ` &middot; opens ${altT.included} of ${altT.nearby} ${altT.nearby === 1 ? 'place' : 'places'}` : '';
+    /* Downwards the honest frame is the saving; upwards it is what the extra money opens. */
+    const extra = compareUp && altT && hereT && altT.included > hereT.included
+      ? altT.included - hereT.included : 0;
+    const gain = extra ? ` &middot; ${extra} more ${extra === 1 ? 'place' : 'places'} than ${esc(plan.name)}` : '';
     return `<div class="altbox">
-      <div class="altbox__head">Cheaper option</div>
-      <div class="altbox__card" data-plan="${esc(cheaperPlan.id)}" role="button" tabindex="0"
-        aria-label="Switch to ${esc(cheaperPlan.name)} for ${p} euros a month">
-        <div class="altbox__row"><b>${esc(cheaperPlan.name)}</b>
+      <div class="altbox__head">${compareUp ? 'Opens more near you' : 'Cheaper option'}</div>
+      <div class="altbox__card" data-plan="${esc(altPlan.id)}" role="button" tabindex="0"
+        aria-label="Switch to ${esc(altPlan.name)} for ${p} euros a month">
+        <div class="altbox__row"><b>${esc(altPlan.name)}</b>
           <span class="altbox__price">${p} €<small>/mo</small></span></div>
-        <div class="altbox__meta">${visitsFor(cheaperPlan)} visits${cheaperT&&cheaperT.nearby
-          ? ` &middot; opens ${cheaperT.included} of ${cheaperT.nearby} ${cheaperT.nearby===1?'place':'places'}`:''}</div>
+        <div class="altbox__meta">${visitsFor(altPlan)} visits${opens}${gain}</div>
+        ${altIsTop && plusNote?`<p class="altbox__warn">${icon('info',15)} <span>${esc(plusNote)}</span></p>`:''}
         ${short?`<p class="altbox__warn">${icon('info',15)} <span>${esc(short)}</span></p>`:''}
-        ${opensNothing(cheaperT)
-          ? `<p class="altbox__warn">${icon('info',15)} <span>Opens none of the places you asked for.</span></p>` : ''}
         <span class="altbox__chev">${icon('chevron',19)}</span>
       </div>
+    </div>`;
+  })() : '';
+
+  /* An optional upgrade, and deliberately not a decision: quiet heading, published facts
+     quoted from plans.json rather than paraphrased, and a text link to switch. It is never
+     a filled black button — this screen has exactly one of those and it belongs to the plan
+     the rules chose (rule 9). */
+  const plusLine = pl => ((pl.includes||[]).find(x => /plus check-in/i.test(x)) || '');
+  const maxUpsell = plusShort && !altIsTop ? (() => {
+    const p = priceFor(topPlan, S.commitmentId), delta = p - price;
+    return `<div class="altbox">
+      <div class="altbox__head">Optional upgrade</div>
+      <div class="altbox__row"><b>${esc(topPlan.name)}</b>
+        <span class="altbox__price">${p} €<small>/mo</small></span></div>
+      <div class="altbox__meta">${esc(plusNote)}</div>
+      <ul class="planbox__facts">
+        <li>${icon('checkThin',16)} <span>${esc(plusLine(topPlan))} &ndash; against ${esc(lowerFirst(plusLine(plan)))} on ${esc(plan.name)}</span></li>
+        <li>${icon('checkThin',16)} <span><b>${esc(topPlan.venueCount)}</b> venues, against ${esc(plan.venueCount)} on ${esc(plan.name)}</span></li>
+        <li>${icon('info',16)} <span><b>${delta} €</b> more a month. Still ${esc(lowerFirst(topPlan.checkInModel.split(',')[0]))} overall.</span></li>
+      </ul>
+      <p class="altbox__meta">Urby still recommends ${esc(planById(rec.planId).name)} &mdash; this is only here because your own week
+        asks for more Plus check-ins than it includes.
+        <button class="linkish strong" type="button" data-plan="${esc(topPlan.id)}">Switch to ${esc(topPlan.name)}</button></p>
     </div>`;
   })() : '';
 const planAside = `<div class="planbox">
@@ -565,7 +662,11 @@ const planAside = `<div class="planbox">
     </div>
     <div class="planbox__factshead">Why this fits you</div>
     <ul class="planbox__facts">
-      <li>${icon('checkThin',16)} <span>All <b>${hereT && hereT.included ? hereT.included : 6} places</b> are included</span></li>
+      ${hereT && typeof hereT.included === 'number'
+        ? `<li>${icon('checkThin',16)} <span>${hereT.included === 1
+            ? 'Your <b>one place</b> is included'
+            : `All <b>${hereT.included} places</b> are included`}</span></li>`
+        : ''}
       <li>${icon('checkThin',16)} <span><b>${visitsFor(plan)} visits</b> each month</span></li>
       ${wp.perMonth?`<li>${icon('checkThin',16)} <span>Matches your <b>${S.answers.frequency === 'once' ? '1' : S.answers.frequency === 'twice' ? '2' : S.answers.frequency === 'often' ? '3–4' : (S.answers.frequency === 'daily' ? '5+' : (SESSIONS[S.answers.frequency] || '2'))} sessions/wk goal</b> (~${wp.perMonth} visits/mo)</span></li>`:''}
       ${each?`<li>${icon('checkThin',16)} <span>About <b>${each} €</b> a session</span></li>`:''}
@@ -578,6 +679,7 @@ const planAside = `<div class="planbox">
     </div>
     ${!isRec ? `<p class="planbox__back">${icon('sparkle',15)} <span>Urby would have picked <b>${esc(planById(rec.planId).name)}</b> for you &mdash; <button class="linkish" data-plan="${esc(rec.planId)}">switch back</button></span></p>` : ''}
     ${altBox}
+    ${maxUpsell}
     ${allPlans}
   </div>`;
 
@@ -660,7 +762,7 @@ const planAside = `<div class="planbox">
     </div>
     <button class="btn btn--primary paybar__cta" data-go="details">Continue</button>
   </div>
-  ${planDrawer(plan, price, each, commitment, isRec, hereT, cheaperPlan, cheaperT, visitsFor, wp, altBox, allPlans)}
+  ${planDrawer(plan, price, each, commitment, isRec, hereT, cheaperPlan, cheaperT, visitsFor, wp, altBox, allPlans, maxUpsell)}
   ${exitModal()}${venueSheet()}${appSheet()}`;
 }
 

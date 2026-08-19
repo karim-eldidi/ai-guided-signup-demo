@@ -234,8 +234,13 @@ function paymentScreen() {
               <span class="pay-detail-val">${esc(S.email || '—')}</span>
             </div>
             <div class="pay-detail-row">
-              <span class="pay-detail-label">Start date</span>
-              <span class="pay-detail-val">${esc(fmtDate(S.startDate))} <small class="muted">(1st of next month)</small></span>
+              <span class="pay-detail-label"><label for="start-date">Start date</label></span>
+              <span class="pay-detail-val">
+                <select id="start-date" data-start-date style="font:inherit;color:inherit;background:transparent;border:1px solid var(--cream-line);border-radius:var(--radius);padding:4px 8px">
+                  ${startDateChoices().map(d => `<option value="${esc(d)}"${d === S.startDate ? ' selected' : ''}>${esc(fmtDate(d))}</option>`).join('')}
+                </select>
+                <small class="muted">memberships start on the 1st</small>
+              </span>
             </div>
             <div class="pay-detail-row">
               <span class="pay-detail-label">Monthly visits</span>

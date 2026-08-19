@@ -41,8 +41,8 @@ function go(route, opts={}) {
      on the landing page and then compulsory two screens later. Signing up collects an
      email anyway, as part of the membership; saving is a separate choice, on its own
      screen, reached by someone who wants to leave. */
-  ROUTE = route; EDITING = null; SHEET = null; CITYPICK = false; CITYWANTED = null; ASKOPEN = false; DAYSOPEN = false; PLACEWANTED = null; VENUESOPEN = false; APPSOPEN = false; DAYNOTE = null; WEEKOPEN = false; VENUEQ = '';
-  PLACESOPEN = false; MOREOPEN = false; MOREPICK = null; ALTOPEN = null; PLANPLUS = null; PLANASK = false; PLANDETAILS_OPEN = false; WHEREPICK = false; SEEALL = false; FREETEXT_OPEN = false;
+  ROUTE = route; EDITING = null; SHEET = null; CITYPICK = false; CITYWANTED = null; PLACEWANTED = null; VENUESOPEN = false; APPSOPEN = false; DAYNOTE = null; VENUEQ = '';
+  MOREOPEN = false; MOREPICK = null; ALTOPEN = null; PLANPLUS = null; PLANASK = false; WHEREPICK = false; SEEALL = false;
   document.body.classList.remove('save-modal-open'); document.body.style.overflow = '';
   /* A reviewer saw the save screen's "enter a valid email" error appear under the
      details form's own email field. Errors belong to the screen that produced them. */
@@ -146,6 +146,15 @@ document.addEventListener('change', e => {
     });
     return;
   }
+  /* Deferring the start changes nothing else on the page — no plan, no week, no coverage —
+     so it returns early rather than falling through the rebuild below. */
+  const startSel = e.target.closest('select[data-start-date]');
+  if (startSel) {
+    S.startDate = startSel.value;
+    log('start_date_changed', { startDate: S.startDate });
+    renderInPlace();
+    return;
+  }
   const sel = e.target.closest('select[data-radius-pick], select[data-cat-pick]');
   if (!sel) return;
   if (sel.dataset.radiusPick !== undefined) {
@@ -177,7 +186,7 @@ document.addEventListener('scroll', e => {
   }
 }, true);
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-toggle-fitpanel],[data-toggle-freetext],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-app],[data-close-app-sheet],[data-change-city],[data-city],[data-unsure],[data-open-ask],[data-rail],[data-radius],[data-toggle-venues],[data-toggle-apps],[data-toggle-week],[data-toggle-places],[data-toggle-more],[data-more],[data-toggle-alt],[data-toggle-plan-details],[data-open-days],[data-day],[data-swap],[data-change-week],[data-add-week],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-variant],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-scroll-ula],[data-search-example],[data-venue-clear],[data-venue-search-all],[data-toggle-where],[data-where],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-add-activity],[data-remove-activity],[data-expand-pillar],[data-toggle-routine-customizer],[data-remove-day],[data-exclude-venue],[data-filter-category],[data-scroll-pills],[data-scroll-gallery],[data-toggle-star],[data-set-star-freq],[data-open-plan-drawer],[data-close-plan-drawer],[data-open-order-summary],[data-close-order-summary]');
+  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-app],[data-close-app-sheet],[data-change-city],[data-city],[data-unsure],[data-radius],[data-toggle-apps],[data-toggle-more],[data-more],[data-toggle-alt],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-search-example],[data-venue-search-all],[data-toggle-where],[data-where],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-filter-category],[data-scroll-pills],[data-scroll-gallery],[data-toggle-star],[data-open-plan-drawer],[data-close-plan-drawer],[data-open-order-summary],[data-close-order-summary]');
   if (!t) return;
 
   if (t.dataset.scrollPills) {
@@ -202,13 +211,6 @@ document.addEventListener('click', e => {
   if (t.dataset.filterCategory) {
     ACTIVE_CATEGORY_FILTER = t.dataset.filterCategory;
     log('category_filtered', { category: ACTIVE_CATEGORY_FILTER });
-    render(false);
-    return;
-  }
-
-  if (t.dataset.toggleRoutineCustomizer !== undefined) {
-    CUSTOMIZER_OPEN = !CUSTOMIZER_OPEN;
-    log('routine_customizer_toggled', { open: CUSTOMIZER_OPEN });
     render(false);
     return;
   }
@@ -270,43 +272,6 @@ document.addEventListener('click', e => {
     renderInPlace(); return;
   }
 
-  if (t.dataset.venueClear !== undefined) { VENUEQ=''; renderVenueFilter(); return; }
-  if (t.dataset.addWeek !== undefined) {
-    const m=matchVenues(A()), sessions=weekPlan(A().activities||[],m.pool||[],currentPlan().id,A().frequency).sessions;
-    const day = sessions[0]?.day || 'Monday';
-    WEEK_ADD_MODE=true; WEEK_ADD_DAY=day; WEEK_SWAP_DAY=day;
-    WEEK_SWAP_GROUP = (A().activities||[])[0] || 'gym';
-    const group = groupById(WEEK_SWAP_GROUP);
-    const pool = (m.pool && m.pool.length ? m.pool : VENUES).filter(v => group && venueInGroup(v, group));
-    const initialVenue = pool[0] || VENUES[0];
-    WEEK_SWAP_VENUE_ID = initialVenue ? initialVenue.id : null;
-    const opts = venueOptions(initialVenue, group, day);
-    WEEK_SWAP_OPTION_ID = opts[0]?.id || 'opt_1';
-    WEEK_SWAP_OPTION_TITLE = opts[0] ? `${opts[0].title} · ${opts[0].time}` : 'All day';
-    WEEK_SWAP_FILTER = 'nearby';
-    WEEK_SWAP_PICKING_DAY = false;
-    WEEK_SWAP_PICKING_ACT = false;
-    SEARCH={q:'',result:null}; go('search'); return;
-  }
-  if (t.dataset.changeWeek) {
-    const day = t.dataset.changeWeek;
-    WEEK_ADD_MODE=true; WEEK_ADD_DAY=day; WEEK_SWAP_DAY=day;
-    const match = matchVenues(A());
-    const wp = weekPlan(A().activities||[], match.pool||[], currentPlan().id, A().frequency);
-    const existing = wp.sessions.find(s => s.day === day) || wp.sessions[0];
-    WEEK_SWAP_GROUP = existing ? existing.groupId : ((A().activities||[])[0] || 'gym');
-    const group = groupById(WEEK_SWAP_GROUP);
-    const pool = (match.pool && match.pool.length ? match.pool : VENUES).filter(v => group && venueInGroup(v, group));
-    const initialVenue = (existing && existing.venue) || pool[0] || VENUES[0];
-    WEEK_SWAP_VENUE_ID = initialVenue ? initialVenue.id : null;
-    const opts = venueOptions(initialVenue, group, day);
-    WEEK_SWAP_OPTION_ID = opts[0]?.id || 'opt_1';
-    WEEK_SWAP_OPTION_TITLE = opts[0] ? `${opts[0].title} · ${opts[0].time}` : 'All day';
-    WEEK_SWAP_FILTER = 'nearby';
-    WEEK_SWAP_PICKING_DAY = false;
-    WEEK_SWAP_PICKING_ACT = false;
-    SEARCH={q:'',result:null}; go('search'); return;
-  }
   if (t.dataset.toggleSwapDay !== undefined) { WEEK_SWAP_PICKING_DAY = !WEEK_SWAP_PICKING_DAY; renderInPlace(); return; }
   if (t.dataset.selectSwapDay) {
     WEEK_SWAP_DAY = t.dataset.selectSwapDay;
@@ -437,7 +402,6 @@ document.addEventListener('click', e => {
   if (t.dataset.searchExample) { SEARCH.q = t.dataset.searchExample; SEARCH.result = searchPlaces(SEARCH.q);
     log('searched', { query:SEARCH.q, matched:SEARCH.result?SEARCH.result.kind:'none', example:true });
     render(false); return; }
-  if (t.dataset.scrollUrby !== undefined) { document.querySelector('.ula-section')?.scrollIntoView({ behavior:SCROLL_BEHAVIOR(), block:'start' }); return; }
   if (t.dataset.askExample) { ASK.q = t.dataset.askExample; ASK.result = askUrby(ASK.q);
     log('ula_asked', { question:ASK.q, matched:ASK.result?ASK.result.kind:'none', example:true }); render(false);
     document.querySelector('.ask__answer')?.scrollIntoView({ behavior:SCROLL_BEHAVIOR(), block:'center' }); return; }
@@ -454,73 +418,12 @@ document.addEventListener('click', e => {
     render(false);
     return;
   }
-  if (t.dataset.togglePlaces !== undefined) {
-    RECO_VIEW = 'pillars';
-    log('reco_view_changed', { mode: RECO_VIEW });
-    render(false);
-    return;
-  }
-  if (t.dataset.toggleRoutine !== undefined || t.dataset.toggleWeek !== undefined) {
+  /* `data-toggle-routine` is still emitted on the routine tab, which also carries
+     `data-set-reco-view="routine"` — so this only fires for markup that names the
+     routine view without the newer attribute. */
+  if (t.dataset.toggleRoutine !== undefined) {
     RECO_VIEW = 'routine';
     log('reco_view_changed', { mode: RECO_VIEW });
-    render(false);
-    return;
-  }
-  if (t.dataset.addActivity) {
-    const actId = t.dataset.addActivity;
-    const cur = (S.answers.activities || []).filter(x => x !== SKIP);
-    if (!cur.includes(actId)) {
-      S.answers.activities = [...cur, actId];
-      S.planOverridden = false;
-      S.chosenPlanId = null;
-      log('activity_added_from_reco', { activity: actId });
-      render(false);
-    }
-    return;
-  }
-  if (t.dataset.removeActivity) {
-    const actId = t.dataset.removeActivity;
-    const cur = (S.answers.activities || []).filter(x => x !== SKIP && x !== actId);
-    if (cur.length > 0) {
-      S.answers.activities = cur;
-      S.planOverridden = false;
-      S.chosenPlanId = null;
-      if (S.weekSwap) {
-        Object.keys(S.weekSwap).forEach(d => {
-          if (S.weekSwap[d] && S.weekSwap[d].groupId === actId) delete S.weekSwap[d];
-        });
-      }
-      log('activity_removed_from_reco', { activity: actId });
-      render(false);
-    }
-    return;
-  }
-  if (t.dataset.expandPillar) {
-    const pId = t.dataset.expandPillar;
-    EXPANDED_PILLARS[pId] = !EXPANDED_PILLARS[pId];
-    log('pillar_expanded', { pillar: pId, expanded: EXPANDED_PILLARS[pId] });
-    render(false);
-    return;
-  }
-  if (t.dataset.removeDay) {
-    const day = t.dataset.removeDay;
-    const curDays = (S.weekDays && S.weekDays.length ? S.weekDays : DAY_ORDER.filter((_, i) => i < 3)).filter(d => d !== day);
-    if (curDays.length > 0) {
-      S.weekDays = curDays;
-      if (S.weekSwap) delete S.weekSwap[day];
-      const newFreq = freqForDays(S.weekDays.length);
-      if (newFreq !== S.answers.frequency) S.answers.frequency = newFreq;
-      S.planOverridden = false;
-      S.chosenPlanId = null;
-      log('day_removed_from_schedule', { day });
-      render(false);
-    }
-    return;
-  }
-  if (t.dataset.excludeVenue) {
-    const vId = t.dataset.excludeVenue;
-    EXCLUDED_VENUES.add(vId);
-    log('venue_excluded_from_routine', { venue: vId });
     render(false);
     return;
   }
@@ -572,15 +475,6 @@ document.addEventListener('click', e => {
     render(false);
     return;
   }
-  if (t.dataset.setStarFreq) {
-    const vId = t.dataset.setStarFreq;
-    const freq = Number(t.dataset.freq) || 1;
-    if (!S.starredVenues) S.starredVenues = {};
-    S.starredVenues[vId] = { freq };
-    log('venue_star_freq_set', { venue: vId, freq });
-    render(false);
-    return;
-  }
   if (t.dataset.openPlanDrawer !== undefined) {
     PLAN_DRAWER_OPEN = true;
     document.body.style.overflow = 'hidden';
@@ -618,19 +512,8 @@ document.addEventListener('click', e => {
     document.querySelector('.plans-selection')?.scrollIntoView({behavior:SCROLL_BEHAVIOR(),block:'nearest'});
     return;
   }
-  if (t.dataset.toggleVenues !== undefined) { VENUESOPEN = !VENUESOPEN; return; }
   if (t.dataset.toggleApps !== undefined) { APPSOPEN = !APPSOPEN; return; }
-  if (t.dataset.toggleFreetext !== undefined) { FREETEXT_OPEN = !FREETEXT_OPEN; render(false); return; }
-  /* The week is open; what folds is adjusting it. The open state has to survive the
-     re-render, or changing a day would close the thing you were editing. */
-  if (t.dataset.toggleWeek !== undefined) {
-    /* A live "what just changed" note holds the drawer open (rule 46), so "Done adjusting"
-       has to close both, or the button would say done and change nothing. */
-    const wasOpen = WEEKOPEN || Boolean(DAYNOTE);
-    WEEKOPEN = !wasOpen; DAYNOTE = null; render(false); return; }
-  if (t.dataset.togglePlaces !== undefined) { PLACESOPEN = !PLACESOPEN; render(false); return; }
   if (t.dataset.toggleAlt !== undefined) { e.preventDefault(); ALTOPEN = ALTOPEN !== true; render(false); return; }
-  if (t.dataset.togglePlanDetails !== undefined) { PLANDETAILS_OPEN = !PLANDETAILS_OPEN; render(false); return; }
   /* "Questions and details" names its three sections on its own handle, and each name is
      the way straight in. Clicking the section that is already open closes it, so this is
      an accordion rather than three drawers that all end up open (rule 16). */
@@ -642,15 +525,6 @@ document.addEventListener('click', e => {
     render(false); return;
   }
   if (t.dataset.toggleMore !== undefined) { MOREOPEN = !MOREOPEN; return; }
-  if (t.dataset.rail) {
-    const rail = document.querySelector('.venue-grid--big.is-rail');
-    if (rail) {
-      const card = rail.querySelector('.venue-card');
-      const step = (card ? card.getBoundingClientRect().width + 14 : 250) * 2;
-      rail.scrollBy({ left: Number(t.dataset.rail) * step, behavior: REDUCED_MOTION() ? 'auto' : 'smooth' });
-    }
-    return;
-  }
   if (t.dataset.radius) {
     S.radiusKm = t.dataset.radius;
     S.weekDays = []; S.weekSwap = {};              // the week is rebuilt from what is in range now
@@ -658,57 +532,6 @@ document.addEventListener('click', e => {
     log('radius_changed', { radius: S.radiusKm });
     render(false); return;
   }
-  if (t.dataset.openDays !== undefined) { DAYSOPEN = true; log('week_days_opened'); render(false); return; }
-
-  if (t.dataset.day) {
-    /* Days are the schedule. Changing them changes how often they'd go, which
-       changes the plan and the price — so the whole page recalculates, and the
-       frequency chip stays true to what they just told us. */
-    const day = t.dataset.day;
-    const wasPlan = currentPlan(), wasEach = perSession(priceFor(wasPlan,S.commitmentId), S.answers.frequency, wasPlan);
-    const cur = new Set(S.weekDays.length ? S.weekDays : weekPlan(A().activities||[], matchVenues(A()).pool||[], currentPlan().id, S.answers.frequency).sessions.map(x=>x.day));
-    if (cur.has(day)) { if (cur.size>1) cur.delete(day); } else cur.add(day);
-    S.weekDays = DAY_ORDER.filter(d=>cur.has(d));
-    const newFreq = freqForDays(S.weekDays.length);
-    if (newFreq !== S.answers.frequency) {
-      S.answers.frequency = newFreq; S.planOverridden = false;
-      /* and let the rules re-pick: the chosen id is stale the moment the frequency
-         moves, and reading it made the note say "still fits Essential" on the very tap
-         that had just moved them to Classic. */
-      S.chosenPlanId = null;
-    }
-    log('week_days_changed', { days:S.weekDays, frequency:newFreq });
-    /* Karim's boss did not know the days drove the plan, and nothing on the page told
-       him at the moment it happened. So the page says it out loud, in the two numbers
-       that actually moved. */
-    const nowPlan = currentPlan(), nowEach = perSession(priceFor(nowPlan,S.commitmentId), S.answers.frequency, nowPlan);
-    const days = plural(S.weekDays.length,'day','days');
-    DAYNOTE = nowPlan.id !== wasPlan.id
-      ? `${days} a week needs <b>${esc(nowPlan.name)}</b> now, not ${esc(wasPlan.name)} — the plan on the right has changed with you.`
-      : (nowEach && wasEach && nowEach !== wasEach)
-        ? `${days} a week brings ${esc(nowPlan.name)} to <b>about ${nowEach} € a session</b>, from ${wasEach} €.`
-        : `${days} a week still fits <b>${esc(nowPlan.name)}</b> — no change to the plan or the price.`;
-    DAYSOPEN = true; render(false); return;
-  }
-
-  if (t.dataset.swap) {
-    const day = t.dataset.swap;
-    const a2 = A(), m2 = matchVenues(a2), pool2 = m2.pool||[];
-    const wp2 = weekPlan(a2.activities||[], pool2, currentPlan().id, a2.frequency);
-    const sess = wp2.sessions.find(x=>x.day===day);
-    if (sess) {
-      const g = groupById(sess.groupId);
-      const list = pool2.filter(v=>venueInGroup(v,g)).sort((x,y)=>x.distanceKm-y.distanceKm);
-      const i = list.findIndex(v=>v.id===sess.venue.id);
-      const next = list[(i+1) % list.length];
-      S.weekSwap = Object.assign({}, S.weekSwap, { [day]: next.id });
-      log('week_venue_swapped', { day, venue:next.id });
-    }
-    render(false); return;
-  }
-
-  if (t.dataset.openAsk !== undefined) { ASKOPEN = true; log('ask_opened_from_question'); render(false);
-    document.querySelector('.quietask .ask__row input')?.focus(); return; }
   if (t.dataset.unsure) {
     S.answers[t.dataset.unsure] = [SKIP];
     log('answer_given', { question:t.dataset.unsure, value:'not_sure', mode:'skip' });
@@ -724,13 +547,6 @@ document.addEventListener('click', e => {
 
   if (t.dataset.openExit !== undefined) { openSaveModal('form', 'save_and_exit'); return; }
   if (t.dataset.closeExit !== undefined || (e.target && e.target.id === 'exit-modal')) { closeSaveModal('dismissed'); return; }
-  if (t.dataset.exit) {
-    const v=t.dataset.exit; document.body.style.overflow='';
-    if (v==='save')    { log('exit_intent',{ consent:'save_requested', atStep:S.lastStep }); openSaveModal('form','legacy_exit'); return; }
-    if (v==='discard') { log('exit_intent',{ consent:'declined_save', atStep:S.lastStep }); closeSaveModal('declined'); return; }
-    S.marketing = v==='yes'; S.marketingAsked = true;
-    log('exit_intent',{ consent:v, atStep:S.lastStep }); go('left'); return;
-  }
 
   if (t.dataset.plan) { const recId = recommend(A(),matchVenues(A())).planId;
     const wasPlan = currentPlan();
@@ -765,9 +581,6 @@ document.addEventListener('click', e => {
     go(fitComplete(S.answers) || S.planOverridden ? 'recommendation' : 'fit'); return;
   }
   if (t.dataset.reset !== undefined) { S = JSON.parse(JSON.stringify(BLANK)); history.replaceState({route:'landing'},'',location.pathname); go('landing',{replace:true}); return; }
-  if (t.dataset.toggleFitpanel !== undefined) { PANEL_OPEN = !PANEL_OPEN;
-    const c=document.getElementById('fitpanel-contents'); c.classList.toggle('is-open',PANEL_OPEN); t.setAttribute('aria-expanded',String(PANEL_OPEN)); return; }
-  if (t.dataset.toggleFreetext !== undefined) { const f=document.querySelector('[data-freetext]'); f.classList.add('is-open'); t.style.display='none'; f.querySelector('input').focus(); return; }
   if (t.dataset.copyResume !== undefined) {
     const done = () => { t.textContent = 'Copied — bookmark or reopen this link'; log('resume_link_copied',{ atStep:S.lastStep, identified:Boolean(S.email) }); };
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(resumeUrl()).then(done).catch(()=>{});

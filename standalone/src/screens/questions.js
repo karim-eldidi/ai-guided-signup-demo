@@ -53,7 +53,17 @@ function fitScreen() {
         ${idx>0?`<button class="btn btn--secondary" type="button" data-back="${esc(q.id)}">${icon('back',18)} Back</button>`:`<button class="btn btn--secondary" type="button" data-go="landing">${icon('back',18)} Back</button>`}
         <button class="btn btn--primary" type="submit" data-continue style="flex:1 1 auto">Continue</button></div>
       <div class="ownwords">
-        <div class="ownwords__label">${icon('speech',15)} <span>Answer in your own words</span></div>
+        <!-- Testers said four questions felt like a big investment before any commitment, and
+             that the way out was hidden. This is that way out, and it is deliberately not
+             "Save for later": saving keeps your progress and is its own screen, while this
+             leaves the questions unanswered and goes browsing instead. It shares the line that
+             already offers the other alternative to picking a card, which is why it costs the
+             screen no height — a line of its own under Continue pushed two of the four
+             required viewports into scrolling. It goes exactly where the front door's "Find a
+             venue" shortcut goes. -->
+        <div class="ownwords__label">${icon('speech',15)} <span>Answer in your own words</span>
+          <button class="linkish strong" type="button" data-go="search" style="margin-left:auto"
+            aria-label="Skip the questions and browse venues instead">Browse venues instead</button></div>
         <div class="ownwords__row">
           <label for="ownwords-input" class="sr-only">Answer in your own words</label>
           <input type="text" name="freeText" id="ownwords-input" placeholder="${esc(q.placeholder)}" aria-label="Answer in your own words" autocomplete="off">

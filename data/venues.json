@@ -1,5 +1,5 @@
 {
-  "_note": "Real Urban Sports Club partner venues in Berlin. Names, addresses, activities, opening hours, the per-plan visit limits and the photographs all come from the public venue pages on urbansportsclub.com, retrieved 12 August 2026 — each venue's `url` links to its source page. Two things are NOT from the source: latitude and longitude, which the venue pages do not publish and which are approximated here from the street address (so distances are indicative, not surveyed), and the short `blurb`/`goodToKnow` lines, which are written from the page rather than copied. Photos load from Urban Sports Club's own media bucket, so they need an internet connection; offline, each card falls back to a branded icon tile. Three venues also carry an inlined photograph from the supplied designs as an offline fallback, so the demo still shows photography with no network at all.",
+  "_note": "Real Urban Sports Club partner venues in Berlin. Names, addresses, activities, opening hours, the per-plan visit limits, the latitude/longitude and the photographs all come from the public venue pages on urbansportsclub.com — each venue's `url` links to its source page. The first 15 venues were retrieved 12 August 2026, the next 31 on 19 August 2026, and a further 147 were retrieved on 19 August 2026 in a second pass, for 193 venues in total; every venue's coordinates come from a retrieval on 19 August 2026. Coordinates are the `geo` values published on each page, not approximations, so distances are real rather than indicative. Most of the second-pass venues carry no `blurb` and no `goodToKnow`: their published descriptions are German marketing prose, and rather than translate that into claims we cannot check, those fields are left null — 46 of 193 venues have a blurb. Access strings are the published allowances in the venue's own words, so two phrasings that did not appear before now do: \"1 visit a month\" and \"2 visits a month\". Three things are NOT published by the source: `tier`/`tierLabel`, which is inferred from the four-plan access table (Essential included → standard, otherwise Classic included → plus, otherwise premium) and is not a label the venue pages carry; the Charlottenburg area centroid, which is derived as the mean of the published coordinates of the six Charlottenburg venues from the first import (the other area centroids are approximate district reference points); and the short `blurb`/`goodToKnow` lines that are present, which are written from each page rather than copied. Each venue's `area` is assigned by nearest area centroid using its published coordinates, which is how the app measures distance too; the single exception is `k4-athletics`, which sits about 70 m nearer the Mitte centroid but keeps the Friedrichshain area it was first given. Photos load from Urban Sports Club's own media bucket, so they need an internet connection; offline, each card falls back to a branded icon tile. Three venues also carry an inlined photograph from the supplied designs as an offline fallback, so the demo still shows photography with no network at all.",
   "city": "Berlin",
   "photoCredit": "Photos: Urban Sports Club venue pages (partner-supplied).",
   "areas": [
@@ -38,6 +38,12 @@
       "name": "Wedding",
       "lat": 52.55,
       "lng": 13.366
+    },
+    {
+      "id": "charlottenburg",
+      "name": "Charlottenburg",
+      "lat": 52.5069,
+      "lng": 13.313
     }
   ],
   "venues": [
@@ -45,8 +51,8 @@
       "id": "kniger-gym-berlin-kreuzberg",
       "name": "HYROX Performance Center Kreuzberg by Kniger",
       "area": "kreuzberg",
-      "lat": 52.503,
-      "lng": 13.4085,
+      "lat": 52.4990962,
+      "lng": 13.4006585,
       "address": "Alexandrinenstraße 2-3, 10969 Berlin",
       "activities": [
         "gym",
@@ -73,8 +79,8 @@
       "id": "boulderklub-kreuzberg",
       "name": "BOULDERKLUB Kreuzberg",
       "area": "kreuzberg",
-      "lat": 52.4966,
-      "lng": 13.4283,
+      "lat": 52.4947181,
+      "lng": 13.4294779,
       "address": "Ohlauer Str. 38, 10999 Berlin",
       "activities": [
         "bouldering",
@@ -102,8 +108,8 @@
       "id": "liquidrom-1",
       "name": "LIQUIDROM",
       "area": "kreuzberg",
-      "lat": 52.499,
-      "lng": 13.381,
+      "lat": 52.5011134,
+      "lng": 13.3815838,
       "address": "Möckernstraße 10, 10963 Berlin",
       "activities": [
         "spa",
@@ -128,8 +134,8 @@
       "id": "motions-tanz-und-bewegungsstudio",
       "name": "motion*s MORITZPLATZ",
       "area": "kreuzberg",
-      "lat": 52.5031,
-      "lng": 13.411,
+      "lat": 52.503478,
+      "lng": 13.409069,
       "address": "Prinzenstraße 85, 10969 Berlin",
       "activities": [
         "dance",
@@ -155,9 +161,9 @@
       "id": "stadtbad-neukolln",
       "name": "Stadtbad Neukölln",
       "area": "neukoelln",
-      "lat": 52.4795,
-      "lng": 13.431,
-      "address": null,
+      "lat": 52.47923,
+      "lng": 13.44014,
+      "address": "Ganghoferstraße 3, 12043 Berlin",
       "activities": [
         "swimming",
         "sauna"
@@ -182,8 +188,8 @@
       "id": "flow-motion-studio-neukolln",
       "name": "Flow Motion Studio Neukölln",
       "area": "neukoelln",
-      "lat": 52.468,
-      "lng": 13.4225,
+      "lat": 52.4645382,
+      "lng": 13.4402621,
       "address": "Glasower Str. 60, 12051 Berlin",
       "activities": [
         "pilates",
@@ -210,9 +216,9 @@
       "id": "k4-athletics",
       "name": "K4 Athletics",
       "area": "friedrichshain",
-      "lat": 52.515,
-      "lng": 13.454,
-      "address": null,
+      "lat": 52.5114389,
+      "lng": 13.4272413,
+      "address": "Holzmarktstr. 25, 10243 Berlin",
       "activities": [
         "boxing",
         "martial_arts",
@@ -237,8 +243,8 @@
       "id": "lifted-boxi",
       "name": "LIFTED — Boxi",
       "area": "friedrichshain",
-      "lat": 52.5105,
-      "lng": 13.464,
+      "lat": 52.5090042,
+      "lng": 13.4660778,
       "address": "Boxhagener Straße 83, 10245 Berlin",
       "activities": [
         "gym",
@@ -264,8 +270,8 @@
       "id": "holmes-place-gendarmenmarkt",
       "name": "Holmes Place Gendarmenmarkt",
       "area": "mitte",
-      "lat": 52.5115,
-      "lng": 13.3905,
+      "lat": 52.5122786,
+      "lng": 13.3908554,
       "address": "Friedrichstraße 68, 10117 Berlin",
       "activities": [
         "gym",
@@ -296,8 +302,8 @@
       "id": "becycle-mitte",
       "name": "BECYCLE & BEYOND Mitte",
       "area": "mitte",
-      "lat": 52.532,
-      "lng": 13.403,
+      "lat": 52.5335264,
+      "lng": 13.3988997,
       "address": "Brunnenstraße 24, 10119 Berlin",
       "activities": [
         "cycling",
@@ -324,8 +330,8 @@
       "id": "hilton-berlin-living-well-health-club",
       "name": "Hilton Berlin — Living Well Health Club",
       "area": "mitte",
-      "lat": 52.512,
-      "lng": 13.3925,
+      "lat": 52.5121668,
+      "lng": 13.3925288,
       "address": "Anton-Wilhelm-Amo-Straße 30, 10117 Berlin",
       "activities": [
         "gym",
@@ -351,9 +357,9 @@
       "id": "box-kultur-berlin",
       "name": "Box-Kultur Berlin",
       "area": "wedding",
-      "lat": 52.548,
-      "lng": 13.362,
-      "address": null,
+      "lat": 52.5520134,
+      "lng": 13.358254,
+      "address": "Liebenwalder Straße 33, 13347 Berlin",
       "activities": [
         "boxing",
         "martial_arts",
@@ -378,8 +384,8 @@
       "id": "stadtbad-hotel-oderberger-schwimmen",
       "name": "Stadtbad Oderberger",
       "area": "prenzlauer-berg",
-      "lat": 52.5395,
-      "lng": 13.411,
+      "lat": 52.5377364,
+      "lng": 13.410289,
       "address": "Oderberger Str. 57, 10435 Berlin",
       "activities": [
         "swimming"
@@ -403,8 +409,8 @@
       "id": "yogibar-prenzlauer-berg",
       "name": "Yogibar Prenzlauer Berg",
       "area": "prenzlauer-berg",
-      "lat": 52.53,
-      "lng": 13.436,
+      "lat": 52.5312264,
+      "lng": 13.4308898,
       "address": "Käthe-Niederkirchner-Straße 33, 10407 Berlin",
       "activities": [
         "yoga",
@@ -430,8 +436,8 @@
       "id": "pilates-studio-berlin",
       "name": "Pilates Studio Berlin",
       "area": "prenzlauer-berg",
-      "lat": 52.527,
-      "lng": 13.427,
+      "lat": 52.5302114,
+      "lng": 13.4267728,
       "address": "Greifswalder Straße 14, 10405 Berlin",
       "activities": [
         "pilates",
@@ -451,6 +457,4716 @@
       "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2Foriginal_1024x576_pilatesBerlin1.jpg?generation=1751966888124501&alt=media",
       "url": "https://urbansportsclub.com/en/venues/pilates-studio-berlin",
       "tierLabel": "Premium venue"
+    },
+    {
+      "id": "american-fitness-berlin",
+      "name": "American Fitness - Berlin",
+      "area": "neukoelln",
+      "lat": 52.48727,
+      "lng": 13.42438,
+      "address": "Hermannplatz 10, 10967 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "yoga",
+        "dance",
+        "spa",
+        "cycling",
+        "strength",
+        "martial_arts"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": "Multi-activity gym on the fourth floor of the Karstadt building at Hermannplatz.",
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": "2,400 m² of training space, four saunas and a roof terrace; U Hermannplatz is downstairs.",
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_-American_Fitness_Berlin_American_Fitness_Berlin_Urban_Sports_Club_9329b9b2%20(34%20of%2069)_1571643758975937_admin.jpg?generation=1751972355724447&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/american-fitness-berlin",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "berliner-pilates-deborah-degano",
+      "name": "Berliner Pilates Deborah Degano | WEDDING",
+      "area": "wedding",
+      "lat": 52.546036,
+      "lng": 13.3774427,
+      "address": "Wiesenstrasse 7, 13357 Berlin",
+      "activities": [
+        "pilates"
+      ],
+      "tier": "premium",
+      "access": {
+        "essential": "not included here",
+        "classic": "not included here",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": "Pilates studio running STOTT PILATES® group classes and personal training.",
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": "Reformer, Cadillac wall unit, stability chair and mat work; open since 2010.",
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_7b0dfc1aadd3-D7C_2105_web_1636732995236893_admin.jpg?generation=1751977516612273&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/berliner-pilates-deborah-degano",
+      "tierLabel": "Premium venue"
+    },
+    {
+      "id": "bouldergarten-kletterkultur-berlin",
+      "name": "Bouldergarten - Kletterkultur",
+      "area": "neukoelln",
+      "lat": 52.4788624,
+      "lng": 13.4529512,
+      "address": "Thiemannstraße 1, 12059 Berlin",
+      "activities": [
+        "yoga",
+        "bouldering"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "8 visits a month",
+        "premium": "1 visit a day",
+        "max": "1 visit a day"
+      },
+      "blurb": "Bouldering and rope climbing on three levels beside S Sonnenallee.",
+      "hoursWeekday": "Mon–Fri 08:00–23:00",
+      "hoursWeekend": "Sat–Sun 10:00–22:00",
+      "goodToKnow": "2,500 m² of walls up to 12 metres, plus a sauna; routes are reset on Mondays and Thursdays.",
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_bouldergarten2_1590576023539408_admin.png?generation=1751975070836486&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/bouldergarten-kletterkultur-berlin",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "brooklyn-fitboxing-charlottenburg",
+      "name": "Brooklyn Fitboxing Charlottenburg",
+      "area": "charlottenburg",
+      "lat": 52.5064267,
+      "lng": 13.3146673,
+      "address": "Kantstraße 38, 10625 Berlin",
+      "activities": [
+        "gym",
+        "boxing"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": "Boutique studio combining boxing rounds with functional training.",
+      "hoursWeekday": "Mon 07:30–13:00; Tue 06:30–10:00; Wed 07:30–13:00; Thu 06:30–13:00; Fri 07:30–13:00",
+      "hoursWeekend": "Sat 09:30–12:30; Sun 10:00–11:30",
+      "goodToKnow": "Sessions run 47 minutes; gloves are lent free and the bags carry tracking sensors.",
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_bnfsik1rfdzl1aqfmyhz_1765196801639315.png?generation=1765196802138688&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/brooklyn-fitboxing-charlottenburg",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "club-athleten",
+      "name": "Club Athleten 🪩 DISCO DOJO",
+      "area": "friedrichshain",
+      "lat": 52.5069052,
+      "lng": 13.4531539,
+      "address": "Revaler Straße 99, 10245 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "yoga",
+        "dance",
+        "strength",
+        "boxing"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": "Class-based boxing, core and bodyweight sessions set to club music.",
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": "Wraps and gloves are required for boxing — buy or hire them on site; showers are open for morning classes only.",
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_oiazcme6dtsda73tflf3_178707817291504.png?generation=1787078173683923&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/club-athleten",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "crunch-fit-berlin-wedding",
+      "name": "Crunch Fit Berlin-Wedding",
+      "area": "wedding",
+      "lat": 52.549168,
+      "lng": 13.3780771,
+      "address": "Pankstraße 32-39, 13357 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "yoga",
+        "sauna",
+        "cycling",
+        "strength"
+      ],
+      "tier": "standard",
+      "access": {
+        "essential": "4 visits a month",
+        "classic": "1 visit a day",
+        "premium": "1 visit a day",
+        "max": "1 visit a day"
+      },
+      "blurb": "Two-floor gym in the Panke-Center with a sauna and roof terrace.",
+      "hoursWeekday": "Mon–Fri 06:00–23:59",
+      "hoursWeekend": "Sat–Sun 06:00–23:59",
+      "goodToKnow": "Nearly 3,000 m² of training space and one of the fuller class timetables; U Pankstraße is at the door.",
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_ooew7hwointcxcge0bos_1708594580471809.png?generation=1751984704272738&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/crunch-fit-berlin-wedding",
+      "tierLabel": "Standard venue"
+    },
+    {
+      "id": "das-elektra",
+      "name": "das Elektra",
+      "area": "wedding",
+      "lat": 52.5415646,
+      "lng": 13.3853337,
+      "address": "Gustav-Meyer-Allee 25, 13355 Berlin",
+      "activities": [
+        "gym",
+        "bouldering"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "8 visits a month",
+        "premium": "1 visit a day",
+        "max": "1 visit a day"
+      },
+      "blurb": "Bouldering hall and free-weights gym in a brick hall on the old AEG site.",
+      "hoursWeekday": "Mon–Fri 08:00–23:00",
+      "hoursWeekend": "Sat–Sun 10:00–22:00",
+      "goodToKnow": "2,000 m² with more than 200 boulders in seven grades and 25–30 new routes a week.",
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_xatasedkorbalcrdptj1_1753191805543812.png?generation=1753191805985550&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/das-elektra",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "der-kegel",
+      "name": "Der Kegel",
+      "area": "friedrichshain",
+      "lat": 52.507286554000004,
+      "lng": 13.454439997,
+      "address": "Revaler Str. 99, 10245 Berlin",
+      "activities": [
+        "climbing",
+        "bouldering"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "1 visit a day",
+        "premium": "1 visit a day",
+        "max": "1 visit a day"
+      },
+      "blurb": "Climbing and bouldering on a converted 18.7-metre bunker on the RAW site.",
+      "hoursWeekday": "Mon–Fri 09:00–23:00",
+      "hoursWeekend": "Sat–Sun 09:00–23:00",
+      "goodToKnow": "Over 550 m² of indoor and outdoor walls and 70-plus routes; lockers need your own padlock.",
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_kb2fsfwlqdfawldhyjw2_1722519060165999.png?generation=1751987123940828&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/der-kegel",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "dharma-studios-berlin",
+      "name": "Dharma Studios Neukölln",
+      "area": "neukoelln",
+      "lat": 52.4762873,
+      "lng": 13.4255807,
+      "address": "Kienitzer Str 98, 1. Hinterhof, 1.OG, 12049 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "yoga",
+        "dance",
+        "meditation"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": "Yoga and movement studio in the Schillerkiez with two class rooms.",
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": "Underfloor heating, mat hire and gender-neutral toilets; a few minutes from U Leinestraße.",
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_budicrcwbtoh3z5frxmv_1743371637960427.png?generation=1751995168912756&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/dharma-studios-berlin",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "elevate-pilates",
+      "name": "Elevate Pilates",
+      "area": "prenzlauer-berg",
+      "lat": 52.5328219,
+      "lng": 13.4284368,
+      "address": "Greifswalder Straße 207, 10405 Berlin",
+      "activities": [
+        "pilates",
+        "barre"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "4 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": "Contemporary pilates studio running reformer and small-group classes.",
+      "hoursWeekday": "Mon–Fri 07:00–22:00",
+      "hoursWeekend": "Sat–Sun 07:00–22:00",
+      "goodToKnow": "The studio says classes suit first-timers as well as regular movers.",
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_x7azdrobfvbdvpnhihdx_1763653466336476.png?generation=1763653466837731&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/elevate-pilates",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "evo-rosenthaler-platz",
+      "name": "EVO Fitness Rosenthaler Platz",
+      "area": "mitte",
+      "lat": 52.5297381,
+      "lng": 13.400638,
+      "address": "Torstraße 125, 10119 Berlin",
+      "activities": [
+        "gym"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "1 visit a day",
+        "max": "1 visit a day"
+      },
+      "blurb": "Boutique gym on Torstraße for strength, cardio and functional training.",
+      "hoursWeekday": "Mon–Fri 06:00–23:00",
+      "hoursWeekend": "Sat–Sun 06:00–23:00",
+      "goodToKnow": "Digital check-in, open 365 days a year, with a HYROX sled area.",
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_vz8vxnoxmnbftptg2edm_1719987916201551.png?generation=1751986449120252&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/evo-rosenthaler-platz",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "fenriz-trainingszentrum",
+      "name": "Fenriz Gym",
+      "area": "kreuzberg",
+      "lat": 52.5036426,
+      "lng": 13.4078175,
+      "address": "Lobeckstr. 36, 10969 Berlin",
+      "activities": [
+        "gym",
+        "martial_arts"
+      ],
+      "tier": "premium",
+      "access": {
+        "essential": "not included here",
+        "classic": "not included here",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": "Martial arts and functional fitness gym running MMA and Brazilian jiu-jitsu.",
+      "hoursWeekday": "Mon–Fri 07:00–22:00",
+      "hoursWeekend": "Sat 10:00–16:00; Sun 10:00–17:00",
+      "goodToKnow": "All levels are welcome, from technique-only to friendly sparring; changing rooms and showers on site.",
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_Hauptbild_1649078420798464_admin.png?generation=1751978586365857&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/fenriz-trainingszentrum",
+      "tierLabel": "Premium venue"
+    },
+    {
+      "id": "fitnesscenter-atb",
+      "name": "FitnessCenter aTB",
+      "area": "kreuzberg",
+      "lat": 52.4888323,
+      "lng": 13.3874876,
+      "address": "Am Tempelhofer Berg 6, 10965 Berlin",
+      "activities": [
+        "gym",
+        "sauna",
+        "boxing"
+      ],
+      "tier": "standard",
+      "access": {
+        "essential": "4 visits a month",
+        "classic": "1 visit a day",
+        "premium": "1 visit a day",
+        "max": "1 visit a day"
+      },
+      "blurb": "Long-established backyard gym in the Bergmannkiez with a sauna.",
+      "hoursWeekday": "Mon–Fri 09:00–22:00",
+      "hoursWeekend": "Sat–Sun 10:00–18:00",
+      "goodToKnow": "Strength training, boxing, martial arts and yoga classes; sauna and infrared cabin on site.",
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_93496__mg_2240.jpg?generation=1751635238700652&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/fitnesscenter-atb",
+      "tierLabel": "Standard venue"
+    },
+    {
+      "id": "green-yoga-kreuzberg",
+      "name": "Green Yoga Kreuzberg",
+      "area": "kreuzberg",
+      "lat": 52.5025213,
+      "lng": 13.4141055,
+      "address": "Oranienstraße 163, 10969 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "yoga",
+        "dance",
+        "meditation",
+        "martial_arts",
+        "spa"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": "Yoga centre on Oranienstraße running vinyasa, hatha, kundalini and yin classes.",
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": "Gong baths, breathwork and ecstatic dance are on the timetable too; the studio is in a quiet rear building.",
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_azsn0hip2ategknyc6pd_1757333157400371.png?generation=1757333157882104&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/green-yoga-kreuzberg",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "hi-yoga-sonnenallee",
+      "name": "Hi! Studios Neukölln",
+      "area": "neukoelln",
+      "lat": 52.4848277,
+      "lng": 13.4346027,
+      "address": "Sonnenallee 63, 12045 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "yoga",
+        "strength"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": "Studio mixing pilates, barre, yoga, mobility and strength work.",
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": "All classes are taught in English; cycling rides use wireless headphones.",
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_cdaz4mwuzts8fqnesa7t_1781785145543825.png?generation=1781785146791973&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/hi-yoga-sonnenallee",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "holmes-place-bismarckstrasse",
+      "name": "Holmes Place Bismarckstraße",
+      "area": "charlottenburg",
+      "lat": 52.51199,
+      "lng": 13.30481,
+      "address": "Wilmersdorfer Strasse 38, 10585 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "yoga",
+        "dance",
+        "meditation",
+        "spa",
+        "hiit",
+        "sauna",
+        "swimming"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "1 visit a day"
+      },
+      "blurb": "Large health club in Charlottenburg with a 20-metre pool and sauna.",
+      "hoursWeekday": "Mon–Fri 07:00–22:00",
+      "hoursWeekend": "Sat–Sun 08:00–21:00",
+      "goodToKnow": "Les Mills and aqua classes, a steam room and an EGYM circuit; nearest U-Bahn is Bismarckstraße.",
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_Berlin%20Bismarckstra%C3%9Fe_1667490806127786_admin.png?generation=1751980041316702&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/holmes-place-bismarckstrasse",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "holmes-place-neue-welt",
+      "name": "Holmes Place Neue Welt",
+      "area": "neukoelln",
+      "lat": 52.485207,
+      "lng": 13.421836,
+      "address": "Hasenheide 109 ff., 10967 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "yoga",
+        "dance",
+        "spa",
+        "sauna",
+        "swimming",
+        "hiit"
+      ],
+      "tier": "premium",
+      "access": {
+        "essential": "not included here",
+        "classic": "not included here",
+        "premium": "8 visits a month",
+        "max": "1 visit a day"
+      },
+      "blurb": "Health club at Hermannplatz with a 25-metre sports pool and sauna area.",
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": "Includes an official HYROX training zone; sauna, sanarium and steam room on site.",
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_Berlin%20Neue%20Welt%20(6)_1667394290563246_admin.png?generation=1751980018330406&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/holmes-place-neue-welt",
+      "tierLabel": "Premium venue"
+    },
+    {
+      "id": "house-of-healing-berlin-charlottenburg-1",
+      "name": "House of Healing Berlin Charlottenburg",
+      "area": "charlottenburg",
+      "lat": 52.5166119,
+      "lng": 13.332051,
+      "address": "ENGLISCHE STRAßE 21, 10587 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "yoga",
+        "dance",
+        "meditation",
+        "spa",
+        "strength",
+        "martial_arts",
+        "boxing",
+        "barre"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": "Riverside yoga and wellness studio on the Spree with a gym floor and café.",
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": "Yoga, HIIT, barre and kickboxing classes, plus massage and a whole-body cold chamber.",
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_de-live_venueHome_1024x576_HoHBC%20River%20Room_1698655239512398_admin_1698659513481458_admin.jpeg?generation=1751983195422643&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/house-of-healing-berlin-charlottenburg-1",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "muse-pole-dance-2",
+      "name": "Muse Pole Dance",
+      "area": "mitte",
+      "lat": 52.5104864,
+      "lng": 13.4089577,
+      "address": "Alte Jakobstraße 76, 10179 Berlin",
+      "activities": [
+        "dance",
+        "strength"
+      ],
+      "tier": "premium",
+      "access": {
+        "essential": "not included here",
+        "classic": "not included here",
+        "premium": "4 visits a month",
+        "max": "4 visits a month"
+      },
+      "blurb": "Pole dance studio with classes open to every fitness level.",
+      "hoursWeekday": "Mon 16:00–21:00; Tue 16:00–21:00; Wed 16:00–21:00; Thu 16:00–22:00; Fri 16:00–19:30",
+      "hoursWeekend": "Sat 11:00–13:00; Sun 11:00–16:30",
+      "goodToKnow": "The weekday timetable starts in the afternoon.",
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_xahw9x5fgp707nz0d6tp_1785425414781730.png?generation=1785425415948584&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/muse-pole-dance-2",
+      "tierLabel": "Premium venue"
+    },
+    {
+      "id": "noi-studios",
+      "name": "NOI Studios Charlottenburg",
+      "area": "charlottenburg",
+      "lat": 52.5129234,
+      "lng": 13.3027029,
+      "address": "Spielhagenstraße 7, 10585 Berlin",
+      "activities": [
+        "pilates"
+      ],
+      "tier": "premium",
+      "access": {
+        "essential": "not included here",
+        "classic": "not included here",
+        "premium": "4 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": "Reformer pilates studio using weights, bands and props.",
+      "hoursWeekday": "Mon–Fri 07:30–10:00",
+      "hoursWeekend": "Sat–Sun 09:30–13:30",
+      "goodToKnow": "Around 35 classes a week in English and German; the studio describes itself as designed for women.",
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_gquwwuqg6g5rpmt8eky5_1759391461586914.png?generation=1759391462064757&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/noi-studios",
+      "tierLabel": "Premium venue"
+    },
+    {
+      "id": "ohia-meditation-yoga",
+      "name": "OHIA",
+      "area": "mitte",
+      "lat": 52.5300379,
+      "lng": 13.4037666,
+      "address": "Torstraße 103, 10119 Berlin",
+      "activities": [
+        "gym",
+        "yoga",
+        "meditation"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": "Boutique studio on Torstraße pairing strength classes with yoga and meditation.",
+      "hoursWeekday": "Mon 07:00–21:45; Tue 07:00–21:45; Wed 07:00–21:45; Thu 07:00–21:45; Fri 07:00–21:00",
+      "hoursWeekend": "Sat 09:00–19:00; Sun 09:00–20:45",
+      "goodToKnow": "400 m² over two floors; sound baths, breathwork and massage are also offered.",
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_p4wd01vqyoj0pkff89yr_1732018294673277.png?generation=1751992208980109&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/ohia-meditation-yoga",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "papillon-tanz-studio",
+      "name": "PAPILLON TANZ STUDIOS",
+      "area": "friedrichshain",
+      "lat": 52.5133367,
+      "lng": 13.4555963,
+      "address": "Boxhagener Straße 18, 10245 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "yoga",
+        "dance",
+        "meditation",
+        "martial_arts",
+        "barre"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": "Dance studio in Friedrichshain with four halls and sprung floors.",
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": "Ballet, contemporary, hip hop and reggaeton classes plus pilates and yoga; step-free access by lift.",
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_h7dkc4ebqad7kfyocf3j_1784804895583957.png?generation=1784804896558889&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/papillon-tanz-studio",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "pilatesengel-reformer",
+      "name": "Pilatesengel-Reformer",
+      "area": "neukoelln",
+      "lat": 52.4773572,
+      "lng": 13.4212533,
+      "address": "Herrfurthplatz 5, 12049 Berlin",
+      "activities": [
+        "pilates"
+      ],
+      "tier": "premium",
+      "access": {
+        "essential": "not included here",
+        "classic": "not included here",
+        "premium": "4 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": "Classical pilates studio training on reformer, wunda chair and wall unit.",
+      "hoursWeekday": "Mon–Fri 08:00–21:00",
+      "hoursWeekend": "Sat–Sun 08:00–21:00",
+      "goodToKnow": "Groups of up to seven; newcomers start with a Basic or Level 1 class.",
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_mz2bzcwu19dzuy7uvnxw_1709078674896707.png?generation=1751984785058028&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/pilatesengel-reformer",
+      "tierLabel": "Premium venue"
+    },
+    {
+      "id": "rocycle-fhain",
+      "name": "Rocycle Berlin F'hain",
+      "area": "friedrichshain",
+      "lat": 52.5146303,
+      "lng": 13.4533193,
+      "address": "Warschauer Straße 6, 10243 Berlin",
+      "activities": [
+        "cycling"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": "Indoor cycling studio running 45- and 60-minute rides by candlelight.",
+      "hoursWeekday": "Mon–Fri 07:00–11:00",
+      "hoursWeekend": "Sat 09:00–13:00; Sun 09:00–15:00",
+      "goodToKnow": "Rides add dumbbell and core work; showers are stocked with Zenology products.",
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_censobuiakgmmhubqmb0_1705324334524872.png?generation=1751984118773896&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/rocycle-fhain",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "schwimmhalle-ernst-thalmann-park",
+      "name": "Schwimmhalle Ernst-Thälmann-Park",
+      "area": "prenzlauer-berg",
+      "lat": 52.54088,
+      "lng": 13.43383,
+      "address": "Lilli-Henoch-Straße 20, 10405 Berlin",
+      "activities": [
+        "swimming"
+      ],
+      "tier": "standard",
+      "access": {
+        "essential": "4 visits a month",
+        "classic": "1 visit a day",
+        "premium": "1 visit a day",
+        "max": "1 visit a day"
+      },
+      "blurb": "Recently refurbished swimming hall in Ernst-Thälmann-Park.",
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": "A 25-metre five-lane pool, leisure pool and saunas; step-free access, lifts and pool wheelchairs.",
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_26252_sh_ernst_tha__lmann_park_schwimmerbecken_02_usc_kopie.jpg?generation=1751636809852575&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/schwimmhalle-ernst-thalmann-park",
+      "tierLabel": "Standard venue"
+    },
+    {
+      "id": "take-a-brake-movement",
+      "name": "House of Healing Berlin",
+      "area": "prenzlauer-berg",
+      "lat": 52.5449586,
+      "lng": 13.4227314,
+      "address": "Dunckerstrasse 70, 10437 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "yoga",
+        "meditation",
+        "spa",
+        "martial_arts"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": "Boutique yoga and meditation studio in Prenzlauer Berg.",
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": "Hatha flow, yin, yoga nidra and restorative classes, plus guided and silent meditation.",
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_1199538633628363.aDGmtc8AAswTetzuFwWm_height640_1609766623673447_admin.png?generation=1751975935307670&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/take-a-brake-movement",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "urban-apes-basement-boulderstudio",
+      "name": "urban apes Basement Berlin",
+      "area": "kreuzberg",
+      "lat": 52.5036116,
+      "lng": 13.3840993,
+      "address": "Stresemannstraße 72, 10963 Berlin",
+      "activities": [
+        "bouldering"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "8 visits a month",
+        "premium": "1 visit a day",
+        "max": "1 visit a day"
+      },
+      "blurb": "Underground bouldering hall near Potsdamer Platz with a strength area.",
+      "hoursWeekday": "Mon–Fri 08:00–23:00",
+      "hoursWeekend": "Sat–Sun 10:00–22:00",
+      "goodToKnow": "1,600 m² of walls plus rings, free weights, rowers and ergo bikes; regular community boulder nights.",
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_bl7alyzlquxdeshp4hwg_1762162806830154.png?generation=1762162807682422&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/urban-apes-basement-boulderstudio",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "urban-boost-station-berlin",
+      "name": "Urban Boost Station Berlin",
+      "area": "charlottenburg",
+      "lat": 52.4978941,
+      "lng": 13.3191927,
+      "address": "Pariser Straße 43, 10707 Berlin",
+      "activities": [
+        "spa"
+      ],
+      "tier": "premium",
+      "access": {
+        "essential": "not included here",
+        "classic": "not included here",
+        "premium": "4 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": "Wellness studio offering cryotherapy and other recovery treatments.",
+      "hoursWeekday": "Mon–Fri 10:00–19:00",
+      "hoursWeekend": "Sat 10:00–16:00",
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_2e736428c6f6-Urban_Sports_UBS_Header_1648219434493932_admin.png?generation=1751978500030071&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/urban-boost-station-berlin",
+      "tierLabel": "Premium venue"
+    },
+    {
+      "id": "urban-tribe-club-kurfurstendamm",
+      "name": "NOIR Boutique Gym - Class Gym",
+      "area": "charlottenburg",
+      "lat": 52.4955164,
+      "lng": 13.3047684,
+      "address": "Eisenzahnstraße 12, 10709 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "yoga",
+        "hiit",
+        "strength",
+        "boxing",
+        "martial_arts"
+      ],
+      "tier": "premium",
+      "access": {
+        "essential": "not included here",
+        "classic": "not included here",
+        "premium": "4 visits a month",
+        "max": "4 visits a month"
+      },
+      "blurb": "Boutique gym of over 1,000 m² with group classes and open gym time.",
+      "hoursWeekday": "Mon–Fri 08:30–18:00",
+      "hoursWeekend": null,
+      "goodToKnow": "Functional, strength, HIIT, yoga, mobility, boxing and Thai boxing classes; published opening hours are weekdays only.",
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_jrstnpqx9ku6mcjzzjgb_1696584740830069.png?generation=1751982782411099&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/urban-tribe-club-kurfurstendamm",
+      "tierLabel": "Premium venue"
+    },
+    {
+      "id": "yoga-for-happiness-tons-at-lobe-block",
+      "name": "YOGA at Lobe Block",
+      "area": "wedding",
+      "lat": 52.5488916,
+      "lng": 13.3812001,
+      "address": "Böttgerstr. 16, 13357 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "yoga",
+        "meditation"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": "Yoga and movement studio in the Lobe Block building at S Humboldthain.",
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": "Three studios and a roof terrace, over 30 classes a week, plus pilates, meditation and massage.",
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_Bild%201_1693215534568121_admin.jpeg?generation=1751982414666688&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/yoga-for-happiness-tons-at-lobe-block",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "yogacafe",
+      "name": "Mindful Life Berlin",
+      "area": "prenzlauer-berg",
+      "lat": 52.5471596,
+      "lng": 13.4093211,
+      "address": "Gleimstraße 19, 10437 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "yoga",
+        "strength",
+        "boxing",
+        "martial_arts"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": "Yoga, functional fitness and boxing studio near Mauerpark.",
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": "Combines a studio and a shop under one roof.",
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_psqrge7slrmvqtjy3ga5_1786358021376282.png?generation=1786358022562563&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/yogacafe",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "achter-berlin-prenzlauer-berg",
+      "name": "ACHTER - Prenzlauer Berg",
+      "area": "prenzlauer-berg",
+      "lat": 52.5379512,
+      "lng": 13.4068481,
+      "address": "Schwedter Straße 36A, 10435 Berlin",
+      "activities": [
+        "gym",
+        "strength"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_r5dicp8gqafhu576ytrh_1756794896408235.png?generation=1756794896749196&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/achter-berlin-prenzlauer-berg",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "adidas-sports-base-berlin",
+      "name": "adidas Sports Base Berlin",
+      "area": "friedrichshain",
+      "lat": 52.4979964,
+      "lng": 13.4501632,
+      "address": "Schleusenufer 4, 10997 Berlin",
+      "activities": [
+        "yoga",
+        "hiit"
+      ],
+      "tier": "standard",
+      "access": {
+        "essential": "4 visits a month",
+        "classic": "4 visits a month",
+        "premium": "1 visit a day",
+        "max": "1 visit a day"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_zyfpbal8pgigdv6363o2_1724849910796949.png?generation=1751987591857296&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/adidas-sports-base-berlin",
+      "tierLabel": "Standard venue"
+    },
+    {
+      "id": "adidas-sports-base-berlin-1",
+      "name": "𝘽𝙀𝘼𝙏𝙎 𝘼𝙉𝘿 𝘽𝙐𝙍𝙋𝙀𝙀𝙎",
+      "area": "friedrichshain",
+      "lat": 52.4979964,
+      "lng": 13.4501632,
+      "address": "Schleusenufer 4, 10997 Berlin",
+      "activities": [
+        "gym",
+        "hiit"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_w8hbphkxta2bjxw9lc5u_174661778083382.png?generation=1751996082460112&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/adidas-sports-base-berlin-1",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "amita-sarup-hypnose-charlottenburg",
+      "name": "Amita Sarup - Hypnose, Berlin-Charlottenburg",
+      "area": "charlottenburg",
+      "lat": 52.5089752,
+      "lng": 13.3220771,
+      "address": "Goethestraße 5, 10623 Berlin",
+      "activities": [
+        "meditation"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "1 visit a day",
+        "max": "1 visit a day"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_n3hai6ydzgz1z4ndxlxx_1750694456184358.png?generation=1751997265802273&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/amita-sarup-hypnose-charlottenburg",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "anti-und-oasis",
+      "name": "ANTI",
+      "area": "mitte",
+      "lat": 52.5310784,
+      "lng": 13.4004117,
+      "address": "Brunnenstraße 9, 10119 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "yoga",
+        "spa"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_rzd2tfeudq9aaey99f80_1760477798313672.png?generation=1760477798845881&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/anti-und-oasis",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "artom",
+      "name": "Art.OM",
+      "area": "friedrichshain",
+      "lat": 52.4982366,
+      "lng": 13.4424408,
+      "address": "Wrangelstraße 54, 10997 Berlin",
+      "activities": [
+        "pilates",
+        "yoga",
+        "spa"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_lui02juqun2d8rsksxqk_1772458709962527.png?generation=1772458711691714&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/artom",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "ashtanga-studio-berlin",
+      "name": "Ashtanga Studio Berlin",
+      "area": "prenzlauer-berg",
+      "lat": 52.5371806,
+      "lng": 13.4248213,
+      "address": "Jablonskistraße 24, 10405 Berlin",
+      "activities": [
+        "yoga",
+        "meditation",
+        "spa"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_h7v3yqphn4piy3afpuxp_1772649904950827.png?generation=1772649906897040&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/ashtanga-studio-berlin",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "aura-pole-dance",
+      "name": "Aura Pole Dance",
+      "area": "friedrichshain",
+      "lat": 52.5121394,
+      "lng": 13.4485311,
+      "address": "Gubener Str. 47, 10243 Berlin",
+      "activities": [
+        "gym",
+        "dance"
+      ],
+      "tier": "premium",
+      "access": {
+        "essential": "not included here",
+        "classic": "not included here",
+        "premium": "4 visits a month",
+        "max": "4 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_photo-output%205_1700661199910351_admin.jpeg?generation=1751983548753339&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/aura-pole-dance",
+      "tierLabel": "Premium venue"
+    },
+    {
+      "id": "auraria-sona-klangcaf",
+      "name": "Auraria Sona @KlangCafé",
+      "area": "friedrichshain",
+      "lat": 52.4990704,
+      "lng": 13.464948,
+      "address": "Corinthstraße 61, 10245 Berlin",
+      "activities": [
+        "spa"
+      ],
+      "tier": "premium",
+      "access": {
+        "essential": "not included here",
+        "classic": "not included here",
+        "premium": "4 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_hozfartuw7p1u6cekydf_1770060581482272.png?generation=1770060581886184&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/auraria-sona-klangcaf",
+      "tierLabel": "Premium venue"
+    },
+    {
+      "id": "balletonic-studio-64",
+      "name": "STUDIO 64 by BalleTonic",
+      "area": "kreuzberg",
+      "lat": 52.4889242,
+      "lng": 13.4210002,
+      "address": "Urbanstraße 64, 10967 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "dance",
+        "barre"
+      ],
+      "tier": "standard",
+      "access": {
+        "essential": "4 visits a month",
+        "classic": "8 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_bvddcxwklw6rskjdtypq_1784722575912733.png?generation=1784722576342903&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/balletonic-studio-64",
+      "tierLabel": "Standard venue"
+    },
+    {
+      "id": "beat81-cycle-studio-fhain",
+      "name": "BEAT81 - FHain RIDE",
+      "area": "friedrichshain",
+      "lat": 52.5099472,
+      "lng": 13.4547588,
+      "address": "Libauer Straße 1, 10245 Berlin",
+      "activities": [
+        "cycling"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_ctrbz2sdfptmrdb3yx8m_1771416355777092.png?generation=1771416356818074&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/beat81-cycle-studio-fhain",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "beat81-cycle-studio-gorli",
+      "name": "BEAT81 - Görli RIDE",
+      "area": "kreuzberg",
+      "lat": 52.5003171,
+      "lng": 13.4330467,
+      "address": "Zeughofstraße 20, 10997 Berlin",
+      "activities": [
+        "cycling"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_pdn5vwox5khgizh1itvg_1764323240581950.png?generation=1764323241056974&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/beat81-cycle-studio-gorli",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "beat81-cycle-studio-schnhauser-big",
+      "name": "BEAT81 - Schönhauser RIDE (big)",
+      "area": "prenzlauer-berg",
+      "lat": 52.547458106,
+      "lng": 13.412821206999999,
+      "address": "Schönhauser Alle 124, 10437 Berlin",
+      "activities": [
+        "cycling"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_dqsriuflvujcgo0zl0lk_1771416998399677.png?generation=1771416999312380&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/beat81-cycle-studio-schnhauser-big",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "beat81-cycle-studio-schnhauser-small",
+      "name": "BEAT81 - Schönhauser RIDE (small)",
+      "area": "prenzlauer-berg",
+      "lat": 52.5473876,
+      "lng": 13.4129645,
+      "address": "Schönhauser Alle 124, 10437 Berlin",
+      "activities": [
+        "cycling"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_dxtcxqlyflr04d4y6fma_1771417093255492.png?generation=1771417094408516&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/beat81-cycle-studio-schnhauser-small",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "beat81-hackerscher-circuit",
+      "name": "BEAT81 - Hackescher CIRCUIT",
+      "area": "mitte",
+      "lat": 52.5235657,
+      "lng": 13.4049384,
+      "address": "Dircksenstraße 47, 10178 Berlin",
+      "activities": [
+        "gym",
+        "hiit"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_jqmyctrgk8hftqlipae4_177608898964242.png?generation=1776088989853426&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/beat81-hackerscher-circuit",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "beat81-kudamm-ride",
+      "name": "BEAT81 - Kudamm RIDE",
+      "area": "charlottenburg",
+      "lat": 52.498152,
+      "lng": 13.2954458,
+      "address": "Kurfürstendamm 102, 10711 Berlin",
+      "activities": [
+        "cycling"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_jiphxniefnqyqu7fkp14_1763734228533501.png?generation=1763734229415176&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/beat81-kudamm-ride",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "beat81-mitte-ride",
+      "name": "BEAT81 - Mitte RIDE",
+      "area": "mitte",
+      "lat": 52.5251885,
+      "lng": 13.3882243,
+      "address": "Friedrichstraße 110, 10179 Berlin",
+      "activities": [
+        "cycling"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_bfe3d2gsjccmfeh20g8h_1778575040996399.png?generation=1778575042153576&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/beat81-mitte-ride",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "berlin-gym-central",
+      "name": "Berlin Gym - Central",
+      "area": "friedrichshain",
+      "lat": 52.51957,
+      "lng": 13.46744,
+      "address": "Samariterstraße 21, 10247 Berlin",
+      "activities": [
+        "boxing",
+        "martial_arts"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "4 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_b5a42e22890b-Thai5_1689003286311460_admin.jpg?generation=1751982088752263&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/berlin-gym-central",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "berlin-gym-wedding-thai-boxen",
+      "name": "Berlin Gym Wedding - Thai Boxen",
+      "area": "wedding",
+      "lat": 52.5508975,
+      "lng": 13.3538939,
+      "address": "Seestr. 50, 13347 Berlin",
+      "activities": [
+        "boxing"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "4 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_c06eb404e71e-Thai5_1689001477332069_admin.jpg?generation=1751982087885744&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/berlin-gym-wedding-thai-boxen",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "berlin-outdoor-sports-am-velodrom-s-landsberger-allee",
+      "name": "Berlin Outdoor Sports - Am Velodrom",
+      "area": "friedrichshain",
+      "lat": 52.531286013999996,
+      "lng": 13.450615175,
+      "address": "Paul Heyse Straße 24, 10407 Berlin",
+      "activities": [
+        "hiit"
+      ],
+      "tier": "standard",
+      "access": {
+        "essential": "4 visits a month",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_ca766e7f89d3-2_1653923082693334_admin.png?generation=1751978952828354&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/berlin-outdoor-sports-am-velodrom-s-landsberger-allee",
+      "tierLabel": "Standard venue"
+    },
+    {
+      "id": "berlin-siu-lam-wing-chun-pai-1",
+      "name": "Berlin Siu Lam Wing Chun Pai",
+      "area": "friedrichshain",
+      "lat": 52.5278559,
+      "lng": 13.4504901,
+      "address": "Conrad-Blenkle-Straße 2-3, 10407 Berlin",
+      "activities": [
+        "gym",
+        "martial_arts"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_Siu%20Lam%20Wing%20Chun%20Berlin%20Galeriebild%20Nr.%202_1710846929678710_admin.jpg?generation=1751984999055555&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/berlin-siu-lam-wing-chun-pai-1",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "berliner-pilates-prenzlauer-berg",
+      "name": "Berliner Pilates Deborah Degano Prenzlauer Berg",
+      "area": "prenzlauer-berg",
+      "lat": 52.5437328,
+      "lng": 13.4194349,
+      "address": "Schliemannstraße 34, 10437 Berlin",
+      "activities": [
+        "pilates"
+      ],
+      "tier": "premium",
+      "access": {
+        "essential": "not included here",
+        "classic": "not included here",
+        "premium": "4 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_774effa9ad0a-Berliner_Pilates_Maria_vonStaa_small05_1699369210593070_admin.jpg?generation=1751983318783328&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/berliner-pilates-prenzlauer-berg",
+      "tierLabel": "Premium venue"
+    },
+    {
+      "id": "bewegungskollektiv-flow-motion-studio-neuklln",
+      "name": "Bewegungskollektiv @ Flow Motion Studio Neukölln",
+      "area": "neukoelln",
+      "lat": 52.4645382,
+      "lng": 13.4402621,
+      "address": "Glasower Straße 60, 12051 Berlin",
+      "activities": [
+        "gym",
+        "strength",
+        "martial_arts"
+      ],
+      "tier": "standard",
+      "access": {
+        "essential": "4 visits a month",
+        "classic": "8 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_fmseaktjnyyuxjaaqklp_1785333674934016.png?generation=1785333675864138&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/bewegungskollektiv-flow-motion-studio-neuklln",
+      "tierLabel": "Standard venue"
+    },
+    {
+      "id": "beyond-cburg",
+      "name": "BEYOND Cburg",
+      "area": "charlottenburg",
+      "lat": 52.5078937,
+      "lng": 13.2978158,
+      "address": "Pestalozzistraße 56, 10627 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "yoga",
+        "spa",
+        "strength",
+        "barre"
+      ],
+      "tier": "premium",
+      "access": {
+        "essential": "not included here",
+        "classic": "not included here",
+        "premium": "4 visits a month",
+        "max": "4 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_qzndaynmafjtxykuvcxj_17085331621571.png?generation=1751984679921070&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/beyond-cburg",
+      "tierLabel": "Premium venue"
+    },
+    {
+      "id": "beyond-xberg",
+      "name": "BEYOND Xberg",
+      "area": "kreuzberg",
+      "lat": 52.4973409,
+      "lng": 13.4235204,
+      "address": "Reichenberger Str. 36, 10999 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "yoga",
+        "spa",
+        "strength",
+        "barre"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "4 visits a month",
+        "max": "4 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_BEYOND%20Xberg_Refine%20Room_1701072796344051_admin.jpg?generation=1751983587455872&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/beyond-xberg",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "black-sheep-athletics-crossfitr-sheep-pack",
+      "name": "Black Sheep Athletics / Crossfit® Sheep Pack",
+      "area": "kreuzberg",
+      "lat": 52.4888323,
+      "lng": 13.3874876,
+      "address": "Am Tempelhofer Berg 6 Aufgang 5, 10965 Berlin",
+      "activities": [
+        "crossfit"
+      ],
+      "tier": "premium",
+      "access": {
+        "essential": "not included here",
+        "classic": "not included here",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_qktbw69rmuuf5d3icna2_1699359618474521.png?generation=1751983314952735&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/black-sheep-athletics-crossfitr-sheep-pack",
+      "tierLabel": "Premium venue"
+    },
+    {
+      "id": "boar-yoga-art-studio",
+      "name": "BOARÉ Yoga Art Rodenberg Studio",
+      "area": "prenzlauer-berg",
+      "lat": 52.5511697,
+      "lng": 13.4147438,
+      "address": "Rodenbergstraße 2, 10439 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "yoga",
+        "meditation",
+        "martial_arts"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_hyowes4itlimgv1mu9vi_1751465629105989.png?generation=1751997528640768&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/boar-yoga-art-studio",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "boogaloo-tanzstudio",
+      "name": "Boogaloo Tanzstudio",
+      "area": "prenzlauer-berg",
+      "lat": 52.5542258,
+      "lng": 13.414181,
+      "address": "Schönhauserallee 99, 10439 Berlin",
+      "activities": [
+        "dance"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_21192053_1332665683512872_5478198922376334580_n.png?generation=1751967248552227&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/boogaloo-tanzstudio",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "butter-mitte",
+      "name": "BUTTER - Mitte",
+      "area": "mitte",
+      "lat": 52.5280657,
+      "lng": 13.3904366,
+      "address": "Torstraße 203, 10115 Berlin",
+      "activities": [
+        "pilates"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_usmyg3zzbgao7nbaawum_1783515092629086.png?generation=1783515095058780&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/butter-mitte",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "casa-flow",
+      "name": "CASA FLOW STUDIOS PRENZLAUER BERG",
+      "area": "prenzlauer-berg",
+      "lat": 52.5350171,
+      "lng": 13.4223028,
+      "address": "Prenzlauer Allee 38, 10405 Berlin",
+      "activities": [
+        "pilates",
+        "yoga",
+        "meditation",
+        "barre"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_rwyuueudrw2a23jl2mso_1766962130183344.png?generation=1766962130943978&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/casa-flow",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "champs-kickboxing-soulshine-yoga",
+      "name": "Champ's Kickboxing / SoulShine Yoga",
+      "area": "mitte",
+      "lat": 52.5126977,
+      "lng": 13.4175277,
+      "address": "Brückenstraße 5-6, 10179 Berlin",
+      "activities": [
+        "boxing",
+        "martial_arts"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_sb8nc6inspqohaqzwhtx_1759137728486044.png?generation=1759137728963838&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/champs-kickboxing-soulshine-yoga",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "chimosa",
+      "name": "Chimosa",
+      "area": "mitte",
+      "lat": 52.5265875,
+      "lng": 13.3895936,
+      "address": "Linienstr. 127, 10115 Berlin",
+      "activities": [
+        "gym",
+        "martial_arts",
+        "boxing"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "2 visits a month",
+        "premium": "4 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_gmdfhaok8pwn3crsljlc_1697631137884284.png?generation=1751982897600137&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/chimosa",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "cryopoint-berlin",
+      "name": "Cryopoint - Berlin Ku'damm",
+      "area": "charlottenburg",
+      "lat": 52.503913,
+      "lng": 13.325309,
+      "address": "Uhlandstr. 20-25, 10623 Berlin",
+      "activities": [
+        "spa"
+      ],
+      "tier": "premium",
+      "access": {
+        "essential": "not included here",
+        "classic": "not included here",
+        "premium": "4 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_crhvcsrvg9auzqgvpllj_1768842165879210.png?generation=1768842166694683&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/cryopoint-berlin",
+      "tierLabel": "Premium venue"
+    },
+    {
+      "id": "cryopoint-berlin-mitte",
+      "name": "Cryopoint - Berlin Mitte",
+      "area": "mitte",
+      "lat": 52.5249712,
+      "lng": 13.386754,
+      "address": "Claire-Waldoff-Str. 4, 10117 Berlin",
+      "activities": [
+        "spa"
+      ],
+      "tier": "premium",
+      "access": {
+        "essential": "not included here",
+        "classic": "not included here",
+        "premium": "4 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_yz7pvo9bot5ti7elzugp_1768842582933618.png?generation=1768842583622847&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/cryopoint-berlin-mitte",
+      "tierLabel": "Premium venue"
+    },
+    {
+      "id": "cuban-fitness-boxing-familienzentrum-kreuzberg",
+      "name": "Cuban Fitness Boxing @Familienzentrum Kreuzberg",
+      "area": "kreuzberg",
+      "lat": 52.4868656,
+      "lng": 13.3856199,
+      "address": "Mehringdamm 114, 10965 Berlin",
+      "activities": [
+        "boxing"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_xqg1rc0xplt7dyw6iqzj_1725274414997048.png?generation=1751987717981469&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/cuban-fitness-boxing-familienzentrum-kreuzberg",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "das-fitness-atelier",
+      "name": "Das Fitness Atelier",
+      "area": "kreuzberg",
+      "lat": 52.486895,
+      "lng": 13.3927073,
+      "address": "Fidicinstraße 29, 10965 Berlin",
+      "activities": [
+        "yoga",
+        "strength"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_pu1crmzbcrktouwxaqap_1760956969292329.png?generation=1760956969726281&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/das-fitness-atelier",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "dna-art-club-art-house",
+      "name": "DNA. ART HOUSE",
+      "area": "friedrichshain",
+      "lat": 52.5021218,
+      "lng": 13.4329301,
+      "address": "Wrangelstraße 25, 10997 Berlin",
+      "activities": [
+        "dance",
+        "spa",
+        "meditation"
+      ],
+      "tier": "standard",
+      "access": {
+        "essential": "4 visits a month",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_lz39rl8tsdvorc6fnrvl_1734535339816405.png?generation=1751993045347786&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/dna-art-club-art-house",
+      "tierLabel": "Standard venue"
+    },
+    {
+      "id": "dock-11",
+      "name": "Dock 11",
+      "area": "prenzlauer-berg",
+      "lat": 52.5366224,
+      "lng": 13.40791,
+      "address": "Kastanienallee 79, 10435 Berlin",
+      "activities": [
+        "pilates",
+        "dance"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_dock11.1.jpg?generation=1751966881932696&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/dock-11",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "dolce-vita-dance-studio",
+      "name": "Dolce Vita Dance Studio",
+      "area": "wedding",
+      "lat": 52.5438654,
+      "lng": 13.36792,
+      "address": "Lindower Straße 18, 13347 Berlin",
+      "activities": [
+        "dance"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_7C82C5FE-E6D9-4E3D-AD23-B0EC18AD5D4D_1653898919581468_admin.jpg?generation=1751978932956205&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/dolce-vita-dance-studio",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "ds-dance-school",
+      "name": "D!´S DANCE WORLD",
+      "area": "mitte",
+      "lat": 52.5159272,
+      "lng": 13.4196318,
+      "address": "Holzmarktstraße 66, 10179 Berlin",
+      "activities": [
+        "gym",
+        "dance"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_wlahytypikzzt6uzl9c1_1781179861811978.png?generation=1781179866530937&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/ds-dance-school",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "english-yoga-julie-blumenthal",
+      "name": "English Yoga Julie Blumenthal",
+      "area": "kreuzberg",
+      "lat": 52.492715,
+      "lng": 13.414353,
+      "address": "Bija Yoga Berlin, Grimmstrasse 19, 10967 Berlin",
+      "activities": [
+        "yoga",
+        "meditation"
+      ],
+      "tier": "standard",
+      "access": {
+        "essential": "4 visits a month",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_Bija%20Yoga%20mats-and-window%20sm_1539179584544376_admin.jpeg?generation=1751969016521640&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/english-yoga-julie-blumenthal",
+      "tierLabel": "Standard venue"
+    },
+    {
+      "id": "every-damn-day-yoga",
+      "name": "Every Damn Day Yoga",
+      "area": "friedrichshain",
+      "lat": 52.5057765,
+      "lng": 13.4619054,
+      "address": "Revaler Str. 22, 10245 Berlin",
+      "activities": [
+        "pilates",
+        "yoga",
+        "meditation"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_3_1666270814396230_admin.png?generation=1751979945180490&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/every-damn-day-yoga",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "evope-performance-center-o-crossfit",
+      "name": "EVOPE",
+      "area": "prenzlauer-berg",
+      "lat": 52.5364912,
+      "lng": 13.4509281,
+      "address": "Storkower Straße 105, 10407 Berlin",
+      "activities": [
+        "strength",
+        "crossfit",
+        "hiit"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_v5fvpldh5zdlyo3zsvqi_1758963277752778.png?generation=1758963278203437&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/evope-performance-center-o-crossfit",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "fitballet-glogauer-str",
+      "name": "Fit'Ballet - Glogauer Str.",
+      "area": "neukoelln",
+      "lat": 52.4942596,
+      "lng": 13.4372987,
+      "address": "Glogauer Str. 6, 10999 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "dance",
+        "barre"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_1_1641899845725952_admin.jpeg?generation=1751977941643249&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/fitballet-glogauer-str",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "flair-studios",
+      "name": "Fl'air Studios 52",
+      "area": "mitte",
+      "lat": 52.5136612,
+      "lng": 13.421691448,
+      "address": "Holzmarktstraße 15-18, 10179 Berlin",
+      "activities": [
+        "gym",
+        "yoga",
+        "strength"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_nuomwwz0zmwnxpquyjlu_1705754290534286.png?generation=1751984248925342&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/flair-studios",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "flair-studios-51",
+      "name": "Fl'air Studios 51",
+      "area": "mitte",
+      "lat": 52.5134087,
+      "lng": 13.421821459,
+      "address": "Holzmarktstraße 15-18, 10179 Berlin",
+      "activities": [
+        "pilates",
+        "yoga"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_nmdvfys6yyf7jkqaylzr_1741947813156935.png?generation=1751994718579371&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/flair-studios-51",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "flying-steps-academy",
+      "name": "Flying Steps Academy",
+      "area": "kreuzberg",
+      "lat": 52.503206,
+      "lng": 13.407536,
+      "address": "Lobeckstraße 30-35, 10969 Berlin",
+      "activities": [
+        "dance"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "1 visit a day"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576__Nika_KramerN5992%20copy.jpg?generation=1751968843866004&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/flying-steps-academy",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "futura-house-kreuzberg",
+      "name": "Futura House Kreuzberg",
+      "area": "kreuzberg",
+      "lat": 52.49616,
+      "lng": 13.422081,
+      "address": "Paul-Lincke-Ufer 40, 10999 Berlin",
+      "activities": [
+        "gym",
+        "hiit"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_xv4n6g9dlwtsokfxt1bk_1786952906863914.png?generation=1786952908733086&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/futura-house-kreuzberg",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "fuwa-fuwa-japanese-self-care",
+      "name": "Fuwa Fuwa Japanese Self Care",
+      "area": "charlottenburg",
+      "lat": 52.5058496,
+      "lng": 13.3186731,
+      "address": "Kantstraße 139, 10623 Berlin",
+      "activities": [
+        "meditation"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_catmtftjkl0nn1eg046g_1772890051117660.png?generation=1772890052574684&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/fuwa-fuwa-japanese-self-care",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "good-moves-studio",
+      "name": "Good Moves Studio",
+      "area": "prenzlauer-berg",
+      "lat": 52.5321796,
+      "lng": 13.4256695,
+      "address": "Immanuelkirchstraße 24, 10405 Berlin",
+      "activities": [
+        "gym",
+        "pilates"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_nbjm3gzglqguszk1vqjx_178533989259997.png?generation=1785339893357055&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/good-moves-studio",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "green-yoga",
+      "name": "Green Yoga Prenzlauer Berg",
+      "area": "prenzlauer-berg",
+      "lat": 52.5379847,
+      "lng": 13.4214354,
+      "address": "Sredzkistraße 59, 10405 Berlin",
+      "activities": [
+        "pilates",
+        "yoga",
+        "dance",
+        "meditation",
+        "spa"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_DSC02608_1560443637855090_admin.jpg?generation=1751970913353966&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/green-yoga",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "halenow-friedrichshain",
+      "name": "HALE.NOW - Friedrichshain",
+      "area": "friedrichshain",
+      "lat": 52.5097925,
+      "lng": 13.4639144,
+      "address": "Krossener Straße 1, 10245 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "yoga",
+        "meditation",
+        "barre"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_ouqkaworrwkjp6vdj2t5_1783403735804511.png?generation=1783403736649813&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/halenow-friedrichshain",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "halenow-kreuzberg",
+      "name": "HALE.NOW - Kreuzberg",
+      "area": "kreuzberg",
+      "lat": 52.5063801,
+      "lng": 13.4162086,
+      "address": "Heinrich-Heine-Platz 10, 10179 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "yoga",
+        "meditation",
+        "barre"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "1 visit a day",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_j1nhjd4stp9adqyx1eet_1783404026591793.png?generation=1783404027413851&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/halenow-kreuzberg",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "halenow-kudamm",
+      "name": "HALE.NOW – Ku´damm",
+      "area": "charlottenburg",
+      "lat": 52.5040994,
+      "lng": 13.3252424,
+      "address": "Uhlandstraße 20 - 25, 10623 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "spa",
+        "sauna",
+        "barre"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_eahj0elkwljzfe6zify9_178340418688718.png?generation=1783404186843527&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/halenow-kudamm",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "halenow-mitte-1",
+      "name": "HALE.NOW - Mitte Floor",
+      "area": "mitte",
+      "lat": 52.5304809,
+      "lng": 13.392816,
+      "address": "Schröderstraße 13, 10115 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "yoga",
+        "meditation",
+        "barre"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_i42joob4gehtqdnwnf3w_1783404230639536.png?generation=1783404231350633&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/halenow-mitte-1",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "halenow-prenzlauer-berg",
+      "name": "HALE.NOW - Prenzlauer Berg",
+      "area": "prenzlauer-berg",
+      "lat": 52.5333808,
+      "lng": 13.4240671,
+      "address": "Winsstraße 62, 10405 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "yoga",
+        "meditation",
+        "barre"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_ak3p7wwbsc6ffhv0tpfb_1783404416825113.png?generation=1783404417543144&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/halenow-prenzlauer-berg",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "halenow-smart-strength-training-kudamm",
+      "name": "HALE.NOW - Gym Ku´damm",
+      "area": "charlottenburg",
+      "lat": 52.5040994,
+      "lng": 13.3252424,
+      "address": "Uhlandstraße 20 - 25, 10623 Berlin",
+      "activities": [
+        "gym",
+        "sauna"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_kn3bhq111itekdf5oatx_1783403938102691.png?generation=1783403938921523&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/halenow-smart-strength-training-kudamm",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "har-studio",
+      "name": "HAR LOFT",
+      "area": "kreuzberg",
+      "lat": 52.489031,
+      "lng": 13.4228981,
+      "address": "Urbanstraße 93, 10967 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "yoga",
+        "meditation",
+        "spa"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_kkqoy4cxte9f1nrjfh5q_1785492224948750.png?generation=1785492225862762&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/har-studio",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "haubentaucher",
+      "name": "MAAYA",
+      "area": "friedrichshain",
+      "lat": 52.5072644,
+      "lng": 13.452714,
+      "address": "Revaler Straße 99, 10245 Berlin",
+      "activities": [
+        "swimming"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "1 visit a day"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_utyj158dj9jhmyeomtau_1785149442384668.png?generation=1785149443230752&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/haubentaucher",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "hfs-3d-bodyscan-kreuzberg",
+      "name": "HFS - 3D Bodyscan DeltaT - Kreuzberg ",
+      "area": "kreuzberg",
+      "lat": 52.488463,
+      "lng": 13.3866071,
+      "address": "Mehringdamm 91, 10965 Berlin",
+      "activities": [
+        "spa"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_fadfjjhte7fuwsauvgek_1783498604849196.png?generation=1783498605919578&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/hfs-3d-bodyscan-kreuzberg",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "hi-studios-ride-sonnenallee",
+      "name": "Hi! Studios RIDE",
+      "area": "neukoelln",
+      "lat": 52.4849257,
+      "lng": 13.4347315,
+      "address": "Sonnenallee 63, 12045 Berlin",
+      "activities": [
+        "cycling"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_ebvl5mmwf3wcubqwf20h_1773149346371630.png?generation=1773149347560086&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/hi-studios-ride-sonnenallee",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "high-on-yoga-berlin",
+      "name": "HIGH ON YOGA",
+      "area": "kreuzberg",
+      "lat": 52.4955162,
+      "lng": 13.4312863,
+      "address": "Reichenbergerstraße 124, 10999 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "strength",
+        "spa"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_hdg1kq2d7mjfxos3lghn_1770393708662269.png?generation=1770393709440365&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/high-on-yoga-berlin",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "hiyoga-hagelberger-strae",
+      "name": "Hi! Studios Kreuzberg",
+      "area": "kreuzberg",
+      "lat": 52.490956,
+      "lng": 13.385317,
+      "address": "Hagelberger Str. 53/54, 10965 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "yoga"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_lsmzd1ididytcdzqoqks_1781785232256289.png?generation=1781785233385065&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/hiyoga-hagelberger-strae",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "holi-collective-berlin-mitte",
+      "name": "Holi Collective - Berlin Mitte",
+      "area": "kreuzberg",
+      "lat": 52.5085013,
+      "lng": 13.3923909,
+      "address": "Charlottenstraße 18 (Eingang Schützenstrasse), 10117 Berlin",
+      "activities": [
+        "gym",
+        "hiit",
+        "strength"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_ftf1aiwwq58rwdp9vso4_1745701146888527.png?generation=1751995876647523&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/holi-collective-berlin-mitte",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "holmes-place-boutique",
+      "name": "Holmes Place Boutique Friedrichshain",
+      "area": "friedrichshain",
+      "lat": 52.5114894,
+      "lng": 13.4540953,
+      "address": "Grünbergerstraße 44a, 10245 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "yoga",
+        "spa"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "8 visits a month",
+        "premium": "8 visits a month",
+        "max": "1 visit a day"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_aakn2ipgzesagmctgc9y_1762768654197336.png?generation=1762768654911778&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/holmes-place-boutique",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "holmes-place-potsdamer-platz",
+      "name": "Holmes Place Potsdamer Platz",
+      "area": "kreuzberg",
+      "lat": 52.5053712,
+      "lng": 13.3756906,
+      "address": "Gabriele-Tergit-Promenade 17 a-d, 10963 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "yoga",
+        "sauna"
+      ],
+      "tier": "premium",
+      "access": {
+        "essential": "not included here",
+        "classic": "not included here",
+        "premium": "8 visits a month",
+        "max": "1 visit a day"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_cks9gssz0mfjuh59zngv_173281136351351.png?generation=1751992532487134&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/holmes-place-potsdamer-platz",
+      "tierLabel": "Premium venue"
+    },
+    {
+      "id": "holmes-place-reform-potsdamer-platz",
+      "name": "Holmes Place REFORM Potsdamer Platz",
+      "area": "kreuzberg",
+      "lat": 52.5053469,
+      "lng": 13.3759204,
+      "address": "Gabriele-Tergit-Promenade 17a, 10963 Berlin",
+      "activities": [
+        "pilates"
+      ],
+      "tier": "premium",
+      "access": {
+        "essential": "not included here",
+        "classic": "not included here",
+        "premium": "4 visits a month",
+        "max": "4 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_rm9usv6bep6btbibewv1_1753170849829788.png?generation=1753170850577539&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/holmes-place-reform-potsdamer-platz",
+      "tierLabel": "Premium venue"
+    },
+    {
+      "id": "jivamukti-berlin-kreuzberg",
+      "name": "THREE BOONS YOGA Kreuzberg f.k.a Jivamukti Berlin",
+      "area": "kreuzberg",
+      "lat": 52.5006496,
+      "lng": 13.4177234,
+      "address": "Dresdener Straße 11, 10999 Berlin",
+      "activities": [
+        "yoga"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "1 visit a day"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_Bild1_1616513344668110_admin.png?generation=1751976114630169&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/jivamukti-berlin-kreuzberg",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "jivamukti-yoga-mitte",
+      "name": "THREE BOONS YOGA Mitte f.k.a. Jivamukti Berlin",
+      "area": "mitte",
+      "lat": 52.5345696,
+      "lng": 13.3994129,
+      "address": "Brunnenstraße 29, 10119 Berlin",
+      "activities": [
+        "yoga"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "1 visit a day"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_Bild1_1616513376968717_admin.png?generation=1751976116888424&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/jivamukti-yoga-mitte",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "kadampa-meditationszentrum-mitte",
+      "name": "Kadampa Meditationszentrum Mitte",
+      "area": "mitte",
+      "lat": 52.5312865,
+      "lng": 13.3820072,
+      "address": "Chausseestr. 108, 10115 Berlin",
+      "activities": [
+        "meditation"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_NKT_Meditation_0178_1581412614748130_admin.jpg?generation=1751973972987633&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/kadampa-meditationszentrum-mitte",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "kalaa-yoga-berlin",
+      "name": "Kalaa Yoga Berlin",
+      "area": "prenzlauer-berg",
+      "lat": 52.5444324,
+      "lng": 13.4175411,
+      "address": "Lychener Straße 47, 10437 Berlin",
+      "activities": [
+        "yoga"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_s2nbqgmihabfcuegwkll_1780042050610275.png?generation=1780042051567781&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/kalaa-yoga-berlin",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "kombibad-seestrasse",
+      "name": "Kombibad Seestraße",
+      "area": "wedding",
+      "lat": 52.55735,
+      "lng": 13.36395,
+      "address": "Seestraße 80, 13347 Berlin",
+      "activities": [
+        "swimming"
+      ],
+      "tier": "standard",
+      "access": {
+        "essential": "4 visits a month",
+        "classic": "1 visit a day",
+        "premium": "1 visit a day",
+        "max": "1 visit a day"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_26174_foto_sommerbad_kombibad_seest_ra__e_seestra__e_au__enbecken.jpg?generation=1751636795965623&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/kombibad-seestrasse",
+      "tierLabel": "Standard venue"
+    },
+    {
+      "id": "lifted-bergmannstrae",
+      "name": "LIFTED - Bergmannstraße",
+      "area": "kreuzberg",
+      "lat": 52.4890628,
+      "lng": 13.3979266,
+      "address": "Bergmannstraße 72, 10961 Berlin",
+      "activities": [
+        "gym",
+        "strength"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "8 visits a month",
+        "premium": "8 visits a month",
+        "max": "1 visit a day"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_nexwopgq58hdvwrnyegd_1761584902512195.png?generation=1761584903198017&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/lifted-bergmannstrae",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "lifted-eberswalder",
+      "name": "LIFTED - Eberswalder",
+      "area": "prenzlauer-berg",
+      "lat": 52.5421564,
+      "lng": 13.4126598,
+      "address": "Schönhauser Allee 48, 10437 Berlin",
+      "activities": [
+        "gym",
+        "strength"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "8 visits a month",
+        "premium": "8 visits a month",
+        "max": "1 visit a day"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_k3c7wyi3fyhmhxudtmdg_1761584854769971.png?generation=1761584855429306&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/lifted-eberswalder",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "lifted-kotti",
+      "name": "LIFTED - Kotti",
+      "area": "kreuzberg",
+      "lat": 52.4969354,
+      "lng": 13.4190588,
+      "address": "Kottbusser Straße 11, 10999 Berlin",
+      "activities": [
+        "gym",
+        "strength"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "8 visits a month",
+        "premium": "8 visits a month",
+        "max": "1 visit a day"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_scightq3v0d3jcy23nlk_1769345534411479.png?generation=1769345535267827&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/lifted-kotti",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "lifted-nordbahnhof",
+      "name": "LIFTED - Nordbahnhof",
+      "area": "mitte",
+      "lat": 52.5288588,
+      "lng": 13.3881172,
+      "address": "Novalisstraße 10, 10115 Berlin",
+      "activities": [
+        "gym",
+        "strength"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "8 visits a month",
+        "premium": "8 visits a month",
+        "max": "1 visit a day"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_xdhedwl5naqrjqsz9m00_1776414285325834.png?generation=1776414287477443&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/lifted-nordbahnhof",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "momax-pilates-berlin-mitte-reformer-pilates",
+      "name": "Momax Pilates Berlin Mitte - Reformer Pilates",
+      "area": "mitte",
+      "lat": 52.52667,
+      "lng": 13.4020834,
+      "address": "Gipsstraße 23, 10119 Berlin",
+      "activities": [
+        "pilates"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_dke0cnioi66ywrojjoie_1761919633733882.png?generation=1761919634199339&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/momax-pilates-berlin-mitte-reformer-pilates",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "motions-gleisdreieck-tanz-und-bewegungsstudio",
+      "name": "motion*s GLEISDREIECK Tanz- und Bewegungsstudio",
+      "area": "kreuzberg",
+      "lat": 52.5008525,
+      "lng": 13.375677,
+      "address": "Tempelhofer Ufer 36, 10963 Berlin",
+      "activities": [
+        "gym",
+        "dance",
+        "martial_arts"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_openStage14-USC1_1691413540800686_admin.jpg?generation=1751982269696045&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/motions-gleisdreieck-tanz-und-bewegungsstudio",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "moving-forward-friedrichshain",
+      "name": "Moving Forward - Friedrichshain",
+      "area": "friedrichshain",
+      "lat": 52.5315286,
+      "lng": 13.4503532,
+      "address": "Paul-Heyse-Straße 26, 10407 Berlin",
+      "activities": [
+        "hiit"
+      ],
+      "tier": "standard",
+      "access": {
+        "essential": "4 visits a month",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "1 visit a day"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_afeavj4aywwx5fxsur6g_1774351628870611.jpg?generation=1774351629170790&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/moving-forward-friedrichshain",
+      "tierLabel": "Standard venue"
+    },
+    {
+      "id": "noi-studios-mitte",
+      "name": "NOI Studios Mitte",
+      "area": "mitte",
+      "lat": 52.52708,
+      "lng": 13.38823,
+      "address": "Torstraße 224-228, 10115 Berlin",
+      "activities": [
+        "pilates"
+      ],
+      "tier": "premium",
+      "access": {
+        "essential": "not included here",
+        "classic": "not included here",
+        "premium": "4 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_yqlbpdi6zkzpfblx8rxj_1777375514916726.png?generation=1777375516042091&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/noi-studios-mitte",
+      "tierLabel": "Premium venue"
+    },
+    {
+      "id": "oasis",
+      "name": "ANTI SPA",
+      "area": "mitte",
+      "lat": 52.5310784,
+      "lng": 13.4004117,
+      "address": "Brunnenstraße 9, 10119 Berlin",
+      "activities": [
+        "sauna"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_tt5ij0wt6fk9gddwbmvn_1781696306479583.png?generation=1781696307799422&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/oasis",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "onda-yoga-studio",
+      "name": "Onda Yoga Studio",
+      "area": "prenzlauer-berg",
+      "lat": 52.5326015,
+      "lng": 13.4283355,
+      "address": "Greifswalder Straße 208, 10405 Berlin",
+      "activities": [
+        "pilates",
+        "spa"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_m2tr2gmka0l2scalozpo_1744367536537240.png?generation=1751995534304364&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/onda-yoga-studio",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "open-studios-neuklln",
+      "name": "OPEN – Neukölln",
+      "area": "neukoelln",
+      "lat": 52.4806338,
+      "lng": 13.428376,
+      "address": "Mainzer Straße 39, 12053 Berlin",
+      "activities": [
+        "pilates",
+        "yoga"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_ehwwmpv7zbhtmhibqzy7_1772382627846198.png?generation=1772382629350660&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/open-studios-neuklln",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "orbit-studio",
+      "name": "Orbit Studio",
+      "area": "friedrichshain",
+      "lat": 52.5131903,
+      "lng": 13.4706887,
+      "address": "Weichselstraße 33, 10247 Berlin",
+      "activities": [
+        "gym",
+        "dance"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_1_1688556840114385_admin.jpg?generation=1751982069931264&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/orbit-studio",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "pilates-with-tali-dharma-studios",
+      "name": "Pilates with Tali @Dharma Studios",
+      "area": "neukoelln",
+      "lat": 52.4761403,
+      "lng": 13.4257121,
+      "address": "Kienitzer Straße 98, 12049 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "barre"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_chs6mgkhdy00xpg8rnat_1711631308534208.png?generation=1751985137234734&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/pilates-with-tali-dharma-studios",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "pilates4all-reformer-pilates-kreuzberg",
+      "name": "PILATES4all - Reformer Pilates | KREUZBERG",
+      "area": "kreuzberg",
+      "lat": 52.5029563,
+      "lng": 13.4126394,
+      "address": "Prinzessinnenstraße 8-14, Ecke Oranienstr., 10969 Berlin",
+      "activities": [
+        "pilates"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_kx86z8pnmqw0dbid9lfm_178298042447558.png?generation=1782980424964205&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/pilates4all-reformer-pilates-kreuzberg",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "pole-flow-berlin",
+      "name": "Pole Flow Berlin",
+      "area": "neukoelln",
+      "lat": 52.4762892,
+      "lng": 13.4601045,
+      "address": "Ziegrastraße 11, 12057 Berlin",
+      "activities": [
+        "dance"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_crn0bh7315agcrprc9uo_1750348708112022.png?generation=1751997196858849&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/pole-flow-berlin",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "psychotherapie-ehms-wilmersdorfer-strae",
+      "name": "Psychotherapie Ehms - Wilmersdorfer Straße",
+      "area": "charlottenburg",
+      "lat": 52.5038393,
+      "lng": 13.307753,
+      "address": "Wilmersdorfer Straße 102/103, 10629 Berlin",
+      "activities": [
+        "spa"
+      ],
+      "tier": "premium",
+      "access": {
+        "essential": "not included here",
+        "classic": "not included here",
+        "premium": "1 visit a month",
+        "max": "2 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_r4gn7ilz8jpwie2opr36_1772206391887775.png?generation=1772206396063654&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/psychotherapie-ehms-wilmersdorfer-strae",
+      "tierLabel": "Premium venue"
+    },
+    {
+      "id": "pyra-studio-reformer",
+      "name": "PYRA Studio Reformer",
+      "area": "neukoelln",
+      "lat": 52.4896067,
+      "lng": 13.4339433,
+      "address": "Pannierstraße 24, 12047 Berlin",
+      "activities": [
+        "gym",
+        "pilates"
+      ],
+      "tier": "premium",
+      "access": {
+        "essential": "not included here",
+        "classic": "not included here",
+        "premium": "4 visits a month",
+        "max": "4 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_ynl0img57ga2pswssfbh_1772127711916651.png?generation=1772127713017246&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/pyra-studio-reformer",
+      "tierLabel": "Premium venue"
+    },
+    {
+      "id": "redlightdance-wedding-1",
+      "name": "Redlightdance - Wedding",
+      "area": "wedding",
+      "lat": 52.545572,
+      "lng": 13.358206,
+      "address": "Luxemburger Straße 31, 13353 Berlin",
+      "activities": [
+        "gym",
+        "dance"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_bergang_1586341849995229_admin.jpg?generation=1751974893079352&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/redlightdance-wedding-1",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "remedy-studio",
+      "name": "Remedy Studio",
+      "area": "prenzlauer-berg",
+      "lat": 52.5384384,
+      "lng": 13.4056786,
+      "address": "Schwedter Straße 40, 10435 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "yoga",
+        "dance",
+        "barre"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576__MG_0063_1539241792536478_admin.jpg?generation=1751969026236323&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/remedy-studio",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "ridebln-studio-mitte",
+      "name": "ride.bln - studio mitte",
+      "area": "kreuzberg",
+      "lat": 52.5088084,
+      "lng": 13.3912914,
+      "address": "Schützenstr. 70, 10117 Berlin",
+      "activities": [
+        "cycling"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_rxpx0uiesogp2vpjis4r_1778669138107973.png?generation=1778669138910598&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/ridebln-studio-mitte",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "ridebln-studio-prenzlauer-berg",
+      "name": "ride.bln - studio prenzlauer berg",
+      "area": "prenzlauer-berg",
+      "lat": 52.5399792,
+      "lng": 13.4176064,
+      "address": "Danziger Str. 30, 10435 Berlin",
+      "activities": [
+        "cycling"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_r0hzwhv1jbjp93digeqp_1778669234766566.jpg?generation=1778669235124376&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/ridebln-studio-prenzlauer-berg",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "rocket-station-yoga-mitte",
+      "name": "Rocket Station Yoga Mitte",
+      "area": "mitte",
+      "lat": 52.5245691,
+      "lng": 13.4069396,
+      "address": "Münzstraße 19, 10178 Berlin",
+      "activities": [
+        "pilates",
+        "yoga",
+        "strength",
+        "spa"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_whiusptue3nd2ylvbfxz_1754403111444904.png?generation=1754403112125571&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/rocket-station-yoga-mitte",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "rocycle-berlin-kudamm",
+      "name": "Rocycle Berlin Kudamm",
+      "area": "charlottenburg",
+      "lat": 52.50065,
+      "lng": 13.31033,
+      "address": "Kurfürstendamm 64-65, 10707 Berlin",
+      "activities": [
+        "gym",
+        "cycling"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_ROCYCLE%20KUDAMM%20OPENING%2023-8937_1681737472598832_admin.jpg?generation=1751981161297937&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/rocycle-berlin-kudamm",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "rocycle-rosenthaler-platz",
+      "name": "Rocycle Berlin Mitte",
+      "area": "mitte",
+      "lat": 52.5283302,
+      "lng": 13.409615,
+      "address": "Linienstraße 41, 10119 Berlin",
+      "activities": [
+        "cycling"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_Rocyce%20-%20staged%20ride%20utrecht-100_1681377507155392_admin.jpg?generation=1751981156237618&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/rocycle-rosenthaler-platz",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "rostudios-berlin-prenzlauer-berg",
+      "name": "Rostudios Berlin Prenzlauer Berg - Studio 1",
+      "area": "mitte",
+      "lat": 52.5299791,
+      "lng": 13.4106862,
+      "address": "Schönhauser Allee 9, 10119 Berlin",
+      "activities": [
+        "pilates"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_du3v5txcjsg8es39viwi_1764858240157270.png?generation=1764858240697496&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/rostudios-berlin-prenzlauer-berg",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "rostudios-berlin-prenzlauer-berg-studio-2",
+      "name": "Rostudios Berlin Prenzlauer Berg - Studio 2",
+      "area": "mitte",
+      "lat": 52.5299791,
+      "lng": 13.4106862,
+      "address": "Schönhauser Allee 9, 10119 Berlin",
+      "activities": [
+        "pilates"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_p6mraeyjfeggjyimopqf_1764858766665776.png?generation=1764858767181465&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/rostudios-berlin-prenzlauer-berg-studio-2",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "runnink-long-slow-distance-run-lsd",
+      "name": "RUNNINK - Performance Workout",
+      "area": "prenzlauer-berg",
+      "lat": 52.5365165,
+      "lng": 13.4510837,
+      "address": "Storkower Straße 105, 10407 Berlin",
+      "activities": [
+        "hiit"
+      ],
+      "tier": "standard",
+      "access": {
+        "essential": "4 visits a month",
+        "classic": "1 visit a day",
+        "premium": "1 visit a day",
+        "max": "1 visit a day"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_hwihbiu4ekas2dryuebz_1778273924760203.png?generation=1778273925815769&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/runnink-long-slow-distance-run-lsd",
+      "tierLabel": "Standard venue"
+    },
+    {
+      "id": "salzhain",
+      "name": "Salzhain- Gruppen Session/Kurse",
+      "area": "friedrichshain",
+      "lat": 52.5121538,
+      "lng": 13.4746081,
+      "address": "Scharnweberstraße 3, 10247 Berlin",
+      "activities": [
+        "yoga",
+        "spa"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "4 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_rili3h3y1kntrx90sf1z_1707812669847412.jpg?generation=1751984569533494&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/salzhain",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "sauna-im-stadtbad-wilmersdorf-l",
+      "name": "Sauna im Stadtbad Wilmersdorf l",
+      "area": "charlottenburg",
+      "lat": 52.4807886,
+      "lng": 13.3147003,
+      "address": "Mecklenburgische Straße 80, 10713 Berlin",
+      "activities": [
+        "sauna"
+      ],
+      "tier": "premium",
+      "access": {
+        "essential": "not included here",
+        "classic": "not included here",
+        "premium": "1 visit a month",
+        "max": "4 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_xepbcwrvdpjhqmslzwck_1735902655977199.png?generation=1751993148075984&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/sauna-im-stadtbad-wilmersdorf-l",
+      "tierLabel": "Premium venue"
+    },
+    {
+      "id": "sayyato-hyrox-trainings-club-ostkreuz",
+      "name": "Sayyato HYROX Training Club Ostkreuz",
+      "area": "friedrichshain",
+      "lat": 52.5079578,
+      "lng": 13.4728669,
+      "address": "Gürtelstraße 25, 10247 Berlin",
+      "activities": [
+        "hiit"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_deo9qqmmnmnwc7acovbn_1772564672294203.png?generation=1772564673968050&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/sayyato-hyrox-trainings-club-ostkreuz",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "scalebln-bergmannkiez",
+      "name": "SCALE bln Bergmannkiez",
+      "area": "kreuzberg",
+      "lat": 52.4911359,
+      "lng": 13.3872002,
+      "address": "Mehringdamm 57, 10961 Berlin",
+      "activities": [
+        "spa"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "1 visit a month",
+        "premium": "1 visit a month",
+        "max": "1 visit a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_vw3fsdx06a3rpo11hya4_1780473722549781.png?generation=1780473724525983&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/scalebln-bergmannkiez",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "scalebln-friedrichshain",
+      "name": "SCALE bln Friedrichshain",
+      "area": "friedrichshain",
+      "lat": 52.5115517,
+      "lng": 13.457603,
+      "address": "Grünberger Straße 62, 10245 Berlin",
+      "activities": [
+        "spa"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "1 visit a month",
+        "premium": "1 visit a month",
+        "max": "1 visit a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_itmtjp08lpotbx9dbrcd_1780341020999404.png?generation=1780341022502079&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/scalebln-friedrichshain",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "scalebln-kudamm",
+      "name": "SCALE bln Kudamm",
+      "area": "charlottenburg",
+      "lat": 52.5021568,
+      "lng": 13.3135192,
+      "address": "Leibnizstraße 49, 10629 Berlin",
+      "activities": [
+        "spa"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "1 visit a month",
+        "premium": "1 visit a month",
+        "max": "1 visit a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_nibv09eamzkn4rblhnqc_1780473873207753.png?generation=1780473875202576&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/scalebln-kudamm",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "scalebln-mitte",
+      "name": "SCALE bln Mitte",
+      "area": "mitte",
+      "lat": 52.5322922,
+      "lng": 13.3954762,
+      "address": "Invalidenstraße 152, 10115 Berlin",
+      "activities": [
+        "spa"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "1 visit a month",
+        "premium": "1 visit a month",
+        "max": "1 visit a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_weq3myeqya1vprjrsijv_1780473909623811.png?generation=1780473911622575&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/scalebln-mitte",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "sha-la-prenzlauer-berg",
+      "name": "SHA-LA Prenzlauer Berg",
+      "area": "prenzlauer-berg",
+      "lat": 52.5344524,
+      "lng": 13.4057805,
+      "address": "Kastanienallee 63, 10119 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "yoga",
+        "meditation",
+        "spa"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_piphykrsdtgltnfvjazi_1733738219419075.png?generation=1751992865548023&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/sha-la-prenzlauer-berg",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "sha-la-studios-xberg-1",
+      "name": "SHA-LA Studios Waterfront",
+      "area": "friedrichshain",
+      "lat": 52.5006729,
+      "lng": 13.4447764,
+      "address": "Falckensteinstraße 47/48, 10997 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "yoga",
+        "meditation",
+        "spa"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_axnn8hfwe7b0vyb3jqkj_1778761341950509.png?generation=1778761342902264&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/sha-la-studios-xberg-1",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "simon-says-training-kurfrstendamm",
+      "name": "Simon Says Training / Kurfürstendamm ",
+      "area": "charlottenburg",
+      "lat": 52.4977511,
+      "lng": 13.2928871,
+      "address": "Kurfürstendamm 110, 10711 Berlin",
+      "activities": [
+        "gym",
+        "strength",
+        "hiit"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_end96rdmluoa4ylhtqz4_1773390801218529.png?generation=1773390802428555&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/simon-says-training-kurfrstendamm",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "slim-gym-exclusive",
+      "name": "Slim-Gym Exclusive Berlin",
+      "area": "mitte",
+      "lat": 52.5126085,
+      "lng": 13.3905125,
+      "address": "Friedrichstraße 68, 10117 Berlin",
+      "activities": [
+        "spa"
+      ],
+      "tier": "premium",
+      "access": {
+        "essential": "not included here",
+        "classic": "not included here",
+        "premium": "4 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_c8utalufvmjy6azwyath_1726090528596270.png?generation=1751987861614275&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/slim-gym-exclusive",
+      "tierLabel": "Premium venue"
+    },
+    {
+      "id": "slow-poke-run-club-with-coach-meg",
+      "name": "Slow Poke Run Club with Coach Meg",
+      "area": "prenzlauer-berg",
+      "lat": 52.540495,
+      "lng": 13.4031173,
+      "address": "Bernauer Straße 63-64, 13355 Berlin",
+      "activities": [
+        "gym",
+        "strength"
+      ],
+      "tier": "standard",
+      "access": {
+        "essential": "4 visits a month",
+        "classic": "1 visit a day",
+        "premium": "1 visit a day",
+        "max": "1 visit a day"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_e7jflfvpwsbvixwtk80d_1762208451540195.png?generation=1762208452158230&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/slow-poke-run-club-with-coach-meg",
+      "tierLabel": "Standard venue"
+    },
+    {
+      "id": "slows-mental-health-gym-mitte",
+      "name": "Slows - Mental Health Gym - Mitte",
+      "area": "prenzlauer-berg",
+      "lat": 52.53763,
+      "lng": 13.40662,
+      "address": "Schwedter Straße 34a, 10435 Berlin",
+      "activities": [
+        "pilates",
+        "yoga",
+        "meditation",
+        "spa"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_bbyfksj9kgqmipp5rikj_172951508741481.png?generation=1751991574810541&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/slows-mental-health-gym-mitte",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "sommerbad-humboldthain",
+      "name": "Sommerbad Humboldthain",
+      "area": "wedding",
+      "lat": 52.54552,
+      "lng": 13.3808,
+      "address": "Wiesenstraße 1, 13357 Berlin",
+      "activities": [
+        "swimming"
+      ],
+      "tier": "standard",
+      "access": {
+        "essential": "4 visits a month",
+        "classic": "1 visit a day",
+        "premium": "1 visit a day",
+        "max": "1 visit a day"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_26180_humboldthain_05.jpg?generation=1751636819187983&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/sommerbad-humboldthain",
+      "tierLabel": "Standard venue"
+    },
+    {
+      "id": "sommerbad-kreuzberg",
+      "name": "Sommerbad Kreuzberg",
+      "area": "kreuzberg",
+      "lat": 52.49782,
+      "lng": 13.40542,
+      "address": "Prinzenstraße 113-119, 10969 Berlin",
+      "activities": [
+        "swimming"
+      ],
+      "tier": "standard",
+      "access": {
+        "essential": "4 visits a month",
+        "classic": "1 visit a day",
+        "premium": "1 visit a day",
+        "max": "1 visit a day"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_26264_sommerbad_kreuzberg_07_kopie.jpg?generation=1751636818601271&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/sommerbad-kreuzberg",
+      "tierLabel": "Standard venue"
+    },
+    {
+      "id": "sommerbad-neukolln",
+      "name": "Sommerbad Neukölln",
+      "area": "neukoelln",
+      "lat": 52.4797,
+      "lng": 13.41637,
+      "address": "Columbiadamm 160, 10965 Berlin",
+      "activities": [
+        "swimming"
+      ],
+      "tier": "standard",
+      "access": {
+        "essential": "4 visits a month",
+        "classic": "1 visit a day",
+        "premium": "1 visit a day",
+        "max": "1 visit a day"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_26270_sommerbad_neuko__lln_1.jpg?generation=1751636817353287&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/sommerbad-neukolln",
+      "tierLabel": "Standard venue"
+    },
+    {
+      "id": "soulsport",
+      "name": "SOUL sportstudio F'hain",
+      "area": "friedrichshain",
+      "lat": 52.5121855,
+      "lng": 13.4486067,
+      "address": "Gubener Str. 47, 10243 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "yoga",
+        "dance",
+        "meditation",
+        "barre"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_vaa8jyavauz8poujnijp_1758979959288812.png?generation=1758979959879388&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/soulsport",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "spree-crossfit",
+      "name": "Spree Intense Fitness",
+      "area": "friedrichshain",
+      "lat": 52.5036501,
+      "lng": 13.4507001,
+      "address": "Rotherstraße 20, 10245 Berlin",
+      "activities": [
+        "strength",
+        "crossfit"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "4 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_vpz5qr8lphkxqdslsm79_1747244202703703.png?generation=1751996288367059&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/spree-crossfit",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "stay-yang-space",
+      "name": "STAY YANG SPACE",
+      "area": "friedrichshain",
+      "lat": 52.4991683,
+      "lng": 13.4638487,
+      "address": "Corinthstraße 54, 10245 Berlin",
+      "activities": [
+        "yoga",
+        "meditation"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_vwvbb54pgvv0ncms5spi_1724532961231839.png?generation=1751987481708573&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/stay-yang-space",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "storm-bootcamp-berlin-mitte",
+      "name": "STORM Bootcamp TUFF Berlin - Mitte",
+      "area": "mitte",
+      "lat": 52.512433,
+      "lng": 13.391262,
+      "address": "Charlottenstrasse 59, 10117 Berlin",
+      "activities": [
+        "hiit"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "8 visits a month",
+        "premium": "8 visits a month",
+        "max": "1 visit a day"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_Untitled%20design%20-%206_171276209929539_admin.jpeg?generation=1751985311387651&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/storm-bootcamp-berlin-mitte",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "storm-bootcamp-berlin-neue-welt",
+      "name": "STORM Bootcamp Berlin - Neue Welt",
+      "area": "neukoelln",
+      "lat": 52.4853111,
+      "lng": 13.4217709,
+      "address": "Hasenheide 109, 10967 Berlin",
+      "activities": [
+        "hiit"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "8 visits a month",
+        "premium": "8 visits a month",
+        "max": "1 visit a day"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_mqtondxixyjzd3texnbe_1782830710373071.png?generation=1782830711466065&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/storm-bootcamp-berlin-neue-welt",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "storm-cycling-berlin-mitte",
+      "name": "STORM Cycle Berlin - Mitte",
+      "area": "mitte",
+      "lat": 52.512433,
+      "lng": 13.391262,
+      "address": "Charlottenstrasse 59, 10117 Berlin",
+      "activities": [
+        "hiit",
+        "cycling"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "8 visits a month",
+        "premium": "8 visits a month",
+        "max": "1 visit a day"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_Untitled%20design%20(1)_1712762498469206_admin.jpeg?generation=1751985311893891&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/storm-cycling-berlin-mitte",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "strandbad-plotzensee",
+      "name": "Strandbad Plötzensee",
+      "area": "wedding",
+      "lat": 52.5413738,
+      "lng": 13.3303025,
+      "address": "Nordufer 26, 13351 Berlin",
+      "activities": [
+        "swimming"
+      ],
+      "tier": "standard",
+      "access": {
+        "essential": "4 visits a month",
+        "classic": "1 visit a day",
+        "premium": "1 visit a day",
+        "max": "1 visit a day"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_SchwimmenCompressed_156561218918721_admin.jpg?generation=1751971550016427&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/strandbad-plotzensee",
+      "tierLabel": "Standard venue"
+    },
+    {
+      "id": "tanzfabrik-berlin",
+      "name": "Tanzfabrik Kreuzberg",
+      "area": "kreuzberg",
+      "lat": 52.49075,
+      "lng": 13.37896,
+      "address": "Möckernstraße 68, 10965 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "dance"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_101184_tanzfabrik_221.jpg?generation=1751966760019612&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/tanzfabrik-berlin",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "the-body-balance-studio-1",
+      "name": "The Body Balance Studio",
+      "area": "kreuzberg",
+      "lat": 52.489538261,
+      "lng": 13.377480284999999,
+      "address": "Kreuzbergstrasse 30 (Viktoria Hof, Eingang 3 4OG), 10965 Berlin",
+      "activities": [
+        "pilates"
+      ],
+      "tier": "premium",
+      "access": {
+        "essential": "not included here",
+        "classic": "not included here",
+        "premium": "4 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_rhnrxbbre2phapcpgsug_1716890575896143.png?generation=1751985915261837&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/the-body-balance-studio-1",
+      "tierLabel": "Premium venue"
+    },
+    {
+      "id": "the-dopamine-heat-house",
+      "name": "the dopamine heat house",
+      "area": "friedrichshain",
+      "lat": 52.497905,
+      "lng": 13.4502181,
+      "address": "Schleusenufer 4, 10997 Berlin",
+      "activities": [
+        "sauna"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "1 visit a day"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_nzceva3zxvyngc8lgwbx_1782218521677727.png?generation=1782218522728325&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/the-dopamine-heat-house",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "the-dopamine-studio",
+      "name": "the dopamine studio",
+      "area": "friedrichshain",
+      "lat": 52.4979964,
+      "lng": 13.4501632,
+      "address": "Schleusenufer 4, 10997 Berlin",
+      "activities": [
+        "gym",
+        "spa",
+        "strength",
+        "boxing"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "1 visit a day"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_1_1704377728891727_admin.png?generation=1751984044014268&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/the-dopamine-studio",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "the-frame-berlin-kreuzberg",
+      "name": "THE FRAME | Berlin Kreuzberg",
+      "area": "kreuzberg",
+      "lat": 52.5045126,
+      "lng": 13.4166764,
+      "address": "Waldemarstraße 17, 10179 Berlin",
+      "activities": [
+        "pilates"
+      ],
+      "tier": "premium",
+      "access": {
+        "essential": "not included here",
+        "classic": "not included here",
+        "premium": "4 visits a month",
+        "max": "4 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_vqeirg77wasnf10eevca_1771254111696501.png?generation=1771254114423982&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/the-frame-berlin-kreuzberg",
+      "tierLabel": "Premium venue"
+    },
+    {
+      "id": "triathlon-crew-berlin-hq",
+      "name": "Triathlon Crew Berlin HQ",
+      "area": "mitte",
+      "lat": 52.5267708,
+      "lng": 13.4016153,
+      "address": "Gipsstraße 23b, 10119 Berlin",
+      "activities": [
+        "cycling"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_uvbsap1s4bj5abvfqdcy_1786034339863748.png?generation=1786034340835475&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/triathlon-crew-berlin-hq",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "triathlon-crew-berlin-strandbad-pltzensee",
+      "name": "Triathlon Crew Berlin - Strandbad Plötzensee",
+      "area": "wedding",
+      "lat": 52.5437125,
+      "lng": 13.3286592,
+      "address": "Nordufer 26, 13351 Berlin",
+      "activities": [
+        "swimming"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_kvkjdkezdrwvbpx73dzf_1786089903107640.png?generation=1786089904028092&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/triathlon-crew-berlin-strandbad-pltzensee",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "turnhalle-hightech-sports-reinhardtstrae",
+      "name": "turnhalle - hightech sports",
+      "area": "mitte",
+      "lat": 52.5229839,
+      "lng": 13.3828838,
+      "address": "Reinhardtstraße 27a, 10117 Berlin",
+      "activities": [
+        "gym",
+        "spa"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_fx8ba8le1smp9tj4uhyg_1757575478816247.png?generation=1757575479240025&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/turnhalle-hightech-sports-reinhardtstrae",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "urban-apes-fhain-berlin-1",
+      "name": "urban apes Fhain",
+      "area": "friedrichshain",
+      "lat": 52.5222042,
+      "lng": 13.4369048,
+      "address": "Friedenstraße 91b, 10249 Berlin",
+      "activities": [
+        "bouldering"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "8 visits a month",
+        "premium": "1 visit a day",
+        "max": "1 visit a day"
+      },
+      "blurb": null,
+      "hoursWeekday": "Mon–Fri 09:00 - 21:45",
+      "hoursWeekend": "Sat–Sun 09:00 - 21:45",
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_ecc2sal0hvzmdunvcq9l_1762179771813810.png?generation=1762179772669195&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/urban-apes-fhain-berlin-1",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "urban-apes-wedding",
+      "name": "urban apes Wedding",
+      "area": "wedding",
+      "lat": 52.5524688,
+      "lng": 13.3516019,
+      "address": "Müllerstraße 46, 13349 Berlin",
+      "activities": [
+        "bouldering"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "8 visits a month",
+        "premium": "1 visit a day",
+        "max": "1 visit a day"
+      },
+      "blurb": null,
+      "hoursWeekday": "Mon–Fri 09:00 - 22:00",
+      "hoursWeekend": "Sat–Sun 09:00 - 22:00",
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_jtaybvfteayyetxcfj4o_1762182046281450.png?generation=1762182047041066&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/urban-apes-wedding",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "vea-yoga",
+      "name": "Vea Studio",
+      "area": "kreuzberg",
+      "lat": 52.502692567000004,
+      "lng": 13.418770452,
+      "address": "Naunynstrasse 38, 10997 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "yoga",
+        "meditation",
+        "strength",
+        "barre"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_w8ful8p1bboeaxmckt7p_1764358278630476.png?generation=1764358279126361&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/vea-yoga",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "via-pilates-pilates-reformer",
+      "name": "Via Pilates - Pilates Reformer",
+      "area": "prenzlauer-berg",
+      "lat": 52.5416024,
+      "lng": 13.4196277,
+      "address": "Dunckerstraße 84, 10437 Berlin",
+      "activities": [
+        "pilates"
+      ],
+      "tier": "premium",
+      "access": {
+        "essential": "not included here",
+        "classic": "not included here",
+        "premium": "4 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_de-live_venueHome_1024x576_Allegro%20Pilates_16850185304163_admin.jpg?generation=1751981544793031&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/via-pilates-pilates-reformer",
+      "tierLabel": "Premium venue"
+    },
+    {
+      "id": "vikongz-madang",
+      "name": "ViKongz - Madang",
+      "area": "prenzlauer-berg",
+      "lat": 52.540383,
+      "lng": 13.414097,
+      "address": "Knaackstraße 97, 10435 Berlin",
+      "activities": [
+        "martial_arts"
+      ],
+      "tier": "standard",
+      "access": {
+        "essential": "4 visits a month",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "1 visit a day"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_fdbizwpaqkujieclqmmb_1754642758553355.png?generation=1754642759554140&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/vikongz-madang",
+      "tierLabel": "Standard venue"
+    },
+    {
+      "id": "vikongz-shin-gi-tai-kai",
+      "name": "ViKongz - Shin Gi Tai Kai",
+      "area": "kreuzberg",
+      "lat": 52.4959309,
+      "lng": 13.4317361,
+      "address": "Reichenberger Straße 124 (Aufgang D), 10999 Berlin",
+      "activities": [
+        "martial_arts"
+      ],
+      "tier": "standard",
+      "access": {
+        "essential": "4 visits a month",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "1 visit a day"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_vmvmxxww03upaj5mjbzn_1754642542957274.png?generation=1754642544017371&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/vikongz-shin-gi-tai-kai",
+      "tierLabel": "Standard venue"
+    },
+    {
+      "id": "viva-studio",
+      "name": "Viva Studio",
+      "area": "charlottenburg",
+      "lat": 52.502328,
+      "lng": 13.3081613,
+      "address": "Wilmersdorfer Straße 98/99, 10629 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "yoga",
+        "meditation",
+        "strength",
+        "barre"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "4 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_f4915048b702-_P6B1574_1662712743842591_admin.jpg?generation=1751979685065947&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/viva-studio",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "yeah-studior",
+      "name": "YEAH STUDIO® PBERG",
+      "area": "prenzlauer-berg",
+      "lat": 52.5384428,
+      "lng": 13.4175082,
+      "address": "Husemannstrasse 17, 10435 Berlin",
+      "activities": [
+        "gym",
+        "pilates",
+        "yoga",
+        "strength",
+        "barre"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_omlkrally8re2k05ggjk_1715680000718832.png?generation=1751985725932880&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/yeah-studior",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "yoga-hub-berlin",
+      "name": "Yoga Hub Berlin Pberg",
+      "area": "prenzlauer-berg",
+      "lat": 52.537936,
+      "lng": 13.4087978,
+      "address": "Kastanienallee 22, 10435 Berlin",
+      "activities": [
+        "pilates",
+        "yoga",
+        "meditation",
+        "spa"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_1-Yoga%20Hub%20Berlin%20Pberg%20yoga_1724918862275931_admin.jpg?generation=1751987605016572&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/yoga-hub-berlin",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "yoga-rebellion-berlin",
+      "name": "YOGA REBELLION – Mitte",
+      "area": "mitte",
+      "lat": 52.5298093,
+      "lng": 13.3925046,
+      "address": "Gartenstraße 6, 10115 Berlin",
+      "activities": [
+        "yoga",
+        "meditation"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_ntnewibkhozyjyqips63_1746469450856829.png?generation=1751996028067035&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/yoga-rebellion-berlin",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "yogacircle-berlin-akademie",
+      "name": "YOGACIRCLE BERLIN – Pberg – SCHLIE 22",
+      "area": "prenzlauer-berg",
+      "lat": 52.5445266,
+      "lng": 13.4208205,
+      "address": "Schliemannstr. 22, 10437 Berlin",
+      "activities": [
+        "pilates",
+        "yoga"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_oh2uc7o21tz4oah2gkqg_1785678252836591.png?generation=1785678254060997&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/yogacircle-berlin-akademie",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "yogibar-2",
+      "name": "Yogibar Friedrichshain",
+      "area": "friedrichshain",
+      "lat": 52.512393,
+      "lng": 13.459465,
+      "address": "Boxhagener Straße 31, 10245 Berlin",
+      "activities": [
+        "yoga",
+        "meditation"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_fauqagajuklqakbzudw7_1699528937451727.png?generation=1751983375620635&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/yogibar-2",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "yttp-kreuzberg-reformer-1",
+      "name": "YTTP Reformer Reichenberger Straße",
+      "area": "kreuzberg",
+      "lat": 52.4959629,
+      "lng": 13.4322039,
+      "address": "Reichenberger Straße 124, backyard right, 10999 Berlin",
+      "activities": [
+        "pilates",
+        "yoga"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_xkpybr61s4fvbemlc0d2_1775105313827623.png?generation=1775105315329398&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/yttp-kreuzberg-reformer-1",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "yttp-reformer-bergmannkiez",
+      "name": "YTTP Reformer Bergmannkiez",
+      "area": "kreuzberg",
+      "lat": 52.494994,
+      "lng": 13.3953214,
+      "address": "Zossener Straße 55, 10961 Berlin",
+      "activities": [
+        "pilates"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_pm6lfcxdvxzy1m6xm3nt_1774067007467320.png?generation=1774067008772906&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/yttp-reformer-bergmannkiez",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "yttp-reformer-charlottenburg",
+      "name": "YTTP Reformer Charlottenburg",
+      "area": "charlottenburg",
+      "lat": 52.5077703,
+      "lng": 13.3068249,
+      "address": "Pestalozzistraße 77, 10627 Berlin",
+      "activities": [
+        "pilates"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_ushipa4bdmqt5w2dbqaz_1762292187415471.png?generation=1762292187929923&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/yttp-reformer-charlottenburg",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "yttp-reformer-friedrichshain",
+      "name": "YTTP Reformer Friedrichshain",
+      "area": "friedrichshain",
+      "lat": 52.5115298,
+      "lng": 13.4542373,
+      "address": "Grünberger Straße 44a, 10245 Berlin",
+      "activities": [
+        "pilates"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_qtbdcared97r0ohnt829_1774067027729289.png?generation=1774067029190416&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/yttp-reformer-friedrichshain",
+      "tierLabel": "Plus venue"
+    },
+    {
+      "id": "zaya-club",
+      "name": "ZAYA Pilates",
+      "area": "friedrichshain",
+      "lat": 52.5006542,
+      "lng": 13.4447186,
+      "address": "Falckensteinstraße 47, 10997 Berlin",
+      "activities": [
+        "pilates"
+      ],
+      "tier": "plus",
+      "access": {
+        "essential": "not included here",
+        "classic": "4 visits a month",
+        "premium": "8 visits a month",
+        "max": "8 visits a month"
+      },
+      "blurb": null,
+      "hoursWeekday": null,
+      "hoursWeekend": null,
+      "goodToKnow": null,
+      "photo": "https://storage.googleapis.com/download/storage/v1/b/usc-pro-uscweb-live-media/o/venues%2FvenueHome_1024x576_zktpegqjmmiv5iosrcpp_177948376977597.png?generation=1779483770057296&alt=media",
+      "url": "https://urbansportsclub.com/en/venues/zaya-club",
+      "tierLabel": "Plus venue"
     }
   ]
 }

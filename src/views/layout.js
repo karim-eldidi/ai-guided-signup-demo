@@ -21,9 +21,10 @@ export function page({ title, body, bodyClass = '', script = '', showBanner = tr
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>${esc(title)} · Urban Sports Club</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&display=swap">
+<!-- Figtree is self-hosted; styles.css declares it from /fonts. Fetching it from
+     fonts.googleapis.com meant an offline demo fell back to Helvetica, where weights 600-900
+     render identically and the type hierarchy collapses. -->
+<link rel="preload" href="/fonts/figtree-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/styles.css">
 <link rel="icon" href="data:,">
 </head>

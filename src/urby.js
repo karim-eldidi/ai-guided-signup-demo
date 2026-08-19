@@ -202,26 +202,50 @@ export function interpretFallback(questionId, text, options = []) {
   return { optionId: best.hits > 0 ? best.optionId : null, source: best.hits > 0 ? 'keywords' : 'none' };
 }
 
-export async function interpretFreeText(questionId, text, options = []) {
+/**
+ * Map free text onto one or more option ids.
+ *
+ * `multi` is passed in by the caller rather than looked up from the question set, because
+ * this file is a wording layer: importing src/questions.js would drag the venue dataset in
+ * behind it, and every caller already holds the question object anyway.
+ *
+ * A multi-select question must never be narrowed to a single answer. "I want to swim and use
+ * the sauna" is two answers, and turning the AI path on must not throw one of them away.
+ */
+export async function interpretFreeText(questionId, text, options = [], multi = false) {
   const fallback = interpretFallback(questionId, text, options);
   if (!aiConfigured()) return { ...fallback, usedAi: false };
 
   const list = options.map((o) => `${o.id} = ${o.label}`).join('; ');
   const answer = await callClaude(
     [
-      'You classify a visitor\'s free-text answer onto exactly one predefined option id.',
-      'Reply with only the option id, or the word NONE if no option is a reasonable fit.',
+      multi
+        ? 'You classify a visitor\'s free-text answer onto one or more predefined option ids.'
+        : 'You classify a visitor\'s free-text answer onto exactly one predefined option id.',
+      multi
+        ? 'Reply with only the matching option ids as a comma-separated list, or the word NONE if no option is a reasonable fit.'
+        : 'Reply with only the option id, or the word NONE if no option is a reasonable fit.',
       'Do not explain.'
     ].join(' '),
-    `Options: ${list}\n\nVisitor wrote: "${text}"\n\nOption id:`,
-    20
+    `Options: ${list}\n\nVisitor wrote: "${text}"\n\n${multi ? 'Option ids:' : 'Option id:'}`,
+    multi ? 60 : 20
   );
 
   if (!answer) return { ...fallback, usedAi: false };
-  const cleaned = answer.trim().toLowerCase().replace(/[^a-z_-]/g, '');
-  const match = options.find((o) => o.id === cleaned);
-  if (!match) return { ...fallback, usedAi: true };
-  return { optionId: match.id, source: 'ai', usedAi: true };
+
+  /* Unknown ids are dropped rather than trusted: the model may invent a label-ish id. */
+  const ids = [];
+  for (const part of answer.split(/[,\n;]+/)) {
+    const cleaned = part.trim().toLowerCase().replace(/[^a-z_-]/g, '');
+    const match = options.find((o) => o.id === cleaned);
+    if (match && !ids.includes(match.id)) ids.push(match.id);
+    if (!multi && ids.length) break;
+  }
+
+  if (!ids.length) return { ...fallback, usedAi: true };
+  return multi
+    ? { optionIds: ids, optionId: ids[0], source: 'ai', usedAi: true }
+    : { optionId: ids[0], source: 'ai', usedAi: true };
 }
 
 /* ------------------------------------------------------------------ *

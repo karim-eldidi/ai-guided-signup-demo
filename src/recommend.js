@@ -189,7 +189,8 @@ export function recommend(answers = {}, match = { venues: [], categories: [] }) 
 
   /* The reason that answers the real question: how many of the places I would
      actually use does this plan let me into? */
-  const cov = groups.length && pool.length ? coverage(groups, pool, plan.id) : null;
+  let cov = groups.length && pool.length ? coverage(groups, pool, plan.id) : null;
+  if (cov && !cov.totals.nearby) cov = null; // "0 of the 0 places" is not a sentence
   if (cov) {
     reasons.push(
       `Of the ${plural(cov.totals.nearby, 'place', 'places')} near ${areaNameEarly} ` +

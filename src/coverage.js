@@ -132,7 +132,10 @@ export function downsell(groupIds = [], venues = [], planId = 'classic', commitm
      a cheaper plan is only an option if its monthly allowance can still carry them. */
   const cheaper = PLANS.filter((p) => p.rank < current.rank).sort((a, b) => a.rank - b.rank);
   for (const plan of cheaper) {
-    if (frequency && !carriesFrequency(plan, frequency)) continue;
+    /* No `frequency &&` short-circuit: "they have not answered yet" is not "any allowance
+       will do". `carriesFrequency` reads a missing answer as the default two sessions a
+       week, so a mid-flow visitor is not offered four check-ins a month on no evidence. */
+    if (!carriesFrequency(plan, frequency)) continue;
     const theirs = new Set(coverage(groupIds, venues, plan.id).rows.flatMap((r) => r.included.map((v) => v.id)));
     const lost = [...mine].filter((id) => !theirs.has(id));
     if (!lost.length) {

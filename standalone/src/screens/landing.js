@@ -1,4 +1,21 @@
 /* ---------------- screens ---------------- */
+/* The hero was one photograph, so the front door said "climbing" and nothing else — and
+   the variety is the product. It now takes one of the images already inlined in the build
+   and holds it: chosen once per page load rather than on every render, so coming back to
+   the landing does not reshuffle it, and never on a timer. A crossfade would be motion
+   nobody asked for and would have to be switched off again for prefers-reduced-motion;
+   one image held for the whole visit needs no exception. The box is set by the layout and
+   the crop by the stylesheet, so every image lands in the same place and nothing shifts.
+   The only text over the photograph is the Log in chip, which carries its own yellow
+   background for exactly this reason. */
+const HERO_SHOTS = [
+  { src:'/images/hero-climber.jpg',      alt:'A climber resting and smiling at a bouldering gym in Berlin' },
+  { src:'/images/venue-boulderklub.jpg', alt:'A climber reaching for a hold on a colourful bouldering wall' },
+  { src:'/images/venue-yoga.jpg',        alt:'A yoga class stretching on mats in a bright studio' },
+  { src:'/images/venue-stadtbad.jpg',    alt:'The pool of a historic Berlin swimming bath under tall windows' }
+];
+const HERO_SHOT = HERO_SHOTS[Math.floor(Math.random() * HERO_SHOTS.length)];
+
 function landing() {
   /* Karim's layout, August 13. The order is the argument: what this is, what you
      get, then the one field that starts it — and the reason we ask for it, stated
@@ -45,7 +62,11 @@ function landing() {
     <div class="landing-hero-card">
       <div class="landing-hero-card__badge">${icon('sparkle',12)} <span>RECOMMENDED</span></div>
       <h2 class="landing-hero-card__title">Find the right membership for you</h2>
-      <p class="landing-hero-card__value">Tell Urby how and where you want to move. Get nearby studio picks, a custom routine, and the plan that fits.</p>
+      <!-- Testers met the name Urby here first and did not know what it was. The name stays,
+           because it is the guide's name everywhere else in the journey, but it now introduces
+           itself in the same breath — one clause, on its first appearance, rather than an extra
+           row on a card that already has five. -->
+      <p class="landing-hero-card__value">Tell Urby, our membership guide, how and where you want to move. Get nearby studio picks, a custom routine, and the plan that fits.</p>
       <div class="landing-hero-card__meta">
         <span class="meta-item">${icon('question',15)} <span>4 quick questions</span></span>
         <span class="meta-dot">&middot;</span>
@@ -87,7 +108,7 @@ function landing() {
         ${primary}
       </div></div>
     <div class="landing__media"><button class="login-link login-link--desktop linkish" data-go="login">Log in</button>
-      <img src="${IMG['/images/hero-climber.jpg']}" width="800" height="900" fetchpriority="high" alt="A climber resting and smiling at a bouldering gym in Berlin" decoding="async"></div>
+      <img src="${IMG[HERO_SHOT.src]}" width="800" height="900" fetchpriority="high" alt="${esc(HERO_SHOT.alt)}" decoding="async"></div>
   </main>
   <section class="ula-section"><div class="ula-section__inner">
     <div class="sr-only">What would you love to do more of?</div>

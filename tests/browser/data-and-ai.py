@@ -227,11 +227,20 @@ with sync_playwright() as p:
     # instead of inside the small print where the PM session could not find it.
     opts=pg.locator('.termpick__opt').count()
     P(f"Commitment options beside the price: {opts} (monthly / 12 / 24 months)") if opts==3 else F(f"Expected 3 commitments in the plan column, got {opts}")
-    # Rule 64: all four plans live inside the plan card now, one tap away, each counting
+    # Rule 64 as amended: the plans live inside the plan card, one tap away, each counting
     # what it opens near this visitor — and the full grid is still one link further on.
+    # The count is no longer fixed at four. Max is contextual now: it joins the card only
+    # when the visitor's own week would run past the Plus check-ins their plan includes.
+    # This journey (gym / Neukölln / twice a week) is recommended Classic, which publishes
+    # no Plus allowance, so three rows is correct and four would be the bug.
     rows = pg.locator('.allplans__row')
-    if rows.count()==4: P("all four plans are one tap from the recommendation")
-    else: F(f"the plan column offers {rows.count()} plans to compare, expected 4")
+    shown = pg.locator('.allplans__row:visible').count()
+    names = [' '.join(rows.nth(i).locator('.allplans__name').inner_text().split()) for i in range(rows.count())]
+    if rows.count() and shown==rows.count(): P(f"every plan on the card is visible: {', '.join(names)}")
+    else: F(f"{shown} of {rows.count()} plans are visible on the card")
+    if all(any(n.startswith(p) for n in names) for p in ['Essential','Classic','Premium']):
+        P("the three primary plans are always one tap from the recommendation")
+    else: F(f"a primary plan is missing from the plan column: {names}")
     if pg.locator('.allplans [data-go="plans"]').count(): P("and one quiet way out to the full grid")
     else: F("no link to the full plan grid from the plan column")
     if pg.locator('.allplans__row.is-current .allplans__tag').count(): P("the plan on screen is labelled in the table")

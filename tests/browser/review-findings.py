@@ -125,9 +125,12 @@ with sync_playwright() as p:
     top=pg.locator('.topbar').inner_text()
     if 'Saved to' not in top: P("still not claiming 'saved' on the payment screen")
     else: F(f"payment screen claims: '{top}'")
-    # 7. start date explained
-    if '1st of next month' in pg.locator('#main').inner_text(): P("the start date explains itself")
-    else: F("start date still unexplained")
+    # 7. start date explained. It used to read "(1st of next month)", which stopped being true
+    # once the visitor could defer the start — the picker offers the 1st of the next three
+    # months. The rule it states is what must be on screen, not that one hardcoded month.
+    main=pg.locator('#main').inner_text()
+    if 'start on the 1st' in main or '1st of next month' in main: P("the start date explains itself")
+    else: F(f"start date still unexplained: {main[:120]}")
     pg.screenshot(path=os.path.join(OUT, "payment.png"), full_page=True)
 
     # and the opposite: someone who DID ask to save should be told so

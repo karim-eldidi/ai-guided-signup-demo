@@ -4,6 +4,31 @@
    Change colours, spacing and type here; every screen reads from these tokens.
    =========================================================================== */
 
+/* Figtree is self-hosted, not fetched from fonts.googleapis.com. It used to be a network
+   request, which meant a demo shown offline or behind a locked-down network fell back to
+   Helvetica — where weights 600, 700, 800 and 900 all render as one identical bold face
+   (measured: 563.3px for the same string at every one of them). That collapse is what made
+   the whole interface look uniformly bold with no hierarchy. Two subsets, matching Google's
+   own split: `latin` carries the German diacritics this demo needs (Neukölln, Thälmann,
+   straße) plus the arrows and dashes in the copy. standalone/build.py inlines both as data
+   URIs so the single-file demo needs no network at all. */
+@font-face {
+  font-family: 'Figtree';
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url('/fonts/figtree-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Figtree';
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url('/fonts/figtree-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
 :root {
   --yellow-hero:   #f9e4b2;   /* landing background */
   --yellow-bright: #f9ea92;   /* email header, strong accent */
@@ -92,6 +117,12 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
 .small   { font-size: 15px; line-height: 1.5; }
 .xsmall  { font-size: 13.5px; line-height: 1.45; }
 .strong  { font-weight: 700; }
+/* The browser default for b and strong is `bolder`, which is relative: inside a heading or
+   a card title that is already 700-800 it resolves to 900. That produced a weight tier
+   nothing in this file ever asked for, at sizes as small as 14px. Pinning it to 700 -- the
+   same bold `.strong` uses -- removes the tier. Rules that name an element (.planbox__price b
+   and friends) are more specific and still set their own weight. */
+b, strong { font-weight: 700; }
 
 /* --- landing -------------------------------------------------------------- */
 
@@ -132,6 +163,27 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
 .landing__media .login-link:hover { background: var(--yellow-pale); }
 .login-link { position: absolute; top: 26px; right: 30px; z-index: 2; }
 .login-link--mobile { display: none; }
+
+/* The wordmark and the log-in link are short text controls in a tight bar. Same overlay
+   trick as the demo banner: a 44px hit area, no change to the visual box. The log-in rule
+   is scoped to the panel bar so it outranks the `position: static` it is given at 980px. */
+@media (max-width: 700px) {
+  .wordmark,
+  .landing__panelbar .login-link--mobile { position: relative; }
+  /* `.login-link` carries top/right for its absolute desktop placement. Those offsets are
+     inert while it is static but would shift it once it becomes relative, so clear them. */
+  .landing__panelbar .login-link--mobile { top: auto; right: auto; }
+  .wordmark::after,
+  .landing__panelbar .login-link--mobile::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 44px;
+    transform: translateY(-50%);
+  }
+}
 
 .ula-intro { display: flex; gap: 14px; align-items: flex-start; margin: 40px 0 32px; }
 .ula-intro__icon { flex: 0 0 auto; margin-top: 2px; }
@@ -207,6 +259,20 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
 .consent-row[hidden] { display: none; }
 .terms-line { font-size: 15px; color: var(--navy); }
 .terms-line a { text-decoration: underline; }
+
+/* The pilot footer is a single sentence that wraps onto three lines on a phone, with four
+   links inside it. An overlay hit area cannot work here: a 44px overlay on a link in one
+   line covers the links in the next, and the last one in the markup would swallow taps
+   meant for the others. So the line rhythm itself opens up instead. This is the one place
+   where the visual box has to grow, because anything cheaper breaks a working link. */
+@media (max-width: 700px) {
+  footer.small { line-height: 44px; }
+  footer.small .linkish {
+    display: inline-block;
+    height: 44px;
+    line-height: 44px;
+  }
+}
 
 /* custom checkbox */
 .checkbox { position: relative; flex: 0 0 auto; width: 22px; height: 22px; }
@@ -555,7 +621,7 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 .accessbar { position:relative; height:7px; margin-top:7px; background:#dedede; border-radius:99px; overflow:visible; }
 .accessbar__fill { display:block; height:100%; background:var(--ink); border-radius:99px; position:relative; }
 .accessbar__fill::after { content:""; position:absolute; width:9px; height:9px; border-radius:50%; right:-4px; top:-1px; background:var(--yellow-bright); border:1px solid var(--ink); }
-.plancard__check-main { display:block; font-size:17px; font-weight:800; line-height:1.2; }
+.plancard__check-main { display:block; font-size:17px; font-weight:700; line-height:1.2; }
 .plancard__check-sub { display:block; font-size:12.5px; color:var(--navy); margin-top:2px; }
 .weekdots { display:grid; grid-template-columns:repeat(7,1fr); gap:5px; margin-top:10px; max-width:178px; }
 .weekdots__day { display:grid; place-items:center; gap:4px; font-size:9.5px; color:var(--navy-soft); }
@@ -629,7 +695,7 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
   max-width: 100%;
 }
 .chips-row__label {
-  font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
+  font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
   color: var(--navy-soft); white-space: nowrap; flex: 0 0 auto;
 }
 .chips-row__items {
@@ -711,7 +777,7 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 }
 .planbox__badge {
   display: inline-block; background: var(--yellow-bright); color: var(--ink);
-  font-size: 11px; font-weight: 800; letter-spacing: .06em;
+  font-size: 11px; font-weight: 700; letter-spacing: .06em;
   padding: 4px 10px; border-radius: 999px;
 }
 .planbox__idrow {
@@ -728,7 +794,7 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 }
 .planbox__term { font-size: 13.5px; color: var(--navy-soft); }
 .planbox__each { font-size: 13.5px; color: var(--navy); font-weight: 600; }
-.planbox__factshead { font-size: 14px; font-weight: 800; letter-spacing: -.01em; margin-top: 20px; color: var(--ink); }
+.planbox__factshead { font-size: 14px; font-weight: 700; letter-spacing: -.01em; margin-top: 20px; color: var(--ink); }
 .planbox__facts { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
 .planbox__facts li { display: flex; gap: 10px; font-size: 14.5px; line-height: 1.35; color: var(--ink); }
 .planbox__facts svg { flex: 0 0 auto; margin-top: 2px; color: #1f9d55; }
@@ -756,7 +822,7 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 .termpick__opt.is-on {
   background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.08);
 }
-.termpick__opt.is-on b { font-weight: 800; }
+.termpick__opt.is-on b { font-weight: 700; }
 .termpick__opt.is-on span { color: var(--ink); font-weight: 600; }
 .planbox__seeall { text-align: center; margin: 0; font-size: 12.5px; }
 .planbox__seeall::before { content: "·"; color: var(--navy-soft); margin-right: 8px; }
@@ -857,7 +923,7 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
   color: var(--navy); cursor: pointer; transition: all .15s ease;
 }
 .daybtn:hover { border-color: var(--ink); }
-.daybtn.is-on { background: var(--yellow-bright); border-color: var(--ink); color: var(--ink); font-weight: 800; }
+.daybtn.is-on { background: var(--yellow-bright); border-color: var(--ink); color: var(--ink); font-weight: 700; }
 .week__days-note { display: flex; align-items: flex-start; gap: 7px; font-size: 13px; line-height: 1.4; color: var(--navy); margin: 9px 0 0; }
 .week__days-note svg { flex: 0 0 auto; margin-top: 3px; }
 
@@ -1190,19 +1256,19 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 }
 .saverecap__tag {
   display: inline-block; background: var(--yellow-bright); color: var(--ink);
-  font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em;
   padding: 3px 8px; border-radius: 99px; margin-bottom: 6px;
 }
 .saverecap__plan {
   display: flex; align-items: baseline; justify-content: space-between;
 }
 .saverecap__plan b { font-size: 20px; font-weight: 800; color: var(--ink); }
-.saverecap__plan span { font-size: 17px; font-weight: 800; color: var(--ink); }
+.saverecap__plan span { font-size: 17px; font-weight: 700; color: var(--ink); }
 .saverecap__plan small { font-size: 12px; color: var(--navy-soft); font-weight: 500; }
 .saverecap__meta { font-size: 13px; color: var(--navy-soft); margin-top: 2px; }
 
 .saverecap__label {
-  font-size: 11.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em;
+  font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em;
   color: var(--navy-soft); margin-bottom: 8px;
 }
 .saverecap__week {
@@ -1214,7 +1280,7 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
   display: flex; align-items: baseline; gap: 10px; font-size: 13px;
 }
 .saverecap__day-name {
-  font-weight: 800; color: var(--ink); width: 36px; flex-shrink: 0;
+  font-weight: 700; color: var(--ink); width: 36px; flex-shrink: 0;
 }
 .saverecap__day-act {
   color: var(--navy); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
@@ -1605,7 +1671,7 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 }
 .ordercard__venues-title {
   font-size: 11.5px;
-  font-weight: 800;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: .05em;
   color: var(--navy-soft);
@@ -1709,6 +1775,27 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
   padding: 4px 9px; border-radius: 999px; cursor: pointer; opacity: .8;
 }
 .demo-banner__toggle:hover { opacity: 1; border-color: rgba(255,255,255,.6); }
+/* Both controls sit inside one dense line of banner copy, so the finger target is grown
+   with an invisible overlay instead of by padding the banner out. Nothing else in the
+   banner is interactive on the same horizontal run, so the overlays cannot steal a tap. */
+@media (max-width: 700px) {
+  /* `a` is listed as well as `.linkish` because the server shell still renders this link
+     as a plain anchor while the standalone shell renders a button. */
+  .demo-banner .linkish,
+  .demo-banner a,
+  .demo-banner__toggle { position: relative; }
+  .demo-banner .linkish::after,
+  .demo-banner a::after,
+  .demo-banner__toggle::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 44px;
+    transform: translateY(-50%);
+  }
+}
 /* Collapsed: a thin strip carrying only what must never be missed — that this is a demo,
    and which build it is. One tap brings the rest back. */
 .demo-banner.is-collapsed { padding: 3px 12px; font-size: 11.5px; gap: 8px; }
@@ -1899,6 +1986,15 @@ body.save-modal-open .stepper, body.save-modal-open .planbox__cta, body.save-mod
      scroller sitting on top of the sticky price bar. */
   .two-col__aside--sticky { position: static; max-height: none; overflow: visible; }
   .two-col--reco .two-col__main { padding-bottom: calc(85px + env(safe-area-inset-bottom)); }
+  /* From here down the sticky tray appears and carries the same action as the routine
+     sidebar's "See my recommendation", so the screen had two filled black buttons saying one
+     thing. The tray wins because it is always in view; the sidebar copy stays present and
+     clickable for keyboard and for anyone scrolled past the tray, just visibly quieter. */
+  .routine__side .btn--primary {
+    background: transparent;
+    color: var(--ink);
+    border: 1.5px solid var(--ink);
+  }
   .paybar {
     display: flex; align-items: center; gap: 14px;
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
@@ -2079,7 +2175,7 @@ button.appchip:hover {
 }
 .appcard__logo b {
   position: absolute; inset: 0; display: grid; place-items: center;
-  font-size: 13px; font-weight: 800; color: var(--ink);
+  font-size: 13px; font-weight: 700; color: var(--ink);
 }
 .appcard__logo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; padding: 3px; background: #fff; }
 .appcard__text { min-width: 0; display: block; }
@@ -2157,14 +2253,19 @@ button.appcard:hover .appcard__info-icon {
 .apps-seg-btn:hover {
   color: var(--ink);
 }
+/* A white pill on the warm track, not filled ink. "Selected" and "this is the one action on
+   the screen" are different messages, and filled black says the second one — with the apps
+   disclosure open on a phone this segment read as a second primary CTA competing with
+   Continue. The raised white pill is the ordinary segmented-control convention and cannot be
+   mistaken for the page's black button. */
 .apps-seg-btn.is-active {
-  background: var(--ink);
-  color: #fff;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  background: #fff;
+  color: var(--ink);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.14);
 }
 .apps-seg-btn.is-active small {
-  opacity: 0.9;
-  color: #f6d878;
+  opacity: 0.85;
+  color: var(--navy);
 }
 
 @media (max-width: 650px) {
@@ -2197,6 +2298,9 @@ button.appcard:hover .appcard__info-icon {
   }
   .apps-seg-btn {
     flex: 1 1 0;
+    /* Rule 48: without this the flex-basis of 0 is inert, because min-width:auto pins
+       each button to the min-content width of its nowrap label. */
+    min-width: 0;
     justify-content: center;
     padding: 0 4px;
     font-size: 11px;
@@ -2243,6 +2347,25 @@ button.appcard:hover .appcard__info-icon {
   }
   .appcard__info-icon {
     display: none;
+  }
+}
+
+/* On the narrowest phones the three commitment labels cannot fit on one line each.
+   Allowing them to wrap is what makes the min-width:0 above effective, so the control
+   narrows with the card instead of spilling out of it. */
+@media (max-width: 460px) {
+  .apps-seg-btn {
+    flex-direction: column;
+    gap: 0;
+    white-space: normal;
+    text-align: center;
+    line-height: 1.2;
+    height: auto;
+    min-height: 44px;
+    padding: 5px 4px;
+  }
+  .apps-seg-btn small {
+    font-size: 10px;
   }
 }
 
@@ -2354,7 +2477,9 @@ button.appcard:hover .appcard__info-icon {
   height: 38px !important;
   padding: 0 18px !important;
   font-size: 13px !important;
-  font-weight: 700 !important;
+  /* No !important needed: the only other rule setting a weight here is `.btn`, which is
+     both earlier and equally specific, so this already wins on its own. */
+  font-weight: 700;
   border-radius: 999px !important;
   flex: 1 1 auto;
 }
@@ -2458,7 +2583,7 @@ button.appcard:hover .appcard__info-icon {
   background: var(--yellow-bright);
   color: var(--ink);
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: .08em;
   text-transform: uppercase;
   padding: 3px 9px;
@@ -2604,6 +2729,16 @@ button.appcard:hover .appcard__info-icon {
   .ask-and-print { margin-top: 22px; padding-top: 19px; }
   .ask__examples { gap: 6px; }
   .why__grid { gap: 9px; }
+}
+
+/* These example questions are standalone chips rather than words inside a sentence, so
+   the honest fix is to give them a real 44px box and centre the label in it. */
+@media (max-width: 700px) {
+  .ask__examples .chip-sm {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
 }
 
 /* The number lands after the week, not before it: the block opens on your days and
@@ -2849,7 +2984,7 @@ button.appcard:hover .appcard__info-icon {
 .hit__actions { display: flex; align-items: center; gap: 10px; padding: 0 14px 14px; }
 .hit__add {
   flex: 1 1 auto; min-height: 42px; border: 0; border-radius: 8px; padding: 8px 12px;
-  background: var(--ink); color: #fff; font-size: 13.5px; font-weight: 800; cursor: pointer;
+  background: var(--ink); color: #fff; font-size: 13.5px; font-weight: 700; cursor: pointer;
 }
 .hit__add:hover { background: var(--navy); }
 .hit__more { flex: 0 0 auto; font-size: 13px; font-weight: 700; color: var(--navy); }
@@ -3012,6 +3147,8 @@ button.appcard:hover .appcard__info-icon {
   background: #fff; border: 1px solid var(--border); border-radius: 9999px;
   padding: 6px 14px 6px 8px; font-size: 13.5px; font-weight: 700; color: var(--ink);
   min-height: 40px; cursor: pointer; transition: all .15s ease;
+  /* A two-word activity name must never break across lines inside its own pill. */
+  white-space: nowrap;
 }
 .catchip:hover { border-color: #b9b6ad; }
 .catchip.is-on { background: #fefce8; border-color: #fde047; color: #855800; }
@@ -3278,10 +3415,10 @@ button.appcard:hover .appcard__info-icon {
 }
 .reco-tab:hover { color: var(--ink); }
 .reco-tab.is-active {
-  color: var(--ink); border-bottom-color: var(--ink); font-weight: 800;
+  color: var(--ink); border-bottom-color: var(--ink); font-weight: 700;
 }
 .reco-tab__badge {
-  background: var(--yellow-pale); color: #855800; font-size: 11.5px; font-weight: 800;
+  background: var(--yellow-pale); color: #855800; font-size: 11.5px; font-weight: 700;
   padding: 2px 7px; border-radius: 9999px;
 }
 
@@ -3311,7 +3448,7 @@ button.appcard:hover .appcard__info-icon {
 }
 .radius-toggle__btn:hover { color: var(--ink); }
 .radius-toggle__btn.is-active {
-  background: #fff; color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,0.08); font-weight: 800;
+  background: #fff; color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,0.08); font-weight: 700;
 }
 
 /* Category Filter Pills (Horizontal Scroll with Gradient Mask & Subtle Mini Chevron) */
@@ -3334,7 +3471,7 @@ button.appcard:hover .appcard__info-icon {
   background: var(--yellow-pale); border-color: var(--cream-line);
 }
 .category-pill.is-active {
-  background: var(--ink); color: #fff; border-color: var(--ink); font-weight: 800;
+  background: var(--ink); color: #fff; border-color: var(--ink); font-weight: 700;
 }
 .category-pills__fade {
   position: absolute; right: 0; top: 0; bottom: 0; width: 44px;
@@ -3394,7 +3531,7 @@ button.appcard:hover .appcard__info-icon {
 }
 .activity-card__badge {
   position: static;
-  background: rgba(253, 243, 207, 0.95); color: #855800; font-size: 11px; font-weight: 800;
+  background: rgba(253, 243, 207, 0.95); color: #855800; font-size: 11px; font-weight: 700;
   padding: 2px 7px; border-radius: 6px; backdrop-filter: blur(4px);
   white-space: nowrap;
 }
@@ -3418,7 +3555,7 @@ button.appcard:hover .appcard__info-icon {
   padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 2px; flex: 1 1 auto;
 }
 .activity-card__activity {
-  font-size: 14.5px; font-weight: 800; color: var(--ink);
+  font-size: 14.5px; font-weight: 700; color: var(--ink);
 }
 .activity-card__vname {
   font-size: 13px; color: var(--ink); font-weight: 600; text-align: left;
@@ -3811,7 +3948,7 @@ button.appcard:hover .appcard__info-icon {
   margin-bottom: 2px;
 }
 .gallery-empty-state__text b {
-  display: block; font-size: 15.5px; font-weight: 800; color: var(--ink); margin-bottom: 4px;
+  display: block; font-size: 15.5px; font-weight: 700; color: var(--ink); margin-bottom: 4px;
 }
 .gallery-empty-state__text p {
   font-size: 13px; color: var(--navy-soft); margin: 0; max-width: 50ch;
@@ -3975,7 +4112,7 @@ button.appcard:hover .appcard__info-icon {
   display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px;
 }
 .routine-snapshot__title {
-  font-size: 15.5px; font-weight: 800; color: var(--ink); margin: 0;
+  font-size: 15.5px; font-weight: 700; color: var(--ink); margin: 0;
 }
 .routine-snapshot__sub {
   font-size: 12px; color: var(--navy-soft); margin: 1px 0 0;
@@ -4064,7 +4201,7 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; flex-wrap: wrap;
 }
 .places-tray__title {
-  font-size: 17px; font-weight: 800; margin: 0 0 3px; color: var(--ink);
+  font-size: 17px; font-weight: 700; margin: 0 0 3px; color: var(--ink);
 }
 .places-tray__sub {
   font-size: 13px; color: var(--navy-soft); margin: 0;
@@ -4075,7 +4212,7 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 
 /* Tier Badges */
 .tier-tag {
-  display: inline-flex; align-items: center; font-size: 10.5px; font-weight: 800;
+  display: inline-flex; align-items: center; font-size: 10.5px; font-weight: 700;
   padding: 2px 7px; border-radius: 4px; line-height: 1.2; text-transform: uppercase; letter-spacing: .04em;
 }
 .tier-tag--premium { background: #fdf3cf; color: #855800; border: 1px solid #ebd999; }
@@ -4162,7 +4299,7 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   background: var(--ink);
   border-color: var(--ink);
   color: #fff;
-  font-weight: 800;
+  font-weight: 700;
 }
 .weekcard__helper {
   margin: 8px 0 0;
@@ -4354,7 +4491,7 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   margin-top: 18px; padding: 16px 18px; border-radius: var(--radius-lg);
   background: #faf8f5; border: 1px solid var(--border);
 }
-.sheet__weekadd-title { margin: 0 0 2px; font-size: 16px; font-weight: 800; color: var(--ink); }
+.sheet__weekadd-title { margin: 0 0 2px; font-size: 16px; font-weight: 700; color: var(--ink); }
 .sheet__weekadd-copy { margin: 0 0 12px; font-size: 13px; color: var(--navy-soft); }
 .sheet__weekadd-days { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
 .sheet__weekadd-days .daybtn {
@@ -4367,7 +4504,7 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   background: var(--yellow-pale); border-color: var(--ink);
 }
 .sheet__weekadd-days .daybtn.is-on {
-  background: var(--ink); border-color: var(--ink); color: #fff; font-weight: 800;
+  background: var(--ink); border-color: var(--ink); color: #fff; font-weight: 700;
 }
 
 /* Quick-Add Sleek Bottom Sheet */
@@ -4417,7 +4554,7 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 }
 .quickadd-title {
   font-size: 16.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--ink);
   margin: 0;
   line-height: 1.25;
@@ -4469,7 +4606,7 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   background: var(--ink);
   border-color: var(--ink);
   color: #fff;
-  font-weight: 800;
+  font-weight: 700;
 }
 .quickadd-actions {
   display: flex;
@@ -4480,7 +4617,7 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 .quickadd-btn {
   height: 44px;
   font-size: 14.5px;
-  font-weight: 800;
+  font-weight: 700;
   border-radius: 9999px;
 }
 .quickadd-details-btn {
@@ -5069,7 +5206,7 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   align-items: center;
   gap: 10px;
   font-size: 17px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -.01em;
   color: var(--ink);
   margin-bottom: 18px;
@@ -5083,7 +5220,7 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   background: var(--ink);
   color: #fff;
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
 }
 .pay-mock-notice {
   display: flex;
@@ -5123,7 +5260,7 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   align-items: center;
   gap: 10px;
   font-size: 17px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -.01em;
   color: var(--ink);
 }
@@ -5172,7 +5309,7 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 .pay-actions .btn--lg {
   height: 54px;
   font-size: 16px;
-  font-weight: 800;
+  font-weight: 700;
   border-radius: var(--radius-lg);
 }
 .pay-actions__secondary {
@@ -5219,7 +5356,7 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 .pay-plan-badge {
   display: inline-block;
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: .06em;
   background: #fef08a;
@@ -5292,7 +5429,7 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 }
 .pay-receipt-total {
   font-size: 16px;
-  font-weight: 800;
+  font-weight: 700;
   padding-top: 8px;
   margin-top: 4px;
   border-top: 1px dashed rgba(0,0,0,0.1);
@@ -5379,7 +5516,7 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 .confirm-hero__tag {
   display: inline-block;
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: .06em;
   background: #dcfce7;
@@ -5440,7 +5577,7 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 }
 .confirm-card__badge {
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: .06em;
   background: #fef08a;
@@ -5485,7 +5622,7 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   background: var(--ink);
   color: #fff;
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
 }
 .confirm-kickoff-step__body {
   flex: 1 1 auto;
@@ -5619,7 +5756,7 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   top: 8px;
   left: 8px;
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: .04em;
   background: var(--ink);
   color: #fff;
@@ -5718,7 +5855,7 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 }
 .confirm-receipt-price {
   font-size: 17px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--ink);
 }
 .confirm-receipt-chevron {
@@ -5761,7 +5898,7 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 }
 .confirm-receipt-total b {
   font-size: 16px;
-  font-weight: 800;
+  font-weight: 700;
 }
 .confirm-receipt-simulated-note {
   margin: 14px 0 0;
@@ -6016,6 +6153,21 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   transform: translateY(-1px);
 }
 
+/* Rule 48 again: the radius toggle and "Explore all" together need more room than a
+   small phone has, and the explore button deliberately cannot shrink. On the narrowest
+   screens let the row wrap so the button takes its own line instead of pushing the
+   whole page wider than the viewport. */
+@media (max-width: 460px) {
+  .made-for-you__controls {
+    flex-wrap: wrap;
+    min-width: 0;
+  }
+  .made-for-you__controls .radius-toggle {
+    min-width: 0;
+    max-width: 100%;
+  }
+}
+
 .activity-card__badges {
   position: absolute;
   top: 8px;
@@ -6032,7 +6184,7 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   background: rgba(253, 243, 207, 0.96);
   color: #855800;
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
   padding: 2.5px 7.5px;
   border-radius: 6px;
   backdrop-filter: blur(4px);

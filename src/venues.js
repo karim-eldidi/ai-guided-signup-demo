@@ -58,7 +58,18 @@ export function distanceKm(a, b) {
  * the UI says so out loud rather than pretending everything is on the doorstep.
  */
 export function matchVenues(answers = {}, limit = 6) {
-  const area = areaById(answers.area) || AREAS[0];
+  /* `area` is a multi-select question, so the server stores it as an array. `areaById`
+     returns null for an array, which meant this silently fell back to AREAS[0] and
+     searched Neukölln whatever the visitor actually picked — their answer had no effect
+     on a single number on the page. Mirrors standalone/src/domain.js. */
+  const ids = (Array.isArray(answers.area) ? answers.area : (answers.area ? [answers.area] : []))
+    .filter((x) => x && x !== '__skip');
+  const origins = ids.map((id) => areaById(id)).filter(Boolean);
+  const from = origins.length ? origins : [AREAS[0]];
+  /* Measured from whichever of their areas is nearer — the only honest number when
+     someone told us about home *and* work. */
+  const nearestOf = (v) => Math.min(...from.map((a) => distanceKm(a, v)));
+  const area = from[0];
   /* What the visitor said they would actually do beats what we inferred from a
      one-word goal. The goal is only a fallback for anyone who skipped it. */
   const chosen = activityIdsFor(answers.activities || []);
@@ -69,7 +80,7 @@ export function matchVenues(answers = {}, limit = 6) {
   const affinity = chosen.length ? chosen : goalAffinities;
 
   const scored = VENUES.map((v) => {
-    const km = distanceKm(area, v);
+    const km = nearestOf(v);
     const hits = v.activities.filter((a) => affinity.includes(a));
     // Closer is better; matching the stated goal is worth roughly 1.5 km of walking.
     const score = hits.length * 1.5 - km;
@@ -108,7 +119,9 @@ export function matchVenues(answers = {}, limit = 6) {
   /* `venues` is what we show — six at most, so the screen stays a decision.
      `pool` is everything within the radius, which is what coverage counts:
      "4 of 6 places included" must count all six, not just the visible ones. */
-  return { venues, pool: nearby, area, radiusKm, widened, reachedFurther, categories };
+  /* `areas` carries every area they named, so copy can say "Kreuzberg and Mitte"
+     instead of silently naming only the first. `area` stays for existing callers. */
+  return { venues, pool: nearby, area, areas: from, radiusKm, widened, reachedFurther, categories };
 }
 
 /** Distinct activity categories available within the matched set — feeds the "variety" rule. */

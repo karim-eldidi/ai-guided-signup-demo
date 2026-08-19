@@ -10,7 +10,7 @@
   "scripts": {
     "start": "node --no-warnings=ExperimentalWarning server.js",
     "dev": "node --no-warnings=ExperimentalWarning --watch server.js",
-    "test": "node --no-warnings=ExperimentalWarning --test tests/*.test.js",
+    "test": "node --no-warnings=ExperimentalWarning --test --test-concurrency=1 tests/*.test.js",
     "reset:db": "node -e \"require('fs').rmSync('.data/pilot.db',{force:true});console.log('pilot database cleared')\"",
     "verify": "node --no-warnings=ExperimentalWarning scripts/verify.mjs",
     "build": "python3 standalone/build.py"

@@ -25,9 +25,21 @@ function topbar(step, opts={}) {
       Array.from({length:sub.total},(_,k)=>`<span class="stepper__seg ${k<sub.done?'is-done':k===sub.done?'is-now':''}"></span>`).join('')}</div>` : '';
     return `${i?'<div class="stepper__line"></div>':''}<div class="stepper__step ${state}"><div class="stepper__dot">${s.n<step?icon('checkThin',16):s.n}</div><div class="stepper__label">${s.l}</div>${segs}</div>`;
   }).join('');
-  const mobileLabel = (sub && sub.total) 
+  /* "Question 4 of 4" put testers off — it counts what is left rather than what is done —
+     and nobody ever objected to the segments the desktop draws for the same four questions.
+     So the phone gets the same segments. The sentence does not just disappear with the text,
+     though: the segments are decorative, the desktop stepper is not rendered at this width,
+     and the question row is display:none, which would leave a screen-reader user with no
+     position at all. It stays as the label of the row, visually hidden. */
+  const mobileText = (sub && sub.total)
     ? `Question ${sub.done+1} of ${sub.total} &middot; ${steps[step-1].l}`
     : `Step ${step} of 3 &middot; ${steps[step-1].l}`;
+  const mobileLabel = (sub && sub.total)
+    ? `<span class="sr-only">${mobileText}</span>
+       <span class="stepper__sub" aria-hidden="true" style="gap:6px">${
+        Array.from({length:sub.total},(_,k)=>`<span class="stepper__seg ${
+          k<sub.done?'is-done':k===sub.done?'is-now':''}" style="width:28px;height:4px"></span>`).join('')}</span>`
+    : mobileText;
   const barPct = (sub && sub.total)
     ? (((step-1) + (sub.done+1)/sub.total) / 3) * 100
     : (step / 3) * 100;
@@ -172,6 +184,14 @@ function activityIcon(acts=[]) {
   if (has('gym','strength','crossfit','cardio','hiit')) return 'dumbbell';
   return 'grid';
 }
+/* Testers could not tell whether a card was a place they could go to or a class they could
+   book there. The dataset only describes places — an address, opening hours, per-plan visit
+   limits — and it already carries the word for it: `tierLabel` reads "Plus venue". So the
+   card uses the published string, which is how the venue sheet has always introduced a place
+   ("Plus venue · 1.2 km from Mitte"). Nothing is derived and nothing is invented: an
+   activity word like "yoga" is what read as a class, and there is no timetable here to make
+   a class out of. */
+const venueKindLabel = v => v.tierLabel || 'Venue';
 /* The tile is drawn first and the photograph sits on top of it. If the photo
    cannot load — offline, or the media bucket is unreachable — the <img> removes
    itself and the branded tile is simply what you see. No broken-image icons. */
@@ -195,6 +215,9 @@ const venueCard = (v, tappable=true) => {
   const tier = v.tier ? (v.tier === 'premium' ? 'Premium' : v.tier === 'plus' ? 'Plus' : 'Standard') : '';
   const tierBadge = tier ? `<span class="tier-tag tier-tag--${v.tier}">${tier}</span>` : '';
   const areaLabel = v.nearestArea ? v.nearestArea.name : (AREAS.find(a=>a.id===v.area)||{}).name || '';
+  /* This card already carries the tier as a badge, so the meta says only what the card is —
+     the published "Plus venue" wording would be the tier twice on one card (rule 33). */
+  const kindLabel = tierBadge ? 'Venue' : venueKindLabel(v);
   const distLabel = areaLabel ? `${v.distanceKm} km from ${esc(areaLabel)}` : `${v.distanceKm} km away`;
   return `<div class="venue-card ${inPlan?'':'is-locked'}" draggable="true" data-drag-venue="${esc(v.id)}" data-drag-name="${esc(v.name)}" title="Drag onto your week or click to add">
   <button class="venue-card__media-btn" data-venue="${esc(v.id)}" aria-label="More about ${esc(v.name)}">
@@ -205,7 +228,7 @@ const venueCard = (v, tappable=true) => {
       <button class="venue-card__name" data-venue="${esc(v.id)}">${esc(v.name)}</button>
       ${tierBadge}
     </div>
-    <div class="venue-card__meta">${distLabel}</div>
+    <div class="venue-card__meta">${esc(kindLabel)} &middot; ${distLabel}</div>
     <div class="venue-card__foot">
       <button class="btn-pill btn-pill--sm" data-open-add-venue="${esc(v.id)}">${icon('plus',11)} <span>Add</span></button>
       <button class="linkish venue-card__more" data-venue="${esc(v.id)}">Details</button>
@@ -316,7 +339,7 @@ function venueSheet() {
         </div>
         ${v.address?`<p class="small muted" style="margin:4px 0 0">${icon('pin',15)} ${esc(v.address)}</p>`:''}
 
-        <p style="font-size:15px;line-height:1.45;margin:14px 0 0">${esc(v.blurb)}</p>
+        ${v.blurb ? `<p style="font-size:15px;line-height:1.45;margin:14px 0 0">${esc(v.blurb)}</p>` : ''}
         <div class="chips">${v.activities.map(a=>`<span class="chip-sm">${esc(ACTIVITY_LABELS[a]||a)}</span>`).join('')}</div>
         <div style="margin-top:16px">
           ${v.hoursWeekday?`<div class="sheet__row">${icon('clock',20)}<span><strong>Weekdays</strong><br>${esc(v.hoursWeekday)}</span></div>`:''}
@@ -434,7 +457,11 @@ function appsBlock() {
           ? '0 &euro; extra with 12- or 24-month memberships'
           : `0 &euro; extra &middot; ${slots===1?'1 free app':'2 free apps'} included in your term`}</small></span>
       <span class="rowcard__chips">${ranked.list.slice(0,2).map(chip).join('')}</span>
-      <span class="rowcard__cta">Explore free apps ${icon('arrowRight',18)}</span>
+      <!-- "Explore free apps" came off this handle: the summary is already the whole
+           clickable thing, and asking someone to explore before they have committed to
+           anything was one word too many. The arrow stays — it is the affordance, and the
+           stylesheet turns it a quarter-turn when the row opens. -->
+      <span class="rowcard__cta" aria-hidden="true">${icon('arrowRight',18)}</span>
     </summary>
     <div class="rowcard__body">
       <div class="apps-switcher-strip">

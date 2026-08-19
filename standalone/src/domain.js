@@ -4,7 +4,7 @@ const GOAL_AFFINITY = {
   unwind:['yoga','pilates','meditation','sauna','spa','swimming','barre','aqua_fitness'],
   try_new:['bouldering','climbing','dance','boxing','padel','tennis','martial_arts','barre','aqua_fitness','crossfit']
 };
-const ACTIVITY_LABELS = { gym:'gym', strength:'strength training', crossfit:'CrossFit', hiit:'HIIT', running:'running', cardio:'cardio', boxing:'boxing', bouldering:'bouldering', climbing:'climbing', swimming:'swimming', dance:'dance', yoga:'yoga', pilates:'pilates', meditation:'meditation', sauna:'sauna', spa:'spa', barre:'barre', aqua_fitness:'aqua fitness', tennis:'tennis', padel:'padel', martial_arts:'martial arts', outdoor:'outdoor training' };
+const ACTIVITY_LABELS = { gym:'gym', strength:'strength training', crossfit:'CrossFit', hiit:'HIIT', running:'running', cardio:'cardio', boxing:'boxing', bouldering:'bouldering', climbing:'climbing', swimming:'swimming', dance:'dance', yoga:'yoga', pilates:'pilates', meditation:'meditation', sauna:'sauna', spa:'spa', barre:'barre', aqua_fitness:'aqua fitness', tennis:'tennis', padel:'padel', martial_arts:'martial arts', outdoor:'outdoor training', cycling:'indoor cycling' };
 function distanceKm(a,b){ const R=6371, rad=d=>d*Math.PI/180;
   const dLat=rad(b.lat-a.lat), dLng=rad(b.lng-a.lng);
   const h=Math.sin(dLat/2)**2+Math.cos(rad(a.lat))*Math.cos(rad(b.lat))*Math.sin(dLng/2)**2;

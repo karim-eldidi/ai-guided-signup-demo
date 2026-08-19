@@ -20,6 +20,23 @@ npm run reset:db                # wipe the pilot database and start from zero vi
 
 If port 3000 is busy: `PORT=3010 npm start`.
 
+### Environment variables
+
+| Variable | What it does |
+| --- | --- |
+| `PORT` | Port for the local server (default `3000`) |
+| `ANTHROPIC_API_KEY` | Optional. Enables Urby's AI wording layer; without it everything runs deterministically |
+| `ADMIN_TOKEN` | Gates the `/admin/journeys` journey-data page. **Without it that page is switched off** (403) because it shows visitor emails, names, dates of birth, addresses and full event history |
+
+```bash
+ADMIN_TOKEN=pick-a-long-secret npm start
+# then open http://localhost:3000/admin/journeys?token=pick-a-long-secret
+# or send it as a header: curl -H "Authorization: Bearer pick-a-long-secret" http://localhost:3000/admin/journeys
+```
+
+The token is never embedded in any page, so the **Journey data** link in the demo banner shows an
+honest "switched off" screen until you open the page with the token yourself.
+
 ---
 
 ## The five-minute demo path
@@ -33,7 +50,7 @@ If port 3000 is busy: `PORT=3010 npm start`.
 4. **Universal venue adding.** Click `+ Add to week` on any studio card. Notice you can schedule it to **any of the 7 days** (`MON` through `SUN`) with instant plan reflection and dynamic confirmation feedback.
 5. **Press "Save for later"** in the top right. Enter an email to receive your secure resume link. Open that link in a private window to verify your progress, answers, and routine resume instantly.
 6. **Finish the journey** — enter details, review the simulated payment screen (order summary, cancellation terms), and confirm.
-7. **`/admin/journeys`** (server mode) — view the funnel, visitor sources, answer patterns, rule firings, returns, and conversion stats.
+7. **`/admin/journeys?token=…`** (server mode, needs `ADMIN_TOKEN` — see above) — view the funnel, visitor sources, answer patterns, rule firings, returns, and conversion stats.
 
 ---
 
