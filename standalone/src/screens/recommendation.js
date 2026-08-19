@@ -99,44 +99,53 @@ function planDrawer(plan, price, each, commitment, isRec, hereT, cheaperPlan, ch
     ? 'Includes 2 free wellness apps (0 € extra)'
     : S.commitmentId === 'annual'
       ? 'Includes 1 free wellness app (0 € extra)'
-      : '12- and 24-month commitments include free wellness apps';
+      : '12- & 24-mo plans include free wellness apps';
 
   return `<div class="drawer-backdrop" data-close-plan-drawer></div>
   <div class="plan-drawer" role="dialog" aria-modal="true" aria-label="Membership plan details">
     <div class="plan-drawer__handle-bar" data-close-plan-drawer><div class="plan-drawer__handle"></div></div>
     <div class="plan-drawer__head">
       <div class="plan-drawer__title-wrap">
-        <span class="planbox__badge" style="margin-bottom:4px">${isRec ? 'RECOMMENDED FOR YOU' : 'YOUR SELECTION'}</span>
+        <span class="planbox__badge" style="margin-bottom:3px">${isRec ? 'RECOMMENDED' : 'YOUR SELECTION'}</span>
         <h3 class="plan-drawer__title">${esc(plan.name)} &middot; <b>${price} €</b><small>/mo</small></h3>
       </div>
       <button class="plan-drawer__close" type="button" data-close-plan-drawer aria-label="Close details">${icon('close', 18)}</button>
     </div>
     <div class="plan-drawer__body">
       <!-- Commitment switcher -->
-      <div class="termpick" role="group" aria-label="How long you commit for" style="margin-bottom:8px">
+      <div class="termpick" role="group" aria-label="How long you commit for" style="margin-bottom:6px">
         ${COMMITMENTS.map(c=>{
           const p = priceFor(plan,c.id);
           return `<button class="termpick__opt ${c.id===S.commitmentId?'is-on':''}" type="button" data-commit="${esc(c.id)}"
             aria-pressed="${c.id===S.commitmentId}"><b>${c.minimumTermMonths===1?'Monthly':c.minimumTermMonths+' months'}</b><span>${p} €/mo</span></button>`;
         }).join('')}
       </div>
-      <div class="termpick__perk-banner" style="font-size:12.5px;color:var(--navy);background:var(--cream);border:1px solid var(--cream-line);padding:7px 12px;border-radius:var(--radius);margin-bottom:16px;display:flex;align-items:center;gap:6px">
-        ${icon('sparkle',13)} <span>${perkText}</span>
+      <div class="termpick__perk-banner" style="font-size:12px;color:var(--navy);background:var(--cream);border:1px solid var(--cream-line);padding:6px 10px;border-radius:var(--radius);margin-bottom:12px;display:flex;align-items:center;gap:5px">
+        ${icon('sparkle',12)} <span>${perkText}</span>
       </div>
 
-      <div class="planbox__factshead">Why this fits you</div>
-      <ul class="planbox__facts">
-        <li>${icon('checkThin',16)} <span>All <b>${hereT && hereT.included ? hereT.included : (wp.sessions.filter(s=>s.included).length || 6)} places</b> in your routine are included</span></li>
-        <li>${icon('checkThin',16)} <span><b>${visitsFor(plan)} visits</b> each month</span></li>
-        ${wp.perMonth?`<li>${icon('checkThin',16)} <span>Matches your <b>${S.answers.frequency === 'once' ? '1' : S.answers.frequency === 'twice' ? '2' : S.answers.frequency === 'often' ? '3–4' : (S.answers.frequency === 'daily' ? '5+' : (SESSIONS[S.answers.frequency] || '2'))} sessions/wk goal</b> (~${wp.perMonth} visits/mo)</span></li>`:''}
-        ${each?`<li>${icon('checkThin',16)} <span>About <b>${each} €</b> a session</span></li>`:''}
-        <li>${icon('checkThin',16)} <span>Flexible &ndash; cancel anytime</span></li>
+      <div class="planbox__factshead" style="font-size:13px;font-weight:700;margin-bottom:8px">Included with ${esc(plan.name)}</div>
+      <ul class="planbox__facts" style="margin-bottom:14px">
+        <li>${icon('checkThin',15)} <span>All <b>${hereT && hereT.included ? hereT.included : (wp.sessions.filter(s=>s.included).length || 6)} places</b> in your routine included</span></li>
+        <li>${icon('checkThin',15)} <span><b>${visitsFor(plan)} visits</b> each month</span></li>
+        ${each?`<li>${icon('checkThin',15)} <span>About <b>${each} €</b> a session</span></li>`:''}
+        <li>${icon('checkThin',15)} <span>Flexible &ndash; cancel anytime</span></li>
       </ul>
 
-      ${altBox}
-      ${allPlans}
+      ${altBox || allPlans ? `
+        <details class="drawer-compare" style="margin-top:10px;margin-bottom:14px;border:1px solid var(--border);border-radius:var(--radius);background:#fff">
+          <summary style="padding:10px 12px;font-size:13px;font-weight:700;color:var(--navy);cursor:pointer;display:flex;align-items:center;justify-content:space-between">
+            <span>Compare with other memberships</span>
+            <span style="font-size:11px;color:var(--navy-soft)">▼</span>
+          </summary>
+          <div style="padding:10px 12px 14px;border-top:1px solid var(--border)">
+            ${altBox}
+            ${allPlans}
+          </div>
+        </details>
+      ` : ''}
 
-      <div style="margin-top:20px">
+      <div style="margin-top:14px">
         <button class="btn btn--primary btn--block" data-go="details">Continue with ${esc(plan.name)}</button>
       </div>
     </div>
@@ -313,7 +322,6 @@ function recommendationScreen() {
   const matchingVenuesCount = (hereT && hereT.included) ? hereT.included : (wanted.length || pool.length);
 
   const activitiesGalleryBlock = `<div class="places made-for-you">
-    <details class="places__fold" ${RECO_VIEW==='pillars'?'open':''} style="display:none"><summary class="sr-only" data-toggle-places>More</summary></details>
     <div class="made-for-you__head">
       <div>
         <h2 class="made-for-you__title">Activities in ${esc(where)}</h2>
@@ -432,7 +440,7 @@ function recommendationScreen() {
 
     <div class="made-for-you__foot">
       <button class="made-for-you__explore-link" type="button" data-go="search">
-        ${icon('sparkle', 15)} <span>Looking for something specific? Ask Urby or explore all ${allVenues.length} Berlin venues &rarr;</span>
+        ${icon('sparkle', 14)} <span>Looking for a specific studio? Explore all ${allVenues.length} Berlin venues &rarr;</span>
       </button>
     </div>
   </div>`;
@@ -609,14 +617,14 @@ const planAside = `<div class="planbox">
   </aside>`}
   </div>
   <div class="paybar">
-    <div class="paybar__info" data-open-plan-drawer role="button" tabindex="0" aria-label="View plan breakdown and options">
+    <div class="paybar__info" data-open-plan-drawer role="button" tabindex="0" aria-label="View plan breakdown and pricing details">
       <div class="paybar__lead">
         <b>${esc(plan.name)}</b>
-        <span class="paybar__details-pill">${icon('info', 11)} Plan &amp; pricing &uarr;</span>
+        <span class="paybar__details-pill">${icon('chevron', 10)} Details &amp; terms</span>
       </div>
-      <span>${price} € / month${each?` · ≈ ${each} € a session`:''}</span>
+      <span class="paybar__subtext">${price} € / month${each?` · ≈ ${each} €/visit`:''}</span>
     </div>
-    <button class="btn btn--primary" data-go="details">Continue</button>
+    <button class="btn btn--primary paybar__cta" data-go="details">Continue</button>
   </div>
   ${planDrawer(plan, price, each, commitment, isRec, hereT, cheaperPlan, cheaperT, visitsFor, wp, altBox, allPlans)}
   ${exitModal()}${venueSheet()}${appSheet()}`;

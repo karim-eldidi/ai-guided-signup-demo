@@ -604,8 +604,8 @@ document.addEventListener('click', e => {
     document.querySelector('.plans-selection')?.scrollIntoView({behavior:SCROLL_BEHAVIOR(),block:'nearest'});
     return;
   }
-  if (t.dataset.toggleVenues !== undefined) { VENUESOPEN = !VENUESOPEN; render(false); return; }
-  if (t.dataset.toggleApps !== undefined) { APPSOPEN = !APPSOPEN; render(false); return; }
+  if (t.dataset.toggleVenues !== undefined) { VENUESOPEN = !VENUESOPEN; return; }
+  if (t.dataset.toggleApps !== undefined) { APPSOPEN = !APPSOPEN; return; }
   if (t.dataset.toggleFreetext !== undefined) { FREETEXT_OPEN = !FREETEXT_OPEN; render(false); return; }
   /* The week is open; what folds is adjusting it. The open state has to survive the
      re-render, or changing a day would close the thing you were editing. */
@@ -621,11 +621,13 @@ document.addEventListener('click', e => {
      the way straight in. Clicking the section that is already open closes it, so this is
      an accordion rather than three drawers that all end up open (rule 16). */
   if (t.dataset.more !== undefined) {
+    if (t.tagName.toLowerCase() === 'summary') return;
     const k = t.dataset.more;
     if (MOREOPEN && MOREPICK === k) MOREPICK = null;
     else { MOREOPEN = true; MOREPICK = k; }
-    render(false); return; }
-  if (t.dataset.toggleMore !== undefined) { MOREOPEN = !MOREOPEN; render(false); return; }
+    render(false); return;
+  }
+  if (t.dataset.toggleMore !== undefined) { MOREOPEN = !MOREOPEN; return; }
   if (t.dataset.rail) {
     const rail = document.querySelector('.venue-grid--big.is-rail');
     if (rail) {

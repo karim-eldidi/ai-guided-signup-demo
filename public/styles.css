@@ -1902,6 +1902,7 @@ body.save-modal-open .stepper, body.save-modal-open .planbox__cta, body.save-mod
      is just a section of the page, and a max-height here turned it into a small inner
      scroller sitting on top of the sticky price bar. */
   .two-col__aside--sticky { position: static; max-height: none; overflow: visible; }
+  .two-col--reco .two-col__main { padding-bottom: calc(85px + env(safe-area-inset-bottom)); }
   .paybar {
     display: flex; align-items: center; gap: 14px;
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
@@ -3511,13 +3512,16 @@ button.appcard:hover .appcard__info-icon {
   padding: 18px 20px 36px; overflow-y: auto; -webkit-overflow-scrolling: touch;
 }
 .paybar__lead {
-  display: flex; align-items: center; gap: 8px;
+  display: flex; align-items: center; gap: 6px;
 }
 .paybar__details-pill {
   display: inline-flex; align-items: center; gap: 3px;
-  background: rgba(0,0,0,0.06); border: 1px solid rgba(0,0,0,0.08);
-  border-radius: 999px; padding: 1px 6px; font-size: 11px; font-weight: 700;
+  background: var(--cream); border: 1px solid var(--cream-line);
+  border-radius: 999px; padding: 2px 7px; font-size: 11px; font-weight: 700;
   color: var(--navy);
+}
+.paybar__subtext {
+  color: var(--navy); font-size: 12.5px;
 }
 @keyframes slideUp {
   from { transform: translateY(100%); }
@@ -3565,14 +3569,14 @@ button.appcard:hover .appcard__info-icon {
   border-top: 1px solid var(--border);
 }
 .made-for-you__explore-link {
-  font-size: 13.5px;
-  font-weight: 700;
+  font-size: 12.5px;
+  font-weight: 600;
   color: var(--navy);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 9px 20px;
+  gap: 6px;
+  padding: 7px 16px;
   border-radius: 9999px;
   background: var(--cream);
   border: 1px solid var(--cream-line);
@@ -3589,6 +3593,8 @@ button.appcard:hover .appcard__info-icon {
 
 @media (max-width: 640px) {
   .made-for-you__explore-link {
+    font-size: 11.5px;
+    padding: 6px 12px;
     white-space: normal;
     text-align: center;
     width: 100%;

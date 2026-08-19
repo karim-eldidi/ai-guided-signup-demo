@@ -434,23 +434,21 @@ function appsBlock() {
     <span class="appcard__info-icon">${icon('info',14)}</span>
   </button>`;
 
-  const chip = a => `<button class="appchip linkish" type="button" data-app="${esc(a.id)}" aria-label="View details about ${esc(a.name)} app">
-    ${appLogo(a)}<span>${esc(a.name)}</span>
-  </button>`;
+  const chip = a => `<span class="appchip">${appLogo(a)}<span>${esc(a.name)}</span></span>`;
 
   return `<details class="rowcard rowcard--apps"${APPSOPEN?' open':''}>
     <summary class="rowcard__head" data-toggle-apps>
       <span class="rowcard__icon">${icon('device',22)}</span>
-      <span class="rowcard__text"><b>Free Digital Wellbeing Apps &middot; 0 &euro; extra</b>
+      <span class="rowcard__text"><b>Free Wellbeing Apps</b>
         <small>${locked
-          ? 'Included free with 12- or 24-month memberships (YogaEasy, Asana Rebel, Sleep Cycle & more)'
-          : `Included free in your plan &middot; 0 &euro; extra (${slots===1?'1 app':'2 apps'} active, switch anytime)`}</small></span>
+          ? '0 &euro; extra with 12- or 24-month memberships'
+          : `0 &euro; extra &middot; ${slots===1?'1 free app':'2 free apps'} included in your term`}</small></span>
       <span class="rowcard__chips">${ranked.list.slice(0,2).map(chip).join('')}</span>
       <span class="rowcard__cta">Explore free apps ${icon('arrowRight',18)}</span>
     </summary>
     <div class="rowcard__body">
-      <div class="notice notice--cream" style="margin-bottom:14px;background:var(--cream);border:1px solid var(--cream-line);padding:12px 14px;border-radius:var(--radius);font-size:13px;line-height:1.45;color:var(--navy)">
-        <strong>100% Free with 12- &amp; 24-month memberships</strong> &middot; Urban Sports Club includes full access to premium wellness apps at no extra charge. 12-month memberships include 1 app active at a time; 24-month memberships include 2 apps. Switch between apps anytime.
+      <div class="notice notice--cream" style="margin-bottom:12px;background:var(--cream);border:1px solid var(--cream-line);padding:10px 12px;border-radius:var(--radius);font-size:12.5px;line-height:1.4;color:var(--navy)">
+        <strong>100% Free with 12- &amp; 24-month memberships</strong> &middot; Get full access to top wellness apps at 0 &euro; extra (1 app with 12 mo, 2 apps with 24 mo, switch anytime).
       </div>
 
       <div class="apps-switcher-strip">
