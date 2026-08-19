@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run build)",
+      "Bash(npm run verify)",
+      "Bash(npm run verify -- *)",
+      "mcp__client__openBrowserPage",
+      "mcp__client__screenshotPage"
+    ]
+  }
+}

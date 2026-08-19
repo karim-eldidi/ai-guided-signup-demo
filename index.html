@@ -6264,7 +6264,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 19 Aug 12:22 UTC</span>
+  <span class="demo-banner__build">build 19 Aug 13:08 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -7941,22 +7941,18 @@ function placeCard(v, opts = {}) {
   const grpIcon = activityIcon(v.activities);
 
   const isStarred = Boolean(S.starredVenues && S.starredVenues[v.id]);
-  const starFreq = (S.starredVenues && S.starredVenues[v.id] && (typeof S.starredVenues[v.id]==='number' ? S.starredVenues[v.id] : S.starredVenues[v.id].freq)) || 1;
 
-  const tierTag = v.tier === 'premium'
-    ? `<span class="tier-tag tier-tag--premium">✨ Premium studio</span>`
-    : v.tier === 'plus'
-    ? `<span class="tier-tag tier-tag--plus">⚡ Plus studio</span>`
-    : `<span class="tier-tag tier-tag--standard">Classic studio</span>`;
-
-  const accessLabel = inPlan
-    ? (v.tier === 'plus' ? `<span class="access-pill access-pill--included">${icon('checkThin', 11)} Included &middot; Plus access</span>` : v.tier === 'premium' ? `<span class="access-pill access-pill--included">${icon('checkThin', 11)} Included &middot; Premium access</span>` : `<span class="access-pill access-pill--included">${icon('checkThin', 11)} Included &middot; Regular check-in</span>`)
-    : (lowest ? `<span class="access-pill access-pill--locked">${icon('lock', 11)} Included from ${esc(lowest.name)} (${priceFor(lowest, S.commitmentId)} €/mo)</span>` : `<span class="access-pill access-pill--locked">${icon('lock', 11)} Needs ${v.tier === 'premium' ? 'Premium' : 'Classic'}</span>`);
+  const accessBadge = inPlan
+    ? (v.tier === 'plus'
+        ? `<span class="access-pill access-pill--plus-overlay">${icon('checkThin', 11)} Plus</span>`
+        : v.tier === 'premium'
+        ? `<span class="access-pill access-pill--premium-overlay">${icon('checkThin', 11)} Premium</span>`
+        : `<span class="access-pill access-pill--included-overlay">${icon('checkThin', 11)} Included</span>`)
+    : `<span class="access-pill access-pill--locked-overlay venue-card__lock">${icon('lock', 11)} Needs ${v.tier === 'premium' ? 'Premium' : 'Classic'}</span>`;
 
   return `<div class="activity-card venue-card hit ${inPlan ? '' : 'is-locked'} ${isStarred ? 'is-starred' : ''}" draggable="true" data-drag-venue="${esc(v.id)}" data-drag-name="${esc(v.name)}">
     <div class="activity-card__badges">
-      ${badge}
-      ${tierTag}
+      ${badge || accessBadge}
     </div>
     <button class="activity-card__star-btn ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(v.id)}" aria-label="${isStarred ? `Remove ${esc(v.name)} from routine` : `Add ${esc(v.name)} to routine`}" title="${isStarred ? 'In your routine' : 'Add to routine'}">
       ${icon(isStarred ? 'starFill' : 'star', 15)}
@@ -7969,7 +7965,6 @@ function placeCard(v, opts = {}) {
       <div class="activity-card__activity"><b>${esc(grpLabel)}</b></div>
       <button class="activity-card__vname venue-card__name hit__name linkish" data-venue="${esc(v.id)}">${esc(v.name)}</button>
       <div class="activity-card__dist hit__meta">${where} &middot; ${esc(acts)}</div>
-      <div class="activity-card__access">${accessLabel}</div>
       ${priced && lowest ? `<p class="hit__price">Included from <strong>${esc(lowest.name)}</strong>, ${priceFor(lowest, S.commitmentId)} € a month.</p>` : ''}
       <div class="activity-card__actions">
         ${isStarred ? `
@@ -8405,8 +8400,30 @@ function searchScreen() {
   const searched = Boolean(r);
   const backTarget = (WEEK_ADD_MODE || S.lastStep === 'recommendation' || hasSaveableProgress()) ? 'recommendation' : 'landing';
   const backLabel = WEEK_ADD_MODE ? 'Back to my week' : (backTarget === 'recommendation' ? 'Back to recommendation' : 'Back');
+  /* The tray reports what is actually starred. A placeholder count read as a promise the
+     routine had not earned yet, which is the one thing this screen must never do. */
+  const routineCount = Object.keys(S.starredVenues || {}).length;
+  const routineLead = routineCount
+    ? `${routineCount} ${routineCount === 1 ? 'place' : 'places'} in your routine`
+    : 'No places in your routine yet';
+  const routineHint = routineCount ? 'Tap any card to add or remove' : 'Star a place to start building it';
+  const stickyTray = (backTarget === 'recommendation') ? `
+    <div class="paybar search-sticky-bar">
+      <div class="paybar__pull-handle" data-go="recommendation" aria-hidden="true"></div>
+      <div class="paybar__info" data-go="recommendation" role="button" tabindex="0" aria-label="Back to your routine">
+        <div class="paybar__lead">
+          <b>${routineLead}</b>
+        </div>
+        <span class="paybar__subtext">${routineHint}</span>
+      </div>
+      <button class="btn btn--primary paybar__cta" type="button" data-go="recommendation">
+        ${routineCount ? 'Build my routine' : 'Back to recommendation'} &rarr;
+      </button>
+    </div>
+  ` : '';
+
   return `<header class="topbar"><div class="topbar__left"><button class="wordmark linkish" style="text-decoration:none" data-go="landing">Urban Sports Club</button></div><div></div>
-    <div class="topbar__right"><button class="link-plain linkish" data-go="${backTarget}">${icon('back',17)} ${backLabel}</button></div></header>
+    <div class="topbar__right"><button class="link-plain linkish strong" data-go="${backTarget}">${icon('back',17)} ${backLabel}</button></div></header>
     <main class="content venuepage" id="main">
     <div class="venuepage__intro">
       <div class="search__guide">${ulaAvatar('sm')}<span>Urby &middot; Membership guide</span></div>
@@ -8430,7 +8447,7 @@ function searchScreen() {
     </div>
     ${searched ? '' : `<aside class="venuepage__aside" aria-label="Personalise your recommendation">${routinePanel()}</aside>`}
     </div>
-  </main>${venueSheet()}`;
+  </main>${stickyTray}${venueSheet()}`;
 }
 
 /* The answers you have given, as chips you can tap to change.
