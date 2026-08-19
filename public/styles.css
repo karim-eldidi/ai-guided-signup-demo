@@ -439,31 +439,26 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
 }
 .options--rows .option-card__icon { width: 36px; height: 36px; }
 
-.ownwords-toggle { margin-top: 14px; }
-.ownwords__btn {
-  display: inline-flex; align-items: center; gap: 7px;
-  font-size: 13.5px; font-weight: 600; color: var(--navy-soft);
-  background: transparent; border: 0; padding: 4px 0;
-  cursor: pointer; transition: color .15s ease;
-}
-.ownwords__btn:hover { color: var(--ink); text-decoration: underline; }
-.ownwords { margin-top: 6px; }
+.ownwords { margin-top: 14px; }
 .ownwords__label {
-  display: flex; align-items: center; gap: 8px;
-  font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 7px;
+  display: flex; align-items: center; gap: 7px;
+  font-size: 13px; font-weight: 700; color: var(--navy-soft); margin-bottom: 6px;
 }
 .ownwords__row {
-  display: flex; align-items: center; gap: 10px;
-  background: #fff; border: 1px dashed #b9b6ad; border-radius: var(--radius);
-  padding: 0 8px 0 18px; height: 50px;
+  display: flex; align-items: center; gap: 8px;
+  background: #fff; border: 1px solid var(--border); border-radius: 10px;
+  padding: 0 6px 0 14px; height: 40px;
+  transition: all .15s ease;
 }
-.ownwords__row:focus-within { border-style: solid; border-color: var(--ink); }
-.ownwords__row input { flex: 1 1 auto; border: 0; outline: none; height: 100%; background: transparent; font-size: 16.5px; }
+.ownwords__row:focus-within { border-color: var(--ink); box-shadow: 0 0 0 2px rgba(0,0,0,0.06); }
+.ownwords__row input { flex: 1 1 auto; border: 0; outline: none; height: 100%; background: transparent; font-size: 14px; color: var(--ink); }
+.ownwords__row input::placeholder { color: #94a3b8; font-size: 13px; }
 .ownwords__send {
-  flex: 0 0 auto; height: 40px; padding: 0 18px; border-radius: 6px;
-  border: 1px solid var(--ink); background: #fff; font-weight: 700; font-size: 15.5px;
+  flex: 0 0 auto; height: 30px; padding: 0 14px; border-radius: 6px;
+  border: 1px solid var(--ink); background: #fff; font-weight: 700; font-size: 12.5px;
+  cursor: pointer; transition: all .15s ease;
 }
-.ownwords__send:hover { background: var(--cream); }
+.ownwords__send:hover { background: var(--ink); color: #fff; }
 
 /* Ask Urby, parked in the right column so it is reachable from any question */
 .aside-ask { margin-bottom: 18px; }
@@ -1864,6 +1859,7 @@ body.save-modal-open .stepper, body.save-modal-open .planbox__cta, body.save-mod
 
   .decision-pair { grid-template-columns: 1fr; }
   .one-col__main { padding: 4px 16px 80px; }
+  .one-col__main > .notice:not(.notice--grey) { display: none; }
   .chips-row {
     display: flex; align-items: center; gap: 6px; margin: 0 0 8px;
     overflow-x: auto; flex-wrap: nowrap; scrollbar-width: none;
@@ -4656,24 +4652,42 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   .weekcard { padding: 16px 14px 14px; }
   /* The rows keep their shape but give up their right-hand end: a claim and a chevron,
      with the proof inside. */
-  .rowcard__head { flex-wrap: wrap; padding: 14px 15px; }
+.rowcard__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  font-size: 13.5px;
+  color: var(--navy-soft);
+}
+.rowcard__link {
+  background: transparent;
+  border: 0;
+  color: var(--navy);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 2px 4px;
+}
+.rowcard__link:hover {
+  color: var(--ink);
+  text-decoration: underline;
+}
+
+@media (max-width: 980px) {
+  .weekcard { padding: 16px 14px 14px; }
+  .rowcard__head { padding: 14px 15px; }
   .rowcard__chips { display: none; }
-  .rowcard__cta, .rowcard__links { margin-left: auto; font-size: 14px; }
-  .rowcard__cta span, .rowcard__links { min-width: 0; }
+  .rowcard__actions { display: none; }
   .rowcard__body { padding: 0 15px 15px; }
   .reco-hero__lede { font-size: 16.5px; }
 }
 @media (max-width: 700px) {
-  /* The icon and the claim stay on one line; the action takes the next one whole. It must
-     be allowed to wrap, or a five-word link pushes the layout viewport wider than the
-     phone and takes the fixed price bar off the screen with it. */
-  .rowcard__head { position: relative; padding-right: 40px; flex-wrap: wrap; }
-  .rowcard__text { flex: 1 1 0; min-width: 0; }
-  .rowcard__cta, .rowcard__links {
-    flex: 1 1 100%; min-width: 0; margin: 8px 0 0; flex-wrap: wrap; justify-content: flex-start;
-  }
-  .rowcard__chev { position: absolute; right: 14px; top: 18px; }
-  /* The title and the way to change it stop sharing a line they cannot both fit on. */
+  .rowcard__head { position: relative; padding: 14px 16px; display: flex; align-items: center; }
+  .rowcard__text { flex: 1 1 auto; min-width: 0; }
+  .rowcard__actions { display: none; }
+  .rowcard__cta { margin-left: auto; font-size: 12.5px; flex: 0 0 auto; white-space: nowrap; }
+  .rowcard__chev { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); }
   .weekcard__head { flex-wrap: wrap; gap: 6px 16px; }
   .weekcard__title { flex: 1 1 100%; }
 }
@@ -5953,36 +5967,96 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   border: 1px solid #e2e8f0;
 }
 
+.made-for-you__controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-explore-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink);
+  background: #fff;
+  border: 1px solid var(--border);
+  padding: 5px 12px;
+  border-radius: 9999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all .15s ease;
+}
+.btn-explore-inline:hover {
+  background: var(--cream);
+  border-color: var(--ink);
+}
+
 .activity-card__badges {
   position: absolute;
   top: 8px;
   left: 8px;
-  z-index: 2;
+  z-index: 3;
   display: flex;
   align-items: center;
   gap: 5px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
-.activity-card__match-badge {
-  background: rgba(253, 243, 207, 0.95);
+
+.activity-card__badge {
+  position: static;
+  background: rgba(253, 243, 207, 0.96);
   color: #855800;
   font-size: 11px;
   font-weight: 800;
-  padding: 3px 8px;
+  padding: 2.5px 7.5px;
   border-radius: 6px;
   backdrop-filter: blur(4px);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  white-space: nowrap;
 }
 
 .access-pill {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  font-size: 11.5px;
+  gap: 3.5px;
+  font-size: 11px;
   font-weight: 700;
-  padding: 2px 7px;
+  padding: 2.5px 7.5px;
   border-radius: 6px;
-  margin-top: 2px;
+  white-space: nowrap;
 }
+.access-pill--included-overlay {
+  background: rgba(240, 253, 244, 0.95);
+  color: #166534;
+  border: 1px solid #bbf7d0;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.access-pill--plus-overlay {
+  background: rgba(239, 246, 255, 0.95);
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.access-pill--premium-overlay {
+  background: rgba(253, 244, 255, 0.95);
+  color: #86198f;
+  border: 1px solid #f0abfc;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.access-pill--locked-overlay {
+  background: rgba(255, 251, 235, 0.95);
+  color: #92400e;
+  border: 1px solid #fde68a;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
 .access-pill--included {
   background: #f0fdf4;
   color: #166534;

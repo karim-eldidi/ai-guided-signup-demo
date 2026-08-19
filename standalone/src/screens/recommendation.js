@@ -373,8 +373,13 @@ function recommendationScreen() {
         <h2 class="made-for-you__title">Activities in ${esc(where)}</h2>
         <p class="made-for-you__sub">${matchingActivitiesCount} sports &middot; ${matchingVenuesCount} places &middot; Based on your preferences</p>
       </div>
-      <div class="radius-toggle radius" role="group" aria-label="Distance radius">
-        ${RADII.map(r=>`<button class="radius-toggle__btn chip-sm ${(S.radiusKm||'auto')===r.id?'is-active is-current':''}" type="button" data-radius="${esc(r.id)}">${esc(r.label)}</button>`).join('')}
+      <div class="made-for-you__controls">
+        <div class="radius-toggle radius" role="group" aria-label="Distance radius">
+          ${RADII.map(r=>`<button class="radius-toggle__btn chip-sm ${(S.radiusKm||'auto')===r.id?'is-active is-current':''}" type="button" data-radius="${esc(r.id)}">${esc(r.label)}</button>`).join('')}
+        </div>
+        <button class="btn-explore-inline" type="button" data-go="search" aria-label="Explore all Berlin venues">
+          <span>Explore all &rarr;</span>
+        </button>
       </div>
     </div>
 
@@ -416,15 +421,20 @@ function recommendationScreen() {
             const matchPct = Math.max(89, Math.min(98, baseScore));
             const areaLabel = vResolved.nearestArea ? vResolved.nearestArea.name : (AREAS.find(a=>a.id===vResolved.area)||{}).name || '';
             const distLabel = areaLabel ? `${vResolved.distanceKm} km from ${esc(areaLabel)}` : `${vResolved.distanceKm} km away`;
-            const tierTag = getTierTag(vResolved);
-            const accessLabel = inPlan
-              ? (vResolved.tier === 'plus' ? `<span class="access-pill access-pill--included">${icon('checkThin', 11)} Included &middot; Plus access</span>` : vResolved.tier === 'premium' ? `<span class="access-pill access-pill--included">${icon('checkThin', 11)} Included &middot; Premium access</span>` : `<span class="access-pill access-pill--included">${icon('checkThin', 11)} Included &middot; Regular check-in</span>`)
-              : `<span class="access-pill access-pill--locked venue-card__lock">${icon('lock', 11)} Needs ${vResolved.tier === 'premium' ? 'Premium' : 'Classic'} upgrade</span>`;
             const isStarred = Boolean(S.starredVenues && S.starredVenues[vResolved.id]);
+
+            const accessBadge = inPlan
+              ? (vResolved.tier === 'plus'
+                  ? `<span class="access-pill access-pill--plus-overlay">${icon('checkThin', 11)} Plus access</span>`
+                  : vResolved.tier === 'premium'
+                  ? `<span class="access-pill access-pill--premium-overlay">${icon('checkThin', 11)} Premium</span>`
+                  : `<span class="access-pill access-pill--included-overlay">${icon('checkThin', 11)} Included</span>`)
+              : `<span class="access-pill access-pill--locked-overlay venue-card__lock">${icon('lock', 11)} Needs ${vResolved.tier === 'premium' ? 'Premium' : 'Classic'}</span>`;
+
             return `<div class="activity-card venue-card ${inPlan ? '' : 'is-locked'} ${isStarred ? 'is-starred' : ''}" draggable="true" data-drag-venue="${esc(vResolved.id)}" data-drag-name="${esc(vResolved.name)}">
               <div class="activity-card__badges">
                 <span class="activity-card__badge">${matchPct}% match</span>
-                ${tierTag}
+                ${accessBadge}
               </div>
               <button class="activity-card__star-btn ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(vResolved.id)}" aria-label="${isStarred ? `Remove ${esc(vResolved.name)} from routine` : `Add ${esc(vResolved.name)} to routine`}" title="${isStarred ? 'In your routine' : 'Add to routine'}">
                 ${icon(isStarred ? 'starFill' : 'star', 15)}
@@ -438,7 +448,6 @@ function recommendationScreen() {
                 <div class="venue-card__meta" style="display:none">for ${esc(grp.label.toLowerCase())}</div>
                 <button class="activity-card__vname venue-card__name linkish" data-venue="${esc(vResolved.id)}">${esc(vResolved.name)}</button>
                 <div class="activity-card__dist">${distLabel}</div>
-                <div class="activity-card__access">${accessLabel}</div>
                 <div class="activity-card__actions">
                   ${isStarred ? `
                     <button class="btn-pill btn-pill--sm btn-pill--starred btn-pill--block" type="button" data-toggle-star="${esc(vResolved.id)}" title="Click to remove from routine">
@@ -481,12 +490,6 @@ function recommendationScreen() {
         </div>
       </div>`;
     })()}
-
-    <div class="made-for-you__foot">
-      <button class="made-for-you__explore-link" type="button" data-go="search">
-        ${icon('sparkle', 14)} <span>Looking for a specific studio? Explore all ${allVenues.length} Berlin venues &rarr;</span>
-      </button>
-    </div>
   </div>`;
 
   const routineCount = routineVenues.length;

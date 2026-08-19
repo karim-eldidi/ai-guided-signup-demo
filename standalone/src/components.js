@@ -229,12 +229,8 @@ function cityChip() {
     <div class="geochip-row">
       <div class="geochip">${icon('pin',15)}<span class="geochip__text"><span class="geochip__full">Looks like you&rsquo;re in </span><b>Berlin</b></span>
         <button class="geochip__change" data-change-city aria-expanded="${CITYPICK}">${CITYPICK?'Close':'Change'}</button></div>
-      <div class="area-visual-pills">
-        <span class="area-visual-pill">${icon('home',13)} Home</span>
-        <span class="area-visual-pill">${icon('briefcase',13)} Work</span>
-        <span class="area-visual-pill">${icon('sparkle',13)} Routine</span>
-      </div>
     </div>
+    <p class="qhint" style="margin:8px 0 12px">Pick up to 3 neighbourhoods (e.g. near home, work, or daily commute). You can fine-tune your search radius in the next step.</p>
     ${picker}</div>`;
 }
 

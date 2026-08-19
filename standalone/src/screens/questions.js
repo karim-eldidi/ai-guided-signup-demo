@@ -50,10 +50,10 @@ function fitScreen() {
       ${NOCHOICE?`<p class="field-error" role="alert">${q.multi?'Pick at least one, or tell Urby in your own words.':'Pick one of the options, or tell Urby in your own words.'}</p>`:''}
       ${q.multi&&q.id!=='area'?`<p class="small muted" style="margin:14px 0 0"><button class="linkish" type="button" data-unsure="${esc(q.id)}">I&rsquo;m not sure yet &mdash; surprise me</button></p>`:''}
       <div class="btn-row desktop-cta">
-        ${idx>0?`<button class="btn btn--secondary" type="button" data-back="${esc(q.id)}">${icon('back',18)} Back</button>`:''}
+        ${idx>0?`<button class="btn btn--secondary" type="button" data-back="${esc(q.id)}">${icon('back',18)} Back</button>`:`<button class="btn btn--secondary" type="button" data-go="landing">${icon('back',18)} Back</button>`}
         <button class="btn btn--primary" type="submit" data-continue style="flex:1 1 auto">Continue</button></div>
       <div class="ownwords">
-        <div class="ownwords__label">${icon('speech',17)} <span>Answer in your own words</span></div>
+        <div class="ownwords__label">${icon('speech',15)} <span>Answer in your own words</span></div>
         <div class="ownwords__row">
           <label for="ownwords-input" class="sr-only">Answer in your own words</label>
           <input type="text" name="freeText" id="ownwords-input" placeholder="${esc(q.placeholder)}" aria-label="Answer in your own words" autocomplete="off">
@@ -61,7 +61,7 @@ function fitScreen() {
         </div>
       </div>
       <div class="sticky-cta">
-        ${idx>0?`<button class="btn btn--secondary" type="button" data-back="${esc(q.id)}">${icon('back',18)}</button>`:''}
+        ${idx>0?`<button class="btn btn--secondary" type="button" data-back="${esc(q.id)}" aria-label="Previous question">${icon('back',18)}</button>`:`<button class="btn btn--secondary" type="button" data-go="landing" aria-label="Back to home">${icon('back',18)}</button>`}
         <button class="btn btn--primary" type="submit" data-continue>Continue</button></div>
     </form>`}
   </main></div>${exitModal()}${venueSheet()}`;

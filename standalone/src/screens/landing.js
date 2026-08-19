@@ -44,17 +44,17 @@ function landing() {
   const guideFirst = `
     <div class="landing-hero-card">
       <div class="landing-hero-card__badge">${icon('sparkle',12)} <span>RECOMMENDED</span></div>
-      <h2 class="landing-hero-card__title">Build your routine &amp; find your plan</h2>
-      <p class="landing-hero-card__value">Match your sports, explore studios near you, and discover the exact membership that covers your routine.</p>
+      <h2 class="landing-hero-card__title">Find the right membership for you</h2>
+      <p class="landing-hero-card__value">Tell Urby how and where you want to move. Get nearby studio picks, a custom routine, and the plan that fits.</p>
       <div class="landing-hero-card__meta">
-        <span class="meta-item">${icon('question',15)} <span>4 questions</span></span>
+        <span class="meta-item">${icon('question',15)} <span>4 quick questions</span></span>
         <span class="meta-dot">&middot;</span>
-        <span class="meta-item">${icon('clock',15)} <span>2 minutes</span></span>
+        <span class="meta-item">${icon('clock',15)} <span>~2 minutes</span></span>
         <span class="meta-dot">&middot;</span>
         <span class="meta-item">${icon('lock',14)} <span>No email needed</span></span>
       </div>
       <button class="btn btn--primary btn--block landing-hero-card__btn" type="button" data-start-fit>
-        <span>Start routine guide</span> ${icon('arrowRight',18)}
+        <span>Build my routine</span> ${icon('arrowRight',18)}
       </button>
     </div>
 

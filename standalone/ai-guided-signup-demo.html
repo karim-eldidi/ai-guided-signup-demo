@@ -453,31 +453,26 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.03em; font-weight: 800; }
 }
 .options--rows .option-card__icon { width: 36px; height: 36px; }
 
-.ownwords-toggle { margin-top: 14px; }
-.ownwords__btn {
-  display: inline-flex; align-items: center; gap: 7px;
-  font-size: 13.5px; font-weight: 600; color: var(--navy-soft);
-  background: transparent; border: 0; padding: 4px 0;
-  cursor: pointer; transition: color .15s ease;
-}
-.ownwords__btn:hover { color: var(--ink); text-decoration: underline; }
-.ownwords { margin-top: 6px; }
+.ownwords { margin-top: 14px; }
 .ownwords__label {
-  display: flex; align-items: center; gap: 8px;
-  font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 7px;
+  display: flex; align-items: center; gap: 7px;
+  font-size: 13px; font-weight: 700; color: var(--navy-soft); margin-bottom: 6px;
 }
 .ownwords__row {
-  display: flex; align-items: center; gap: 10px;
-  background: #fff; border: 1px dashed #b9b6ad; border-radius: var(--radius);
-  padding: 0 8px 0 18px; height: 50px;
+  display: flex; align-items: center; gap: 8px;
+  background: #fff; border: 1px solid var(--border); border-radius: 10px;
+  padding: 0 6px 0 14px; height: 40px;
+  transition: all .15s ease;
 }
-.ownwords__row:focus-within { border-style: solid; border-color: var(--ink); }
-.ownwords__row input { flex: 1 1 auto; border: 0; outline: none; height: 100%; background: transparent; font-size: 16.5px; }
+.ownwords__row:focus-within { border-color: var(--ink); box-shadow: 0 0 0 2px rgba(0,0,0,0.06); }
+.ownwords__row input { flex: 1 1 auto; border: 0; outline: none; height: 100%; background: transparent; font-size: 14px; color: var(--ink); }
+.ownwords__row input::placeholder { color: #94a3b8; font-size: 13px; }
 .ownwords__send {
-  flex: 0 0 auto; height: 40px; padding: 0 18px; border-radius: 6px;
-  border: 1px solid var(--ink); background: #fff; font-weight: 700; font-size: 15.5px;
+  flex: 0 0 auto; height: 30px; padding: 0 14px; border-radius: 6px;
+  border: 1px solid var(--ink); background: #fff; font-weight: 700; font-size: 12.5px;
+  cursor: pointer; transition: all .15s ease;
 }
-.ownwords__send:hover { background: var(--cream); }
+.ownwords__send:hover { background: var(--ink); color: #fff; }
 
 /* Ask Urby, parked in the right column so it is reachable from any question */
 .aside-ask { margin-bottom: 18px; }
@@ -1878,6 +1873,7 @@ body.save-modal-open .stepper, body.save-modal-open .planbox__cta, body.save-mod
 
   .decision-pair { grid-template-columns: 1fr; }
   .one-col__main { padding: 4px 16px 80px; }
+  .one-col__main > .notice:not(.notice--grey) { display: none; }
   .chips-row {
     display: flex; align-items: center; gap: 6px; margin: 0 0 8px;
     overflow-x: auto; flex-wrap: nowrap; scrollbar-width: none;
@@ -4670,24 +4666,42 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   .weekcard { padding: 16px 14px 14px; }
   /* The rows keep their shape but give up their right-hand end: a claim and a chevron,
      with the proof inside. */
-  .rowcard__head { flex-wrap: wrap; padding: 14px 15px; }
+.rowcard__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  font-size: 13.5px;
+  color: var(--navy-soft);
+}
+.rowcard__link {
+  background: transparent;
+  border: 0;
+  color: var(--navy);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 2px 4px;
+}
+.rowcard__link:hover {
+  color: var(--ink);
+  text-decoration: underline;
+}
+
+@media (max-width: 980px) {
+  .weekcard { padding: 16px 14px 14px; }
+  .rowcard__head { padding: 14px 15px; }
   .rowcard__chips { display: none; }
-  .rowcard__cta, .rowcard__links { margin-left: auto; font-size: 14px; }
-  .rowcard__cta span, .rowcard__links { min-width: 0; }
+  .rowcard__actions { display: none; }
   .rowcard__body { padding: 0 15px 15px; }
   .reco-hero__lede { font-size: 16.5px; }
 }
 @media (max-width: 700px) {
-  /* The icon and the claim stay on one line; the action takes the next one whole. It must
-     be allowed to wrap, or a five-word link pushes the layout viewport wider than the
-     phone and takes the fixed price bar off the screen with it. */
-  .rowcard__head { position: relative; padding-right: 40px; flex-wrap: wrap; }
-  .rowcard__text { flex: 1 1 0; min-width: 0; }
-  .rowcard__cta, .rowcard__links {
-    flex: 1 1 100%; min-width: 0; margin: 8px 0 0; flex-wrap: wrap; justify-content: flex-start;
-  }
-  .rowcard__chev { position: absolute; right: 14px; top: 18px; }
-  /* The title and the way to change it stop sharing a line they cannot both fit on. */
+  .rowcard__head { position: relative; padding: 14px 16px; display: flex; align-items: center; }
+  .rowcard__text { flex: 1 1 auto; min-width: 0; }
+  .rowcard__actions { display: none; }
+  .rowcard__cta { margin-left: auto; font-size: 12.5px; flex: 0 0 auto; white-space: nowrap; }
+  .rowcard__chev { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); }
   .weekcard__head { flex-wrap: wrap; gap: 6px 16px; }
   .weekcard__title { flex: 1 1 100%; }
 }
@@ -5967,36 +5981,96 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   border: 1px solid #e2e8f0;
 }
 
+.made-for-you__controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-explore-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink);
+  background: #fff;
+  border: 1px solid var(--border);
+  padding: 5px 12px;
+  border-radius: 9999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all .15s ease;
+}
+.btn-explore-inline:hover {
+  background: var(--cream);
+  border-color: var(--ink);
+}
+
 .activity-card__badges {
   position: absolute;
   top: 8px;
   left: 8px;
-  z-index: 2;
+  z-index: 3;
   display: flex;
   align-items: center;
   gap: 5px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
-.activity-card__match-badge {
-  background: rgba(253, 243, 207, 0.95);
+
+.activity-card__badge {
+  position: static;
+  background: rgba(253, 243, 207, 0.96);
   color: #855800;
   font-size: 11px;
   font-weight: 800;
-  padding: 3px 8px;
+  padding: 2.5px 7.5px;
   border-radius: 6px;
   backdrop-filter: blur(4px);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  white-space: nowrap;
 }
 
 .access-pill {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  font-size: 11.5px;
+  gap: 3.5px;
+  font-size: 11px;
   font-weight: 700;
-  padding: 2px 7px;
+  padding: 2.5px 7.5px;
   border-radius: 6px;
-  margin-top: 2px;
+  white-space: nowrap;
 }
+.access-pill--included-overlay {
+  background: rgba(240, 253, 244, 0.95);
+  color: #166534;
+  border: 1px solid #bbf7d0;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.access-pill--plus-overlay {
+  background: rgba(239, 246, 255, 0.95);
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.access-pill--premium-overlay {
+  background: rgba(253, 244, 255, 0.95);
+  color: #86198f;
+  border: 1px solid #f0abfc;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.access-pill--locked-overlay {
+  background: rgba(255, 251, 235, 0.95);
+  color: #92400e;
+  border: 1px solid #fde68a;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
 .access-pill--included {
   background: #f0fdf4;
   color: #166534;
@@ -6168,7 +6242,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 19 Aug 10:41 UTC</span>
+  <span class="demo-banner__build">build 19 Aug 11:05 UTC</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -7428,12 +7502,8 @@ function cityChip() {
     <div class="geochip-row">
       <div class="geochip">${icon('pin',15)}<span class="geochip__text"><span class="geochip__full">Looks like you&rsquo;re in </span><b>Berlin</b></span>
         <button class="geochip__change" data-change-city aria-expanded="${CITYPICK}">${CITYPICK?'Close':'Change'}</button></div>
-      <div class="area-visual-pills">
-        <span class="area-visual-pill">${icon('home',13)} Home</span>
-        <span class="area-visual-pill">${icon('briefcase',13)} Work</span>
-        <span class="area-visual-pill">${icon('sparkle',13)} Routine</span>
-      </div>
     </div>
+    <p class="qhint" style="margin:8px 0 12px">Pick up to 3 neighbourhoods (e.g. near home, work, or daily commute). You can fine-tune your search radius in the next step.</p>
     ${picker}</div>`;
 }
 
@@ -7730,17 +7800,17 @@ function landing() {
   const guideFirst = `
     <div class="landing-hero-card">
       <div class="landing-hero-card__badge">${icon('sparkle',12)} <span>RECOMMENDED</span></div>
-      <h2 class="landing-hero-card__title">Build your routine &amp; find your plan</h2>
-      <p class="landing-hero-card__value">Match your sports, explore studios near you, and discover the exact membership that covers your routine.</p>
+      <h2 class="landing-hero-card__title">Find the right membership for you</h2>
+      <p class="landing-hero-card__value">Tell Urby how and where you want to move. Get nearby studio picks, a custom routine, and the plan that fits.</p>
       <div class="landing-hero-card__meta">
-        <span class="meta-item">${icon('question',15)} <span>4 questions</span></span>
+        <span class="meta-item">${icon('question',15)} <span>4 quick questions</span></span>
         <span class="meta-dot">&middot;</span>
-        <span class="meta-item">${icon('clock',15)} <span>2 minutes</span></span>
+        <span class="meta-item">${icon('clock',15)} <span>~2 minutes</span></span>
         <span class="meta-dot">&middot;</span>
         <span class="meta-item">${icon('lock',14)} <span>No email needed</span></span>
       </div>
       <button class="btn btn--primary btn--block landing-hero-card__btn" type="button" data-start-fit>
-        <span>Start routine guide</span> ${icon('arrowRight',18)}
+        <span>Build my routine</span> ${icon('arrowRight',18)}
       </button>
     </div>
 
@@ -8400,10 +8470,10 @@ function fitScreen() {
       ${NOCHOICE?`<p class="field-error" role="alert">${q.multi?'Pick at least one, or tell Urby in your own words.':'Pick one of the options, or tell Urby in your own words.'}</p>`:''}
       ${q.multi&&q.id!=='area'?`<p class="small muted" style="margin:14px 0 0"><button class="linkish" type="button" data-unsure="${esc(q.id)}">I&rsquo;m not sure yet &mdash; surprise me</button></p>`:''}
       <div class="btn-row desktop-cta">
-        ${idx>0?`<button class="btn btn--secondary" type="button" data-back="${esc(q.id)}">${icon('back',18)} Back</button>`:''}
+        ${idx>0?`<button class="btn btn--secondary" type="button" data-back="${esc(q.id)}">${icon('back',18)} Back</button>`:`<button class="btn btn--secondary" type="button" data-go="landing">${icon('back',18)} Back</button>`}
         <button class="btn btn--primary" type="submit" data-continue style="flex:1 1 auto">Continue</button></div>
       <div class="ownwords">
-        <div class="ownwords__label">${icon('speech',17)} <span>Answer in your own words</span></div>
+        <div class="ownwords__label">${icon('speech',15)} <span>Answer in your own words</span></div>
         <div class="ownwords__row">
           <label for="ownwords-input" class="sr-only">Answer in your own words</label>
           <input type="text" name="freeText" id="ownwords-input" placeholder="${esc(q.placeholder)}" aria-label="Answer in your own words" autocomplete="off">
@@ -8411,7 +8481,7 @@ function fitScreen() {
         </div>
       </div>
       <div class="sticky-cta">
-        ${idx>0?`<button class="btn btn--secondary" type="button" data-back="${esc(q.id)}">${icon('back',18)}</button>`:''}
+        ${idx>0?`<button class="btn btn--secondary" type="button" data-back="${esc(q.id)}" aria-label="Previous question">${icon('back',18)}</button>`:`<button class="btn btn--secondary" type="button" data-go="landing" aria-label="Back to home">${icon('back',18)}</button>`}
         <button class="btn btn--primary" type="submit" data-continue>Continue</button></div>
     </form>`}
   </main></div>${exitModal()}${venueSheet()}`;
@@ -8799,8 +8869,13 @@ function recommendationScreen() {
         <h2 class="made-for-you__title">Activities in ${esc(where)}</h2>
         <p class="made-for-you__sub">${matchingActivitiesCount} sports &middot; ${matchingVenuesCount} places &middot; Based on your preferences</p>
       </div>
-      <div class="radius-toggle radius" role="group" aria-label="Distance radius">
-        ${RADII.map(r=>`<button class="radius-toggle__btn chip-sm ${(S.radiusKm||'auto')===r.id?'is-active is-current':''}" type="button" data-radius="${esc(r.id)}">${esc(r.label)}</button>`).join('')}
+      <div class="made-for-you__controls">
+        <div class="radius-toggle radius" role="group" aria-label="Distance radius">
+          ${RADII.map(r=>`<button class="radius-toggle__btn chip-sm ${(S.radiusKm||'auto')===r.id?'is-active is-current':''}" type="button" data-radius="${esc(r.id)}">${esc(r.label)}</button>`).join('')}
+        </div>
+        <button class="btn-explore-inline" type="button" data-go="search" aria-label="Explore all Berlin venues">
+          <span>Explore all &rarr;</span>
+        </button>
       </div>
     </div>
 
@@ -8842,15 +8917,20 @@ function recommendationScreen() {
             const matchPct = Math.max(89, Math.min(98, baseScore));
             const areaLabel = vResolved.nearestArea ? vResolved.nearestArea.name : (AREAS.find(a=>a.id===vResolved.area)||{}).name || '';
             const distLabel = areaLabel ? `${vResolved.distanceKm} km from ${esc(areaLabel)}` : `${vResolved.distanceKm} km away`;
-            const tierTag = getTierTag(vResolved);
-            const accessLabel = inPlan
-              ? (vResolved.tier === 'plus' ? `<span class="access-pill access-pill--included">${icon('checkThin', 11)} Included &middot; Plus access</span>` : vResolved.tier === 'premium' ? `<span class="access-pill access-pill--included">${icon('checkThin', 11)} Included &middot; Premium access</span>` : `<span class="access-pill access-pill--included">${icon('checkThin', 11)} Included &middot; Regular check-in</span>`)
-              : `<span class="access-pill access-pill--locked venue-card__lock">${icon('lock', 11)} Needs ${vResolved.tier === 'premium' ? 'Premium' : 'Classic'} upgrade</span>`;
             const isStarred = Boolean(S.starredVenues && S.starredVenues[vResolved.id]);
+
+            const accessBadge = inPlan
+              ? (vResolved.tier === 'plus'
+                  ? `<span class="access-pill access-pill--plus-overlay">${icon('checkThin', 11)} Plus access</span>`
+                  : vResolved.tier === 'premium'
+                  ? `<span class="access-pill access-pill--premium-overlay">${icon('checkThin', 11)} Premium</span>`
+                  : `<span class="access-pill access-pill--included-overlay">${icon('checkThin', 11)} Included</span>`)
+              : `<span class="access-pill access-pill--locked-overlay venue-card__lock">${icon('lock', 11)} Needs ${vResolved.tier === 'premium' ? 'Premium' : 'Classic'}</span>`;
+
             return `<div class="activity-card venue-card ${inPlan ? '' : 'is-locked'} ${isStarred ? 'is-starred' : ''}" draggable="true" data-drag-venue="${esc(vResolved.id)}" data-drag-name="${esc(vResolved.name)}">
               <div class="activity-card__badges">
                 <span class="activity-card__badge">${matchPct}% match</span>
-                ${tierTag}
+                ${accessBadge}
               </div>
               <button class="activity-card__star-btn ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(vResolved.id)}" aria-label="${isStarred ? `Remove ${esc(vResolved.name)} from routine` : `Add ${esc(vResolved.name)} to routine`}" title="${isStarred ? 'In your routine' : 'Add to routine'}">
                 ${icon(isStarred ? 'starFill' : 'star', 15)}
@@ -8864,7 +8944,6 @@ function recommendationScreen() {
                 <div class="venue-card__meta" style="display:none">for ${esc(grp.label.toLowerCase())}</div>
                 <button class="activity-card__vname venue-card__name linkish" data-venue="${esc(vResolved.id)}">${esc(vResolved.name)}</button>
                 <div class="activity-card__dist">${distLabel}</div>
-                <div class="activity-card__access">${accessLabel}</div>
                 <div class="activity-card__actions">
                   ${isStarred ? `
                     <button class="btn-pill btn-pill--sm btn-pill--starred btn-pill--block" type="button" data-toggle-star="${esc(vResolved.id)}" title="Click to remove from routine">
@@ -8907,12 +8986,6 @@ function recommendationScreen() {
         </div>
       </div>`;
     })()}
-
-    <div class="made-for-you__foot">
-      <button class="made-for-you__explore-link" type="button" data-go="search">
-        ${icon('sparkle', 14)} <span>Looking for a specific studio? Explore all ${allVenues.length} Berlin venues &rarr;</span>
-      </button>
-    </div>
   </div>`;
 
   const routineCount = routineVenues.length;
