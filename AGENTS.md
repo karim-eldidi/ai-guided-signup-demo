@@ -35,7 +35,8 @@ the cost. Never expose or commit secrets. Preserve unrelated user changes.
 
 ## Source of truth
 
-- `standalone/template.html`: primary demo screens and client logic.
+- `standalone/src/*.js`: modular client logic and screen components.
+- `standalone/template.html`: HTML shell for the standalone demo.
 - `public/styles.css`: design tokens and styling.
 - `standalone/build.py`: creates the single-file demo and published `index.html`.
 - `data/*.json`: plans, prices, venues, apps, FAQs and their source notes.

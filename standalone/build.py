@@ -29,12 +29,30 @@ import os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
+SRC_DIR = os.path.join(HERE, "src")
 OPT = os.path.join(HERE, "opt")           # optional smaller images, if present
 # Venue photographs come from Urban Sports Club's own media bucket at runtime
 # (see data/venues.json); these are the design images plus three offline fallbacks.
 IMAGES = ["hero-climber.jpg", "email-header.jpg",
           # offline fallbacks for three venues, from the supplied designs
           "venue-boulderklub.jpg", "venue-stadtbad.jpg", "venue-yoga.jpg"]
+
+MODULES = [
+    "icons.js",
+    "questions.js",
+    "domain.js",
+    "urby.js",
+    "state.js",
+    "components.js",
+    "screens/landing.js",
+    "screens/catalog.js",
+    "screens/questions.js",
+    "screens/recommendation.js",
+    "screens/checkout.js",
+    "screens/save.js",
+    "screens/data.js",
+    "events.js",
+]
 
 
 def read(*parts):
@@ -56,6 +74,18 @@ def data_url(name):
         return "data:image/jpeg;base64," + base64.b64encode(fh.read()).decode()
 
 
+def load_app_js():
+    chunks = []
+    for mod in MODULES:
+        mod_path = os.path.join(SRC_DIR, mod)
+        if os.path.exists(mod_path):
+            with open(mod_path, "r", encoding="utf-8") as fh:
+                chunks.append(fh.read())
+        else:
+            raise FileNotFoundError(f"Missing module: {mod_path}")
+    return "\n\n".join(chunks)
+
+
 def main():
     payload = {
         "plans": json.loads(read("data", "plans.json")),
@@ -64,9 +94,14 @@ def main():
         "apps": json.loads(read("data", "apps.json")),
     }
     images = {f"/images/{name}": data_url(name) for name in IMAGES}
+    app_js = load_app_js()
+
+    template = read("standalone", "template.html")
+    if "/*__APP_JS__*/" in template:
+        template = template.replace("/*__APP_JS__*/", app_js)
 
     html = (
-        read("standalone", "template.html")
+        template
         .replace("/*__CSS__*/", read("public", "styles.css"))
         .replace("/*__DATA__*/", json.dumps(payload, ensure_ascii=False))
         .replace("/*__IMAGES__*/", json.dumps(images))
