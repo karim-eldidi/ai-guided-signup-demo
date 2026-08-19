@@ -69,6 +69,14 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
+summary {
+  list-style: none;
+}
+summary::-webkit-details-marker,
+summary::marker {
+  display: none !important;
+}
+
 html, body {
   margin: 0;
   padding: 0;
@@ -89,9 +97,9 @@ input, select, textarea { font-family: inherit; font-size: 17px; }
 /* --- type ----------------------------------------------------------------- */
 
 .wordmark {
-  font-size: 21px;
-  font-weight: 800;
-  letter-spacing: 0.005em;
+  font-size: 15.5px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
   text-transform: uppercase;
   text-decoration: none !important;
   white-space: nowrap;
@@ -2736,6 +2744,159 @@ button.appcard:hover .appcard__info-icon {
    number deserves and the currency stays optically attached. */
 .plancard__price b, .planbox__price b { letter-spacing: -.02em; }
 
+/* --- Ask Urby section & question chips ------------------------------------- */
+.ask {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  margin: 24px 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+.ask--compact {
+  padding: 18px 20px;
+  margin: 16px 0;
+}
+.ask__head {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.ask__title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.25;
+}
+.ask__sub {
+  font-size: 14px;
+  color: var(--navy-soft);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+.ask__row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.ask__row input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 48px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0 16px;
+  font-size: 15.5px;
+  background: #fff;
+  color: var(--ink);
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.ask__row input:focus {
+  outline: none;
+  border-color: var(--ink);
+  box-shadow: 0 0 0 3px rgba(8,9,10,0.08);
+}
+.ask__row button {
+  flex: 0 0 auto;
+  height: 48px;
+  padding: 0 22px;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: var(--radius);
+}
+.ask__examples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.ask__answer {
+  background: var(--cream);
+  border: 1px solid var(--cream-line);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  margin: 14px 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink);
+}
+.ask__source {
+  font-size: 13px;
+  color: var(--navy-soft);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+/* Base chip-sm style */
+.chip-sm {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--navy);
+  background: var(--cream);
+  border: 1px solid var(--cream-line);
+  padding: 6px 14px;
+  border-radius: 9999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all .15s ease;
+  line-height: 1.3;
+}
+.chip-sm:hover {
+  background: var(--yellow-pale);
+  color: var(--ink);
+  border-color: var(--ink);
+}
+.chip-sm.is-current, .chip-sm.is-active {
+  background: var(--yellow-bright);
+  color: var(--ink);
+  border-color: var(--ink);
+  font-weight: 700;
+}
+
+/* Planbox why disclosure */
+.planbox__why-disclosure {
+  margin-top: 10px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--cream);
+  overflow: hidden;
+  transition: all .2s ease;
+}
+.planbox__why-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--navy);
+  cursor: pointer;
+  user-select: none;
+}
+.planbox__why-head:hover {
+  background: rgba(0,0,0,0.02);
+}
+.planbox__why-chevron {
+  display: inline-flex;
+  align-items: center;
+  color: var(--navy-soft);
+  transition: transform .2s ease;
+}
+.planbox__why-disclosure[open] .planbox__why-chevron {
+  transform: rotate(180deg);
+}
+.planbox__why-disclosure .planbox__facts {
+  padding: 0 14px 12px;
+  margin: 0;
+  border-top: 1px solid var(--cream-line);
+}
+
 @media (max-width: 900px) {
   /* The end of this page is the part testers said they could not process, so on a
      phone the seams between its sections are tighter than on desktop. */
@@ -2809,7 +2970,13 @@ button.appcard:hover .appcard__info-icon {
      the browser as a back-swipe, which leaves the journey entirely. */
   overscroll-behavior-x: contain;
   padding-bottom: 6px; margin-bottom: -6px;
-  scrollbar-width: thin;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.venue-grid--big.is-rail::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 .venue-grid--big.is-rail > * { scroll-snap-align: start; }
 .venue-grid--big.is-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; }
@@ -4817,10 +4984,8 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 .allplans__row[data-plan] { cursor: pointer; }
 .allplans__row[data-plan]:hover { background: #fff; }
 
-@media (max-width: 980px) {
-  .weekcard { padding: 16px 14px 14px; }
-  /* The rows keep their shape but give up their right-hand end: a claim and a chevron,
-     with the proof inside. */
+/* The rows keep their shape but give up their right-hand end: a claim and a chevron,
+   with the proof inside. */
 .rowcard__actions {
   display: flex;
   align-items: center;
@@ -6415,7 +6580,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build b25c01c</span>
+  <span class="demo-banner__build">build cfa9fc3 + local edits</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -7981,13 +8146,7 @@ function partnerAsk(match, groups) {
    the crop by the stylesheet, so every image lands in the same place and nothing shifts.
    The only text over the photograph is the Log in chip, which carries its own yellow
    background for exactly this reason. */
-const HERO_SHOTS = [
-  { src:'/images/hero-climber.jpg',      alt:'A climber resting and smiling at a bouldering gym in Berlin' },
-  { src:'/images/venue-boulderklub.jpg', alt:'A climber reaching for a hold on a colourful bouldering wall' },
-  { src:'/images/venue-yoga.jpg',        alt:'A yoga class stretching on mats in a bright studio' },
-  { src:'/images/venue-stadtbad.jpg',    alt:'The pool of a historic Berlin swimming bath under tall windows' }
-];
-const HERO_SHOT = HERO_SHOTS[Math.floor(Math.random() * HERO_SHOTS.length)];
+const HERO_SHOT = { src:'/images/hero-climber.jpg', alt:'A climber resting and smiling at a bouldering gym in Berlin' };
 
 function landing() {
   /* Karim's layout, August 13. The order is the argument: what this is, what you
@@ -8039,7 +8198,7 @@ function landing() {
            because it is the guide's name everywhere else in the journey, but it now introduces
            itself in the same breath — one clause, on its first appearance, rather than an extra
            row on a card that already has five. -->
-      <p class="landing-hero-card__value">Tell Urby, our membership guide, how and where you want to move. Get nearby studio picks, a custom routine, and the plan that fits.</p>
+      <p class="landing-hero-card__value">Ask our membership guide how you want to move and get the custom routine and the plan that fits you.</p>
       <div class="landing-hero-card__meta">
         <span class="meta-item">${icon('question',15)} <span>4 quick questions</span></span>
         <span class="meta-dot">&middot;</span>
@@ -8970,14 +9129,13 @@ function planDrawer(plan, price, each, commitment, isRec, hereT, cheaperPlan, ch
            live here or the shortfall it answers would only ever be visible on a desktop. -->
       ${maxUpsell || ''}
 
-      ${altBox || allPlans ? `
+      ${allPlans ? `
         <details class="drawer-compare" style="margin-top:10px;margin-bottom:14px;border:1px solid var(--border);border-radius:var(--radius);background:#fff">
           <summary style="padding:10px 12px;font-size:13px;font-weight:700;color:var(--navy);cursor:pointer;display:flex;align-items:center;justify-content:space-between">
-            <span>Compare with other memberships</span>
-            <span style="font-size:11px;color:var(--navy-soft)">▼</span>
+            <span>Compare memberships</span>
+            <span class="planbox__why-chevron">${icon('chevron', 14)}</span>
           </summary>
           <div style="padding:10px 12px 14px;border-top:1px solid var(--border)">
-            ${altBox}
             ${allPlans}
           </div>
         </details>
@@ -9390,14 +9548,18 @@ function recommendationScreen() {
      the rest of it stands — the grid is on the plan card, one tap from the recommendation,
      every row it lists is visible, and the `plans` screen is still one link away for the
      tier this grid is leaving out. */
-  const allPlans = `<details class="allplans" open>
+  const allPlans = `<details class="allplans"${ALTOPEN?' open':''}>
     <summary class="allplans__head" data-toggle-alt>
-      <span class="allplans__headcopy"><span>Compare ${gridPlans.length===PLANS.length?'all ':''}${gridCount} memberships</span>
+      <span class="allplans__headcopy"><span>Compare memberships</span>
         <small>${esc(listWords(gridPlans.map(pl=>pl.name)))}</small></span>${icon('chevron',18)}</summary>
     <div class="allplans__grid">
       ${gridPlans.map(pl => {
         const p = priceFor(pl, S.commitmentId), t = totalsFor(pl), here = pl.id === plan.id;
-        const tag = here ? (isRec ? 'Recommended' : 'Your choice') : (pl.id===rec.planId ? 'Urby&rsquo;s pick' : '');
+        const tag = here
+          ? (isRec ? 'Recommended' : 'Your choice')
+          : (pl.id === rec.planId
+              ? 'Urby&rsquo;s choice'
+              : (pl.rank < plan.rank ? 'Cheaper option' : 'More access'));
         const short = a.frequency && !carriesFrequency(pl, a.frequency)
           ? `Not enough for your ${visitsWanted(a.frequency)}-visit routine` : '';
         const fewer = !here && t && hereT && t.nearby && t.included < hereT.included
@@ -9505,27 +9667,35 @@ const planAside = `<div class="planbox">
     <div class="termpick__perk-banner" style="font-size:12.5px;color:var(--navy);background:var(--cream);border:1px solid var(--cream-line);padding:6px 10px;border-radius:var(--radius);margin-top:8px;margin-bottom:14px;display:flex;align-items:center;gap:6px">
       ${icon('sparkle',13)} <span>${S.commitmentId==='biennial'?'Includes 2 free wellness apps (0 € extra)':S.commitmentId==='annual'?'Includes 1 free wellness app (0 € extra)':'12 & 24 mo include free partner apps'}</span>
     </div>
-    <div class="planbox__factshead">Why this fits you</div>
-    <ul class="planbox__facts">
-      ${hereT && typeof hereT.included === 'number'
-        ? `<li>${icon('checkThin',16)} <span>${hereT.included === 1
-            ? 'Your <b>one place</b> is included'
-            : `All <b>${hereT.included} places</b> are included`}</span></li>`
-        : ''}
-      <li>${icon('checkThin',16)} <span><b>${visitsFor(plan)} visits</b> each month</span></li>
-      ${wp.perMonth?`<li>${icon('checkThin',16)} <span>Matches your <b>${S.answers.frequency === 'once' ? '1' : S.answers.frequency === 'twice' ? '2' : S.answers.frequency === 'often' ? '3–4' : (S.answers.frequency === 'daily' ? '5+' : (SESSIONS[S.answers.frequency] || '2'))} sessions/wk goal</b> (~${wp.perMonth} visits/mo)</span></li>`:''}
-      ${each?`<li>${icon('checkThin',16)} <span>About <b>${each} €</b> a session</span></li>`:''}
-      <li>${icon('checkThin',16)} <span>Flexible &ndash; cancel anytime</span></li>
-    </ul>
-    <div class="planbox__cta"><button class="btn btn--primary btn--block" data-go="details">Continue with ${esc(plan.name)}</button></div>
+
+    <!-- "Why this fits you" collapsed by default -->
+    <details class="planbox__why-disclosure">
+      <summary class="planbox__why-head">
+        <span>Why this fits you</span>
+        <span class="planbox__why-chevron">${icon('chevron', 15)}</span>
+      </summary>
+      <ul class="planbox__facts" style="margin-top:10px">
+        ${hereT && typeof hereT.included === 'number'
+          ? `<li>${icon('checkThin',16)} <span>${hereT.included === 1
+              ? 'Your <b>one place</b> is included'
+              : `All <b>${hereT.included} places</b> are included`}</span></li>`
+          : ''}
+        <li>${icon('checkThin',16)} <span><b>${visitsFor(plan)} visits</b> each month</span></li>
+        ${wp.perMonth?`<li>${icon('checkThin',16)} <span>Matches your <b>${S.answers.frequency === 'once' ? '1' : S.answers.frequency === 'twice' ? '2' : S.answers.frequency === 'often' ? '3–4' : (S.answers.frequency === 'daily' ? '5+' : (SESSIONS[S.answers.frequency] || '2'))} sessions/wk goal</b> (~${wp.perMonth} visits/mo)</span></li>`:''}
+        ${each?`<li>${icon('checkThin',16)} <span>About <b>${each} €</b> a session</span></li>`:''}
+        <li>${icon('checkThin',16)} <span>Flexible &ndash; cancel anytime</span></li>
+      </ul>
+    </details>
+
+    <div class="planbox__cta" style="margin-top:16px">
+      <button class="btn btn--primary btn--block" data-go="details">Continue with ${esc(plan.name)}</button>
+    </div>
     <div class="planbox__foot">
       <p class="planbox__fine">${esc(commitment.label)} &middot; no payment yet</p>
       ${S.email?'':`<button class="linkish planbox__save" type="button" data-go="save" data-open-exit>Save this and come back later</button>`}
     </div>
+
     ${!isRec ? `<p class="planbox__back">${icon('sparkle',15)} <span>Urby would have picked <b>${esc(planById(rec.planId).name)}</b> for you &mdash; <button class="linkish" data-plan="${esc(rec.planId)}">switch back</button></span></p>` : ''}
-    ${altBox}
-    ${maxUpsell}
-    ${splurge}
     ${allPlans}
   </div>`;
 
@@ -9546,15 +9716,6 @@ const planAside = `<div class="planbox">
       <span class="rowcard__text">
         <b>Need more detail?</b>
         <small>The math, the whole network, Urby, terms</small>
-      </span>
-      <span class="rowcard__actions">
-        <button class="rowcard__link" type="button" data-go="plans">Compare plans</button>
-        <span aria-hidden="true">&middot;</span>
-        <button class="rowcard__link" type="button" data-more="why">Why ${esc(plan.name)}</button>
-        <span aria-hidden="true">&middot;</span>
-        <button class="rowcard__link" type="button" data-more="ask">Ask Urby</button>
-        <span aria-hidden="true">&middot;</span>
-        <button class="rowcard__link" type="button" data-more="terms">Membership terms</button>
       </span>
       <span class="rowcard__chev">${icon('chevron',20)}</span>
     </summary>
@@ -11071,9 +11232,9 @@ document.addEventListener('click', e => {
      the way straight in. Clicking the section that is already open closes it, so this is
      an accordion rather than three drawers that all end up open (rule 16). */
   if (t.dataset.more !== undefined) {
-    if (t.tagName.toLowerCase() === 'summary') return;
+    e.preventDefault();
     const k = t.dataset.more;
-    if (MOREOPEN && MOREPICK === k) MOREPICK = null;
+    if (MOREOPEN && MOREPICK === k) { MOREPICK = null; }
     else { MOREOPEN = true; MOREPICK = k; }
     render(false); return;
   }

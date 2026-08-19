@@ -142,6 +142,8 @@ with sync_playwright() as p:
     # the coverage figures the visitor is looking at, to check the save screen later
     # The reasoning lives in the "Questions and details" row at the foot of the page now,
     # and its handle names it, so this is the click a visitor makes to read it.
+    if pg.locator('[data-toggle-more]').count() and not pg.locator('.rowcard--more[open]').count():
+        pg.locator('[data-toggle-more]').first.click(); pg.wait_for_timeout(400)
     if pg.locator('[data-more="why"]').count():
         pg.locator('[data-more="why"]').first.click(); pg.wait_for_timeout(400)
     cov = pg.locator('.cov__summary').inner_text() if pg.locator('.cov__summary').count() else ''
@@ -157,12 +159,14 @@ with sync_playwright() as p:
     # The single alternative card merged into the comparison table, which is now open on
     # the card rather than behind a fold. Any row that is not the current plan is a
     # switch a visitor can make.
+    if pg.locator('.allplans:not([open]) summary').count():
+        pg.locator('.allplans:not([open]) summary').first.click(); pg.wait_for_timeout(350)
     altrow = pg.locator('.allplans__row:not(.is-current)[data-plan]').first
     alt = altrow
     if not alt.count():
         F("no alternative plan offered, so the override path cannot be tested")
     else:
-        chosen_name = altrow.locator('.allplans__name').inner_text().strip()
+        chosen_name = altrow.locator('.allplans__name').inner_text().split()[0].strip()
         alt.first.click(); pg.wait_for_timeout(800)
 
         # P1: the live status line must describe the plan selected NOW

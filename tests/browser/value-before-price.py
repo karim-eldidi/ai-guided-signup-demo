@@ -78,6 +78,8 @@ with sync_playwright() as p:
     else: F("the routine is missing explanatory copy")
 
     # --- the per-session number is arithmetic, not marketing ---------------
+    if pg.locator('.planbox__why-disclosure:not([open]) summary').count():
+        pg.locator('.planbox__why-disclosure:not([open]) summary').click(); pg.wait_for_timeout(250)
     each=pg.locator('.planbox__facts li:has-text("a session")').inner_text()
     m=re.search(r'([\d.]+)', each)
     price=float(re.search(r'([\d.]+)', pg.locator('.planbox__price b').inner_text()).group(1))

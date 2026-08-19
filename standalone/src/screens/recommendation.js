@@ -147,14 +147,13 @@ function planDrawer(plan, price, each, commitment, isRec, hereT, cheaperPlan, ch
            live here or the shortfall it answers would only ever be visible on a desktop. -->
       ${maxUpsell || ''}
 
-      ${altBox || allPlans ? `
+      ${allPlans ? `
         <details class="drawer-compare" style="margin-top:10px;margin-bottom:14px;border:1px solid var(--border);border-radius:var(--radius);background:#fff">
           <summary style="padding:10px 12px;font-size:13px;font-weight:700;color:var(--navy);cursor:pointer;display:flex;align-items:center;justify-content:space-between">
-            <span>Compare with other memberships</span>
-            <span style="font-size:11px;color:var(--navy-soft)">▼</span>
+            <span>Compare memberships</span>
+            <span class="planbox__why-chevron">${icon('chevron', 14)}</span>
           </summary>
           <div style="padding:10px 12px 14px;border-top:1px solid var(--border)">
-            ${altBox}
             ${allPlans}
           </div>
         </details>
@@ -567,14 +566,18 @@ function recommendationScreen() {
      the rest of it stands — the grid is on the plan card, one tap from the recommendation,
      every row it lists is visible, and the `plans` screen is still one link away for the
      tier this grid is leaving out. */
-  const allPlans = `<details class="allplans" open>
+  const allPlans = `<details class="allplans"${ALTOPEN?' open':''}>
     <summary class="allplans__head" data-toggle-alt>
-      <span class="allplans__headcopy"><span>Compare ${gridPlans.length===PLANS.length?'all ':''}${gridCount} memberships</span>
+      <span class="allplans__headcopy"><span>Compare memberships</span>
         <small>${esc(listWords(gridPlans.map(pl=>pl.name)))}</small></span>${icon('chevron',18)}</summary>
     <div class="allplans__grid">
       ${gridPlans.map(pl => {
         const p = priceFor(pl, S.commitmentId), t = totalsFor(pl), here = pl.id === plan.id;
-        const tag = here ? (isRec ? 'Recommended' : 'Your choice') : (pl.id===rec.planId ? 'Urby&rsquo;s pick' : '');
+        const tag = here
+          ? (isRec ? 'Recommended' : 'Your choice')
+          : (pl.id === rec.planId
+              ? 'Urby&rsquo;s choice'
+              : (pl.rank < plan.rank ? 'Cheaper option' : 'More access'));
         const short = a.frequency && !carriesFrequency(pl, a.frequency)
           ? `Not enough for your ${visitsWanted(a.frequency)}-visit routine` : '';
         const fewer = !here && t && hereT && t.nearby && t.included < hereT.included
@@ -682,27 +685,35 @@ const planAside = `<div class="planbox">
     <div class="termpick__perk-banner" style="font-size:12.5px;color:var(--navy);background:var(--cream);border:1px solid var(--cream-line);padding:6px 10px;border-radius:var(--radius);margin-top:8px;margin-bottom:14px;display:flex;align-items:center;gap:6px">
       ${icon('sparkle',13)} <span>${S.commitmentId==='biennial'?'Includes 2 free wellness apps (0 € extra)':S.commitmentId==='annual'?'Includes 1 free wellness app (0 € extra)':'12 & 24 mo include free partner apps'}</span>
     </div>
-    <div class="planbox__factshead">Why this fits you</div>
-    <ul class="planbox__facts">
-      ${hereT && typeof hereT.included === 'number'
-        ? `<li>${icon('checkThin',16)} <span>${hereT.included === 1
-            ? 'Your <b>one place</b> is included'
-            : `All <b>${hereT.included} places</b> are included`}</span></li>`
-        : ''}
-      <li>${icon('checkThin',16)} <span><b>${visitsFor(plan)} visits</b> each month</span></li>
-      ${wp.perMonth?`<li>${icon('checkThin',16)} <span>Matches your <b>${S.answers.frequency === 'once' ? '1' : S.answers.frequency === 'twice' ? '2' : S.answers.frequency === 'often' ? '3–4' : (S.answers.frequency === 'daily' ? '5+' : (SESSIONS[S.answers.frequency] || '2'))} sessions/wk goal</b> (~${wp.perMonth} visits/mo)</span></li>`:''}
-      ${each?`<li>${icon('checkThin',16)} <span>About <b>${each} €</b> a session</span></li>`:''}
-      <li>${icon('checkThin',16)} <span>Flexible &ndash; cancel anytime</span></li>
-    </ul>
-    <div class="planbox__cta"><button class="btn btn--primary btn--block" data-go="details">Continue with ${esc(plan.name)}</button></div>
+
+    <!-- "Why this fits you" collapsed by default -->
+    <details class="planbox__why-disclosure">
+      <summary class="planbox__why-head">
+        <span>Why this fits you</span>
+        <span class="planbox__why-chevron">${icon('chevron', 15)}</span>
+      </summary>
+      <ul class="planbox__facts" style="margin-top:10px">
+        ${hereT && typeof hereT.included === 'number'
+          ? `<li>${icon('checkThin',16)} <span>${hereT.included === 1
+              ? 'Your <b>one place</b> is included'
+              : `All <b>${hereT.included} places</b> are included`}</span></li>`
+          : ''}
+        <li>${icon('checkThin',16)} <span><b>${visitsFor(plan)} visits</b> each month</span></li>
+        ${wp.perMonth?`<li>${icon('checkThin',16)} <span>Matches your <b>${S.answers.frequency === 'once' ? '1' : S.answers.frequency === 'twice' ? '2' : S.answers.frequency === 'often' ? '3–4' : (S.answers.frequency === 'daily' ? '5+' : (SESSIONS[S.answers.frequency] || '2'))} sessions/wk goal</b> (~${wp.perMonth} visits/mo)</span></li>`:''}
+        ${each?`<li>${icon('checkThin',16)} <span>About <b>${each} €</b> a session</span></li>`:''}
+        <li>${icon('checkThin',16)} <span>Flexible &ndash; cancel anytime</span></li>
+      </ul>
+    </details>
+
+    <div class="planbox__cta" style="margin-top:16px">
+      <button class="btn btn--primary btn--block" data-go="details">Continue with ${esc(plan.name)}</button>
+    </div>
     <div class="planbox__foot">
       <p class="planbox__fine">${esc(commitment.label)} &middot; no payment yet</p>
       ${S.email?'':`<button class="linkish planbox__save" type="button" data-go="save" data-open-exit>Save this and come back later</button>`}
     </div>
+
     ${!isRec ? `<p class="planbox__back">${icon('sparkle',15)} <span>Urby would have picked <b>${esc(planById(rec.planId).name)}</b> for you &mdash; <button class="linkish" data-plan="${esc(rec.planId)}">switch back</button></span></p>` : ''}
-    ${altBox}
-    ${maxUpsell}
-    ${splurge}
     ${allPlans}
   </div>`;
 
@@ -723,15 +734,6 @@ const planAside = `<div class="planbox">
       <span class="rowcard__text">
         <b>Need more detail?</b>
         <small>The math, the whole network, Urby, terms</small>
-      </span>
-      <span class="rowcard__actions">
-        <button class="rowcard__link" type="button" data-go="plans">Compare plans</button>
-        <span aria-hidden="true">&middot;</span>
-        <button class="rowcard__link" type="button" data-more="why">Why ${esc(plan.name)}</button>
-        <span aria-hidden="true">&middot;</span>
-        <button class="rowcard__link" type="button" data-more="ask">Ask Urby</button>
-        <span aria-hidden="true">&middot;</span>
-        <button class="rowcard__link" type="button" data-more="terms">Membership terms</button>
       </span>
       <span class="rowcard__chev">${icon('chevron',20)}</span>
     </summary>

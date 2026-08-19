@@ -45,7 +45,10 @@ with sync_playwright() as p:
     # Ask Urby lives on the landing and the recommendation now, not on the steps.
     # Folded on the recommendation: it is the last thing below the decision, so it costs
     # a click rather than a screen. Open it the way a visitor would.
-    pg.locator('[data-more="ask"]').first.click(); pg.wait_for_timeout(400)
+    if pg.locator('[data-toggle-more]').count() and not pg.locator('.rowcard--more[open]').count():
+        pg.locator('[data-toggle-more]').first.click(); pg.wait_for_timeout(400)
+    if pg.locator('[data-more="ask"]').count():
+        pg.locator('[data-more="ask"]').first.click(); pg.wait_for_timeout(400)
     pg.fill('.rowcard--more .ask__row input','do you have a creche for my kids')
     pg.locator('.rowcard--more .ask__row button[type="submit"]').first.click(); pg.wait_for_timeout(600)
     ans=pg.locator('.ask__answer').inner_text()

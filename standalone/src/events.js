@@ -518,9 +518,9 @@ document.addEventListener('click', e => {
      the way straight in. Clicking the section that is already open closes it, so this is
      an accordion rather than three drawers that all end up open (rule 16). */
   if (t.dataset.more !== undefined) {
-    if (t.tagName.toLowerCase() === 'summary') return;
+    e.preventDefault();
     const k = t.dataset.more;
-    if (MOREOPEN && MOREPICK === k) MOREPICK = null;
+    if (MOREOPEN && MOREPICK === k) { MOREPICK = null; }
     else { MOREOPEN = true; MOREPICK = k; }
     render(false); return;
   }

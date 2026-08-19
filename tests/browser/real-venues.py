@@ -109,7 +109,9 @@ with sync_playwright() as p:
     pg.keyboard.press("Escape"); pg.wait_for_timeout(400)
     # Ask Urby is one of the three sections behind "Questions and details", and its name is
     # on that row's handle, so this is the one click a visitor makes.
-    if pg.locator('.ask--fold:not([open])').count():
+    if pg.locator('[data-toggle-more]').count() and not pg.locator('.rowcard--more[open]').count():
+        pg.locator('[data-toggle-more]').first.click(); pg.wait_for_timeout(400)
+    if pg.locator('[data-more="ask"]').count():
         pg.locator('[data-more="ask"]').first.click(); pg.wait_for_timeout(400)
     pg.fill('.ask__row input','is there a sauna near kreuzberg')
     pg.locator('.ask form button[type="submit"]').first.click(); pg.wait_for_timeout(700)

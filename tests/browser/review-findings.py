@@ -67,6 +67,8 @@ with sync_playwright() as p:
     # 6. the coverage denominator is qualified
     # The reasoning lives in the "Questions and details" row at the foot of the page now,
     # and its handle names it, so this is the click a visitor makes to read it.
+    if pg.locator('[data-toggle-more]').count() and not pg.locator('.rowcard--more[open]').count():
+        pg.locator('[data-toggle-more]').first.click(); pg.wait_for_timeout(400)
     if pg.locator('[data-more="why"]').count():
         pg.locator('[data-more="why"]').first.click(); pg.wait_for_timeout(400)
     cav=pg.locator('.cov__caveat').inner_text() if pg.locator('.cov__caveat').count() else ''

@@ -8,13 +8,7 @@
    the crop by the stylesheet, so every image lands in the same place and nothing shifts.
    The only text over the photograph is the Log in chip, which carries its own yellow
    background for exactly this reason. */
-const HERO_SHOTS = [
-  { src:'/images/hero-climber.jpg',      alt:'A climber resting and smiling at a bouldering gym in Berlin' },
-  { src:'/images/venue-boulderklub.jpg', alt:'A climber reaching for a hold on a colourful bouldering wall' },
-  { src:'/images/venue-yoga.jpg',        alt:'A yoga class stretching on mats in a bright studio' },
-  { src:'/images/venue-stadtbad.jpg',    alt:'The pool of a historic Berlin swimming bath under tall windows' }
-];
-const HERO_SHOT = HERO_SHOTS[Math.floor(Math.random() * HERO_SHOTS.length)];
+const HERO_SHOT = { src:'/images/hero-climber.jpg', alt:'A climber resting and smiling at a bouldering gym in Berlin' };
 
 function landing() {
   /* Karim's layout, August 13. The order is the argument: what this is, what you
@@ -66,7 +60,7 @@ function landing() {
            because it is the guide's name everywhere else in the journey, but it now introduces
            itself in the same breath — one clause, on its first appearance, rather than an extra
            row on a card that already has five. -->
-      <p class="landing-hero-card__value">Tell Urby, our membership guide, how and where you want to move. Get nearby studio picks, a custom routine, and the plan that fits.</p>
+      <p class="landing-hero-card__value">Ask our membership guide how you want to move and get the custom routine and the plan that fits you.</p>
       <div class="landing-hero-card__meta">
         <span class="meta-item">${icon('question',15)} <span>4 quick questions</span></span>
         <span class="meta-dot">&middot;</span>

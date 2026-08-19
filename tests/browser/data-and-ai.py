@@ -215,6 +215,8 @@ with sync_playwright() as p:
     else: F(f"the page still opens with a pitch: {head}")
     # Folded here, not gone: one of the three sections behind "Questions and details",
     # named on its own handle so nobody has to guess what is in the drawer.
+    if pg.locator('[data-toggle-more]').count() and not pg.locator('.rowcard--more[open]').count():
+        pg.locator('[data-toggle-more]').first.click(); pg.wait_for_timeout(400)
     if pg.locator('[data-more="ask"]').count():
         pg.locator('[data-more="ask"]').first.click(); pg.wait_for_timeout(400)
         if pg.locator('.rowcard--more .ask__row input').is_visible():
@@ -233,6 +235,8 @@ with sync_playwright() as p:
     # when the visitor's own week would run past the Plus check-ins their plan includes.
     # This journey (gym / Neukölln / twice a week) is recommended Classic, which publishes
     # no Plus allowance, so three rows is correct and four would be the bug.
+    if pg.locator('.allplans:not([open]) summary').count():
+        pg.locator('.allplans:not([open]) summary').first.click(); pg.wait_for_timeout(350)
     rows = pg.locator('.allplans__row')
     shown = pg.locator('.allplans__row:visible').count()
     names = [' '.join(rows.nth(i).locator('.allplans__name').inner_text().split()) for i in range(rows.count())]

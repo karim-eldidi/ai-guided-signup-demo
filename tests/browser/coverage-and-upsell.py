@@ -45,6 +45,8 @@ with sync_playwright() as p:
     # --- the coverage block ------------------------------------------------
     # The reasoning lives in the "Questions and details" row at the foot of the page now,
     # and its handle names it, so this is the click a visitor makes to read it.
+    if pg.locator('[data-toggle-more]').count() and not pg.locator('.rowcard--more[open]').count():
+        pg.locator('[data-toggle-more]').first.click(); pg.wait_for_timeout(400)
     if pg.locator('[data-more="why"]').count():
         pg.locator('[data-more="why"]').first.click(); pg.wait_for_timeout(400)
     if pg.locator('.cov').count(): P("the recommendation says what you can do on it")

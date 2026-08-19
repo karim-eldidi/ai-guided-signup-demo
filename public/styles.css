@@ -56,6 +56,14 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
+summary {
+  list-style: none;
+}
+summary::-webkit-details-marker,
+summary::marker {
+  display: none !important;
+}
+
 html, body {
   margin: 0;
   padding: 0;
@@ -76,9 +84,9 @@ input, select, textarea { font-family: inherit; font-size: 17px; }
 /* --- type ----------------------------------------------------------------- */
 
 .wordmark {
-  font-size: 21px;
-  font-weight: 800;
-  letter-spacing: 0.005em;
+  font-size: 15.5px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
   text-transform: uppercase;
   text-decoration: none !important;
   white-space: nowrap;
@@ -2723,6 +2731,159 @@ button.appcard:hover .appcard__info-icon {
    number deserves and the currency stays optically attached. */
 .plancard__price b, .planbox__price b { letter-spacing: -.02em; }
 
+/* --- Ask Urby section & question chips ------------------------------------- */
+.ask {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  margin: 24px 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+.ask--compact {
+  padding: 18px 20px;
+  margin: 16px 0;
+}
+.ask__head {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.ask__title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.25;
+}
+.ask__sub {
+  font-size: 14px;
+  color: var(--navy-soft);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+.ask__row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.ask__row input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 48px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0 16px;
+  font-size: 15.5px;
+  background: #fff;
+  color: var(--ink);
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.ask__row input:focus {
+  outline: none;
+  border-color: var(--ink);
+  box-shadow: 0 0 0 3px rgba(8,9,10,0.08);
+}
+.ask__row button {
+  flex: 0 0 auto;
+  height: 48px;
+  padding: 0 22px;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: var(--radius);
+}
+.ask__examples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.ask__answer {
+  background: var(--cream);
+  border: 1px solid var(--cream-line);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  margin: 14px 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink);
+}
+.ask__source {
+  font-size: 13px;
+  color: var(--navy-soft);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+/* Base chip-sm style */
+.chip-sm {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--navy);
+  background: var(--cream);
+  border: 1px solid var(--cream-line);
+  padding: 6px 14px;
+  border-radius: 9999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all .15s ease;
+  line-height: 1.3;
+}
+.chip-sm:hover {
+  background: var(--yellow-pale);
+  color: var(--ink);
+  border-color: var(--ink);
+}
+.chip-sm.is-current, .chip-sm.is-active {
+  background: var(--yellow-bright);
+  color: var(--ink);
+  border-color: var(--ink);
+  font-weight: 700;
+}
+
+/* Planbox why disclosure */
+.planbox__why-disclosure {
+  margin-top: 10px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--cream);
+  overflow: hidden;
+  transition: all .2s ease;
+}
+.planbox__why-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--navy);
+  cursor: pointer;
+  user-select: none;
+}
+.planbox__why-head:hover {
+  background: rgba(0,0,0,0.02);
+}
+.planbox__why-chevron {
+  display: inline-flex;
+  align-items: center;
+  color: var(--navy-soft);
+  transition: transform .2s ease;
+}
+.planbox__why-disclosure[open] .planbox__why-chevron {
+  transform: rotate(180deg);
+}
+.planbox__why-disclosure .planbox__facts {
+  padding: 0 14px 12px;
+  margin: 0;
+  border-top: 1px solid var(--cream-line);
+}
+
 @media (max-width: 900px) {
   /* The end of this page is the part testers said they could not process, so on a
      phone the seams between its sections are tighter than on desktop. */
@@ -2796,7 +2957,13 @@ button.appcard:hover .appcard__info-icon {
      the browser as a back-swipe, which leaves the journey entirely. */
   overscroll-behavior-x: contain;
   padding-bottom: 6px; margin-bottom: -6px;
-  scrollbar-width: thin;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.venue-grid--big.is-rail::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 .venue-grid--big.is-rail > * { scroll-snap-align: start; }
 .venue-grid--big.is-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; }
@@ -4804,10 +4971,8 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 .allplans__row[data-plan] { cursor: pointer; }
 .allplans__row[data-plan]:hover { background: #fff; }
 
-@media (max-width: 980px) {
-  .weekcard { padding: 16px 14px 14px; }
-  /* The rows keep their shape but give up their right-hand end: a claim and a chevron,
-     with the proof inside. */
+/* The rows keep their shape but give up their right-hand end: a claim and a chevron,
+   with the proof inside. */
 .rowcard__actions {
   display: flex;
   align-items: center;
