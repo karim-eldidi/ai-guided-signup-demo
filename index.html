@@ -837,7 +837,7 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
   transition: border-color .12s ease, transform .12s ease, background-color .12s ease;
 }
 .answer-chip:hover { border-color: var(--ink); background: var(--cream); transform: translateY(-0.5px); }
-.answer-chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.answer-chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 250px; }
 .answer-chip svg:first-child { color: var(--navy-soft); flex: 0 0 auto; width: 13px; height: 13px; }
 .answer-chip__edit-icon { display: flex; align-items: center; color: var(--navy-soft); margin-left: 2px; }
 .answer-chip:hover .answer-chip__edit-icon { color: var(--ink); }
@@ -2025,10 +2025,13 @@ body.save-modal-open .stepper, body.save-modal-open .planbox__cta, body.save-mod
 
 
   /* app shell */
-  .topbar { grid-template-columns: 1fr auto; padding: 12px 16px 6px; align-items: center; }
+  .topbar { display: flex; justify-content: space-between; padding: 12px 16px 4px; align-items: center; gap: 8px; }
+  .topbar__left { display: flex; align-items: center; gap: 7px; }
   .topbar__center { display: none; }
-  .topbar .wordmark { font-size: 15px; }
-  .topbar .link-plain { font-size: 13.5px; white-space: nowrap; }
+  .topbar__right { display: flex; align-items: center; justify-content: flex-end; }
+  .topbar .wordmark { font-size: 15px; line-height: 1.2; display: inline-flex; align-items: center; }
+  .topbar .link-plain { font-size: 13.5px; line-height: 1.2; white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; }
+  .topbar .link-plain svg { display: block; flex-shrink: 0; }
   .mobile-progress { display: block; padding: 0 16px 6px; }
   .topbar .saved-note { display: none; }
   .saved-note--mobile { display: flex; margin-top: 6px; }
@@ -3066,7 +3069,7 @@ button.appcard:hover .appcard__info-icon {
   transform: rotate(180deg);
 }
 .planbox__why-disclosure .planbox__facts {
-  padding: 0 14px 12px;
+  padding: 12px 14px 12px;
   margin: 0;
   border-top: 1px solid #fef08a;
   background: #fefce8;
@@ -3384,7 +3387,7 @@ button.appcard:hover .appcard__info-icon {
      membership are both above the fold of the first result. */
   .hits { grid-template-columns: 1fr; gap: 14px; }
   .hits .hit__media { aspect-ratio: 16 / 9; }
-  .search__guide { margin: 2px 0 10px; }
+  .search__guide { margin: 0 0 4px; }
   .weekpick { align-items: flex-start; flex-direction: column; }
   .weekpick__days { justify-content: flex-start; }
 }
@@ -4549,8 +4552,9 @@ button.appcard:hover .appcard__info-icon {
   }
 }
 @media (max-width: 700px) {
+  .content.venuepage,
   .venuepage {
-    padding: 12px 14px 100px;
+    padding: 6px 14px 100px;
   }
   .venuepage__aside {
     display: none;
@@ -4566,7 +4570,7 @@ button.appcard:hover .appcard__info-icon {
   }
   .venuepage__intro { margin-bottom: 8px; }
   .venuepage__h1 { font-size: 21px; line-height: 1.25; margin: 4px 0 8px; }
-  .search__guide { margin-bottom: 2px; font-size: 13px; }
+  .search__guide { margin: 0 0 4px; font-size: 13px; }
   
   .findbar { padding: 12px 12px 14px; border-radius: 12px; }
   .findbar__where { margin-bottom: 8px; gap: 4px 10px; }
@@ -4751,9 +4755,11 @@ button.appcard:hover .appcard__info-icon {
   background: var(--yellow-pale); color: #855800; font-size: 11.5px; font-weight: 700;
   padding: 2px 7px; border-radius: 9999px;
 }
-.reco-tab--mobile,
-.reco-tab-panel--mobile-only {
-  display: none !important;
+@media (min-width: 981px) {
+  .reco-tab--mobile,
+  .reco-tab-panel--mobile-only {
+    display: none !important;
+  }
 }
 
 /* Made For You Section */
@@ -6466,9 +6472,6 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   }
   .reco-tab--mobile {
     display: inline-flex !important;
-  }
-  .reco-tab-panel--mobile-only {
-    display: block !important;
   }
 
   /* Made For You Section Header */
@@ -8804,6 +8807,22 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 }
 
 @media (max-width: 780px) {
+  .content.venuepage,
+  .venuepage {
+    padding: 6px 16px 100px;
+  }
+  .venuepage__intro {
+    margin-bottom: 8px;
+  }
+  .venuepage__h1 {
+    font-size: 21px;
+    line-height: 1.25;
+    margin: 4px 0 8px;
+  }
+  .search__guide {
+    margin: 0 0 4px;
+    font-size: 13px;
+  }
   .venue-filter-container {
     padding: 14px 14px 12px;
     border-radius: var(--radius);
@@ -9489,7 +9508,7 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 #app { min-height: 100vh; }
 .linkish { background:none; border:0; padding:0; color:inherit; text-decoration:underline; cursor:pointer; font:inherit; }
 /* the wordmark and nav links are <button> here rather than <a> */
-.topbar__left { align-items: flex-start; }
+@media (min-width: 981px) { .topbar__left { align-items: flex-start; } }
 button.wordmark, button.link-plain { text-align: left; }
 h1:focus, h2:focus { outline: none; }
 .copybox { word-break:break-all; background:var(--page-grey); padding:12px 14px; border-radius:6px; font-size:12.5px; line-height:1.5; }
@@ -9631,7 +9650,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 0bafeb1 + local edits</span>
+  <span class="demo-banner__build">build a641470 + local edits</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -12550,7 +12569,17 @@ function searchScreen() {
 
   const backTarget = (WEEK_ADD_MODE || S.lastStep === 'recommendation' || hasSaveableProgress()) ? 'recommendation' : 'landing';
   const backLabel = WEEK_ADD_MODE ? 'Back to my week' : (backTarget === 'recommendation' ? (MOBILE() ? 'Back' : 'Back to recommendation') : 'Back');
-  const routineCount = Object.keys(S.starredVenues || {}).length;
+  let routineCount = Object.keys(S.starredVenues || {}).length;
+  if (routineCount === 0 && !S.routineCustomized) {
+    const chosenActs = activityIdsFor(S.answers.activities || []);
+    const fromAreas = (S.answers.area && S.answers.area.length ? S.answers.area : ['mitte']).map(id => AREAS.find(x => x.id === id)).filter(Boolean);
+    const poolVal = VENUES.map(v => {
+      const km = fromAreas.length ? Math.min(...fromAreas.map(ar => distanceKm(ar, v))) : 0;
+      return { ...v, distanceKm: km };
+    }).sort((x, y) => x.distanceKm - y.distanceKm);
+    const wantedVal = chosenActs.length ? poolVal.filter(v => (v.activities || []).some(act => chosenActs.includes(act))) : poolVal;
+    routineCount = (wantedVal.length ? wantedVal : poolVal).slice(0, 3).length;
+  }
   const routineLead = routineCount
     ? `${routineCount} ${routineCount === 1 ? 'place' : 'places'} in your routine`
     : 'No places in your routine yet';
@@ -12583,7 +12612,7 @@ function searchScreen() {
 
   return `<header class="topbar">
     <div class="topbar__left"><button class="wordmark linkish" style="text-decoration:none" data-go="landing">Urban Sports Club</button></div>
-    <div></div>
+    <div class="topbar__center"></div>
     <div class="topbar__right"><button class="link-plain linkish strong" data-go="${backTarget}">${icon('back', 17)} ${backLabel}</button></div>
   </header>
   <main class="content venuepage" id="main">
@@ -12612,8 +12641,8 @@ function searchScreen() {
             <form data-form="search" class="venue-search-bar" role="search">
               <div class="findsearch">
                 <span class="findsearch__icon" aria-hidden="true">${icon('search', 16)}</span>
-                <input type="search" name="q" id="venue-search-q" value="${esc(VENUEQ || (typeof SEARCH !== 'undefined' && SEARCH && SEARCH.q) || '')}"
-                  placeholder="Search venues, activities or addresses..." aria-label="Search venues, activities or addresses with Urby" autocomplete="off" data-venue-input>
+                 <input type="search" name="q" id="venue-search-q" value="${esc(VENUEQ || (typeof SEARCH !== 'undefined' && SEARCH && SEARCH.q) || '')}"
+                  placeholder="Search venues, activities, or write down any address..." aria-label="Search venues, activities or addresses with Urby" autocomplete="off" data-venue-input>
                 ${(VENUEQ || (typeof SEARCH !== 'undefined' && SEARCH && SEARCH.q)) ? `<button type="button" class="findsearch__clear" data-venue-clear aria-label="Clear search">${icon('close', 12)}</button>` : ''}
                 <button class="findsearch__btn" type="submit">Search</button>
               </div>
@@ -12881,7 +12910,7 @@ function reasonsFor(rec, plan, match, groups) {
   const freq = S.answers.frequency;
 
   if (groups.length) {
-    const actLabels = groups.map(g => g.label).join(' & ');
+    const actLabels = groups.map(id => (groupById(id) || {}).label).filter(Boolean).join(' & ');
     out.push({ icon:'sparkle', text:`Covers your ${actLabels} activities in one flexible membership.` });
   }
 
@@ -12950,8 +12979,12 @@ function coverageBlock(rec, match, plan) {
   /* No card of its own any more: this is part of the argument for the plan, so it sits
      in the plan column with it. It used to be a separate box directly under the "from
      your four answers" line, and the two ran into each other as one broken sentence. */
+  const countLabel = cov.totals.included === cov.totals.nearby
+    ? `All ${plural(cov.totals.nearby,'place','places')} near you`
+    : `${cov.totals.included} of the ${plural(cov.totals.nearby,'place','places')} near you`;
+
   return `<div class="cov">
-    <p class="cov__summary"><b>${cov.totals.included} of the ${plural(cov.totals.nearby,'place','places')} near you</b>
+    <p class="cov__summary"><b>${countLabel}</b>
       ${cov.totals.included===1?'is':'are'} on ${esc(plan.name)}.
       <span class="cov__caveat">That count is this pilot&rsquo;s venue data, not the whole network of ${esc(plan.venueCount)}.</span></p>
     ${up?(()=>{ const upPlan=planById(up.planId);
@@ -13584,7 +13617,6 @@ function recommendationScreen() {
       ${S.email?'':`<button class="linkish planbox__save" type="button" data-go="save" data-open-exit>Save this and come back later</button>`}
     </div>
 
-    ${!isRec ? `<p class="planbox__back">${icon('sparkle',15)} <span>Urby would have picked <b>${esc(planById(rec.planId).name)}</b> for you &mdash; <button class="linkish" data-plan="${esc(rec.planId)}">switch back</button></span></p>` : ''}
     ${allPlans}
   </div>`;
 
@@ -13976,10 +14008,11 @@ function saveScreen() {
   const answered = QUESTIONS.filter(q => isAnswered(S.answers[q.id])).length;
   
   const starredKeys = Object.keys(S.starredVenues || {});
-  const savedRoutine = F ? (starredKeys.length
+  const allStarredRoutine = F ? (starredKeys.length
     ? starredKeys.map(id => F.included.find(v => v.id === id) || VENUES.find(v => v.id === id)).filter(Boolean)
     : F.included.slice(0, 3)) : [];
-  const morePlaces = F ? Math.max(0, F.included.length - savedRoutine.length) : 0;
+  const savedRoutine = allStarredRoutine.slice(0, 6);
+  const morePlaces = F ? Math.max(0, allStarredRoutine.length - savedRoutine.length) : 0;
 
   const recapSection = hasPlan ? `
     <div class="saverecap savepanel__recap">
@@ -13998,7 +14031,7 @@ function saveScreen() {
 
       ${savedRoutine.length ? `
       <div class="saverecap__venues">
-        <div class="saverecap__label">Your saved routine (${savedRoutine.length} ${plural(savedRoutine.length, 'place', 'places')})</div>
+        <div class="saverecap__label">Your saved routine (${plural(savedRoutine.length, 'place', 'places')})</div>
         <div class="saverecap__venue-grid">
           ${savedRoutine.map(v => {
             const tierTag = v.tier === 'premium'
@@ -14160,7 +14193,6 @@ function detailsScreen() {
               ${f('street','Street and number',{auto:'street-address'})}
               ${f('postcode','Postcode',{auto:'postal-code',mode:'numeric',ph:'12045'})}${f('city','City',{auto:'address-level2',ph:'Berlin'})}
             </div></section>
-          ${ulaNote('Your details are only used to simulate the checkout. No real contract is formed.')}
           <div class="details-form__actions"><button class="btn btn--primary btn--wide desktop-cta" type="submit">Continue to payment</button>
             <p class="reassure">${icon('lock',15)} Nothing is charged yet.</p></div>
           <div class="paybar">

@@ -18,7 +18,7 @@
 #app { min-height: 100vh; }
 .linkish { background:none; border:0; padding:0; color:inherit; text-decoration:underline; cursor:pointer; font:inherit; }
 /* the wordmark and nav links are <button> here rather than <a> */
-.topbar__left { align-items: flex-start; }
+@media (min-width: 981px) { .topbar__left { align-items: flex-start; } }
 button.wordmark, button.link-plain { text-align: left; }
 h1:focus, h2:focus { outline: none; }
 .copybox { word-break:break-all; background:var(--page-grey); padding:12px 14px; border-radius:6px; font-size:12.5px; line-height:1.5; }

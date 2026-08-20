@@ -150,10 +150,9 @@ with sync_playwright() as p:
     now=pg.locator('.planbox__name').inner_text()
     if name==now: P(f"switching to another membership works: now on '{now}'")
     else: F(f"switch did nothing: wanted '{name}', still on '{now}'")
-    # rule 67: the way back to Urby's own pick never folds
-    back=pg.locator('.planbox__back').inner_text() if pg.locator('.planbox__back').count() else ''
-    if 'would have picked' in back: P(f"after switching, the way back to Urby's pick is in the open: '{' '.join(back.split())}'")
-    else: F(f"no way back to Urby's recommendation: '{back[:80]}'")
+    # side-plan switch back message is removed
+    if pg.locator('.planbox__back').count() == 0: P("no side-plan switch-back message shown after switching")
+    else: F("side-plan switch-back message is still present")
     if 'Your choice' in pg.locator('.planbox__badge').inner_text(): P("the plan column marks it as your choice, not a recommendation")
     else: F("still labelled as recommended after an override")
     pg.screenshot(path=f"{OUT}/after-switch.png")

@@ -2025,10 +2025,13 @@ body.save-modal-open .stepper, body.save-modal-open .planbox__cta, body.save-mod
 
 
   /* app shell */
-  .topbar { display: flex; justify-content: space-between; padding: 12px 16px 6px; align-items: center; gap: 8px; }
+  .topbar { display: flex; justify-content: space-between; padding: 12px 16px 4px; align-items: center; gap: 8px; }
+  .topbar__left { display: flex; align-items: center; gap: 7px; }
   .topbar__center { display: none; }
-  .topbar .wordmark { font-size: 15px; }
-  .topbar .link-plain { font-size: 13.5px; white-space: nowrap; }
+  .topbar__right { display: flex; align-items: center; justify-content: flex-end; }
+  .topbar .wordmark { font-size: 15px; line-height: 1.2; display: inline-flex; align-items: center; }
+  .topbar .link-plain { font-size: 13.5px; line-height: 1.2; white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; }
+  .topbar .link-plain svg { display: block; flex-shrink: 0; }
   .mobile-progress { display: block; padding: 0 16px 6px; }
   .topbar .saved-note { display: none; }
   .saved-note--mobile { display: flex; margin-top: 6px; }
@@ -3384,7 +3387,7 @@ button.appcard:hover .appcard__info-icon {
      membership are both above the fold of the first result. */
   .hits { grid-template-columns: 1fr; gap: 14px; }
   .hits .hit__media { aspect-ratio: 16 / 9; }
-  .search__guide { margin: 2px 0 10px; }
+  .search__guide { margin: 0 0 4px; }
   .weekpick { align-items: flex-start; flex-direction: column; }
   .weekpick__days { justify-content: flex-start; }
 }
@@ -4549,8 +4552,9 @@ button.appcard:hover .appcard__info-icon {
   }
 }
 @media (max-width: 700px) {
+  .content.venuepage,
   .venuepage {
-    padding: 12px 14px 100px;
+    padding: 6px 14px 100px;
   }
   .venuepage__aside {
     display: none;
@@ -4566,7 +4570,7 @@ button.appcard:hover .appcard__info-icon {
   }
   .venuepage__intro { margin-bottom: 8px; }
   .venuepage__h1 { font-size: 21px; line-height: 1.25; margin: 4px 0 8px; }
-  .search__guide { margin-bottom: 2px; font-size: 13px; }
+  .search__guide { margin: 0 0 4px; font-size: 13px; }
   
   .findbar { padding: 12px 12px 14px; border-radius: 12px; }
   .findbar__where { margin-bottom: 8px; gap: 4px 10px; }
@@ -4751,9 +4755,11 @@ button.appcard:hover .appcard__info-icon {
   background: var(--yellow-pale); color: #855800; font-size: 11.5px; font-weight: 700;
   padding: 2px 7px; border-radius: 9999px;
 }
-.reco-tab--mobile,
-.reco-tab-panel--mobile-only {
-  display: none !important;
+@media (min-width: 981px) {
+  .reco-tab--mobile,
+  .reco-tab-panel--mobile-only {
+    display: none !important;
+  }
 }
 
 /* Made For You Section */
@@ -6466,9 +6472,6 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   }
   .reco-tab--mobile {
     display: inline-flex !important;
-  }
-  .reco-tab-panel--mobile-only {
-    display: block !important;
   }
 
   /* Made For You Section Header */
@@ -8804,6 +8807,22 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 }
 
 @media (max-width: 780px) {
+  .content.venuepage,
+  .venuepage {
+    padding: 6px 16px 100px;
+  }
+  .venuepage__intro {
+    margin-bottom: 8px;
+  }
+  .venuepage__h1 {
+    font-size: 21px;
+    line-height: 1.25;
+    margin: 4px 0 8px;
+  }
+  .search__guide {
+    margin: 0 0 4px;
+    font-size: 13px;
+  }
   .venue-filter-container {
     padding: 14px 14px 12px;
     border-radius: var(--radius);
@@ -9489,7 +9508,7 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 #app { min-height: 100vh; }
 .linkish { background:none; border:0; padding:0; color:inherit; text-decoration:underline; cursor:pointer; font:inherit; }
 /* the wordmark and nav links are <button> here rather than <a> */
-.topbar__left { align-items: flex-start; }
+@media (min-width: 981px) { .topbar__left { align-items: flex-start; } }
 button.wordmark, button.link-plain { text-align: left; }
 h1:focus, h2:focus { outline: none; }
 .copybox { word-break:break-all; background:var(--page-grey); padding:12px 14px; border-radius:6px; font-size:12.5px; line-height:1.5; }
@@ -9631,7 +9650,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 0bafeb1 + local edits</span>
+  <span class="demo-banner__build">build a641470 + local edits</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -13598,7 +13617,6 @@ function recommendationScreen() {
       ${S.email?'':`<button class="linkish planbox__save" type="button" data-go="save" data-open-exit>Save this and come back later</button>`}
     </div>
 
-    ${!isRec ? `<p class="planbox__back">${icon('sparkle',15)} <span>Urby would have picked <b>${esc(planById(rec.planId).name)}</b> for you &mdash; <button class="linkish" data-plan="${esc(rec.planId)}">switch back</button></span></p>` : ''}
     ${allPlans}
   </div>`;
 
