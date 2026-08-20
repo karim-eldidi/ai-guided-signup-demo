@@ -193,8 +193,8 @@ function askBlock(compact, fold) {
      each looked like a different kind of thing was most of what made that end of the
      page feel like work. */
   if (fold) return `<details class="ask ask--compact ask--fold shelf__row"${r||MOREPICK==='ask'?' open':''}>
-    <summary class="shelf__head" data-more="ask">${ulaAvatar('sm')}<span class="shelf__label">Ask Urby about this membership</span>
-      <span class="shelf__hint">plans, prices, pausing, what&rsquo;s near you</span>${icon('chevron',18)}</summary>
+    <summary class="shelf__head" data-more="ask"><span class="shelf__icon">${icon('speech',18)}</span><span class="shelf__label">Ask Urby about this membership</span>
+      <span class="shelf__hint">plans, prices, pausing, what&rsquo;s near you</span><span class="shelf__chev">${icon('chevron',18)}</span></summary>
     <div class="shelf__body">${inner}</div>
   </details>`;
   return `<section class="ask ${compact?'ask--compact':''}">

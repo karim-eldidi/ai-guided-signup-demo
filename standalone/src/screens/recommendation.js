@@ -78,18 +78,23 @@ function coverageBlock(rec, match, plan) {
     ? `All ${plural(cov.totals.nearby,'place','places')} near you`
     : `${cov.totals.included} of the ${plural(cov.totals.nearby,'place','places')} near you`;
 
+  const comparisonHtml = up ? (() => {
+    const upPlan = planById(up.planId);
+    const gained = (upPlan.benefits || []).filter(x => !(plan.benefits || []).includes(x)).slice(0, 2);
+    return `<div class="cov__comparison cov__comparison--up">
+      <p class="cov__line">${icon('star', 16)} <span><b>${esc(up.planName)}</b> adds ${plural(up.addsCount, 'place', 'places')} &mdash; ${up.adds.slice(0, 2).map(v => esc(v.name)).join(', ')}${up.addsCount > 2 ? ` +${up.addsCount - 2}` : ''}${
+        gained.length ? `, plus ${gained.map(g => esc(lowerFirst(g))).join(' and ')}` : ''
+      }. ${up.delta} € more a month. <button class="linkish strong" data-plan="${esc(up.planId)}">Switch</button></span></p>
+    </div>`;
+  })() : (down ? `<div class="cov__comparison cov__comparison--down">
+    <p class="cov__line cov__down">${icon('info', 16)} <span><b>${esc(down.planName)}</b> covers the same places for ${down.saves} € less. <button class="linkish strong" data-plan="${esc(down.planId)}">Switch</button></span></p>
+  </div>` : '');
+
   return `<div class="cov">
     <p class="cov__summary"><b>${countLabel}</b>
       ${cov.totals.included===1?'is':'are'} on ${esc(plan.name)}.
       <span class="cov__caveat">That count is this pilot&rsquo;s venue data, not the whole network of ${esc(plan.venueCount)}.</span></p>
-    ${up?(()=>{ const upPlan=planById(up.planId);
-        const gained=(upPlan.benefits||[]).filter(x=>!(plan.benefits||[]).includes(x)).slice(0,2);
-        return `<p class="cov__line">${icon('star',16)} <span><b>${esc(up.planName)}</b> adds ${plural(up.addsCount,'place','places')}
-        &mdash; ${up.adds.slice(0,2).map(v=>esc(v.name)).join(', ')}${up.addsCount>2?` +${up.addsCount-2}`:''}${
-          gained.length?`, plus ${gained.map(g=>esc(lowerFirst(g))).join(' and ')}`:''}. ${up.delta} € more a month.
-        <button class="linkish strong" data-plan="${esc(up.planId)}">Switch</button></span></p>`; })():''}
-    ${down?`<p class="cov__line">${icon('info',16)} <span><b>${esc(down.planName)}</b> covers the same places for ${down.saves} € less.
-        <button class="linkish strong" data-plan="${esc(down.planId)}">Switch</button></span></p>`:''}
+    ${comparisonHtml}
     <details class="cov__detail-wrap"><summary>Activity by activity</summary>
       <div class="cov__rows">${rows}</div>
       <p class="xsmall muted" style="margin-top:14px">Counted from the visit limits each venue publishes on its own page. Not an estimate.</p>
@@ -110,7 +115,7 @@ function planDrawer(plan, price, each, commitment, isRec, hereT, cheaperPlan, ch
     <div class="plan-drawer__handle-bar" data-close-plan-drawer><div class="plan-drawer__handle"></div></div>
     <div class="plan-drawer__head">
       <div class="plan-drawer__title-wrap">
-        <span class="planbox__badge" style="margin-bottom:3px">${isRec ? 'RECOMMENDED' : 'YOUR SELECTION'}</span>
+        <span class="planbox__badge" style="margin-bottom:3px">${isRec ? 'Recommended' : 'Your choice'}</span>
         <h3 class="plan-drawer__title">${esc(plan.name)} &middot; <b>${price} €</b><small>/mo</small></h3>
       </div>
       <button class="plan-drawer__close" type="button" data-close-plan-drawer aria-label="Close details">${icon('close', 18)}</button>
@@ -669,14 +674,14 @@ function recommendationScreen() {
   </details>`;
 
   const planAside = `<div class="planbox">
-    <div class="planbox__badge">${isRec ? 'RECOMMENDED FOR YOU' : 'Your choice'}</div>
-    <div class="planbox__idrow">
-      <div class="planbox__name">${esc(plan.name)}</div>
-      <div class="planbox__price"><b>${price} €</b><small>/mo</small></div>
-    </div>
-    <div class="termpick" role="group" aria-label="How long you commit for">
-      ${COMMITMENTS.map(c=>{
-        const p = priceFor(plan,c.id);
+    <div class="planbox__badge">${isRec ? 'Recommended' : 'Your choice'}</div>
+    <div class="planbox__name">${esc(plan.name)}</div>
+    <div class="planbox__price"><b>${price} €</b> <span>/ month</span></div>
+
+    <!-- Commitment tabs: Monthly / 12 mo / 24 mo -->
+    <div class="termpick" role="group" aria-label="Membership duration">
+      ${COMMITMENTS.map(c => {
+        const p = priceFor(plan, c.id);
         return `<button class="termpick__opt ${c.id===S.commitmentId?'is-on':''}" type="button" data-commit="${esc(c.id)}"
           aria-pressed="${c.id===S.commitmentId}"><b>${c.minimumTermMonths===1?'Monthly':c.minimumTermMonths+' months'}</b><span>${p} €/mo</span></button>`;
       }).join('')}
@@ -691,7 +696,7 @@ function recommendationScreen() {
         <span>Why this fits you</span>
         <span class="planbox__why-chevron">${icon('chevron', 15)}</span>
       </summary>
-      <ul class="planbox__facts" style="margin-top:10px">
+      <ul class="planbox__facts">
         ${hereT && typeof hereT.included === 'number'
           ? `<li>${icon('checkThin',16)} <span>${hereT.included === 1
               ? 'Your <b>one place</b> is included'
@@ -734,11 +739,21 @@ function recommendationScreen() {
       <span class="rowcard__chev">${icon('chevron',20)}</span>
     </summary>
     <div class="rowcard__body rowcard__body--flush">
+      <div class="more-quick-ask">
+        <form data-form="ask" class="more-quick-ask__form">
+          <label for="more-ask-input" class="sr-only">Ask Urby a question</label>
+          <span class="more-quick-ask__icon">${icon('search',16)}</span>
+          <input type="text" name="q" id="more-ask-input" class="more-quick-ask__input"
+                 placeholder="Ask Urby about plans, prices, pausing or venues…"
+                 value="${esc(ASK.q||'')}" aria-label="Ask Urby a question" autocomplete="off">
+          <button class="btn btn--secondary btn--sm more-quick-ask__btn" type="submit">Ask</button>
+        </form>
+      </div>
       <div class="shelf">
         ${whyBlock}
         ${askBlock(true, true)}
-        <details class="shelf__row"${MOREPICK==='terms'?' open':''}><summary class="shelf__head" data-more="terms">${icon('info',18)}<span class="shelf__label">Membership details and terms</span>
-          <span class="shelf__hint">what&rsquo;s included, limits, cancelling</span>${icon('chevron',18)}</summary>
+        <details class="shelf__row"${MOREPICK==='terms'?' open':''}><summary class="shelf__head" data-more="terms"><span class="shelf__icon">${icon('info',18)}</span><span class="shelf__label">Membership details and terms</span>
+          <span class="shelf__hint">what&rsquo;s included, limits, cancelling</span><span class="shelf__chev">${icon('chevron',18)}</span></summary>
           <div class="shelf__body">
             <div class="fitpanel__label">What&rsquo;s included in ${esc(plan.name)}</div>
             <ul class="reasons">${(plan.benefits||[]).map(x=>`<li>${icon('checkThin',19)}<span>${esc(x)}</span></li>`).join('')}</ul>

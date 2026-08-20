@@ -133,6 +133,28 @@ const compactAnswerLabel = (qid,v) => {
     }
     return map[v]||answerLabel(qid,v);
   }
+  if (qid==='activities') {
+    if (Array.isArray(v)) {
+      if (v.includes(SKIP)) return 'Not sure';
+      const groups = v.map(id => groupById(id)).filter(Boolean);
+      if (!groups.length) return null;
+      if (groups.length === 1) return groups[0].label;
+      const shortName = g => {
+        if (g.id === 'gym') return 'Gym';
+        if (g.id === 'yoga') return 'Yoga';
+        if (g.id === 'spa') return 'Spa';
+        if (g.id === 'fight') return 'Boxing';
+        if (g.id === 'cycle') return 'Cycling';
+        return g.label;
+      };
+      if (groups.length === 2) {
+        return `${shortName(groups[0])} & ${shortName(groups[1])}`;
+      }
+      return `${shortName(groups[0])} +${groups.length - 1}`;
+    }
+    const g = groupById(v);
+    return g ? g.label : answerLabel(qid, v);
+  }
   if (Array.isArray(v)) { if (v.includes(SKIP)) return 'Not sure';
     const opts=optionsFor(qById(qid));
     const names=v.map(id=>(groupById(id)||opts.find(x=>x.id===id)||{}).label).filter(Boolean);

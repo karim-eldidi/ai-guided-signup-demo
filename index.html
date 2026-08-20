@@ -821,25 +821,30 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
 .chips-row__hint {
   font-size: 12px; color: var(--navy-soft); font-weight: 500;
 }
+.chips-row {
+  max-width: 100%;
+}
 .chips-row__items {
   display: flex; align-items: center; gap: 6px;
   overflow-x: auto; flex-wrap: wrap;
   scrollbar-width: none; -webkit-overflow-scrolling: touch;
   padding: 2px 0;
+  max-width: 100%;
 }
 .chips-row__items::-webkit-scrollbar { display: none; }
 .answer-chip {
   display: inline-flex; align-items: center; gap: 5px;
   background: #fff; border: 1px solid var(--border); border-radius: 999px;
   padding: 4px 10px 4px 8px; font-size: 12.5px; font-weight: 600; color: var(--ink);
-  white-space: nowrap; flex: 0 0 auto; cursor: pointer; height: 30px;
+  white-space: nowrap; flex: 0 1 auto; max-width: 100%; cursor: pointer; height: 30px;
   box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  box-sizing: border-box;
   transition: border-color .12s ease, transform .12s ease, background-color .12s ease;
 }
 .answer-chip:hover { border-color: var(--ink); background: var(--cream); transform: translateY(-0.5px); }
-.answer-chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 250px; }
+.answer-chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 220px; min-width: 0; flex: 0 1 auto; }
 .answer-chip svg:first-child { color: var(--navy-soft); flex: 0 0 auto; width: 13px; height: 13px; }
-.answer-chip__edit-icon { display: flex; align-items: center; color: var(--navy-soft); margin-left: 2px; }
+.answer-chip__edit-icon { display: flex; align-items: center; color: var(--navy-soft); margin-left: 2px; flex: 0 0 auto; }
 .answer-chip:hover .answer-chip__edit-icon { color: var(--ink); }
 
 /* the questions own the screen — no side panel to compete with them */
@@ -922,8 +927,8 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
 .planbox__each { font-size: 13.5px; color: var(--navy); font-weight: 600; }
 .planbox__factshead { font-size: 14px; font-weight: 700; letter-spacing: -.01em; margin-top: 20px; color: var(--ink); }
 .planbox__facts { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
-.planbox__facts li { display: flex; gap: 10px; font-size: 14.5px; line-height: 1.35; color: var(--ink); }
-.planbox__facts svg { flex: 0 0 auto; margin-top: 2px; color: #1f9d55; }
+.planbox__facts li { display: flex; align-items: center; gap: 10px; font-size: 14.5px; line-height: 1.35; color: var(--ink); }
+.planbox__facts svg { flex: 0 0 auto; margin-top: 0; color: #1f9d55; display: block; }
 .planbox__cta { margin-top: 20px; }
 .planbox__cta .btn { height: 50px; font-size: 16px; font-weight: 700; border-radius: 12px; }
 .planbox__foot {
@@ -1106,6 +1111,35 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
 .cov__row.is-full .cov__bar span { background: #2f6b3f; }
 .cov__detail { font-size: 14.5px; line-height: 1.45; color: var(--navy); }
 
+.cov__comparison {
+  margin: 12px 0 16px;
+  padding: 12px 14px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius);
+}
+.cov__comparison--up {
+  background: #fefce8;
+  border-color: #fef08a;
+}
+.cov__comparison .cov__line {
+  margin: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--ink);
+}
+.cov__comparison .cov__line svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  color: #b45309;
+}
+.cov__comparison--down .cov__line svg {
+  color: var(--navy-soft);
+}
+
 .cov__upsell {
   display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
   margin-top: 22px; padding: 18px 20px;
@@ -1115,7 +1149,7 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
 .cov__upsell-head { display: flex; align-items: center; gap: 8px; font-size: 16.5px; font-weight: 700; }
 .cov__upsell-body { font-size: 14.5px; line-height: 1.45; color: var(--navy); margin-top: 5px; }
 .cov__upsell .btn { height: 50px; padding: 0 20px; font-size: 16px; }
-.cov__down { display: flex; align-items: flex-start; gap: 8px; font-size: 14.5px; line-height: 1.45; margin: 14px 0 0; }
+.cov__down { display: flex; align-items: flex-start; gap: 8px; font-size: 14.5px; line-height: 1.45; margin: 0; }
 .cov__down svg { flex: 0 0 auto; margin-top: 3px; }
 
 /* a venue the current plan does not cover says so, rather than looking available */
@@ -3039,8 +3073,8 @@ button.appcard:hover .appcard__info-icon {
 .planbox__why-disclosure {
   margin-top: 10px;
   border-radius: var(--radius);
-  border: 1px solid #fef08a;
-  background: #fefce8;
+  border: 1px solid var(--border);
+  background: #ffffff;
   overflow: hidden;
   transition: all .2s ease;
 }
@@ -3054,10 +3088,10 @@ button.appcard:hover .appcard__info-icon {
   color: var(--ink);
   cursor: pointer;
   user-select: none;
-  background: #fefce8;
+  background: #ffffff;
 }
 .planbox__why-head:hover {
-  background: #fef9c3;
+  background: #f8fafc;
 }
 .planbox__why-chevron {
   display: inline-flex;
@@ -3069,10 +3103,10 @@ button.appcard:hover .appcard__info-icon {
   transform: rotate(180deg);
 }
 .planbox__why-disclosure .planbox__facts {
-  padding: 12px 14px 12px;
+  padding: 12px 14px 14px;
   margin: 0;
-  border-top: 1px solid #fef08a;
-  background: #fefce8;
+  border-top: 1px solid var(--border);
+  background: #ffffff;
 }
 
 @media (max-width: 900px) {
@@ -3172,11 +3206,12 @@ button.appcard:hover .appcard__info-icon {
 
 /* the reasons, after the evidence and without the card chrome */
 .why__list { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
-.why__list li { display: flex; align-items: flex-start; gap: 11px; font-size: 15.5px; line-height: 1.45; color: var(--navy); }
+.why__list li { display: flex; align-items: center; gap: 11px; font-size: 15.5px; line-height: 1.45; color: var(--navy); }
 .why__list .why__icon {
   flex: 0 0 auto; width: 28px; height: 28px; border-radius: 50%;
-  background: var(--yellow-pale); display: grid; place-items: center; margin-top: -1px;
+  background: var(--yellow-pale); display: flex; align-items: center; justify-content: center; margin: 0;
 }
+.why__list .why__icon svg { display: block; }
 
 @media (max-width: 900px) {
   .venue-grid--big.is-rail { grid-auto-columns: 76%; gap: 10px; }
@@ -3210,17 +3245,47 @@ button.appcard:hover .appcard__info-icon {
 .shelf__row + .shelf__row { border-top: 1px solid var(--border); }
 .shelf__head {
   display: flex; align-items: center; gap: 12px; cursor: pointer; list-style: none;
-  padding: 16px 18px; font-size: 15.5px; font-weight: 700;
+  padding: 14px 18px; font-size: 15.5px; font-weight: 700;
+  min-height: 58px; box-sizing: border-box; line-height: 1.3;
 }
 .shelf__head::-webkit-details-marker { display: none; }
-.shelf__head > :first-child { flex: 0 0 auto; color: var(--navy-soft); }
-.shelf__label { min-width: 0; }
-.shelf__hint { font-size: 13.5px; font-weight: 400; color: var(--navy-soft); margin-left: auto; text-align: right; }
-.shelf__head > svg:last-child { flex: 0 0 auto; margin-left: auto; color: var(--navy-soft); transform: rotate(90deg); transition: transform .16s ease; }
+.shelf__icon {
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  flex: 0 0 28px; color: var(--navy-soft); border-radius: 6px;
+}
+.shelf__icon svg {
+  width: 18px; height: 18px; flex-shrink: 0; display: block;
+}
+.shelf__head > :first-child:not(.shelf__icon):not(.shelf__label) {
+  flex: 0 0 28px; width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--navy-soft);
+}
+.shelf__label {
+  flex: 0 1 auto; min-width: 0; color: var(--ink);
+}
+.shelf__hint {
+  font-size: 13.5px; font-weight: 400; color: var(--navy-soft);
+  margin-left: auto; text-align: right; padding-right: 4px; white-space: nowrap;
+}
+.shelf__chev {
+  width: 20px; height: 20px;
+  display: flex; align-items: center; justify-content: center;
+  flex: 0 0 20px; color: var(--navy-soft);
+}
+.shelf__chev svg,
+.shelf__head > svg:last-child {
+  width: 18px; height: 18px; flex-shrink: 0; display: block;
+  color: var(--navy-soft); transform: rotate(90deg); transition: transform .16s ease;
+}
+.shelf__head > svg:last-child { margin-left: auto; }
+.shelf__hint + .shelf__chev,
 .shelf__hint + svg { margin-left: 0 !important; }
+.shelf__row[open] > .shelf__head .shelf__chev svg,
 .shelf__row[open] > .shelf__head > svg:last-child { transform: rotate(-90deg); }
 .shelf__row[open] > .shelf__head { border-bottom: 1px solid var(--cream-line); }
-.shelf__body { padding: 18px; }
+.shelf__body { padding: 18px; background: #ffffff; }
 /* Ask Urby keeps its own insides but gives up its own box: inside the shelf it is a row. */
 .shelf .ask, .shelf .ask--compact { border: 0; background: transparent; padding: 0; margin: 0; border-radius: 0; }
 .shelf .ask--fold > .shelf__head { padding-right: 18px; }
@@ -3228,6 +3293,54 @@ button.appcard:hover .appcard__info-icon {
 .reco-why .cov { margin-top: 16px; padding-top: 15px; border-top: 1px solid var(--cream-line); }
 .reco-why .why__foot { margin-top: 14px; }
 @media (max-width: 700px) { .shelf__hint { display: none; } }
+
+/* Ask Urby compact search bar at the top of Need more detail */
+.more-quick-ask {
+  padding: 14px 18px 16px;
+  background: #fdfdfd;
+  border-bottom: 1px solid var(--border);
+}
+.more-quick-ask__form {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 3px 4px 3px 12px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.more-quick-ask__form:focus-within {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.05);
+}
+.more-quick-ask__icon {
+  display: flex;
+  align-items: center;
+  color: var(--navy-soft);
+  flex-shrink: 0;
+}
+.more-quick-ask__input {
+  flex: 1 1 auto;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font-size: 13.5px;
+  color: var(--ink);
+  min-width: 0;
+  padding: 6px 0;
+}
+.more-quick-ask__input::placeholder {
+  color: var(--navy-soft);
+}
+.more-quick-ask__btn {
+  flex-shrink: 0;
+  height: 32px;
+  padding: 0 14px;
+  font-size: 13px;
+  border-radius: 999px;
+}
 
 /* Every card the same height, and a name that never clips: the rail was showing four
    cards of four different heights with "Holmes Place Gendarmenmarkt" running off the
@@ -8369,12 +8482,29 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   font-weight: 700;
   color: var(--ink);
 }
+.venue-accordion__title-wrap svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  display: block;
+  color: var(--navy-soft);
+}
 
 .venue-accordion__chevron {
-  color: var(--navy-soft);
-  transition: transform 0.2s ease;
+  width: 18px;
+  height: 18px;
   display: flex;
   align-items: center;
+  justify-content: center;
+  flex: 0 0 18px;
+  color: var(--navy-soft);
+  transition: transform 0.2s ease;
+}
+.venue-accordion__chevron svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  display: block;
 }
 
 .venue-accordion[open] .venue-accordion__chevron {
@@ -8400,12 +8530,14 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 .venue-fact-card {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   padding: 10px 12px;
   background: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 10px;
   margin: 0;
+  min-height: 52px;
+  box-sizing: border-box;
 }
 
 .venue-fact-icon {
@@ -8415,7 +8547,13 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex: 0 0 32px;
+}
+.venue-fact-icon svg {
+  width: 18px;
+  height: 18px;
   flex-shrink: 0;
+  display: block;
 }
 
 .venue-fact-icon--blue {
@@ -9650,7 +9788,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build a641470 + local edits</span>
+  <span class="demo-banner__build">build e2f5946 + local edits</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -9886,6 +10024,28 @@ const compactAnswerLabel = (qid,v) => {
       return `${names[0]} +${names.length-1}`;
     }
     return map[v]||answerLabel(qid,v);
+  }
+  if (qid==='activities') {
+    if (Array.isArray(v)) {
+      if (v.includes(SKIP)) return 'Not sure';
+      const groups = v.map(id => groupById(id)).filter(Boolean);
+      if (!groups.length) return null;
+      if (groups.length === 1) return groups[0].label;
+      const shortName = g => {
+        if (g.id === 'gym') return 'Gym';
+        if (g.id === 'yoga') return 'Yoga';
+        if (g.id === 'spa') return 'Spa';
+        if (g.id === 'fight') return 'Boxing';
+        if (g.id === 'cycle') return 'Cycling';
+        return g.label;
+      };
+      if (groups.length === 2) {
+        return `${shortName(groups[0])} & ${shortName(groups[1])}`;
+      }
+      return `${shortName(groups[0])} +${groups.length - 1}`;
+    }
+    const g = groupById(v);
+    return g ? g.label : answerLabel(qid, v);
   }
   if (Array.isArray(v)) { if (v.includes(SKIP)) return 'Not sure';
     const opts=optionsFor(qById(qid));
@@ -10537,8 +10697,8 @@ function askBlock(compact, fold) {
      each looked like a different kind of thing was most of what made that end of the
      page feel like work. */
   if (fold) return `<details class="ask ask--compact ask--fold shelf__row"${r||MOREPICK==='ask'?' open':''}>
-    <summary class="shelf__head" data-more="ask">${ulaAvatar('sm')}<span class="shelf__label">Ask Urby about this membership</span>
-      <span class="shelf__hint">plans, prices, pausing, what&rsquo;s near you</span>${icon('chevron',18)}</summary>
+    <summary class="shelf__head" data-more="ask"><span class="shelf__icon">${icon('speech',18)}</span><span class="shelf__label">Ask Urby about this membership</span>
+      <span class="shelf__hint">plans, prices, pausing, what&rsquo;s near you</span><span class="shelf__chev">${icon('chevron',18)}</span></summary>
     <div class="shelf__body">${inner}</div>
   </details>`;
   return `<section class="ask ${compact?'ask--compact':''}">
@@ -11397,21 +11557,21 @@ function venueSheet() {
               <div class="venue-accordion__body">
                 <!-- Visual quick facts grid with micro-illustrations -->
                 <div class="venue-facts-grid">
-                  <div class="venue-fact-card sheet__row">
+                  <div class="venue-fact-card">
                     <div class="venue-fact-icon venue-fact-icon--blue">${icon('qr', 18)}</div>
                     <div class="venue-fact-text">
                       <strong>QR Check-in</strong>
                       <span>Scan at front desk with app</span>
                     </div>
                   </div>
-                  <div class="venue-fact-card sheet__row">
+                  <div class="venue-fact-card">
                     <div class="venue-fact-icon venue-fact-icon--amber">${icon('bag', 18)}</div>
                     <div class="venue-fact-text">
                       <strong>What to bring</strong>
                       <span>Towel, lock & clean shoes</span>
                     </div>
                   </div>
-                  <div class="venue-fact-card sheet__row">
+                  <div class="venue-fact-card">
                     <div class="venue-fact-icon venue-fact-icon--teal">${icon('shower', 18)}</div>
                     <div class="venue-fact-text">
                       <strong>Amenities</strong>
@@ -12293,7 +12453,7 @@ function routinePanel() {
       ${given.length ? `<div class="routine__fit">${icon('checkFill',18)}<span class="routine__fitlabel">Your fit</span>
         ${given.map(x=>`<button class="answer-chip" data-edit="${esc(x.id)}"
           aria-label="Change your answer to: ${esc(x.prompt)}">${icon(x.icon,15)}<span>${
-          esc(answerLabel(x.id,S.answers[x.id]))}</span>${icon('pencil',14)}</button>`).join('')}</div>` : ''}
+          esc(compactAnswerLabel(x.id,S.answers[x.id]))}</span><span class="answer-chip__edit-icon">${icon('pencil',11)}</span></button>`).join('')}</div>` : ''}
     </div>
     <div class="routine__side">
       ${left ? `<button class="btn btn--primary" data-go="fit">See my recommendation ${icon('arrowRight',18)}</button>
@@ -12983,18 +13143,23 @@ function coverageBlock(rec, match, plan) {
     ? `All ${plural(cov.totals.nearby,'place','places')} near you`
     : `${cov.totals.included} of the ${plural(cov.totals.nearby,'place','places')} near you`;
 
+  const comparisonHtml = up ? (() => {
+    const upPlan = planById(up.planId);
+    const gained = (upPlan.benefits || []).filter(x => !(plan.benefits || []).includes(x)).slice(0, 2);
+    return `<div class="cov__comparison cov__comparison--up">
+      <p class="cov__line">${icon('star', 16)} <span><b>${esc(up.planName)}</b> adds ${plural(up.addsCount, 'place', 'places')} &mdash; ${up.adds.slice(0, 2).map(v => esc(v.name)).join(', ')}${up.addsCount > 2 ? ` +${up.addsCount - 2}` : ''}${
+        gained.length ? `, plus ${gained.map(g => esc(lowerFirst(g))).join(' and ')}` : ''
+      }. ${up.delta} € more a month. <button class="linkish strong" data-plan="${esc(up.planId)}">Switch</button></span></p>
+    </div>`;
+  })() : (down ? `<div class="cov__comparison cov__comparison--down">
+    <p class="cov__line cov__down">${icon('info', 16)} <span><b>${esc(down.planName)}</b> covers the same places for ${down.saves} € less. <button class="linkish strong" data-plan="${esc(down.planId)}">Switch</button></span></p>
+  </div>` : '');
+
   return `<div class="cov">
     <p class="cov__summary"><b>${countLabel}</b>
       ${cov.totals.included===1?'is':'are'} on ${esc(plan.name)}.
       <span class="cov__caveat">That count is this pilot&rsquo;s venue data, not the whole network of ${esc(plan.venueCount)}.</span></p>
-    ${up?(()=>{ const upPlan=planById(up.planId);
-        const gained=(upPlan.benefits||[]).filter(x=>!(plan.benefits||[]).includes(x)).slice(0,2);
-        return `<p class="cov__line">${icon('star',16)} <span><b>${esc(up.planName)}</b> adds ${plural(up.addsCount,'place','places')}
-        &mdash; ${up.adds.slice(0,2).map(v=>esc(v.name)).join(', ')}${up.addsCount>2?` +${up.addsCount-2}`:''}${
-          gained.length?`, plus ${gained.map(g=>esc(lowerFirst(g))).join(' and ')}`:''}. ${up.delta} € more a month.
-        <button class="linkish strong" data-plan="${esc(up.planId)}">Switch</button></span></p>`; })():''}
-    ${down?`<p class="cov__line">${icon('info',16)} <span><b>${esc(down.planName)}</b> covers the same places for ${down.saves} € less.
-        <button class="linkish strong" data-plan="${esc(down.planId)}">Switch</button></span></p>`:''}
+    ${comparisonHtml}
     <details class="cov__detail-wrap"><summary>Activity by activity</summary>
       <div class="cov__rows">${rows}</div>
       <p class="xsmall muted" style="margin-top:14px">Counted from the visit limits each venue publishes on its own page. Not an estimate.</p>
@@ -13015,7 +13180,7 @@ function planDrawer(plan, price, each, commitment, isRec, hereT, cheaperPlan, ch
     <div class="plan-drawer__handle-bar" data-close-plan-drawer><div class="plan-drawer__handle"></div></div>
     <div class="plan-drawer__head">
       <div class="plan-drawer__title-wrap">
-        <span class="planbox__badge" style="margin-bottom:3px">${isRec ? 'RECOMMENDED' : 'YOUR SELECTION'}</span>
+        <span class="planbox__badge" style="margin-bottom:3px">${isRec ? 'Recommended' : 'Your choice'}</span>
         <h3 class="plan-drawer__title">${esc(plan.name)} &middot; <b>${price} €</b><small>/mo</small></h3>
       </div>
       <button class="plan-drawer__close" type="button" data-close-plan-drawer aria-label="Close details">${icon('close', 18)}</button>
@@ -13574,14 +13739,14 @@ function recommendationScreen() {
   </details>`;
 
   const planAside = `<div class="planbox">
-    <div class="planbox__badge">${isRec ? 'RECOMMENDED FOR YOU' : 'Your choice'}</div>
-    <div class="planbox__idrow">
-      <div class="planbox__name">${esc(plan.name)}</div>
-      <div class="planbox__price"><b>${price} €</b><small>/mo</small></div>
-    </div>
-    <div class="termpick" role="group" aria-label="How long you commit for">
-      ${COMMITMENTS.map(c=>{
-        const p = priceFor(plan,c.id);
+    <div class="planbox__badge">${isRec ? 'Recommended' : 'Your choice'}</div>
+    <div class="planbox__name">${esc(plan.name)}</div>
+    <div class="planbox__price"><b>${price} €</b> <span>/ month</span></div>
+
+    <!-- Commitment tabs: Monthly / 12 mo / 24 mo -->
+    <div class="termpick" role="group" aria-label="Membership duration">
+      ${COMMITMENTS.map(c => {
+        const p = priceFor(plan, c.id);
         return `<button class="termpick__opt ${c.id===S.commitmentId?'is-on':''}" type="button" data-commit="${esc(c.id)}"
           aria-pressed="${c.id===S.commitmentId}"><b>${c.minimumTermMonths===1?'Monthly':c.minimumTermMonths+' months'}</b><span>${p} €/mo</span></button>`;
       }).join('')}
@@ -13596,7 +13761,7 @@ function recommendationScreen() {
         <span>Why this fits you</span>
         <span class="planbox__why-chevron">${icon('chevron', 15)}</span>
       </summary>
-      <ul class="planbox__facts" style="margin-top:10px">
+      <ul class="planbox__facts">
         ${hereT && typeof hereT.included === 'number'
           ? `<li>${icon('checkThin',16)} <span>${hereT.included === 1
               ? 'Your <b>one place</b> is included'
@@ -13639,11 +13804,21 @@ function recommendationScreen() {
       <span class="rowcard__chev">${icon('chevron',20)}</span>
     </summary>
     <div class="rowcard__body rowcard__body--flush">
+      <div class="more-quick-ask">
+        <form data-form="ask" class="more-quick-ask__form">
+          <label for="more-ask-input" class="sr-only">Ask Urby a question</label>
+          <span class="more-quick-ask__icon">${icon('search',16)}</span>
+          <input type="text" name="q" id="more-ask-input" class="more-quick-ask__input"
+                 placeholder="Ask Urby about plans, prices, pausing or venues…"
+                 value="${esc(ASK.q||'')}" aria-label="Ask Urby a question" autocomplete="off">
+          <button class="btn btn--secondary btn--sm more-quick-ask__btn" type="submit">Ask</button>
+        </form>
+      </div>
       <div class="shelf">
         ${whyBlock}
         ${askBlock(true, true)}
-        <details class="shelf__row"${MOREPICK==='terms'?' open':''}><summary class="shelf__head" data-more="terms">${icon('info',18)}<span class="shelf__label">Membership details and terms</span>
-          <span class="shelf__hint">what&rsquo;s included, limits, cancelling</span>${icon('chevron',18)}</summary>
+        <details class="shelf__row"${MOREPICK==='terms'?' open':''}><summary class="shelf__head" data-more="terms"><span class="shelf__icon">${icon('info',18)}</span><span class="shelf__label">Membership details and terms</span>
+          <span class="shelf__hint">what&rsquo;s included, limits, cancelling</span><span class="shelf__chev">${icon('chevron',18)}</span></summary>
           <div class="shelf__body">
             <div class="fitpanel__label">What&rsquo;s included in ${esc(plan.name)}</div>
             <ul class="reasons">${(plan.benefits||[]).map(x=>`<li>${icon('checkThin',19)}<span>${esc(x)}</span></li>`).join('')}</ul>
