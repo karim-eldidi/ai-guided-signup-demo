@@ -49,7 +49,7 @@ with sync_playwright() as p:
         pg.locator('[data-go="save"]:visible').first.click(force=True); pg.wait_for_timeout(600); check("save")
         pg.locator('[data-close-exit]:visible').first.click(); pg.wait_for_timeout(600)
         pg.locator('.planbox__cta button:visible, .paybar button:visible').first.click(force=True); pg.wait_for_timeout(600)
-        for f,v in [('#firstName','Alex'),('#lastName','T'),('#email','a@b.com'),('#birthDate','1992-04-18'),('#street','W 42'),('#postcode','12045'),('#city','Berlin')]: pg.fill(f,v)
+        for f,v in [('#firstName','Alex'),('#lastName','T'),('#email','a@b.com'),('#phone','+49 151 12345678'),('#birthDate','1992-04-18'),('#street','W 42'),('#postcode','12045'),('#city','Berlin')]: pg.fill(f,v)
         # on a phone the details CTA lives in the paybar, same as the recommendation's
         pg.locator('.details-form__actions button:visible, .paybar button:visible').first.click(force=True); pg.wait_for_timeout(700); check("payment")
         # on a phone the confirm CTA lives in the paybar, same as the earlier screens

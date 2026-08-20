@@ -653,116 +653,163 @@ b, strong { font-weight: 700; }
 .startnow { height: 54px; width: 100%; max-width: 520px; margin-top: 12px; font-size: 17px; }
 
 /* --- all four plans, for people who already know ------------------------- */
-main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
-.plans-layout { display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:38px; align-items:start; }
+main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:border-box; padding: 32px 24px 80px; }
+.plans-layout { display:grid; grid-template-columns:minmax(0,1fr) 340px; gap:36px; align-items:start; }
 .plans-main { min-width:0; }
-.plans-kicker { display:flex; align-items:center; gap:10px; font-size:14.5px; margin:4px 0 10px; }
-.plans-kicker .ula-avatar { flex:0 0 auto; }
-.plans-head { margin-bottom:18px; }
-.plans-head .h-question { margin:0; }
-.plans-head .reco-lede { max-width:none; margin:8px 0 0; text-align: center; }
-.plans-head { text-align: center; margin-bottom: 20px; }
-.plans-kicker { justify-content: center; margin-bottom: 12px; }
 
-.commit-row { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin: 0 auto 24px; }
+.commit-row { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin: 0 auto 14px; }
 .commit-row .chip-sm {
-  height: 38px; padding: 0 16px; border-radius: 9999px; font-size: 13.5px; font-weight: 700;
-  display: inline-flex; align-items: center; gap: 6px;
+  height: 40px; padding: 0 18px; border-radius: 9999px; font-size: 14px; font-weight: 700;
+  display: inline-flex; align-items: center; gap: 8px;
   background: #fff; border: 1.5px solid var(--border); color: var(--ink); cursor: pointer;
   transition: all .15s ease;
 }
 .commit-row .chip-sm:hover { border-color: var(--ink); }
 .commit-row .chip-sm.is-current {
-  background: var(--yellow-bright); color: var(--ink); border-color: var(--ink); font-weight: 800;
+  background: #fdf5d3; color: var(--ink); border-color: var(--ink); font-weight: 800;
 }
 .commit-save-pill {
-  background: #e6f4ea; color: #137333; font-size: 11px; font-weight: 800;
-  padding: 2px 7px; border-radius: 99px; letter-spacing: 0.02em;
+  background: #e6f4ea; color: #137333; font-size: 11.5px; font-weight: 800;
+  padding: 2px 8px; border-radius: 99px; letter-spacing: 0.01em;
 }
 
-.plangrid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 16px; align-items: stretch; }
-.plancard {
-  position:relative; display: flex; flex-direction: column; min-width:0;
+.commit-perk-banner {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  background: #fbf9f4; border: 1px solid #eee8db; border-radius: 12px;
+  padding: 10px 16px; margin: 0 auto 24px; max-width: 580px;
+  font-size: 13.5px; color: var(--navy); text-align: center;
+}
+.commit-perk-banner .perk-icon { font-size: 16px; flex: 0 0 auto; }
+
+.plans-head { text-align: center; margin-bottom: 24px; }
+.plans-head .h-question { margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -.03em; color: var(--ink); }
+.plans-head .reco-lede { max-width: none; margin: 6px 0 0; font-size: 15px; color: #2b61b6; font-weight: 500; text-align: center; }
+
+.plan-lines-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+.plan-line {
   background: #fff; border: 1.5px solid var(--border); border-radius: 16px;
-  padding: 22px 18px; overflow:hidden; transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+  overflow: hidden; cursor: pointer; transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+  user-select: none;
 }
-.plancard:hover { border-color: #b9b6ad; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.06); }
-.plancard.is-popular { border-color: var(--yellow-bright); }
-.plancard.is-popular::before { content:""; position:absolute; left:0; right:0; top:0; height:4px; background:var(--yellow-bright); }
-.plancard.is-selected { border: 2px solid var(--ink); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
-
-.plancard__top { min-height: 84px; position:relative; display: flex; flex-direction: column; }
-.plancard__badge {
-  display: inline-flex; align-items: center; align-self: flex-start;
-  background: var(--yellow-bright); color: var(--ink); font-size: 10.5px; font-weight: 800;
-  letter-spacing: .06em; text-transform: uppercase; padding: 3px 8px; border-radius: 99px;
-  margin-bottom: 8px;
+.plan-line:hover { border-color: #a8a49c; }
+.plan-line.is-selected {
+  border: 2px solid var(--ink); background: #fff; box-shadow: 0 4px 16px rgba(0,0,0,0.06);
 }
-.plancard__name { font-size: 22px; font-weight: 800; letter-spacing: -.02em; padding-right:4px; color: var(--ink); }
-.plancard__tagline { font-size: 12.5px; font-weight: 600; color: var(--navy-soft); margin-top: 3px; min-height: 22px; line-height: 1.3; }
-.plancard__price { display: flex; align-items: baseline; gap: 4px; margin: 12px 0 14px; }
-.plancard__price b { font-size: 32px; letter-spacing: -.03em; font-weight: 800; color: var(--ink); }
-.plancard__price span { font-size: 13.5px; color: var(--navy-soft); font-weight: 600; }
 
-.plancard__cta { margin-bottom: 16px; font-size: 14px; font-weight: 700; height: 44px; padding: 0 12px; border-radius: 10px; }
-.plancard__cta[aria-pressed="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+.plan-line__header {
+  display: grid; grid-template-columns: 44px minmax(130px, 1.4fr) minmax(160px, 1.8fr) auto;
+  align-items: center; gap: 16px; padding: 16px 20px;
+}
+.plan-line__icon-wrap {
+  width: 40px; height: 40px; border-radius: 10px; background: #fdf5d3;
+  display: flex; align-items: center; justify-content: center; font-size: 20px; flex: 0 0 auto;
+}
+.plan-line__info { display: flex; flex-direction: column; justify-content: center; }
+.plan-line__headline { font-size: 18px; font-weight: 800; letter-spacing: -.02em; color: var(--ink); }
+.plan-line__headsub { font-size: 12px; color: var(--navy-soft); font-weight: 500; margin-top: 2px; }
+.plan-line__tier { display: flex; flex-direction: column; justify-content: center; }
+.plan-line__tier-name { font-size: 14px; font-weight: 700; color: var(--ink); }
+.plan-line__tier-meta { font-size: 12.5px; color: #2b61b6; font-weight: 500; margin-top: 2px; }
+.plan-line__price { text-align: right; white-space: nowrap; }
+.plan-line__price b { font-size: 22px; font-weight: 800; letter-spacing: -.02em; color: var(--ink); }
+.plan-line__price span { font-size: 13px; color: #2b61b6; font-weight: 500; }
 
-.plancard__features { display: flex; flex-direction: column; flex: 1 1 auto; }
-.plancard__feature-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink); margin-bottom: 10px; }
-.plancard__feature-item svg { color: var(--ink); flex: 0 0 auto; }
+.plan-line__expanded {
+  padding: 0 20px 20px; border-top: 1px solid #eae6df; background: #fff;
+}
+.plan-diff-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding-top: 18px;
+}
+.plan-diff-col { display: flex; flex-direction: column; }
+.plan-diff-col__title { margin: 0 0 12px; font-size: 13.5px; font-weight: 800; color: var(--ink); letter-spacing: -.01em; }
+.plan-diff-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.plan-diff-list li { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; line-height: 1.35; color: var(--ink); }
+.diff-bullet-icon {
+  width: 20px; height: 20px; border-radius: 50%; background: #fae69e; color: var(--ink);
+  display: flex; align-items: center; justify-content: center; flex: 0 0 auto; margin-top: 1px;
+}
+.diff-bullet-icon svg { width: 12px; height: 12px; }
 
-.plancard__section { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--cream-line); }
-.plancard__section--venues { min-height: 54px; }
-.plancard__section--checkins { min-height: 84px; }
-.plancard__section--plus { min-height: 88px; }
-.plancard__label { display:block; font-size:10.5px; line-height:1.2; letter-spacing:.08em; text-transform:uppercase; color:var(--navy-soft); margin-bottom:4px; font-weight: 700; }
-.plancard__venues { font-size:13.5px; color:var(--navy); font-weight: 600; }
-.accessbar { position:relative; height:7px; margin-top:7px; background:#dedede; border-radius:99px; overflow:visible; }
-.accessbar__fill { display:block; height:100%; background:var(--ink); border-radius:99px; position:relative; }
-.accessbar__fill::after { content:""; position:absolute; width:9px; height:9px; border-radius:50%; right:-4px; top:-1px; background:var(--yellow-bright); border:1px solid var(--ink); }
-.plancard__check-main { display:block; font-size:16px; font-weight:700; line-height:1.25; color: var(--ink); }
-.plancard__check-sub { display:block; font-size:12px; color:var(--navy-soft); margin-top:3px; min-height: 32px; line-height: 1.35; }
-.weekdots { display:grid; grid-template-columns:repeat(7,1fr); gap:5px; margin-top:8px; max-width:178px; }
-.weekdots__day { display:grid; place-items:center; gap:4px; font-size:9.5px; color:var(--navy-soft); }
-.weekdots__day::after { content:""; width:10px; height:10px; box-sizing:border-box; border-radius:50%; border:1px solid #909090; background:#fff; }
-.weekdots__day.is-on::after { border-color:var(--ink); background:var(--ink); }
-.plancard__locked { display:flex; align-items:center; gap:6px; color:var(--navy-soft); font-size:13px; min-height: 40px; }
-.plancard__plus { display:block; width:100%; padding:0; border:0; background:transparent; color:inherit; text-align:left; cursor:pointer; }
-.plancard__plus b, .plancard__plus span, .plancard__plus em { display:block; }
-.plancard__plus b { font-size:13.5px; line-height:1.3; font-weight: 700; color: var(--ink); }
-.plancard__plus span { font-size:12px; line-height:1.35; color:var(--navy-soft); margin-top:2px; }
-.plancard__plus em { font-size:12px; line-height:1.35; font-style:normal; margin-top:6px; color: var(--navy); font-weight: 600; }
-.plancard__plus u { display:inline-block; font-size:11.5px; font-weight:700; margin-top:6px; text-underline-offset:3px; color: var(--ink); }
-.plancard__best { flex:1 1 auto; min-height:68px; font-size:12.5px; line-height:1.4; color: var(--navy); }
-.plans-selection { display:flex; align-items:center; justify-content:space-between; gap:18px; padding:14px 16px; margin-top:14px; border:1.5px solid var(--ink); border-radius:var(--radius); background:#fff; }
-.plans-selection__copy { min-width:0; }
-.plans-selection__copy b { display:block; font-size:15px; }
-.plans-selection__copy span { display:block; margin-top:2px; font-size:12.5px; color:var(--navy-soft); }
-.plans-selection .btn { flex:0 0 auto; height:48px; padding:0 20px; font-size:14.5px; }
+.plans-always-banner {
+  display: flex; align-items: center; gap: 10px; padding: 12px 18px;
+  background: #fbf9f4; border: 1px solid #ede7db; border-radius: 12px;
+  font-size: 13px; color: var(--ink); margin-bottom: 20px;
+}
+.always-sparkle { font-size: 16px; color: #d4a300; flex: 0 0 auto; }
+
+.plans-cta-wrap { display: flex; justify-content: center; margin-bottom: 24px; }
+.btn-continue-plan {
+  height: 50px; padding: 0 36px; border-radius: 9999px; font-size: 16px; font-weight: 700;
+  min-width: 240px; display: inline-flex; align-items: center; justify-content: center;
+}
+
+.plans-side-card {
+  position: sticky; top: 24px; background: #fbf9f4; border: 1.5px solid #ece6da;
+  border-radius: 20px; padding: 24px 22px; display: flex; flex-direction: column;
+}
+.plans-side-card__header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+.plans-side-card__guide-name { font-size: 14px; font-weight: 700; color: var(--ink); }
+.plans-side-card__title { font-size: 20px; font-weight: 800; letter-spacing: -.02em; margin: 0 0 6px; color: var(--ink); }
+.plans-side-card__subtitle { font-size: 13.5px; color: var(--navy-soft); margin: 0 0 18px; line-height: 1.4; }
+
+.plans-fit-box { background: transparent; margin-bottom: 16px; }
+.plans-fit-box__head { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 800; color: var(--ink); margin-bottom: 10px; }
+.plans-fit-check { color: #1f9d55; display: flex; align-items: center; }
+.plans-fit-chips { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+.fit-chip {
+  display: flex; align-items: center; gap: 8px; background: #fff; border: 1px solid #e5e0d5;
+  border-radius: 9999px; padding: 8px 14px; font-size: 13px; font-weight: 600; color: var(--ink);
+  cursor: pointer; text-align: left; transition: all .15s ease; width: 100%;
+}
+.fit-chip:hover { border-color: var(--ink); background: #fcfcfc; }
+.fit-chip__icon { font-size: 14px; flex: 0 0 auto; }
+.fit-chip__label { flex: 1 1 auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fit-chip__edit { font-size: 12px; color: var(--navy-soft); flex: 0 0 auto; }
+
+.btn-side-back {
+  width: 100%; height: 44px; background: #fff; border: 1.5px solid var(--ink);
+  border-radius: 9999px; font-size: 13.5px; font-weight: 700; color: var(--ink);
+  display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all .15s ease;
+}
+.btn-side-back:hover { background: #f5f3ed; }
+.plans-side-caption { font-size: 12px; color: var(--navy-soft); text-align: center; margin: 10px 0 18px; line-height: 1.35; }
+.plans-side-save {
+  display: flex; align-items: flex-start; gap: 10px; background: transparent; border: none;
+  padding: 12px 0 0; border-top: 1px solid #ebe5d8; cursor: pointer; text-align: left;
+}
+.plans-side-save .save-icon { font-size: 16px; color: var(--ink); flex: 0 0 auto; margin-top: 2px; }
+.plans-side-save .save-text { display: flex; flex-direction: column; }
+.plans-side-save .save-text strong { font-size: 13px; font-weight: 700; color: var(--ink); }
+.plans-side-save .save-text span { font-size: 11.5px; color: var(--navy-soft); margin-top: 2px; }
+
 .plans-sticky-bar { display: none; }
-.plans-shared { display:flex; align-items:center; flex-wrap:wrap; gap:7px 16px; padding:13px 14px; margin-top:14px; border:1px solid var(--border); border-radius:var(--radius); font-size:13px; }
-.plans-shared svg { flex:0 0 auto; }
-.plans-shared__ask { margin-left:auto; min-height:40px; padding:0 16px; border:1px solid var(--ink); border-radius:6px; background:#fff; color:var(--ink); font-size:13.5px; font-weight:700; }
-.plans-shared__ask:hover { background:var(--page-grey); }
-.plans-ask { margin-top:16px; }
-.plans-guide { position:sticky; top:20px; background:var(--cream); border:1px solid var(--cream-line); border-radius:var(--radius-lg); padding:24px 22px; }
-.plans-guide__brand { display:flex; align-items:center; gap:10px; font-size:14px; font-weight:700; }
-.plans-guide h2 { margin:18px 0 8px; font-size:23px; letter-spacing:-.025em; }
-.plans-guide > p { margin:0; font-size:14.5px; line-height:1.45; color:var(--navy); }
-.plans-guide__rows { display:grid; gap:10px; margin:18px 0; }
-.plans-guide__row { display:flex; align-items:center; gap:10px; min-height:54px; padding:10px 12px; background:#fff; border:1px solid var(--cream-line); border-radius:var(--radius); font-size:13.5px; font-weight:700; }
-.plans-guide .btn {
-  width: 100%;
-  height: 48px;
-  padding: 0 16px;
-  font-size: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  white-space: nowrap;
+
+@media (max-width: 960px) {
+  .plans-layout { grid-template-columns: 1fr; gap: 24px; }
+  .plans-side-card { position: static; margin-top: 16px; }
 }
-.plans-guide__note { display:block; text-align:center; margin-top:9px; font-size:12px; color:var(--navy-soft); }
+@media (max-width: 680px) {
+  main.plans-page { padding: 20px 16px 120px; }
+  .plan-line__header {
+    grid-template-columns: 36px 1fr auto; gap: 10px 12px; padding: 14px 14px;
+  }
+  .plan-line__icon-wrap { width: 36px; height: 36px; font-size: 17px; }
+  .plan-line__tier { grid-column: 2 / 4; margin-top: -4px; }
+  .plan-line__price { grid-column: 3; grid-row: 1; }
+  .plan-line__expanded { padding: 0 14px 16px; }
+  .plan-diff-grid { grid-template-columns: 1fr; gap: 16px; }
+  .plans-cta-wrap { display: none; }
+  .plans-sticky-bar {
+    display: flex; position: fixed; bottom: 0; left: 0; right: 0;
+    background: #fff; border-top: 1px solid var(--border);
+    box-shadow: 0 -4px 16px rgba(0,0,0,0.08); padding: 12px 16px;
+    align-items: center; justify-content: space-between; z-index: 100;
+  }
+  .plans-sticky-bar__left { min-width: 0; }
+  .plans-sticky-bar__name { font-size: 14.5px; color: var(--ink); }
+  .plans-sticky-bar__sub { font-size: 12px; color: var(--navy-soft); margin-top: 2px; }
+  .plans-sticky-bar__cta { height: 44px; padding: 0 18px; font-size: 14px; font-weight: 700; flex: 0 0 auto; }
+}
 .plus-sheet__intro { margin:7px 0 0; color:var(--navy); line-height:1.5; }
 .plus-sheet__facts { margin:18px 0 0; padding:0; list-style:none; }
 .plus-sheet__facts li { display:flex; gap:9px; padding:10px 0; border-top:1px solid var(--border); font-size:14.5px; line-height:1.4; }
@@ -1455,6 +1502,23 @@ main.plans-page { width:100%; max-width:1440px; box-sizing:border-box; }
 .modal--saved .modal__sub { line-height: 1.5; font-size: 15px; }
 .saved-actions { display: flex; gap: 10px; margin-top: 20px; }
 .saved-actions .btn { margin: 0; }
+
+.modal--login {
+  max-width: 440px;
+  text-align: left;
+  padding: 32px 28px 24px;
+  position: relative;
+}
+.modal--login .ula-avatar {
+  margin: 0 0 10px;
+}
+.login-modal__head {
+  margin-bottom: 18px;
+}
+.modal--login .field__input {
+  width: 100%;
+  box-sizing: border-box;
+}
 
 @media (max-width: 768px) {
   .overlay { padding: 12px; }
@@ -6910,7 +6974,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 0b9c336 + local edits</span>
+  <span class="demo-banner__build">build a2babfb + local edits</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -6986,6 +7050,9 @@ const ICONS = {
   device:'<rect x="6.5" y="3" width="11" height="18" rx="2.2"/><path d="M10.6 18.2h2.8"/>',
   /* Saving is not buying, so it does not wear a cart or a card. */
   bookmark:'<path d="M6.5 3.5h11v17l-5.5-4-5.5 4Z"/>',
+  video:'<polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>',
+  play:'<polygon points="5 3 19 12 5 21 5 3"/>',
+  pause:'<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>',
   /* A filled tick, for the one line that states a fact already counted rather than
      an item in a list. It carries its own colour, so it survives on cream. */
   checkFill:'<circle cx="12" cy="12" r="9" fill="#1f9d55" stroke="none"/><path d="M7.8 12.3 10.7 15l5.5-5.7" stroke="#fff" stroke-width="2.1"/>',
@@ -7880,6 +7947,7 @@ let ASK={q:'',result:null};
    your studio to get back to it would be the search version of asking twice. */
 let SEARCH={q:'',result:null};
 let ROUTE='landing', ACKTEXT=null, UNCLEAR=false, NOCHOICE=false, EDITING=null, ERRORS={}, FIELDS={}, TYPING=false, SHEET=null, PANEL_OPEN=false;
+let LOGIN_MODAL_OPEN=false, LOGIN_ERROR=null, LOGIN_SUCCESS=false;
 /* City is "detected" in production (IP or browser location). The pilot only has
    venue data loaded for Berlin, so the chip says so plainly and a Change link
    never lies about coverage — picking another city logs the demand instead. */
@@ -7920,8 +7988,72 @@ let ACTIVE_CATEGORY_FILTER='all';
    into S.answers: a guess of ours must never come back as something they told us (rule 53). */
 const DETECTED_AREA = 'mitte';
 
+const STORAGE_KEY = 'usc_pilot_state';
+const JOURNEYS_KEY = 'usc_saved_journeys';
+
+const saveState = state => {
+  try {
+    if (state && typeof localStorage !== 'undefined') {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+  } catch (_) {}
+};
+
+const loadState = () => {
+  try {
+    if (typeof localStorage !== 'undefined') {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) return JSON.parse(raw);
+    }
+  } catch (_) {}
+  return null;
+};
+
+const clearStoredState = () => {
+  try {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem(STORAGE_KEY);
+    }
+  } catch (_) {}
+};
+
+const saveJourney = (email, state) => {
+  if (!email || !state) return;
+  try {
+    if (typeof localStorage !== 'undefined') {
+      const key = email.trim().toLowerCase();
+      let db = {};
+      const raw = localStorage.getItem(JOURNEYS_KEY);
+      if (raw) db = JSON.parse(raw) || {};
+      db[key] = {
+        state: JSON.parse(JSON.stringify(state)),
+        savedAt: new Date().toISOString()
+      };
+      localStorage.setItem(JOURNEYS_KEY, JSON.stringify(db));
+    }
+  } catch (_) {}
+};
+
+const getJourney = (email) => {
+  if (!email) return null;
+  try {
+    if (typeof localStorage !== 'undefined') {
+      const key = email.trim().toLowerCase();
+      const raw = localStorage.getItem(JOURNEYS_KEY);
+      if (raw) {
+        const db = JSON.parse(raw) || {};
+        if (db[key] && db[key].state) return db[key].state;
+      }
+    }
+  } catch (_) {}
+  return null;
+};
+
 const esc = v => String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-const log = (name,payload) => S.events.push({ name, payload:payload||null, at:new Date().toISOString() });
+const log = (name,payload) => {
+  S.events.push({ name, payload:payload||null, at:new Date().toISOString() });
+  saveState(S);
+};
 const b64e = o => btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 const b64d = s => JSON.parse(decodeURIComponent(escape(atob(s.replace(/-/g,'+').replace(/_/g,'/')))));
 const resumeUrl = () => `${location.href.split('#')[0].split('?')[0]}#resume=${b64e(S)}`;
@@ -7953,10 +8085,27 @@ const currentPlan = () => {
   const r = recommend(A(), matchVenues(A()));
   return planById(S.chosenPlanId) || planById(r.planId) || planByRank(2);
 };
-const validEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e||'');
+const validEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test((e||'').trim());
+const validPhone = p => {
+  if (!p) return false;
+  const digits = String(p).replace(/\D/g, '');
+  return digits.length >= 7 && digits.length <= 16;
+};
 const isoDay = dt => `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
-const dobMax = () => isoDay(new Date());
+/* Minimum age is 18 */
+const dobMax = () => {
+  const n = new Date();
+  return isoDay(new Date(n.getFullYear() - 18, n.getMonth(), n.getDate()));
+};
 const dobMin = () => { const n=new Date(); return isoDay(new Date(n.getFullYear()-120, n.getMonth(), n.getDate())); };
+const isAtLeast18 = isoDate => {
+  if (!isoDate || !/^\d{4}-\d{2}-\d{2}$/.test(isoDate)) return false;
+  const [y, m, d] = isoDate.split('-').map(Number);
+  const today = new Date();
+  const cutoff = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
+  const birth = new Date(y, m - 1, d);
+  return birth <= cutoff;
+};
 
 
 /* ---------------- shared chrome ---------------- */
@@ -8126,6 +8275,59 @@ function closeSaveModal(reason='closed') {
   document.body.style.overflow = ''; document.body.classList.remove('save-modal-open');
   log('save_modal_closed', { reason, atStep:S.lastStep });
   armSaveInactivity();
+}
+function loginModal() {
+  const err = LOGIN_ERROR ? `<div class="notice notice--error" role="alert" style="margin-bottom:16px">${icon('info',16)} <span>${esc(LOGIN_ERROR)}</span></div>` : '';
+  const notFoundActions = LOGIN_ERROR && LOGIN_ERROR.includes('No saved journey') ? `
+    <div style="margin-top:12px;text-align:center">
+      <button class="btn btn--secondary btn--block" type="button" data-close-login data-go="fit">Start fresh fit quiz</button>
+    </div>` : '';
+
+  return `<div class="overlay" id="login-modal" ${LOGIN_MODAL_OPEN?'':'hidden'} role="dialog" aria-modal="true" aria-labelledby="login-modal-title">
+    <div class="modal modal--login">
+      <button class="modal__close" data-close-login aria-label="Close login dialog">&times;</button>
+      <div class="login-modal__head">
+        ${ulaAvatar('sm')}
+        <h2 id="login-modal-title" style="margin:8px 0 4px;font-size:22px;font-weight:800;letter-spacing:-0.02em">Resume your journey</h2>
+        <p class="small muted" style="margin:0 0 16px">Enter the email you used when saving to pick up where you left off.</p>
+      </div>
+      ${err}
+      <form data-form="login" novalidate class="login-form">
+        <div class="field" style="margin-bottom:14px">
+          <label class="field__label" for="login-email">Your email address</label>
+          <input id="login-email" class="field__input" type="email" name="email" placeholder="you@example.com" value="${esc(FIELDS.loginEmail||'')}" autocomplete="email" required>
+        </div>
+        <button class="btn btn--primary btn--block" type="submit">Resume my journey</button>
+        <div class="orline" style="margin:16px 0"><span>or continue with</span></div>
+        <div class="sso-row" style="max-width:none;margin-bottom:12px">
+          <button class="sso-btn" type="submit" name="provider" value="google" aria-label="Resume with Google">${GOOGLE} <span>Google</span></button>
+          <button class="sso-btn" type="submit" name="provider" value="apple" aria-label="Resume with Apple">${APPLE} <span>Apple</span></button>
+        </div>
+        ${notFoundActions}
+      </form>
+    </div>
+  </div>`;
+}
+function openLoginModal(error=null) {
+  LOGIN_MODAL_OPEN = true;
+  LOGIN_ERROR = error;
+  const old = document.getElementById('login-modal');
+  if (old) old.outerHTML = loginModal();
+  const modal = document.getElementById('login-modal');
+  if (!modal) return;
+  modal.hidden = false;
+  document.body.style.overflow = 'hidden';
+  document.body.classList.add('login-modal-open');
+  const input = modal.querySelector('input');
+  if (input) input.focus();
+}
+function closeLoginModal() {
+  LOGIN_MODAL_OPEN = false;
+  LOGIN_ERROR = null;
+  const modal = document.getElementById('login-modal');
+  if (modal) modal.hidden = true;
+  document.body.style.overflow = '';
+  document.body.classList.remove('login-modal-open');
 }
 function hasSaveableProgress() {
   return ROUTE !== 'landing' || Object.keys(S.answers||{}).length > 0 || Boolean(SEARCH.q || SEARCH.result);
@@ -8612,7 +8814,8 @@ function landing() {
          field. Nothing on this page collects anything any more, so the sentence went and
          the links moved here, where they belong on a page that makes no request. -->
     Urban Sports Club pilot · real plans, terms and venues · <button class="linkish" data-go="terms">Terms</button> · <button class="linkish" data-go="privacy">Privacy</button> · <button class="linkish" data-go="data">journey data</button> · <button class="linkish" data-go="email">follow-up email preview</button>
-  </footer>`;
+  </footer>
+  ${loginModal()}`;
 }
 
 /* Where this page is looking from. If they have told us, it is theirs; if they have not,
@@ -10140,115 +10343,293 @@ function plusSheet() {
     </div></div>`;
 }
 
+function formatFitAnswers() {
+  const ans = S.answers || {};
+  const goalLabel = answerLabel('goal', ans.goal);
+  const actLabels = answerLabel('activities', ans.activities);
+  const areaLabels = answerLabel('area', ans.area);
+  const freqLabel = answerLabel('frequency', ans.frequency);
+  const hasAnswers = Boolean(goalLabel || actLabels || areaLabels || freqLabel);
+  return { goalLabel, actLabels, areaLabels, freqLabel, hasAnswers };
+}
+
+const PLAN_LINE_META = [
+  {
+    id: 'essential',
+    iconEmoji: '📅',
+    headline: 'Once a week',
+    tierName: 'Essential',
+    tierMeta: '4 visits · 5,600+ venues',
+    diffColTitle: 'What Essential gives you',
+    diffBullets: [
+      { icon: 'calendar', text: '4 check-ins each month' },
+      { icon: 'pin', text: '5,600+ partner gyms, pools & studios' },
+      { icon: 'video', text: 'Up to 4 live online classes' }
+    ],
+    everythingColTitle: 'Everything in Essential',
+    everythingBullets: [
+      { icon: 'checkThin', text: 'Flexible starter routine (~1 visit a week)' },
+      { icon: 'pin', text: '5,600+ partner venues across Europe' },
+      { icon: 'sparkle', text: 'Free access to popular wellbeing apps' }
+    ],
+    getAllowances: (term, pause) => [
+      { icon: 'video', text: 'Up to 4 online classes' },
+      { icon: 'play', text: 'Unlimited video on demand' },
+      { icon: 'calendar', text: term },
+      { icon: 'clock', text: "Cancel with 3 days' notice" },
+      { icon: 'pause', text: pause }
+    ]
+  },
+  {
+    id: 'classic',
+    iconEmoji: '👟',
+    headline: 'Move most days',
+    tierName: 'Classic',
+    tierMeta: 'Daily visits · 14,800+ venues',
+    diffColTitle: 'What Classic adds over Essential',
+    diffBullets: [
+      { icon: 'plus', text: 'Daily check-ins instead of 4 visits/month' },
+      { icon: 'pin', text: '9,200+ more venues (14,800+ total)' },
+      { icon: 'video', text: 'Up to 30 live online classes (vs 4)' }
+    ],
+    everythingColTitle: 'Everything in Classic',
+    everythingBullets: [
+      { icon: 'checkThin', text: 'Visit once every day' },
+      { icon: 'pin', text: '14,800+ partner venues & classes' },
+      { icon: 'star', text: 'Most popular for everyday sports & fitness' }
+    ],
+    getAllowances: (term, pause) => [
+      { icon: 'video', text: 'Up to 30 online classes' },
+      { icon: 'play', text: 'Unlimited video on demand' },
+      { icon: 'calendar', text: term },
+      { icon: 'clock', text: "Cancel with 3 days' notice" },
+      { icon: 'pause', text: pause }
+    ]
+  },
+  {
+    id: 'premium',
+    iconEmoji: '🪷',
+    headline: 'Add spas & recovery',
+    tierName: 'Premium',
+    tierMeta: 'Daily + 4 Plus visits · includes 1 massage',
+    diffColTitle: 'What Premium adds over Classic',
+    diffBullets: [
+      { icon: 'plus', text: '+4 more Plus visits each month' },
+      { icon: 'sparkle', text: '+1 massage each month included' },
+      { icon: 'pin', text: '2,900+ more venues (17,700+ total)' }
+    ],
+    everythingColTitle: 'Everything in Premium',
+    everythingBullets: [
+      { icon: 'checkThin', text: 'Visit once a day' },
+      { icon: 'pin', text: '17,700+ venues across Europe' },
+      { icon: 'sparkle', text: '4 Plus visits/mo (day spas, EMS & massage)' }
+    ],
+    getAllowances: (term, pause) => [
+      { icon: 'video', text: 'Up to 30 online classes' },
+      { icon: 'play', text: 'Unlimited video on demand' },
+      { icon: 'calendar', text: term },
+      { icon: 'clock', text: "Cancel with 3 days' notice" },
+      { icon: 'pause', text: pause }
+    ]
+  },
+  {
+    id: 'max',
+    iconEmoji: '💛',
+    headline: 'Live exceptionally',
+    headSub: 'More Plus visits and recovery every month.',
+    tierName: 'Max',
+    tierMeta: 'Daily + 8 Plus visits · includes 2 massages',
+    diffColTitle: 'What Max adds over Premium',
+    diffBullets: [
+      { icon: 'plus', text: '+4 more Plus visits each month' },
+      { icon: 'sparkle', text: '+1 more massage each month' },
+      { icon: 'pin', text: '100+ more venues' }
+    ],
+    everythingColTitle: 'Everything in Max',
+    everythingBullets: [
+      { icon: 'checkThin', text: 'Visit once a day' },
+      { icon: 'pin', text: '17,800+ venues' },
+      { icon: 'sparkle', text: '8 Plus visits each month, including 2 massages' }
+    ],
+    getAllowances: (term, pause) => [
+      { icon: 'video', text: 'Up to 30 online classes' },
+      { icon: 'play', text: 'Unlimited video on demand' },
+      { icon: 'calendar', text: term },
+      { icon: 'clock', text: "Cancel with 3 days' notice" },
+      { icon: 'pause', text: pause }
+    ]
+  }
+];
+
 function plansScreen() {
-  const maxVenues=17800;
-  const selectedPlanId = S.chosenPlanId || (PLANS.find(pl=>pl.mostPopular)||PLANS[1]).id;
-  const selectedPlan = PLANS.find(pl=>pl.id===selectedPlanId) || PLANS[1];
+  const selectedPlanId = S.chosenPlanId || (PLANS.find(pl => pl.mostPopular) || PLANS[1]).id;
+  const selectedPlan = PLANS.find(pl => pl.id === selectedPlanId) || PLANS[1];
+  const fitInfo = formatFitAnswers();
 
-  const cards = PLANS.map(pl=>{
-    const price=priceFor(pl,S.commitmentId), venues=parseInt(String(pl.venueCount).replace(/\D/g,''),10)||0;
-    const access=Math.max(5,Math.min(100,venues/maxVenues*100));
-    const daily=Boolean(pl.dailyCheckIn), plus=pl.plusCheckIns||0, selected=selectedPlan.id===pl.id;
-    const tierMeta = {
-      essential: {
-        tagline: 'Starter · Light routine',
-        checkText: '4 visits total each month',
-        checkSub: '~1 visit a week at gyms & fitness pools',
-        best: 'Simple starter plan for gym & pool basics'
-      },
-      classic: {
-        tagline: 'Daily sports · Most popular',
-        checkText: '1 visit every day',
-        checkSub: 'Daily access across 14,800+ sports venues & classes',
-        best: 'Everyday sports, fitness studios & classes'
-      },
-      premium: {
-        tagline: 'Sports + Spas & Wellness',
-        checkText: 'Daily sports + 4 Plus visits',
-        checkSub: 'Includes 1 massage/mo, day spas & wellness',
-        best: 'Complete active lifestyle + regular spa days & massages'
-      },
-      max: {
-        tagline: 'Ultimate Luxury & Recovery',
-        checkText: 'Daily sports + 8 Plus visits',
-        checkSub: 'Includes 2 massages/mo, luxury clubs & spas',
-        best: 'High-frequency wellness, luxury day spas & top studios'
-      }
-    }[pl.id] || {
-      tagline: pl.name,
-      checkText: daily ? 'Daily check-ins' : '4 total each month',
-      checkSub: daily ? 'up to one each day' : 'about once a week',
-      best: pl.bestFor
-    };
+  const termLabel = S.commitmentId === 'annual' ? '12-month contract' : S.commitmentId === 'biennial' ? '24-month contract' : 'Monthly contract';
+  const pauseRule = S.commitmentId === 'monthly' ? 'Pause anytime (1–6 months)' : 'Pausing and downgrading not available';
 
-    const plusCopy=plus ? `<button class="plancard__plus" type="button" data-plus-open="${esc(pl.id)}" aria-label="Explain Plus check-ins on ${esc(pl.name)}">
-        <b>${plus} Plus check-ins / month</b><span>For premium studios, day spas &amp; EMS</span>
-        <em>Includes ${pl.id==='max'?'2 massages/mo':'1 massage/mo'}</em><u>What are Plus check-ins?</u></button>`
-      : `<div class="plancard__locked">${icon('lock',13)}<span>No spa / massage included</span></div>`;
-    return `<article class="plancard ${pl.mostPopular?'is-popular':''} ${selected?'is-selected':''}" data-pick-plan="${esc(pl.id)}" role="button" tabindex="0" ${selected?'aria-current="true"':''}>
-      <div class="plancard__top">
-        ${pl.mostPopular?`<span class="badge plancard__badge">Most popular</span>`:''}
-        <div class="plancard__name">${esc(pl.name)}</div>
-        <div class="plancard__tagline">${esc(tierMeta.tagline)}</div>
-        <div class="plancard__price"><b>${price} €</b><span>/month</span></div>
+  const perkBanner = S.commitmentId === 'annual'
+    ? `<div class="commit-perk-banner"><span class="perk-icon">📱</span> <span><strong>12 months</strong> includes 1 free wellbeing app &middot; plus a &euro;20 merchandise voucher</span></div>`
+    : S.commitmentId === 'biennial'
+    ? `<div class="commit-perk-banner"><span class="perk-icon">🎁</span> <span><strong>24 months</strong> saves 20% &middot; includes 2 free wellbeing apps &middot; plus a &euro;20 merchandise voucher</span></div>`
+    : `<div class="commit-perk-banner"><span class="perk-icon">⚡</span> <span><strong>Monthly flexibility</strong> &middot; cancel anytime with 3 days&rsquo; notice before your renewal date</span></div>`;
+
+  const planLines = PLAN_LINE_META.map(pt => {
+    const pl = PLANS.find(p => p.id === pt.id) || PLANS[0];
+    const price = priceFor(pl, S.commitmentId);
+    const isSelected = selectedPlan.id === pl.id;
+    const allowances = pt.getAllowances(termLabel, pauseRule);
+
+    return `<article class="plan-line ${isSelected ? 'is-selected' : ''}" data-pick-plan="${esc(pl.id)}" role="button" tabindex="0" ${isSelected ? 'aria-expanded="true" aria-current="true"' : 'aria-expanded="false"'}>
+      <div class="plan-line__header">
+        <div class="plan-line__icon-wrap"><span class="plan-line__icon">${pt.iconEmoji}</span></div>
+        <div class="plan-line__info">
+          <div class="plan-line__headline">${esc(pt.headline)}</div>
+          ${pt.headSub && isSelected ? `<div class="plan-line__headsub">${esc(pt.headSub)}</div>` : ''}
+        </div>
+        <div class="plan-line__tier">
+          <span class="plan-line__tier-name">${esc(pt.tierName)}</span>
+          <span class="plan-line__tier-meta">${esc(pt.tierMeta)}</span>
+        </div>
+        <div class="plan-line__price">
+          <b>${price} &euro;</b> <span>/ month</span>
+        </div>
       </div>
-      <button class="btn ${selected?'btn--primary':'btn--secondary'} btn--block plancard__cta" type="button" data-pick-plan="${esc(pl.id)}" aria-pressed="${selected?'true':'false'}">${selected?`${icon('checkThin',17)} Selected`:`Choose ${esc(pl.name)}`}</button>
-      <div class="plancard__features">
-        <div class="plancard__feature-item">${icon('checkThin', 16)} <span><b>${esc(tierMeta.checkText)}</b></span></div>
-        <div class="plancard__section plancard__section--venues"><span class="plancard__label">Venue access</span>
-          <div class="plancard__venues">${esc(pl.venueCount)} venues</div>
-          <div class="accessbar" role="img" aria-label="${esc(pl.venueCount)} venues out of 17,800 on Max"><span class="accessbar__fill" style="width:${access}%"></span></div></div>
-        <div class="plancard__section plancard__section--checkins"><span class="plancard__label">Routine fit</span>
-          <span class="plancard__check-main">${esc(tierMeta.checkSub)}</span>${planWeekDots(daily)}</div>
-        <div class="plancard__section plancard__section--plus"><span class="plancard__label">Plus &amp; recovery</span>${plusCopy}</div>
-        <div class="plancard__section plancard__best"><span class="plancard__label">Best for</span>${esc(tierMeta.best)}</div>
-      </div>
+      ${isSelected ? `
+        <div class="plan-line__expanded">
+          <div class="plan-diff-grid">
+            <div class="plan-diff-col">
+              <h4 class="plan-diff-col__title">${esc(pt.diffColTitle)}</h4>
+              <ul class="plan-diff-list">
+                ${pt.diffBullets.map(b => `<li><span class="diff-bullet-icon diff-bullet-icon--yellow">${icon(b.icon, 15)}</span> <span>${esc(b.text)}</span></li>`).join('')}
+              </ul>
+            </div>
+            <div class="plan-diff-col">
+              <h4 class="plan-diff-col__title">${esc(pt.everythingColTitle)}</h4>
+              <ul class="plan-diff-list">
+                ${pt.everythingBullets.map(b => `<li><span class="diff-bullet-icon diff-bullet-icon--yellow">${icon(b.icon, 15)}</span> <span>${esc(b.text)}</span></li>`).join('')}
+              </ul>
+            </div>
+            <div class="plan-diff-col">
+              <h4 class="plan-diff-col__title">Allowances &amp; terms</h4>
+              <ul class="plan-diff-list">
+                ${allowances.map(b => `<li><span class="diff-bullet-icon diff-bullet-icon--yellow">${icon(b.icon, 15)}</span> <span>${esc(b.text)}</span></li>`).join('')}
+              </ul>
+            </div>
+          </div>
+        </div>
+      ` : ''}
     </article>`;
   }).join('');
 
-  const selection = `<div class="plans-selection desktop-cta" role="status">
-    <div class="plans-selection__copy"><b>${esc(selectedPlan.name)} selected · ${priceFor(selectedPlan,S.commitmentId)} € /mo</b>
-      <span>You can keep comparing. Nothing moves forward until you continue.</span></div>
-    <button class="btn btn--primary" type="button" data-go="details">Continue with ${esc(selectedPlan.name)} ${icon('arrowRight',17)}</button>
-  </div>`;
+  const sidePanel = `<aside class="plans-side-card" aria-label="Make this fit your routine">
+    <div class="plans-side-card__header">
+      ${ulaAvatar('sm')}
+      <span class="plans-side-card__guide-name">Urby</span>
+    </div>
+    <h2 class="plans-side-card__title">Make this fit your routine</h2>
+    <p class="plans-side-card__subtitle">Your answers are ready whenever you want to adjust them.</p>
+
+    ${fitInfo.hasAnswers ? `
+      <div class="plans-fit-box">
+        <div class="plans-fit-box__head">
+          <span class="plans-fit-check">${icon('checkThin', 14)}</span>
+          <strong>Your fit</strong>
+        </div>
+        <div class="plans-fit-chips">
+          ${fitInfo.goalLabel ? `
+            <button class="fit-chip" type="button" data-edit="q1" aria-label="Edit goal: ${esc(fitInfo.goalLabel)}">
+              <span class="fit-chip__icon">🎯</span>
+              <span class="fit-chip__label">${esc(fitInfo.goalLabel)}</span>
+              <span class="fit-chip__edit">${icon('pencil', 12)}</span>
+            </button>` : ''}
+          ${fitInfo.actLabels ? `
+            <button class="fit-chip" type="button" data-edit="q2" aria-label="Edit activities: ${esc(fitInfo.actLabels)}">
+              <span class="fit-chip__icon">🏋️</span>
+              <span class="fit-chip__label">${esc(fitInfo.actLabels)}</span>
+              <span class="fit-chip__edit">${icon('pencil', 12)}</span>
+            </button>` : ''}
+          ${fitInfo.areaLabels ? `
+            <button class="fit-chip" type="button" data-edit="q3" aria-label="Edit location: ${esc(fitInfo.areaLabels)}">
+              <span class="fit-chip__icon">📍</span>
+              <span class="fit-chip__label">${esc(fitInfo.areaLabels)}</span>
+              <span class="fit-chip__edit">${icon('pencil', 12)}</span>
+            </button>` : ''}
+          ${fitInfo.freqLabel ? `
+            <button class="fit-chip" type="button" data-edit="q4" aria-label="Edit frequency: ${esc(fitInfo.freqLabel)}">
+              <span class="fit-chip__icon">📅</span>
+              <span class="fit-chip__label">${esc(fitInfo.freqLabel)}</span>
+              <span class="fit-chip__edit">${icon('pencil', 12)}</span>
+            </button>` : ''}
+        </div>
+      </div>
+      <button class="btn btn--secondary btn-side-back" type="button" data-go="recommendation">
+        Back to my routine &amp; favourites &rarr;
+      </button>
+      <p class="plans-side-caption">Built from your four answers, and yours to change.</p>
+    ` : `
+      <div class="plans-fit-empty">
+        <p>Answer 4 quick questions and I&rsquo;ll tailor a routine recommendation with real nearby venues and live schedules.</p>
+        <button class="btn btn--secondary btn-side-back" type="button" data-go="fit">
+          Find my fit &rarr;
+        </button>
+        <p class="plans-side-caption">Takes 2 minutes &middot; no email needed</p>
+      </div>
+    `}
+
+    <button class="plans-side-save" type="button" data-go="save">
+      <span class="save-icon">${icon('bookmark', 16)}</span>
+      <div class="save-text">
+        <strong>Save these places for later</strong>
+        <span>Keeps your answers and brings you back here.</span>
+      </div>
+    </button>
+  </aside>`;
 
   const stickyBar = `<div class="plans-sticky-bar">
     <div class="plans-sticky-bar__left">
-      <div class="plans-sticky-bar__name"><b>${esc(selectedPlan.name)}</b> &middot; ${priceFor(selectedPlan,S.commitmentId)} €/mo</div>
-      <div class="plans-sticky-bar__sub">${S.commitmentId==='annual'?'12-month commitment':'Monthly · Cancel anytime'}</div>
+      <div class="plans-sticky-bar__name"><b>${esc(selectedPlan.name)}</b> &middot; ${priceFor(selectedPlan, S.commitmentId)} &euro;/mo</div>
+      <div class="plans-sticky-bar__sub">${S.commitmentId === 'annual' ? '12-month commitment' : S.commitmentId === 'biennial' ? '24-month commitment' : 'Monthly &middot; Cancel anytime'}</div>
     </div>
     <button class="btn btn--primary plans-sticky-bar__cta" type="button" data-go="details">
-      Continue with ${esc(selectedPlan.name)} ${icon('arrowRight',16)}
+      Continue with ${esc(selectedPlan.name)} ${icon('arrowRight', 16)}
     </button>
   </div>`;
 
-  const journeyRoute=fitComplete(S.answers)?'recommendation':'fit';
-  const guide=`<aside class="plans-guide" aria-label="Get help choosing a membership">
-    <div class="plans-guide__brand">${ulaAvatar('sm')}<span>Urby &middot; Guide</span></div>
-    <h2>Not sure which plan to pick?</h2>
-    <p>Answer 4 quick questions and I&rsquo;ll match one plan to your favourite activities, nearby venues and weekly routine.</p>
-    <button class="btn btn--primary" type="button" data-go="${journeyRoute}" style="margin-top:16px">Find my fit ${icon('arrowRight',16)}</button>
-    <span class="plans-guide__note">2 minutes · no email needed</span>
-  </aside>`;
+  return `${topbar(1, { stepper: false, savedNote: Boolean(S.email && S.saveOptIn) })}<main class="content plans-page" id="main">
+    <div class="plans-layout">
+      <div class="plans-main">
+        <div class="commit-row">${COMMITMENTS.map(c => {
+          const isCur = c.id === S.commitmentId;
+          const termLabel = c.minimumTermMonths === 1 ? 'Monthly' : `${c.minimumTermMonths} months`;
+          const savingBadge = c.id === 'annual' ? '<span class="commit-save-pill">Save 15%</span>' : c.id === 'biennial' ? '<span class="commit-save-pill">Save 20%</span>' : '';
+          return `<button class="chip-sm ${isCur ? 'is-current' : ''}" type="button" data-commit="${esc(c.id)}"><span>${esc(termLabel)}</span>${savingBadge}</button>`;
+        }).join('')}</div>
 
-  return `${topbar(1,{stepper:false,savedNote:Boolean(S.email&&S.saveOptIn)})}<main class="content plans-page" id="main">
-    <div class="plans-layout"><div class="plans-main">
-      <div class="plans-kicker">${ulaAvatar('sm')}<span><strong>Urby</strong> · Membership guide</span></div>
-      <div class="plans-head"><h1 class="h-question" tabindex="-1">Compare memberships</h1>
-        <p class="reco-lede">See how venue access, visit frequency and premium benefits change with each plan.</p></div>
-      <div class="commit-row">${COMMITMENTS.map(c=>{
-        const isCur = c.id === S.commitmentId;
-        const termLabel = c.minimumTermMonths === 1 ? 'Monthly' : `${c.minimumTermMonths} months`;
-        const savingBadge = c.id === 'annual' ? '<span class="commit-save-pill">Save 15%</span>' : c.id === 'biennial' ? '<span class="commit-save-pill">Save 20%</span>' : '';
-        return `<button class="chip-sm ${isCur?'is-current':''}" data-commit="${esc(c.id)}"><span>${esc(termLabel)}</span>${savingBadge}</button>`;
-      }).join('')}</div>
-      <div class="plangrid-hint"><span>Swipe to compare all 4 plans &rarr;</span></div>
-      <div class="plangrid">${cards}</div>${selection}
-      <div class="plans-shared">${icon('checkThin',17)}<span>Every membership includes video on demand, wellbeing apps and online classes.</span>
-        <button class="linkish" type="button" data-go="terms">Membership terms</button>
-        <button class="plans-shared__ask" type="button" data-plan-ask>Ask Urby</button></div>
-      ${PLANASK?`<div class="plans-ask">${askBlock(true,false)}</div>`:''}
-    </div>${guide}</div>
+        ${perkBanner}
+
+        <div class="plans-head">
+          <h1 class="h-question" tabindex="-1">What kind of month are you planning?</h1>
+          <p class="reco-lede">Choose the closest match. You can change it anytime.</p>
+        </div>
+
+        <div class="plan-lines-group">${planLines}</div>
+
+        <div class="plans-always-banner">
+          <span class="always-sparkle">✦</span>
+          <span><strong>Always included:</strong> on-site activities &middot; online classes &middot; video on demand</span>
+        </div>
+
+        <div class="plans-cta-wrap">
+          <button class="btn btn--primary btn-continue-plan" type="button" data-go="details">
+            Continue with ${esc(selectedPlan.name)}
+          </button>
+        </div>
+      </div>
+
+      ${sidePanel}
+    </div>
   </main>${stickyBar}${plusSheet()}${exitModal()}`;
 }
 
@@ -10491,12 +10872,12 @@ function detailsScreen() {
           <section class="details-section"><div class="fitpanel__label">Personal information</div>
             <div class="details-grid details-grid--person">
               ${f('firstName','First name',{auto:'given-name'})}${f('lastName','Last name',{auto:'family-name'})}
-              ${f('birthDate','Date of birth',{type:'date',auto:'bday',max:dobMax(),min:dobMin()})}
+              ${f('birthDate','Date of birth',{type:'date',auto:'bday',max:dobMax(),min:dobMin(),why:'Must be at least 18 years old.'})}
             </div></section>
           <section class="details-section"><div class="fitpanel__label">Contact details</div>
             <div class="details-grid details-grid--contact">
               ${f('email','Membership email',{type:'email',auto:'email',mode:'email',ph:'you@example.com',why:'For your membership contract. Entering your email here does not save your progress if you leave.'})}
-              ${f('phone','Mobile number',{type:'tel',auto:'tel',mode:'tel',optional:true,ph:'+49 151...'})}
+              ${f('phone','Mobile number',{type:'tel',auto:'tel',mode:'tel',ph:'+49 151 12345678',why:'For booking confirmations and studio access.'})}
             </div></section>
           <section class="details-section"><div class="fitpanel__label">Home address</div>
             <div class="details-grid details-grid--address">
@@ -11066,7 +11447,7 @@ function simpleScreen(heading, paras) {
 const SCREENS = {
   landing, search:searchScreen, fit:fitScreen, plans:plansScreen, recommendation:recommendationScreen, save:saveScreen, details:detailsScreen,
   payment:paymentScreen, confirmation:confirmationScreen, left:leftScreen, email:emailScreen, data:dataScreen,
-  login: () => simpleScreen('Log in is out of scope for the pilot', ['Existing members would go to the current Urban Sports Club login. The pilot deliberately avoids creating a second authentication system.']),
+  login: () => { openLoginModal(); return landingScreen(); },
   terms: () => simpleScreen('Terms — placeholder', ['The pilot links here so the consent wording sits in the right place, but the real content comes from Legal.']),
   privacy: () => simpleScreen('Privacy policy — placeholder', ['What the pilot does implement: marketing consent is captured separately from accepting the Terms, stored per visitor, and the follow-up email only includes marketing content when consent was given.'])
 };
@@ -11107,11 +11488,12 @@ function go(route, opts={}) {
      screen, reached by someone who wants to leave. */
   ROUTE = route; EDITING = null; SHEET = null; CITYPICK = false; CITYWANTED = null; PLACEWANTED = null; VENUESOPEN = false; APPSOPEN = false; DAYNOTE = null; VENUEQ = '';
   MOREOPEN = false; MOREPICK = null; ALTOPEN = null; PLANPLUS = null; PLANASK = false; WHEREPICK = false; SEEALL = false;
-  document.body.classList.remove('save-modal-open'); document.body.style.overflow = '';
+  document.body.classList.remove('save-modal-open'); document.body.classList.remove('login-modal-open'); document.body.style.overflow = '';
   /* A reviewer saw the save screen's "enter a valid email" error appear under the
      details form's own email field. Errors belong to the screen that produced them. */
   ERRORS = {}; FIELDS = {}; NOCHOICE = false; UNCLEAR = false;
   if (['fit','recommendation','save','details','payment'].includes(route)) S.lastStep = route;
+  saveState(S);
   /* The route lives in history state, not in the address bar. It used to write
      "#recommendation", which looked like a deep link and was not one: opening it in a
      fresh browser silently showed the landing page, so a saved or shared link quietly
@@ -11129,6 +11511,8 @@ window.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     const modal = document.getElementById('exit-modal');
     if (modal && !modal.hidden) closeSaveModal('esc_key');
+    const loginModalEl = document.getElementById('login-modal');
+    if (loginModalEl && !loginModalEl.hidden) closeLoginModal();
   }
 });
 
@@ -11488,17 +11872,17 @@ document.addEventListener('click', e => {
   if (t.dataset.go !== undefined) {
     e.preventDefault();
     if (t.dataset.go === 'save') { openSaveModal('form', 'save_link'); return; }
+    if (t.dataset.go === 'login') { openLoginModal(); return; }
     go(t.dataset.go); return;
   }
   if (t.dataset.startFit !== undefined) {
-    /* Arriving from a search that named an area, we already know the answer to one of
-       the four questions, so we do not ask it again (rule 11). It is filled in, not
-       assumed silently: it shows up as an answer chip on the next screen and the chip
-       is its own edit control, so a wrong guess costs one tap (rules 15 and 26). */
     if (t.dataset.areaId && AREAS.some(a=>a.id===t.dataset.areaId)) {
-      S.answers.area = t.dataset.areaId;
+      S.answers = { area: t.dataset.areaId };
       log('answer_given', { question:'area', value:t.dataset.areaId, mode:'search' });
+    } else {
+      S.answers = {};
     }
+    S.planOverridden = false;
     log('started_conversation', { variant:VARIANT, from:t.dataset.areaId?'search':'landing' }); go('fit'); return; }
   if (t.dataset.searchExample) { SEARCH.q = t.dataset.searchExample; SEARCH.result = searchPlaces(SEARCH.q);
     log('searched', { query:SEARCH.q, matched:SEARCH.result?SEARCH.result.kind:'none', example:true });
@@ -11646,6 +12030,8 @@ document.addEventListener('click', e => {
 
   if (t.dataset.openExit !== undefined) { openSaveModal('form', 'save_and_exit'); return; }
   if (t.dataset.closeExit !== undefined || (e.target && e.target.id === 'exit-modal')) { closeSaveModal('dismissed'); return; }
+  if (t.dataset.openLogin !== undefined) { openLoginModal(); return; }
+  if (t.dataset.closeLogin !== undefined || (e.target && e.target.id === 'login-modal')) { closeLoginModal(); return; }
 
   if (t.dataset.plan) { const recId = recommend(A(),matchVenues(A())).planId;
     const wasPlan = currentPlan();
@@ -11679,7 +12065,7 @@ document.addEventListener('click', e => {
     if (t.closest('#exit-modal')) { closeSaveModal('continued_without_saving'); return; }
     go(fitComplete(S.answers) || S.planOverridden ? 'recommendation' : 'fit'); return;
   }
-  if (t.dataset.reset !== undefined) { S = JSON.parse(JSON.stringify(BLANK)); history.replaceState({route:'landing'},'',location.pathname); go('landing',{replace:true}); return; }
+  if (t.dataset.reset !== undefined) { clearStoredState(); S = JSON.parse(JSON.stringify(BLANK)); history.replaceState({route:'landing'},'',location.pathname); go('landing',{replace:true}); return; }
   if (t.dataset.copyResume !== undefined) {
     const done = () => { t.textContent = 'Copied — bookmark or reopen this link'; log('resume_link_copied',{ atStep:S.lastStep, identified:Boolean(S.email) }); };
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(resumeUrl()).then(done).catch(()=>{});
@@ -11724,10 +12110,18 @@ document.addEventListener('keydown', e => {
     return;
   }
   if (e.key === 'Enter') {
+    const pickChoice = e.target.closest('[role="button"][data-pick-plan]');
+    if (pickChoice) { pickChoice.click(); e.preventDefault(); return; }
     const planChoice = e.target.closest('[role="button"][data-plan]');
     if (planChoice) { planChoice.click(); e.preventDefault(); return; }
     const card = e.target.closest('[data-card]');
     if (card) { const input = card.querySelector('input'); if (input && !input.checked) { input.checked = true; input.dispatchEvent(new Event('change',{bubbles:true})); } e.preventDefault(); return; }
+  }
+  if (e.key === ' ' || e.key === 'Spacebar') {
+    const pickChoice = e.target.closest('[role="button"][data-pick-plan]');
+    if (pickChoice && e.target.tagName !== 'INPUT' && e.target.tagName !== 'BUTTON') {
+      pickChoice.click(); e.preventDefault(); return;
+    }
   }
   if (e.key === 'Escape') {
     if (APP_SHEET) { APP_SHEET = null; document.body.style.overflow = ''; render(false); return; }
@@ -12020,12 +12414,54 @@ document.addEventListener('submit', e => {
       return false; }
     else S.authMethod = 'email';
     S.email = email; FIELDS.email = '';
+    saveJourney(S.email, S);
+    saveState(S);
     log('identified', { authMethod:S.authMethod, marketing:S.marketing, at:ROUTE });
     if (dest === 'saved-modal') {
       S.saveOptIn = true; render(false); openSaveModal('saved','save_completed'); return true;
     }
     go(dest); return true;
   };
+
+  if (kind === 'login') {
+    const email = (fd.get('email')||'').trim();
+    if (provider) {
+      const demoEmail = `demo.${provider}.user@example.com`;
+      let saved = getJourney(demoEmail) || getJourney(email);
+      if (!saved) {
+        saved = {
+          answers: { goal: ['move_more'], activities: ['gym', 'yoga'], area: ['mitte'], frequency: 'twice' },
+          chosenPlanId: 'classic', commitmentId: 'monthly',
+          email: demoEmail, authMethod: provider, lastStep: 'recommendation'
+        };
+        saveJourney(demoEmail, saved);
+      }
+      S = Object.assign(JSON.parse(JSON.stringify(BLANK)), saved);
+      S.returns = (S.returns||0) + 1;
+      log('returned_via_login', { authMethod: provider, email: demoEmail });
+      closeLoginModal();
+      saveState(S);
+      go(S.paid ? 'confirmation' : (S.lastStep === 'landing' ? 'fit' : S.lastStep));
+      return;
+    }
+    if (!validEmail(email)) {
+      openLoginModal('Please enter a valid email address.');
+      return;
+    }
+    const saved = getJourney(email);
+    if (saved) {
+      S = Object.assign(JSON.parse(JSON.stringify(BLANK)), saved);
+      S.returns = (S.returns||0) + 1;
+      log('returned_via_login', { authMethod: 'email', email });
+      closeLoginModal();
+      saveState(S);
+      go(S.paid ? 'confirmation' : (S.lastStep === 'landing' ? 'fit' : S.lastStep));
+      return;
+    } else {
+      openLoginModal(`No saved journey found for "${email}". Check the spelling or start a new fit quiz.`);
+      return;
+    }
+  }
 
   if (kind === 'ask') {
     ASK.q = (fd.get('q')||'').trim();
@@ -12119,21 +12555,26 @@ document.addEventListener('submit', e => {
       S.email = validEmail(S.email||'') ? S.email : `demo.${provider}.user@example.com`;
       S.details = Object.assign({}, S.details||{}, {
         firstName:(S.details&&S.details.firstName)||providerName,
-        lastName:(S.details&&S.details.lastName)||'Member', email:S.email
+        lastName:(S.details&&S.details.lastName)||'Member', email:S.email,
+        phone:(S.details&&S.details.phone)||'+49 151 2345678',
+        birthDate:(S.details&&S.details.birthDate)||'1995-06-15'
       });
       log('details_prefilled', { provider });
+      saveState(S);
       render(false); document.getElementById('birthDate')?.focus(); return;
     }
     const d={}; ['firstName','lastName','email','birthDate','phone','street','postcode','city'].forEach(k=>d[k]=(fd.get(k)||'').trim());
     S.details=d; ERRORS={};
     if (!d.firstName) ERRORS.firstName='We need your first name for the membership.';
     if (!d.lastName)  ERRORS.lastName='We need your last name for the membership.';
-    if (!validEmail(d.email)) ERRORS.email='Please check this email address.';
+    if (!validEmail(d.email)) ERRORS.email='Please enter a valid email address.';
     /* max/min on the input only guides the picker, and the form is novalidate, so a typed
        or pasted date still has to be checked here. */
     if (!d.birthDate) ERRORS.birthDate='Venues check age on entry, so this one is required.';
-    else if (d.birthDate > dobMax()) ERRORS.birthDate='That date hasn’t happened yet — please check it.';
+    else if (!isAtLeast18(d.birthDate)) ERRORS.birthDate='You must be at least 18 years old to join.';
     else if (d.birthDate < dobMin()) ERRORS.birthDate='Please check this date.';
+    if (!d.phone) ERRORS.phone='Please enter your mobile number.';
+    else if (!validPhone(d.phone)) ERRORS.phone='Please enter a valid mobile number (e.g. +49 151 12345678).';
     if (!d.street)    ERRORS.street='Please add your street and number.';
     if (!/^\d{4,5}$/.test(d.postcode)) ERRORS.postcode='Please enter a valid postcode.';
     if (!d.city)      ERRORS.city='Please add your city.';
@@ -12143,6 +12584,7 @@ document.addEventListener('submit', e => {
     /* We now hold an address, but holding one is not the same as being asked to
        keep the journey — saveOptIn stays as the visitor left it. */
     S.email = d.email; S.startDate = S.startDate || firstOfNextMonth();
+    saveState(S);
     log('details_completed'); go('payment'); return;
   }
 
@@ -12150,6 +12592,7 @@ document.addEventListener('submit', e => {
     FIELDS.method = fd.get('method')||'card';
     S.paid = true; S.lastStep = 'converted';
     log('payment_simulated',{ method:FIELDS.method, planId:S.chosenPlanId }); log('converted',{ planId:S.chosenPlanId });
+    saveState(S);
     go('confirmation'); return;
   }
 });
@@ -12161,9 +12604,11 @@ document.addEventListener('submit', e => {
   try {
     if (localStorage.getItem('usc_banner_collapsed') === '1') {
       const bar = document.getElementById('demo-banner');
-      bar.classList.add('is-collapsed');
-      const btn = bar.querySelector('[data-banner-toggle]');
-      btn.textContent = 'Show'; btn.setAttribute('aria-expanded', 'false');
+      if (bar) {
+        bar.classList.add('is-collapsed');
+        const btn = bar.querySelector('[data-banner-toggle]');
+        if (btn) { btn.textContent = 'Show'; btn.setAttribute('aria-expanded', 'false'); }
+      }
     }
   } catch (_) {}
   /* Older builds wrote step names into the address bar even though they were not
@@ -12177,10 +12622,15 @@ document.addEventListener('submit', e => {
       S = Object.assign(JSON.parse(JSON.stringify(BLANK)), b64d(m[1]));
       S.returns = (S.returns||0)+1;
       log('returned',{ returnNumber:S.returns, toStep:S.lastStep });
+      saveState(S);
       history.replaceState({ route:'landing' }, '', location.pathname);
       go(S.paid?'confirmation':(S.lastStep==='landing'?'landing':S.lastStep), { replace:true });
       return;
     } catch (err) { /* fall through to a fresh visit */ }
+  }
+  const stored = loadState();
+  if (stored && (stored.chosenPlanId || Object.keys(stored.answers||{}).length > 0 || stored.email)) {
+    S = Object.assign(JSON.parse(JSON.stringify(BLANK)), stored);
   }
   const p = new URLSearchParams(location.search);
   S.source = p.get('utm_source') || p.get('source') || 'direct';

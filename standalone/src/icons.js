@@ -49,6 +49,9 @@ const ICONS = {
   device:'<rect x="6.5" y="3" width="11" height="18" rx="2.2"/><path d="M10.6 18.2h2.8"/>',
   /* Saving is not buying, so it does not wear a cart or a card. */
   bookmark:'<path d="M6.5 3.5h11v17l-5.5-4-5.5 4Z"/>',
+  video:'<polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>',
+  play:'<polygon points="5 3 19 12 5 21 5 3"/>',
+  pause:'<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>',
   /* A filled tick, for the one line that states a fact already counted rather than
      an item in a list. It carries its own colour, so it survives on cream. */
   checkFill:'<circle cx="12" cy="12" r="9" fill="#1f9d55" stroke="none"/><path d="M7.8 12.3 10.7 15l5.5-5.7" stroke="#fff" stroke-width="2.1"/>',

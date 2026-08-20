@@ -37,13 +37,13 @@ export function detailsPage({ plan: planId, commitmentId, details = {}, errors =
           ${field('birthDate', 'Date of birth', {
             type: 'date',
             autocomplete: 'bday',
-            why: 'Venues check age on entry, and some classes have a minimum age. We do not use it for anything else.'
+            why: 'Must be at least 18 years old.'
           })}
           ${field('phone', 'Mobile number', {
             type: 'tel',
             autocomplete: 'tel',
-            required: false,
-            why: 'Only used if a venue needs to reach you about a booking.'
+            placeholder: '+49 151 12345678',
+            why: 'For booking confirmations and studio access.'
           })}
           ${field('street', 'Street and number', { autocomplete: 'street-address', wide: true })}
           ${field('postcode', 'Postcode', { autocomplete: 'postal-code', placeholder: '12043' })}

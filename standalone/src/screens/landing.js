@@ -128,7 +128,8 @@ function landing() {
          field. Nothing on this page collects anything any more, so the sentence went and
          the links moved here, where they belong on a page that makes no request. -->
     Urban Sports Club pilot · real plans, terms and venues · <button class="linkish" data-go="terms">Terms</button> · <button class="linkish" data-go="privacy">Privacy</button> · <button class="linkish" data-go="data">journey data</button> · <button class="linkish" data-go="email">follow-up email preview</button>
-  </footer>`;
+  </footer>
+  ${loginModal()}`;
 }
 
 /* Where this page is looking from. If they have told us, it is theirs; if they have not,

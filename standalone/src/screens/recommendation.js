@@ -816,115 +816,293 @@ function plusSheet() {
     </div></div>`;
 }
 
+function formatFitAnswers() {
+  const ans = S.answers || {};
+  const goalLabel = answerLabel('goal', ans.goal);
+  const actLabels = answerLabel('activities', ans.activities);
+  const areaLabels = answerLabel('area', ans.area);
+  const freqLabel = answerLabel('frequency', ans.frequency);
+  const hasAnswers = Boolean(goalLabel || actLabels || areaLabels || freqLabel);
+  return { goalLabel, actLabels, areaLabels, freqLabel, hasAnswers };
+}
+
+const PLAN_LINE_META = [
+  {
+    id: 'essential',
+    iconEmoji: '📅',
+    headline: 'Once a week',
+    tierName: 'Essential',
+    tierMeta: '4 visits · 5,600+ venues',
+    diffColTitle: 'What Essential gives you',
+    diffBullets: [
+      { icon: 'calendar', text: '4 check-ins each month' },
+      { icon: 'pin', text: '5,600+ partner gyms, pools & studios' },
+      { icon: 'video', text: 'Up to 4 live online classes' }
+    ],
+    everythingColTitle: 'Everything in Essential',
+    everythingBullets: [
+      { icon: 'checkThin', text: 'Flexible starter routine (~1 visit a week)' },
+      { icon: 'pin', text: '5,600+ partner venues across Europe' },
+      { icon: 'sparkle', text: 'Free access to popular wellbeing apps' }
+    ],
+    getAllowances: (term, pause) => [
+      { icon: 'video', text: 'Up to 4 online classes' },
+      { icon: 'play', text: 'Unlimited video on demand' },
+      { icon: 'calendar', text: term },
+      { icon: 'clock', text: "Cancel with 3 days' notice" },
+      { icon: 'pause', text: pause }
+    ]
+  },
+  {
+    id: 'classic',
+    iconEmoji: '👟',
+    headline: 'Move most days',
+    tierName: 'Classic',
+    tierMeta: 'Daily visits · 14,800+ venues',
+    diffColTitle: 'What Classic adds over Essential',
+    diffBullets: [
+      { icon: 'plus', text: 'Daily check-ins instead of 4 visits/month' },
+      { icon: 'pin', text: '9,200+ more venues (14,800+ total)' },
+      { icon: 'video', text: 'Up to 30 live online classes (vs 4)' }
+    ],
+    everythingColTitle: 'Everything in Classic',
+    everythingBullets: [
+      { icon: 'checkThin', text: 'Visit once every day' },
+      { icon: 'pin', text: '14,800+ partner venues & classes' },
+      { icon: 'star', text: 'Most popular for everyday sports & fitness' }
+    ],
+    getAllowances: (term, pause) => [
+      { icon: 'video', text: 'Up to 30 online classes' },
+      { icon: 'play', text: 'Unlimited video on demand' },
+      { icon: 'calendar', text: term },
+      { icon: 'clock', text: "Cancel with 3 days' notice" },
+      { icon: 'pause', text: pause }
+    ]
+  },
+  {
+    id: 'premium',
+    iconEmoji: '🪷',
+    headline: 'Add spas & recovery',
+    tierName: 'Premium',
+    tierMeta: 'Daily + 4 Plus visits · includes 1 massage',
+    diffColTitle: 'What Premium adds over Classic',
+    diffBullets: [
+      { icon: 'plus', text: '+4 more Plus visits each month' },
+      { icon: 'sparkle', text: '+1 massage each month included' },
+      { icon: 'pin', text: '2,900+ more venues (17,700+ total)' }
+    ],
+    everythingColTitle: 'Everything in Premium',
+    everythingBullets: [
+      { icon: 'checkThin', text: 'Visit once a day' },
+      { icon: 'pin', text: '17,700+ venues across Europe' },
+      { icon: 'sparkle', text: '4 Plus visits/mo (day spas, EMS & massage)' }
+    ],
+    getAllowances: (term, pause) => [
+      { icon: 'video', text: 'Up to 30 online classes' },
+      { icon: 'play', text: 'Unlimited video on demand' },
+      { icon: 'calendar', text: term },
+      { icon: 'clock', text: "Cancel with 3 days' notice" },
+      { icon: 'pause', text: pause }
+    ]
+  },
+  {
+    id: 'max',
+    iconEmoji: '💛',
+    headline: 'Live exceptionally',
+    headSub: 'More Plus visits and recovery every month.',
+    tierName: 'Max',
+    tierMeta: 'Daily + 8 Plus visits · includes 2 massages',
+    diffColTitle: 'What Max adds over Premium',
+    diffBullets: [
+      { icon: 'plus', text: '+4 more Plus visits each month' },
+      { icon: 'sparkle', text: '+1 more massage each month' },
+      { icon: 'pin', text: '100+ more venues' }
+    ],
+    everythingColTitle: 'Everything in Max',
+    everythingBullets: [
+      { icon: 'checkThin', text: 'Visit once a day' },
+      { icon: 'pin', text: '17,800+ venues' },
+      { icon: 'sparkle', text: '8 Plus visits each month, including 2 massages' }
+    ],
+    getAllowances: (term, pause) => [
+      { icon: 'video', text: 'Up to 30 online classes' },
+      { icon: 'play', text: 'Unlimited video on demand' },
+      { icon: 'calendar', text: term },
+      { icon: 'clock', text: "Cancel with 3 days' notice" },
+      { icon: 'pause', text: pause }
+    ]
+  }
+];
+
 function plansScreen() {
-  const maxVenues=17800;
-  const selectedPlanId = S.chosenPlanId || (PLANS.find(pl=>pl.mostPopular)||PLANS[1]).id;
-  const selectedPlan = PLANS.find(pl=>pl.id===selectedPlanId) || PLANS[1];
+  const selectedPlanId = S.chosenPlanId || (PLANS.find(pl => pl.mostPopular) || PLANS[1]).id;
+  const selectedPlan = PLANS.find(pl => pl.id === selectedPlanId) || PLANS[1];
+  const fitInfo = formatFitAnswers();
 
-  const cards = PLANS.map(pl=>{
-    const price=priceFor(pl,S.commitmentId), venues=parseInt(String(pl.venueCount).replace(/\D/g,''),10)||0;
-    const access=Math.max(5,Math.min(100,venues/maxVenues*100));
-    const daily=Boolean(pl.dailyCheckIn), plus=pl.plusCheckIns||0, selected=selectedPlan.id===pl.id;
-    const tierMeta = {
-      essential: {
-        tagline: 'Starter · Light routine',
-        checkText: '4 visits total each month',
-        checkSub: '~1 visit a week at gyms & fitness pools',
-        best: 'Simple starter plan for gym & pool basics'
-      },
-      classic: {
-        tagline: 'Daily sports · Most popular',
-        checkText: '1 visit every day',
-        checkSub: 'Daily access across 14,800+ sports venues & classes',
-        best: 'Everyday sports, fitness studios & classes'
-      },
-      premium: {
-        tagline: 'Sports + Spas & Wellness',
-        checkText: 'Daily sports + 4 Plus visits',
-        checkSub: 'Includes 1 massage/mo, day spas & wellness',
-        best: 'Complete active lifestyle + regular spa days & massages'
-      },
-      max: {
-        tagline: 'Ultimate Luxury & Recovery',
-        checkText: 'Daily sports + 8 Plus visits',
-        checkSub: 'Includes 2 massages/mo, luxury clubs & spas',
-        best: 'High-frequency wellness, luxury day spas & top studios'
-      }
-    }[pl.id] || {
-      tagline: pl.name,
-      checkText: daily ? 'Daily check-ins' : '4 total each month',
-      checkSub: daily ? 'up to one each day' : 'about once a week',
-      best: pl.bestFor
-    };
+  const termLabel = S.commitmentId === 'annual' ? '12-month contract' : S.commitmentId === 'biennial' ? '24-month contract' : 'Monthly contract';
+  const pauseRule = S.commitmentId === 'monthly' ? 'Pause anytime (1–6 months)' : 'Pausing and downgrading not available';
 
-    const plusCopy=plus ? `<button class="plancard__plus" type="button" data-plus-open="${esc(pl.id)}" aria-label="Explain Plus check-ins on ${esc(pl.name)}">
-        <b>${plus} Plus check-ins / month</b><span>For premium studios, day spas &amp; EMS</span>
-        <em>Includes ${pl.id==='max'?'2 massages/mo':'1 massage/mo'}</em><u>What are Plus check-ins?</u></button>`
-      : `<div class="plancard__locked">${icon('lock',13)}<span>No spa / massage included</span></div>`;
-    return `<article class="plancard ${pl.mostPopular?'is-popular':''} ${selected?'is-selected':''}" data-pick-plan="${esc(pl.id)}" role="button" tabindex="0" ${selected?'aria-current="true"':''}>
-      <div class="plancard__top">
-        ${pl.mostPopular?`<span class="badge plancard__badge">Most popular</span>`:''}
-        <div class="plancard__name">${esc(pl.name)}</div>
-        <div class="plancard__tagline">${esc(tierMeta.tagline)}</div>
-        <div class="plancard__price"><b>${price} €</b><span>/month</span></div>
+  const perkBanner = S.commitmentId === 'annual'
+    ? `<div class="commit-perk-banner"><span class="perk-icon">📱</span> <span><strong>12 months</strong> includes 1 free wellbeing app &middot; plus a &euro;20 merchandise voucher</span></div>`
+    : S.commitmentId === 'biennial'
+    ? `<div class="commit-perk-banner"><span class="perk-icon">🎁</span> <span><strong>24 months</strong> saves 20% &middot; includes 2 free wellbeing apps &middot; plus a &euro;20 merchandise voucher</span></div>`
+    : `<div class="commit-perk-banner"><span class="perk-icon">⚡</span> <span><strong>Monthly flexibility</strong> &middot; cancel anytime with 3 days&rsquo; notice before your renewal date</span></div>`;
+
+  const planLines = PLAN_LINE_META.map(pt => {
+    const pl = PLANS.find(p => p.id === pt.id) || PLANS[0];
+    const price = priceFor(pl, S.commitmentId);
+    const isSelected = selectedPlan.id === pl.id;
+    const allowances = pt.getAllowances(termLabel, pauseRule);
+
+    return `<article class="plan-line ${isSelected ? 'is-selected' : ''}" data-pick-plan="${esc(pl.id)}" role="button" tabindex="0" ${isSelected ? 'aria-expanded="true" aria-current="true"' : 'aria-expanded="false"'}>
+      <div class="plan-line__header">
+        <div class="plan-line__icon-wrap"><span class="plan-line__icon">${pt.iconEmoji}</span></div>
+        <div class="plan-line__info">
+          <div class="plan-line__headline">${esc(pt.headline)}</div>
+          ${pt.headSub && isSelected ? `<div class="plan-line__headsub">${esc(pt.headSub)}</div>` : ''}
+        </div>
+        <div class="plan-line__tier">
+          <span class="plan-line__tier-name">${esc(pt.tierName)}</span>
+          <span class="plan-line__tier-meta">${esc(pt.tierMeta)}</span>
+        </div>
+        <div class="plan-line__price">
+          <b>${price} &euro;</b> <span>/ month</span>
+        </div>
       </div>
-      <button class="btn ${selected?'btn--primary':'btn--secondary'} btn--block plancard__cta" type="button" data-pick-plan="${esc(pl.id)}" aria-pressed="${selected?'true':'false'}">${selected?`${icon('checkThin',17)} Selected`:`Choose ${esc(pl.name)}`}</button>
-      <div class="plancard__features">
-        <div class="plancard__feature-item">${icon('checkThin', 16)} <span><b>${esc(tierMeta.checkText)}</b></span></div>
-        <div class="plancard__section plancard__section--venues"><span class="plancard__label">Venue access</span>
-          <div class="plancard__venues">${esc(pl.venueCount)} venues</div>
-          <div class="accessbar" role="img" aria-label="${esc(pl.venueCount)} venues out of 17,800 on Max"><span class="accessbar__fill" style="width:${access}%"></span></div></div>
-        <div class="plancard__section plancard__section--checkins"><span class="plancard__label">Routine fit</span>
-          <span class="plancard__check-main">${esc(tierMeta.checkSub)}</span>${planWeekDots(daily)}</div>
-        <div class="plancard__section plancard__section--plus"><span class="plancard__label">Plus &amp; recovery</span>${plusCopy}</div>
-        <div class="plancard__section plancard__best"><span class="plancard__label">Best for</span>${esc(tierMeta.best)}</div>
-      </div>
+      ${isSelected ? `
+        <div class="plan-line__expanded">
+          <div class="plan-diff-grid">
+            <div class="plan-diff-col">
+              <h4 class="plan-diff-col__title">${esc(pt.diffColTitle)}</h4>
+              <ul class="plan-diff-list">
+                ${pt.diffBullets.map(b => `<li><span class="diff-bullet-icon diff-bullet-icon--yellow">${icon(b.icon, 15)}</span> <span>${esc(b.text)}</span></li>`).join('')}
+              </ul>
+            </div>
+            <div class="plan-diff-col">
+              <h4 class="plan-diff-col__title">${esc(pt.everythingColTitle)}</h4>
+              <ul class="plan-diff-list">
+                ${pt.everythingBullets.map(b => `<li><span class="diff-bullet-icon diff-bullet-icon--yellow">${icon(b.icon, 15)}</span> <span>${esc(b.text)}</span></li>`).join('')}
+              </ul>
+            </div>
+            <div class="plan-diff-col">
+              <h4 class="plan-diff-col__title">Allowances &amp; terms</h4>
+              <ul class="plan-diff-list">
+                ${allowances.map(b => `<li><span class="diff-bullet-icon diff-bullet-icon--yellow">${icon(b.icon, 15)}</span> <span>${esc(b.text)}</span></li>`).join('')}
+              </ul>
+            </div>
+          </div>
+        </div>
+      ` : ''}
     </article>`;
   }).join('');
 
-  const selection = `<div class="plans-selection desktop-cta" role="status">
-    <div class="plans-selection__copy"><b>${esc(selectedPlan.name)} selected · ${priceFor(selectedPlan,S.commitmentId)} € /mo</b>
-      <span>You can keep comparing. Nothing moves forward until you continue.</span></div>
-    <button class="btn btn--primary" type="button" data-go="details">Continue with ${esc(selectedPlan.name)} ${icon('arrowRight',17)}</button>
-  </div>`;
+  const sidePanel = `<aside class="plans-side-card" aria-label="Make this fit your routine">
+    <div class="plans-side-card__header">
+      ${ulaAvatar('sm')}
+      <span class="plans-side-card__guide-name">Urby</span>
+    </div>
+    <h2 class="plans-side-card__title">Make this fit your routine</h2>
+    <p class="plans-side-card__subtitle">Your answers are ready whenever you want to adjust them.</p>
+
+    ${fitInfo.hasAnswers ? `
+      <div class="plans-fit-box">
+        <div class="plans-fit-box__head">
+          <span class="plans-fit-check">${icon('checkThin', 14)}</span>
+          <strong>Your fit</strong>
+        </div>
+        <div class="plans-fit-chips">
+          ${fitInfo.goalLabel ? `
+            <button class="fit-chip" type="button" data-edit="q1" aria-label="Edit goal: ${esc(fitInfo.goalLabel)}">
+              <span class="fit-chip__icon">🎯</span>
+              <span class="fit-chip__label">${esc(fitInfo.goalLabel)}</span>
+              <span class="fit-chip__edit">${icon('pencil', 12)}</span>
+            </button>` : ''}
+          ${fitInfo.actLabels ? `
+            <button class="fit-chip" type="button" data-edit="q2" aria-label="Edit activities: ${esc(fitInfo.actLabels)}">
+              <span class="fit-chip__icon">🏋️</span>
+              <span class="fit-chip__label">${esc(fitInfo.actLabels)}</span>
+              <span class="fit-chip__edit">${icon('pencil', 12)}</span>
+            </button>` : ''}
+          ${fitInfo.areaLabels ? `
+            <button class="fit-chip" type="button" data-edit="q3" aria-label="Edit location: ${esc(fitInfo.areaLabels)}">
+              <span class="fit-chip__icon">📍</span>
+              <span class="fit-chip__label">${esc(fitInfo.areaLabels)}</span>
+              <span class="fit-chip__edit">${icon('pencil', 12)}</span>
+            </button>` : ''}
+          ${fitInfo.freqLabel ? `
+            <button class="fit-chip" type="button" data-edit="q4" aria-label="Edit frequency: ${esc(fitInfo.freqLabel)}">
+              <span class="fit-chip__icon">📅</span>
+              <span class="fit-chip__label">${esc(fitInfo.freqLabel)}</span>
+              <span class="fit-chip__edit">${icon('pencil', 12)}</span>
+            </button>` : ''}
+        </div>
+      </div>
+      <button class="btn btn--secondary btn-side-back" type="button" data-go="recommendation">
+        Back to my routine &amp; favourites &rarr;
+      </button>
+      <p class="plans-side-caption">Built from your four answers, and yours to change.</p>
+    ` : `
+      <div class="plans-fit-empty">
+        <p>Answer 4 quick questions and I&rsquo;ll tailor a routine recommendation with real nearby venues and live schedules.</p>
+        <button class="btn btn--secondary btn-side-back" type="button" data-go="fit">
+          Find my fit &rarr;
+        </button>
+        <p class="plans-side-caption">Takes 2 minutes &middot; no email needed</p>
+      </div>
+    `}
+
+    <button class="plans-side-save" type="button" data-go="save">
+      <span class="save-icon">${icon('bookmark', 16)}</span>
+      <div class="save-text">
+        <strong>Save these places for later</strong>
+        <span>Keeps your answers and brings you back here.</span>
+      </div>
+    </button>
+  </aside>`;
 
   const stickyBar = `<div class="plans-sticky-bar">
     <div class="plans-sticky-bar__left">
-      <div class="plans-sticky-bar__name"><b>${esc(selectedPlan.name)}</b> &middot; ${priceFor(selectedPlan,S.commitmentId)} €/mo</div>
-      <div class="plans-sticky-bar__sub">${S.commitmentId==='annual'?'12-month commitment':'Monthly · Cancel anytime'}</div>
+      <div class="plans-sticky-bar__name"><b>${esc(selectedPlan.name)}</b> &middot; ${priceFor(selectedPlan, S.commitmentId)} &euro;/mo</div>
+      <div class="plans-sticky-bar__sub">${S.commitmentId === 'annual' ? '12-month commitment' : S.commitmentId === 'biennial' ? '24-month commitment' : 'Monthly &middot; Cancel anytime'}</div>
     </div>
     <button class="btn btn--primary plans-sticky-bar__cta" type="button" data-go="details">
-      Continue with ${esc(selectedPlan.name)} ${icon('arrowRight',16)}
+      Continue with ${esc(selectedPlan.name)} ${icon('arrowRight', 16)}
     </button>
   </div>`;
 
-  const journeyRoute=fitComplete(S.answers)?'recommendation':'fit';
-  const guide=`<aside class="plans-guide" aria-label="Get help choosing a membership">
-    <div class="plans-guide__brand">${ulaAvatar('sm')}<span>Urby &middot; Guide</span></div>
-    <h2>Not sure which plan to pick?</h2>
-    <p>Answer 4 quick questions and I&rsquo;ll match one plan to your favourite activities, nearby venues and weekly routine.</p>
-    <button class="btn btn--primary" type="button" data-go="${journeyRoute}" style="margin-top:16px">Find my fit ${icon('arrowRight',16)}</button>
-    <span class="plans-guide__note">2 minutes · no email needed</span>
-  </aside>`;
+  return `${topbar(1, { stepper: false, savedNote: Boolean(S.email && S.saveOptIn) })}<main class="content plans-page" id="main">
+    <div class="plans-layout">
+      <div class="plans-main">
+        <div class="commit-row">${COMMITMENTS.map(c => {
+          const isCur = c.id === S.commitmentId;
+          const termLabel = c.minimumTermMonths === 1 ? 'Monthly' : `${c.minimumTermMonths} months`;
+          const savingBadge = c.id === 'annual' ? '<span class="commit-save-pill">Save 15%</span>' : c.id === 'biennial' ? '<span class="commit-save-pill">Save 20%</span>' : '';
+          return `<button class="chip-sm ${isCur ? 'is-current' : ''}" type="button" data-commit="${esc(c.id)}"><span>${esc(termLabel)}</span>${savingBadge}</button>`;
+        }).join('')}</div>
 
-  return `${topbar(1,{stepper:false,savedNote:Boolean(S.email&&S.saveOptIn)})}<main class="content plans-page" id="main">
-    <div class="plans-layout"><div class="plans-main">
-      <div class="plans-kicker">${ulaAvatar('sm')}<span><strong>Urby</strong> · Membership guide</span></div>
-      <div class="plans-head"><h1 class="h-question" tabindex="-1">Compare memberships</h1>
-        <p class="reco-lede">See how venue access, visit frequency and premium benefits change with each plan.</p></div>
-      <div class="commit-row">${COMMITMENTS.map(c=>{
-        const isCur = c.id === S.commitmentId;
-        const termLabel = c.minimumTermMonths === 1 ? 'Monthly' : `${c.minimumTermMonths} months`;
-        const savingBadge = c.id === 'annual' ? '<span class="commit-save-pill">Save 15%</span>' : c.id === 'biennial' ? '<span class="commit-save-pill">Save 20%</span>' : '';
-        return `<button class="chip-sm ${isCur?'is-current':''}" data-commit="${esc(c.id)}"><span>${esc(termLabel)}</span>${savingBadge}</button>`;
-      }).join('')}</div>
-      <div class="plangrid-hint"><span>Swipe to compare all 4 plans &rarr;</span></div>
-      <div class="plangrid">${cards}</div>${selection}
-      <div class="plans-shared">${icon('checkThin',17)}<span>Every membership includes video on demand, wellbeing apps and online classes.</span>
-        <button class="linkish" type="button" data-go="terms">Membership terms</button>
-        <button class="plans-shared__ask" type="button" data-plan-ask>Ask Urby</button></div>
-      ${PLANASK?`<div class="plans-ask">${askBlock(true,false)}</div>`:''}
-    </div>${guide}</div>
+        ${perkBanner}
+
+        <div class="plans-head">
+          <h1 class="h-question" tabindex="-1">What kind of month are you planning?</h1>
+          <p class="reco-lede">Choose the closest match. You can change it anytime.</p>
+        </div>
+
+        <div class="plan-lines-group">${planLines}</div>
+
+        <div class="plans-always-banner">
+          <span class="always-sparkle">✦</span>
+          <span><strong>Always included:</strong> on-site activities &middot; online classes &middot; video on demand</span>
+        </div>
+
+        <div class="plans-cta-wrap">
+          <button class="btn btn--primary btn-continue-plan" type="button" data-go="details">
+            Continue with ${esc(selectedPlan.name)}
+          </button>
+        </div>
+      </div>
+
+      ${sidePanel}
+    </div>
   </main>${stickyBar}${plusSheet()}${exitModal()}`;
 }
 

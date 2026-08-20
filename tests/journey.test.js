@@ -482,7 +482,7 @@ describe('end-to-end journey', () => {
   });
 
   after(() => {
-    if (child) child.kill();
+    if (child) child.kill('SIGKILL');
   });
 
   test('landing page renders the designed copy', async () => {
@@ -603,12 +603,28 @@ describe('end-to-end journey', () => {
     const html = await bad.text();
     assert.match(html, /We need your last name/);
     assert.match(html, /valid postcode/);
+    assert.match(html, /Please enter your mobile number/);
+
+    const under18 = await post('/details', {
+      firstName: 'Alex',
+      lastName: 'Tester',
+      email: 'e2e@example.com',
+      birthDate: '2015-01-01',
+      phone: '+49 151 2345678',
+      street: 'Weserstraße 42',
+      postcode: '12045',
+      city: 'Berlin'
+    });
+    assert.equal(under18.status, 200);
+    const under18Html = await under18.text();
+    assert.match(under18Html, /You must be at least 18 years old to join/);
 
     const good = await post('/details', {
       firstName: 'Alex',
       lastName: 'Tester',
       email: 'e2e@example.com',
       birthDate: '1992-04-18',
+      phone: '+49 151 2345678',
       street: 'Weserstraße 42',
       postcode: '12045',
       city: 'Berlin'

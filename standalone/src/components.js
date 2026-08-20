@@ -166,6 +166,59 @@ function closeSaveModal(reason='closed') {
   log('save_modal_closed', { reason, atStep:S.lastStep });
   armSaveInactivity();
 }
+function loginModal() {
+  const err = LOGIN_ERROR ? `<div class="notice notice--error" role="alert" style="margin-bottom:16px">${icon('info',16)} <span>${esc(LOGIN_ERROR)}</span></div>` : '';
+  const notFoundActions = LOGIN_ERROR && LOGIN_ERROR.includes('No saved journey') ? `
+    <div style="margin-top:12px;text-align:center">
+      <button class="btn btn--secondary btn--block" type="button" data-close-login data-go="fit">Start fresh fit quiz</button>
+    </div>` : '';
+
+  return `<div class="overlay" id="login-modal" ${LOGIN_MODAL_OPEN?'':'hidden'} role="dialog" aria-modal="true" aria-labelledby="login-modal-title">
+    <div class="modal modal--login">
+      <button class="modal__close" data-close-login aria-label="Close login dialog">&times;</button>
+      <div class="login-modal__head">
+        ${ulaAvatar('sm')}
+        <h2 id="login-modal-title" style="margin:8px 0 4px;font-size:22px;font-weight:800;letter-spacing:-0.02em">Resume your journey</h2>
+        <p class="small muted" style="margin:0 0 16px">Enter the email you used when saving to pick up where you left off.</p>
+      </div>
+      ${err}
+      <form data-form="login" novalidate class="login-form">
+        <div class="field" style="margin-bottom:14px">
+          <label class="field__label" for="login-email">Your email address</label>
+          <input id="login-email" class="field__input" type="email" name="email" placeholder="you@example.com" value="${esc(FIELDS.loginEmail||'')}" autocomplete="email" required>
+        </div>
+        <button class="btn btn--primary btn--block" type="submit">Resume my journey</button>
+        <div class="orline" style="margin:16px 0"><span>or continue with</span></div>
+        <div class="sso-row" style="max-width:none;margin-bottom:12px">
+          <button class="sso-btn" type="submit" name="provider" value="google" aria-label="Resume with Google">${GOOGLE} <span>Google</span></button>
+          <button class="sso-btn" type="submit" name="provider" value="apple" aria-label="Resume with Apple">${APPLE} <span>Apple</span></button>
+        </div>
+        ${notFoundActions}
+      </form>
+    </div>
+  </div>`;
+}
+function openLoginModal(error=null) {
+  LOGIN_MODAL_OPEN = true;
+  LOGIN_ERROR = error;
+  const old = document.getElementById('login-modal');
+  if (old) old.outerHTML = loginModal();
+  const modal = document.getElementById('login-modal');
+  if (!modal) return;
+  modal.hidden = false;
+  document.body.style.overflow = 'hidden';
+  document.body.classList.add('login-modal-open');
+  const input = modal.querySelector('input');
+  if (input) input.focus();
+}
+function closeLoginModal() {
+  LOGIN_MODAL_OPEN = false;
+  LOGIN_ERROR = null;
+  const modal = document.getElementById('login-modal');
+  if (modal) modal.hidden = true;
+  document.body.style.overflow = '';
+  document.body.classList.remove('login-modal-open');
+}
 function hasSaveableProgress() {
   return ROUTE !== 'landing' || Object.keys(S.answers||{}).length > 0 || Boolean(SEARCH.q || SEARCH.result);
 }

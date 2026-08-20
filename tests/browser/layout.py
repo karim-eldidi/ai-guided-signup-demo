@@ -99,7 +99,7 @@ with sync_playwright() as p:
         pg.locator('.planbox__cta button:visible, .paybar button:visible').first.click(force=True); pg.wait_for_timeout(600)
         steps.append(("details", None))
         for f_, v in [('#firstName', 'Alex'), ('#lastName', 'T'), ('#email', 'a@b.com'),
-                      ('#birthDate', '1990-01-01'), ('#street', 'W 42'), ('#postcode', '10117'), ('#city', 'Berlin')]:
+                      ('#phone', '+49 151 12345678'), ('#birthDate', '1990-01-01'), ('#street', 'W 42'), ('#postcode', '10117'), ('#city', 'Berlin')]:
             pg.fill(f_, v)
         pg.locator('.details-form__actions button:visible, .paybar button:visible').first.click(force=True); pg.wait_for_timeout(800)
 

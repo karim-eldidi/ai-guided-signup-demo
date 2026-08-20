@@ -141,7 +141,7 @@ with sync_playwright() as p:
     else: bad("the details form does not show what is being signed up for")
     pg.screenshot(path=f"{OUT}/06-details.png", full_page=True)
 
-    pg.fill('#firstName','Alex'); pg.fill('#lastName','Tester'); pg.fill('#birthDate','1992-04-18')
+    pg.fill('#firstName','Alex'); pg.fill('#lastName','Tester'); pg.fill('#phone','+49 151 12345678'); pg.fill('#birthDate','1992-04-18')
     pg.fill('#street','Weserstraße 42'); pg.fill('#postcode','12045'); pg.fill('#city','Berlin')
     pg.locator('button:has-text("Continue to payment")').click(); pg.wait_for_timeout(700)
     if pg.locator('.ula-note').count(): good("Urby is present on the payment screen")

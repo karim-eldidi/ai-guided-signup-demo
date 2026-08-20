@@ -49,7 +49,7 @@ if (!unitsOnly) {
    promise, so when it is absent we say so and still run everything else, rather than
    failing the one command Karim relies on. */
 const havePlaywright = (() => {
-  try { execFileSync('python3', ['-c', 'import playwright'], { stdio: 'pipe' }); return true; }
+  try { execFileSync('python3', ['-c', 'import playwright'], { stdio: 'pipe', timeout: 1000 }); return true; }
   catch { return false; }
 })();
 

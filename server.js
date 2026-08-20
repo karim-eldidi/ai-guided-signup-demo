@@ -152,6 +152,24 @@ function validEmail(value) {
   return typeof value === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value.trim());
 }
 
+function validPhone(value) {
+  if (typeof value !== 'string') return false;
+  const digits = value.replace(/\D/g, '');
+  return digits.length >= 7 && digits.length <= 16;
+}
+
+function isAtLeast18(isoDate) {
+  if (!isoDate || typeof isoDate !== 'string') return false;
+  const parts = isoDate.split('-');
+  if (parts.length !== 3) return false;
+  const y = parseInt(parts[0], 10), m = parseInt(parts[1], 10) - 1, d = parseInt(parts[2], 10);
+  if (isNaN(y) || isNaN(m) || isNaN(d)) return false;
+  const birth = new Date(y, m, d);
+  const now = new Date();
+  const adult = new Date(now.getFullYear() - 18, now.getMonth(), now.getDate());
+  return birth <= adult;
+}
+
 function firstOfNextMonth() {
   const d = new Date();
   return new Date(d.getFullYear(), d.getMonth() + 1, 1).toISOString().slice(0, 10);
@@ -473,8 +491,11 @@ const server = createServer(async (req, res) => {
       const errors = {};
       if (!details.firstName) errors.firstName = 'We need your first name for the membership.';
       if (!details.lastName) errors.lastName = 'We need your last name for the membership.';
-      if (!validEmail(details.email)) errors.email = 'Please check this email address.';
+      if (!validEmail(details.email)) errors.email = 'Please enter a valid email address.';
       if (!details.birthDate) errors.birthDate = 'Venues check age on entry, so this one is required.';
+      else if (!isAtLeast18(details.birthDate)) errors.birthDate = 'You must be at least 18 years old to join.';
+      if (!details.phone) errors.phone = 'Please enter your mobile number.';
+      else if (!validPhone(details.phone)) errors.phone = 'Please enter a valid mobile number (e.g. +49 151 12345678).';
       if (!details.street) errors.street = 'Please add your street and number.';
       if (!/^\d{4,5}$/.test(details.postcode)) errors.postcode = 'Please enter a valid postcode.';
       if (!details.city) errors.city = 'Please add your city.';

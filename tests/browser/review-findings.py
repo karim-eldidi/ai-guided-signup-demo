@@ -90,8 +90,10 @@ with sync_playwright() as p:
     if 'does not save' in why.lower(): P("and says it does not save your progress")
     else: F(f"the email field does not explain itself: '{why}'")
 
+    _MAX_DOB = f"{datetime.date.today().year - 18:04d}-{datetime.date.today().month:02d}-{datetime.date.today().day:02d}"
+
     # 2. no validation leaking between screens
-    for f_,v in [('#firstName','Alex'),('#lastName','T'),('#email','a@b.com'),('#birthDate','1992-04-18'),('#street','W 42'),('#postcode','12045'),('#city','Berlin')]:
+    for f_,v in [('#firstName','Alex'),('#lastName','T'),('#email','a@b.com'),('#phone','+49 151 12345678'),('#birthDate','1992-04-18'),('#street','W 42'),('#postcode','12045'),('#city','Berlin')]:
         pg.fill(f_,v)
     if pg.locator('.field-error').count()==0: P("the details form starts with no inherited errors")
     else: F(f"{pg.locator('.field-error').count()} stale errors on the details form")
@@ -100,27 +102,24 @@ with sync_playwright() as p:
     autos=pg.evaluate("() => [...document.querySelectorAll('#main input')].map(i=>i.id+':'+(i.autocomplete||'')).filter(x=>x.split(':')[0])")
     missing=[a for a in autos if a.endswith(':')]
     P(f"all {len(autos)} detail fields carry autofill hints") if not missing else F(f"missing autofill: {missing}")
-    # 9. required cue. This used to look for a blanket "required except the mobile"
-    #    sentence at the top of the form. The one optional field now says so on its own
-    #    label, which is a stronger cue and survives the field list changing.
-    tag = pg.locator('#main .field:has(#phone) .field__opt')
+    # 9. required cue: all fields are required
     unreq = pg.evaluate("() => [...document.querySelectorAll('#main .details-form input')].filter(i => !i.required).map(i => i.id)")
-    if tag.count() == 1 and tag.inner_text().strip().lower() == 'optional' and unreq == ['phone']:
-        P("the form marks its one optional field and requires the rest")
-    else: F(f"required-field cue unclear: {tag.count()} optional tags, not-required {unreq}")
+    if unreq == []:
+        P("the form requires all fields")
+    else: F(f"unexpected unrequired fields: {unreq}")
 
-    # Date of birth accepted tomorrow. The picker is now bounded, and because the form is
+    # Date of birth accepted only for 18+. The picker is now bounded, and because the form is
     # novalidate the typed value has to be caught by the screen that produced it (rule 20).
     bounds = pg.evaluate("() => { const i=document.getElementById('birthDate'); return {max:i.max, min:i.min} }")
-    if bounds['max'] == _TODAY: P(f"date of birth cannot be picked past today ({bounds['max']})")
-    else: F(f"date of birth max is '{bounds['max']}', expected {_TODAY}")
+    if bounds['max'] == _MAX_DOB: P(f"date of birth cannot be picked past 18 years ago ({bounds['max']})")
+    else: F(f"date of birth max is '{bounds['max']}', expected {_MAX_DOB}")
     if bounds['min'] and bounds['min'] < '1930-01-01': P(f"and has a floor for typos ({bounds['min']})")
     else: F(f"date of birth has no sane floor: '{bounds['min']}'")
-    pg.fill('#birthDate','2099-01-01')
+    pg.fill('#birthDate','2020-01-01')
     pg.locator('button:has-text("Continue to payment")').click(); pg.wait_for_timeout(500)
     err = pg.locator('.field:has(#birthDate) .field-error')
-    if err.count() and 'happened yet' in err.first.inner_text(): P("a typed future birth date is refused, on the screen that asked")
-    else: F("a birth date in the future was accepted")
+    if err.count() and ('18' in err.first.inner_text() or 'happened yet' in err.first.inner_text()): P("an under-18 birth date is refused, on the screen that asked")
+    else: F("an under-18 birth date was accepted")
     pg.fill('#birthDate','1992-04-18')
 
     pg.locator('button:has-text("Continue to payment")').click(); pg.wait_for_timeout(700)

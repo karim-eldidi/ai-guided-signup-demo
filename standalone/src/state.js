@@ -15,6 +15,7 @@ let ASK={q:'',result:null};
    your studio to get back to it would be the search version of asking twice. */
 let SEARCH={q:'',result:null};
 let ROUTE='landing', ACKTEXT=null, UNCLEAR=false, NOCHOICE=false, EDITING=null, ERRORS={}, FIELDS={}, TYPING=false, SHEET=null, PANEL_OPEN=false;
+let LOGIN_MODAL_OPEN=false, LOGIN_ERROR=null, LOGIN_SUCCESS=false;
 /* City is "detected" in production (IP or browser location). The pilot only has
    venue data loaded for Berlin, so the chip says so plainly and a Change link
    never lies about coverage — picking another city logs the demand instead. */
@@ -55,8 +56,72 @@ let ACTIVE_CATEGORY_FILTER='all';
    into S.answers: a guess of ours must never come back as something they told us (rule 53). */
 const DETECTED_AREA = 'mitte';
 
+const STORAGE_KEY = 'usc_pilot_state';
+const JOURNEYS_KEY = 'usc_saved_journeys';
+
+const saveState = state => {
+  try {
+    if (state && typeof localStorage !== 'undefined') {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+  } catch (_) {}
+};
+
+const loadState = () => {
+  try {
+    if (typeof localStorage !== 'undefined') {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) return JSON.parse(raw);
+    }
+  } catch (_) {}
+  return null;
+};
+
+const clearStoredState = () => {
+  try {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem(STORAGE_KEY);
+    }
+  } catch (_) {}
+};
+
+const saveJourney = (email, state) => {
+  if (!email || !state) return;
+  try {
+    if (typeof localStorage !== 'undefined') {
+      const key = email.trim().toLowerCase();
+      let db = {};
+      const raw = localStorage.getItem(JOURNEYS_KEY);
+      if (raw) db = JSON.parse(raw) || {};
+      db[key] = {
+        state: JSON.parse(JSON.stringify(state)),
+        savedAt: new Date().toISOString()
+      };
+      localStorage.setItem(JOURNEYS_KEY, JSON.stringify(db));
+    }
+  } catch (_) {}
+};
+
+const getJourney = (email) => {
+  if (!email) return null;
+  try {
+    if (typeof localStorage !== 'undefined') {
+      const key = email.trim().toLowerCase();
+      const raw = localStorage.getItem(JOURNEYS_KEY);
+      if (raw) {
+        const db = JSON.parse(raw) || {};
+        if (db[key] && db[key].state) return db[key].state;
+      }
+    }
+  } catch (_) {}
+  return null;
+};
+
 const esc = v => String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-const log = (name,payload) => S.events.push({ name, payload:payload||null, at:new Date().toISOString() });
+const log = (name,payload) => {
+  S.events.push({ name, payload:payload||null, at:new Date().toISOString() });
+  saveState(S);
+};
 const b64e = o => btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 const b64d = s => JSON.parse(decodeURIComponent(escape(atob(s.replace(/-/g,'+').replace(/_/g,'/')))));
 const resumeUrl = () => `${location.href.split('#')[0].split('?')[0]}#resume=${b64e(S)}`;
@@ -88,7 +153,24 @@ const currentPlan = () => {
   const r = recommend(A(), matchVenues(A()));
   return planById(S.chosenPlanId) || planById(r.planId) || planByRank(2);
 };
-const validEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e||'');
+const validEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test((e||'').trim());
+const validPhone = p => {
+  if (!p) return false;
+  const digits = String(p).replace(/\D/g, '');
+  return digits.length >= 7 && digits.length <= 16;
+};
 const isoDay = dt => `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
-const dobMax = () => isoDay(new Date());
+/* Minimum age is 18 */
+const dobMax = () => {
+  const n = new Date();
+  return isoDay(new Date(n.getFullYear() - 18, n.getMonth(), n.getDate()));
+};
 const dobMin = () => { const n=new Date(); return isoDay(new Date(n.getFullYear()-120, n.getMonth(), n.getDate())); };
+const isAtLeast18 = isoDate => {
+  if (!isoDate || !/^\d{4}-\d{2}-\d{2}$/.test(isoDate)) return false;
+  const [y, m, d] = isoDate.split('-').map(Number);
+  const today = new Date();
+  const cutoff = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
+  const birth = new Date(y, m - 1, d);
+  return birth <= cutoff;
+};

@@ -2,7 +2,7 @@
 const SCREENS = {
   landing, search:searchScreen, fit:fitScreen, plans:plansScreen, recommendation:recommendationScreen, save:saveScreen, details:detailsScreen,
   payment:paymentScreen, confirmation:confirmationScreen, left:leftScreen, email:emailScreen, data:dataScreen,
-  login: () => simpleScreen('Log in is out of scope for the pilot', ['Existing members would go to the current Urban Sports Club login. The pilot deliberately avoids creating a second authentication system.']),
+  login: () => { openLoginModal(); return landingScreen(); },
   terms: () => simpleScreen('Terms — placeholder', ['The pilot links here so the consent wording sits in the right place, but the real content comes from Legal.']),
   privacy: () => simpleScreen('Privacy policy — placeholder', ['What the pilot does implement: marketing consent is captured separately from accepting the Terms, stored per visitor, and the follow-up email only includes marketing content when consent was given.'])
 };
@@ -43,11 +43,12 @@ function go(route, opts={}) {
      screen, reached by someone who wants to leave. */
   ROUTE = route; EDITING = null; SHEET = null; CITYPICK = false; CITYWANTED = null; PLACEWANTED = null; VENUESOPEN = false; APPSOPEN = false; DAYNOTE = null; VENUEQ = '';
   MOREOPEN = false; MOREPICK = null; ALTOPEN = null; PLANPLUS = null; PLANASK = false; WHEREPICK = false; SEEALL = false;
-  document.body.classList.remove('save-modal-open'); document.body.style.overflow = '';
+  document.body.classList.remove('save-modal-open'); document.body.classList.remove('login-modal-open'); document.body.style.overflow = '';
   /* A reviewer saw the save screen's "enter a valid email" error appear under the
      details form's own email field. Errors belong to the screen that produced them. */
   ERRORS = {}; FIELDS = {}; NOCHOICE = false; UNCLEAR = false;
   if (['fit','recommendation','save','details','payment'].includes(route)) S.lastStep = route;
+  saveState(S);
   /* The route lives in history state, not in the address bar. It used to write
      "#recommendation", which looked like a deep link and was not one: opening it in a
      fresh browser silently showed the landing page, so a saved or shared link quietly
@@ -65,6 +66,8 @@ window.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     const modal = document.getElementById('exit-modal');
     if (modal && !modal.hidden) closeSaveModal('esc_key');
+    const loginModalEl = document.getElementById('login-modal');
+    if (loginModalEl && !loginModalEl.hidden) closeLoginModal();
   }
 });
 
@@ -424,17 +427,17 @@ document.addEventListener('click', e => {
   if (t.dataset.go !== undefined) {
     e.preventDefault();
     if (t.dataset.go === 'save') { openSaveModal('form', 'save_link'); return; }
+    if (t.dataset.go === 'login') { openLoginModal(); return; }
     go(t.dataset.go); return;
   }
   if (t.dataset.startFit !== undefined) {
-    /* Arriving from a search that named an area, we already know the answer to one of
-       the four questions, so we do not ask it again (rule 11). It is filled in, not
-       assumed silently: it shows up as an answer chip on the next screen and the chip
-       is its own edit control, so a wrong guess costs one tap (rules 15 and 26). */
     if (t.dataset.areaId && AREAS.some(a=>a.id===t.dataset.areaId)) {
-      S.answers.area = t.dataset.areaId;
+      S.answers = { area: t.dataset.areaId };
       log('answer_given', { question:'area', value:t.dataset.areaId, mode:'search' });
+    } else {
+      S.answers = {};
     }
+    S.planOverridden = false;
     log('started_conversation', { variant:VARIANT, from:t.dataset.areaId?'search':'landing' }); go('fit'); return; }
   if (t.dataset.searchExample) { SEARCH.q = t.dataset.searchExample; SEARCH.result = searchPlaces(SEARCH.q);
     log('searched', { query:SEARCH.q, matched:SEARCH.result?SEARCH.result.kind:'none', example:true });
@@ -582,6 +585,8 @@ document.addEventListener('click', e => {
 
   if (t.dataset.openExit !== undefined) { openSaveModal('form', 'save_and_exit'); return; }
   if (t.dataset.closeExit !== undefined || (e.target && e.target.id === 'exit-modal')) { closeSaveModal('dismissed'); return; }
+  if (t.dataset.openLogin !== undefined) { openLoginModal(); return; }
+  if (t.dataset.closeLogin !== undefined || (e.target && e.target.id === 'login-modal')) { closeLoginModal(); return; }
 
   if (t.dataset.plan) { const recId = recommend(A(),matchVenues(A())).planId;
     const wasPlan = currentPlan();
@@ -615,7 +620,7 @@ document.addEventListener('click', e => {
     if (t.closest('#exit-modal')) { closeSaveModal('continued_without_saving'); return; }
     go(fitComplete(S.answers) || S.planOverridden ? 'recommendation' : 'fit'); return;
   }
-  if (t.dataset.reset !== undefined) { S = JSON.parse(JSON.stringify(BLANK)); history.replaceState({route:'landing'},'',location.pathname); go('landing',{replace:true}); return; }
+  if (t.dataset.reset !== undefined) { clearStoredState(); S = JSON.parse(JSON.stringify(BLANK)); history.replaceState({route:'landing'},'',location.pathname); go('landing',{replace:true}); return; }
   if (t.dataset.copyResume !== undefined) {
     const done = () => { t.textContent = 'Copied — bookmark or reopen this link'; log('resume_link_copied',{ atStep:S.lastStep, identified:Boolean(S.email) }); };
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(resumeUrl()).then(done).catch(()=>{});
@@ -660,10 +665,18 @@ document.addEventListener('keydown', e => {
     return;
   }
   if (e.key === 'Enter') {
+    const pickChoice = e.target.closest('[role="button"][data-pick-plan]');
+    if (pickChoice) { pickChoice.click(); e.preventDefault(); return; }
     const planChoice = e.target.closest('[role="button"][data-plan]');
     if (planChoice) { planChoice.click(); e.preventDefault(); return; }
     const card = e.target.closest('[data-card]');
     if (card) { const input = card.querySelector('input'); if (input && !input.checked) { input.checked = true; input.dispatchEvent(new Event('change',{bubbles:true})); } e.preventDefault(); return; }
+  }
+  if (e.key === ' ' || e.key === 'Spacebar') {
+    const pickChoice = e.target.closest('[role="button"][data-pick-plan]');
+    if (pickChoice && e.target.tagName !== 'INPUT' && e.target.tagName !== 'BUTTON') {
+      pickChoice.click(); e.preventDefault(); return;
+    }
   }
   if (e.key === 'Escape') {
     if (APP_SHEET) { APP_SHEET = null; document.body.style.overflow = ''; render(false); return; }
@@ -956,12 +969,54 @@ document.addEventListener('submit', e => {
       return false; }
     else S.authMethod = 'email';
     S.email = email; FIELDS.email = '';
+    saveJourney(S.email, S);
+    saveState(S);
     log('identified', { authMethod:S.authMethod, marketing:S.marketing, at:ROUTE });
     if (dest === 'saved-modal') {
       S.saveOptIn = true; render(false); openSaveModal('saved','save_completed'); return true;
     }
     go(dest); return true;
   };
+
+  if (kind === 'login') {
+    const email = (fd.get('email')||'').trim();
+    if (provider) {
+      const demoEmail = `demo.${provider}.user@example.com`;
+      let saved = getJourney(demoEmail) || getJourney(email);
+      if (!saved) {
+        saved = {
+          answers: { goal: ['move_more'], activities: ['gym', 'yoga'], area: ['mitte'], frequency: 'twice' },
+          chosenPlanId: 'classic', commitmentId: 'monthly',
+          email: demoEmail, authMethod: provider, lastStep: 'recommendation'
+        };
+        saveJourney(demoEmail, saved);
+      }
+      S = Object.assign(JSON.parse(JSON.stringify(BLANK)), saved);
+      S.returns = (S.returns||0) + 1;
+      log('returned_via_login', { authMethod: provider, email: demoEmail });
+      closeLoginModal();
+      saveState(S);
+      go(S.paid ? 'confirmation' : (S.lastStep === 'landing' ? 'fit' : S.lastStep));
+      return;
+    }
+    if (!validEmail(email)) {
+      openLoginModal('Please enter a valid email address.');
+      return;
+    }
+    const saved = getJourney(email);
+    if (saved) {
+      S = Object.assign(JSON.parse(JSON.stringify(BLANK)), saved);
+      S.returns = (S.returns||0) + 1;
+      log('returned_via_login', { authMethod: 'email', email });
+      closeLoginModal();
+      saveState(S);
+      go(S.paid ? 'confirmation' : (S.lastStep === 'landing' ? 'fit' : S.lastStep));
+      return;
+    } else {
+      openLoginModal(`No saved journey found for "${email}". Check the spelling or start a new fit quiz.`);
+      return;
+    }
+  }
 
   if (kind === 'ask') {
     ASK.q = (fd.get('q')||'').trim();
@@ -1055,21 +1110,26 @@ document.addEventListener('submit', e => {
       S.email = validEmail(S.email||'') ? S.email : `demo.${provider}.user@example.com`;
       S.details = Object.assign({}, S.details||{}, {
         firstName:(S.details&&S.details.firstName)||providerName,
-        lastName:(S.details&&S.details.lastName)||'Member', email:S.email
+        lastName:(S.details&&S.details.lastName)||'Member', email:S.email,
+        phone:(S.details&&S.details.phone)||'+49 151 2345678',
+        birthDate:(S.details&&S.details.birthDate)||'1995-06-15'
       });
       log('details_prefilled', { provider });
+      saveState(S);
       render(false); document.getElementById('birthDate')?.focus(); return;
     }
     const d={}; ['firstName','lastName','email','birthDate','phone','street','postcode','city'].forEach(k=>d[k]=(fd.get(k)||'').trim());
     S.details=d; ERRORS={};
     if (!d.firstName) ERRORS.firstName='We need your first name for the membership.';
     if (!d.lastName)  ERRORS.lastName='We need your last name for the membership.';
-    if (!validEmail(d.email)) ERRORS.email='Please check this email address.';
+    if (!validEmail(d.email)) ERRORS.email='Please enter a valid email address.';
     /* max/min on the input only guides the picker, and the form is novalidate, so a typed
        or pasted date still has to be checked here. */
     if (!d.birthDate) ERRORS.birthDate='Venues check age on entry, so this one is required.';
-    else if (d.birthDate > dobMax()) ERRORS.birthDate='That date hasn’t happened yet — please check it.';
+    else if (!isAtLeast18(d.birthDate)) ERRORS.birthDate='You must be at least 18 years old to join.';
     else if (d.birthDate < dobMin()) ERRORS.birthDate='Please check this date.';
+    if (!d.phone) ERRORS.phone='Please enter your mobile number.';
+    else if (!validPhone(d.phone)) ERRORS.phone='Please enter a valid mobile number (e.g. +49 151 12345678).';
     if (!d.street)    ERRORS.street='Please add your street and number.';
     if (!/^\d{4,5}$/.test(d.postcode)) ERRORS.postcode='Please enter a valid postcode.';
     if (!d.city)      ERRORS.city='Please add your city.';
@@ -1079,6 +1139,7 @@ document.addEventListener('submit', e => {
     /* We now hold an address, but holding one is not the same as being asked to
        keep the journey — saveOptIn stays as the visitor left it. */
     S.email = d.email; S.startDate = S.startDate || firstOfNextMonth();
+    saveState(S);
     log('details_completed'); go('payment'); return;
   }
 
@@ -1086,6 +1147,7 @@ document.addEventListener('submit', e => {
     FIELDS.method = fd.get('method')||'card';
     S.paid = true; S.lastStep = 'converted';
     log('payment_simulated',{ method:FIELDS.method, planId:S.chosenPlanId }); log('converted',{ planId:S.chosenPlanId });
+    saveState(S);
     go('confirmation'); return;
   }
 });
@@ -1097,9 +1159,11 @@ document.addEventListener('submit', e => {
   try {
     if (localStorage.getItem('usc_banner_collapsed') === '1') {
       const bar = document.getElementById('demo-banner');
-      bar.classList.add('is-collapsed');
-      const btn = bar.querySelector('[data-banner-toggle]');
-      btn.textContent = 'Show'; btn.setAttribute('aria-expanded', 'false');
+      if (bar) {
+        bar.classList.add('is-collapsed');
+        const btn = bar.querySelector('[data-banner-toggle]');
+        if (btn) { btn.textContent = 'Show'; btn.setAttribute('aria-expanded', 'false'); }
+      }
     }
   } catch (_) {}
   /* Older builds wrote step names into the address bar even though they were not
@@ -1113,10 +1177,15 @@ document.addEventListener('submit', e => {
       S = Object.assign(JSON.parse(JSON.stringify(BLANK)), b64d(m[1]));
       S.returns = (S.returns||0)+1;
       log('returned',{ returnNumber:S.returns, toStep:S.lastStep });
+      saveState(S);
       history.replaceState({ route:'landing' }, '', location.pathname);
       go(S.paid?'confirmation':(S.lastStep==='landing'?'landing':S.lastStep), { replace:true });
       return;
     } catch (err) { /* fall through to a fresh visit */ }
+  }
+  const stored = loadState();
+  if (stored && (stored.chosenPlanId || Object.keys(stored.answers||{}).length > 0 || stored.email)) {
+    S = Object.assign(JSON.parse(JSON.stringify(BLANK)), stored);
   }
   const p = new URLSearchParams(location.search);
   S.source = p.get('utm_source') || p.get('source') || 'direct';

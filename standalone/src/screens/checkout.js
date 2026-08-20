@@ -35,12 +35,12 @@
           <section class="details-section"><div class="fitpanel__label">Personal information</div>
             <div class="details-grid details-grid--person">
               ${f('firstName','First name',{auto:'given-name'})}${f('lastName','Last name',{auto:'family-name'})}
-              ${f('birthDate','Date of birth',{type:'date',auto:'bday',max:dobMax(),min:dobMin()})}
+              ${f('birthDate','Date of birth',{type:'date',auto:'bday',max:dobMax(),min:dobMin(),why:'Must be at least 18 years old.'})}
             </div></section>
           <section class="details-section"><div class="fitpanel__label">Contact details</div>
             <div class="details-grid details-grid--contact">
               ${f('email','Membership email',{type:'email',auto:'email',mode:'email',ph:'you@example.com',why:'For your membership contract. Entering your email here does not save your progress if you leave.'})}
-              ${f('phone','Mobile number',{type:'tel',auto:'tel',mode:'tel',optional:true,ph:'+49 151...'})}
+              ${f('phone','Mobile number',{type:'tel',auto:'tel',mode:'tel',ph:'+49 151 12345678',why:'For booking confirmations and studio access.'})}
             </div></section>
           <section class="details-section"><div class="fitpanel__label">Home address</div>
             <div class="details-grid details-grid--address">
