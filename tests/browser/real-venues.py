@@ -48,7 +48,7 @@ with sync_playwright() as p:
     if pg.locator('.places__fold:not([open])').count():
         pg.locator('[data-toggle-places]').first.click(); pg.wait_for_timeout(450)
     names=pg.locator('.venue-card__name').all_inner_texts()
-    real={v['name'] for v in V}
+    real={v['name'].strip() for v in V}
     if names and all(n in real for n in names): P(f"recommendation shows real venues: {', '.join(names[:3])}…")
     else: F(f"unknown venue names on screen: {[n for n in names if n not in real]}")
 

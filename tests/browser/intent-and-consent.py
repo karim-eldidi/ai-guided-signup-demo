@@ -120,6 +120,8 @@ with sync_playwright() as p:
             t=' '.join(rows.nth(i).locator('.allplans__name').inner_text().split())
             out.append(next((n for n in PLAN_NAMES if t.startswith(n)), t))
         return out
+    if pg.locator('.allplans:not([open]) summary').count():
+        pg.locator('.allplans:not([open]) summary').first.click(); pg.wait_for_timeout(350)
     rows=pg.locator('.allplans__row')
     shown=pg.locator('.allplans__row:visible').count()
     names=grid_plans(pg)
@@ -135,10 +137,6 @@ with sync_playwright() as p:
     foot=pg.locator('.allplans__foot').inner_text()
     if 'Max' in foot: P(f"and the card still says where to find it: '{' '.join(foot.split())}'")
     else: F(f"the hidden membership is not reachable from the card: {foot!r}")
-    # One of them is also spotlit as the cheaper option, in the open beside the pick
-    alt=pg.locator('.altbox__card')
-    if alt.count() and 'visits' in alt.inner_text(): P(f"a cheaper option is in the open: '{' '.join(alt.inner_text().split())[:60]}'")
-    else: F("no cheaper option beside the recommendation")
     # and each must say what it costs them, not only what it saves
     warns=[pg.locator('.allplans__warn').nth(i).inner_text() for i in range(pg.locator('.allplans__warn').count())]
     limits=[w for w in warns if 'visit routine' in w]
@@ -147,7 +145,7 @@ with sync_playwright() as p:
     # Rule 32: a plan that opens nothing they asked for carries no way to choose it, so
     # the switch we test is on a row that is genuinely an option.
     cheaper=pg.locator('.allplans__row:not(.is-current)[data-plan]').first
-    name=cheaper.locator('.allplans__name').inner_text().strip().split('\n')[0]
+    name=cheaper.locator('.allplans__name').inner_text().strip().split()[0]
     cheaper.click(); pg.wait_for_timeout(800)
     now=pg.locator('.planbox__name').inner_text()
     if name==now: P(f"switching to another membership works: now on '{now}'")
@@ -195,32 +193,23 @@ with sync_playwright() as p:
         names=grid_plans(pg)
         if 'Max' in names:
             trigger=cand; recd=pg.locator('.planbox__name').inner_text().strip(); break
-    # The invariant is CONDITIONAL, and the negative half is the one that matters: Max must
-    # never be offered without evidence in the visitor's own week. Only 29 of the venues in the
-    # dataset actually spend a Plus check-in (Premium opens them, Classic does not) against 144
-    # that Classic already includes, so at realistic density almost no week exhausts Premium's
-    # four — and declining to upsell is then the CORRECT behaviour, not a broken feature.
-    # Requiring a shortfall to exist would be a test demanding we upsell somebody.
-    up=pg.locator('.planbox .altbox').filter(has_text='Optional upgrade')
     if trigger:
         P(f"Max joins the card when the answers justify it ({' / '.join(trigger)}): {', '.join(names)}")
         if recd=='Premium': P(f"the rules still choose the plan, and it is not the top tier: '{recd}'")
         else: F(f"expected the engine to recommend Premium on a triggering journey, got '{recd}'")
-        # Stated once (rule 33) and quiet: a text link, never a competing CTA.
-        if up.count()==1: P(f"the upgrade is offered exactly once: '{' '.join(up.inner_text().split())[:70]}'")
-        else: F(f"{up.count()} optional-upgrade boxes in the plan column")
-        if 'Plus check-ins' in up.inner_text(): P("and it argues on the published Plus allowance, not on visit counts")
-        else: F("the upgrade does not name the allowance it is answering")
-        if up.locator('.btn--primary').count()==0: P("the upgrade is a quiet link, not a second primary button")
-        else: F("the upgrade competes with the primary CTA")
     else:
         P(f"no week in this dataset outruns Premium's Plus allowance, so Max is not pushed — "
           f"{len(CANDIDATES)} journeys tried, none justified it")
         if 'Max' not in names: P(f"and Max stays off the card without evidence for it: {', '.join(names)}")
         else: F(f"Max is on the card with no shortfall to justify it: {names}")
-        if up.count()==0: P("and no optional-upgrade box is shown without a shortfall")
-        else: F(f"{up.count()} upgrade boxes shown with nothing in the answers to justify them")
-    if pg.locator('.allplans__row:visible').count()==len(names): P("every row on the card is visible")
+    # Compare memberships is collapsed by default under Continue CTA
+    allplans=pg.locator('.allplans')
+    if allplans.count()==1: P("compare memberships drawer is rendered below CTA")
+    else: F("compare memberships drawer missing")
+    if not allplans.get_attribute('open'): P("compare memberships is collapsed by default")
+    else: F("compare memberships should be collapsed by default")
+    allplans.locator('summary').click(); pg.wait_for_timeout(350)
+    if pg.locator('.allplans__row:visible').count()==len(names): P("opening drawer reveals every plan row")
     else: F("rows on the card are hidden")
     prim=pg.locator('.btn--primary:visible').count()
     if prim==1: P("exactly one filled primary button is visible on the recommendation (rule 9)")
@@ -228,40 +217,16 @@ with sync_playwright() as p:
     pg.screenshot(path=f"{OUT}/max-upsell.png", full_page=True)
     c.close()
 
-    # --- C3. the same upgrade is never offered twice (rule 33) -----------------
-    # Indoor cycling near Mitte: the only place that does it is a Plus partner, so Classic
-    # opens nothing and rule 32 makes the alternative box compare UPWARDS — and the plan it
-    # lands on is Max. Offering Max again as its own box would state the same thing twice,
-    # so the Plus shortfall becomes a line inside that box instead.
+    # --- C3. streamlined sidebar has no competing boxes -----------------------
     c=b.new_context(viewport={'width':1440,'height':900}); pg=c.new_page()
     pg.on("pageerror", lambda e: F(f"JS ERROR: {e}"))
     pg.goto(U); pg.wait_for_timeout(500)
     pg.locator('[data-start-fit]').click(); pg.wait_for_timeout(800)
     for lab in ['Move more','Indoor cycling','Mitte','Twice a week']: answer(pg, lab)
-    boxes=pg.locator('.planbox .altbox__head')
-    heads=[boxes.nth(i).inner_text().strip() for i in range(boxes.count())]
-    if 'Opens more near you' in heads: P(f"rule 32 still compares upwards when the cheaper tier opens nothing: {heads}")
-    else: F(f"expected an upward comparison on this journey: {heads}")
-    if 'Optional upgrade' not in heads: P("and the upgrade is not offered a second time beside it (rule 33)")
-    else: F(f"the same membership is offered twice in one column: {heads}")
-    # Which plan the upward box lands on depends on the dataset: it is the next tier up from
-    # the one on screen, so it is Max only when Premium is recommended. What must hold for any
-    # of them is that the box gives a reason drawn from published data — a Plus allowance, a
-    # counted coverage gain, or a visit allowance — and never just a higher price.
-    alt=pg.locator('.altbox__card')
-    alt_text=' '.join(alt.inner_text().split())
-    import re as _re
-    reason=('Plus check-ins' in alt_text or 'more place' in alt_text
-            or bool(_re.search(r'opens \d+ of \d+', alt_text)))
-    if reason: P(f"the upward option carries a published reason: '{alt_text[-70:]}'")
-    else: F(f"the upward option gives no published reason: {alt_text}")
-    # Whatever plan it names has to be on the card too, or it is offered without being listed.
-    named=next((n for n in ['Essential','Classic','Premium','Max'] if alt_text.startswith(n)), None)
-    grid=grid_plans(pg)
-    if named and any(g.startswith(named) for g in grid):
-        P(f"and the plan it offers is on the card: {named}")
-    else: F(f"the alternative offers {named} but the card lists {grid}")
-    pg.screenshot(path=f"{OUT}/max-as-alternative.png", full_page=True)
+    boxes=pg.locator('.planbox .altbox')
+    if boxes.count()==0: P("sidebar is streamlined with no redundant altboxes")
+    else: F(f"unexpected altbox in streamlined sidebar: {boxes.count()}")
+    pg.screenshot(path=f"{OUT}/streamlined-sidebar.png", full_page=True)
     c.close()
 
     # --- D. the way out opens from anywhere (rule 71) -------------------------

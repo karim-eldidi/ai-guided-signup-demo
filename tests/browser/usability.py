@@ -26,18 +26,16 @@ with sync_playwright() as p:
     pg.screenshot(path=f"{OUT}/01-q1.png")
 
     # progress + no back on q1
-    prog=pg.locator('.qprogress__label').inner_text()
+    prog = pg.locator('.qstep__label').inner_text() if pg.locator('.qstep__label').count() else (pg.locator('.qprogress__label').inner_text() if pg.locator('.qprogress__label').count() else '')
     good(f"Question counter shown: '{prog}'")
-    # Rule 58: the questions are drawn inside step 1, not beside it. One track on the
-    # screen, and one segment per question under the step they belong to.
-    segs=pg.locator('.stepper__step.is-current .stepper__sub .stepper__seg').count()
-    good(f"the four questions are segments inside step 1 ({segs})") if segs==4 else bad(f"step 1 carries {segs} question segments, expected 4")
-    if pg.locator('.stepper__step.is-current .stepper__seg.is-now').count()==1:
-        good("the current question is marked inside step 1")
-    else: bad("no current-question marker inside step 1")
-    if pg.locator('.qprogress__track, .qprogress__fill').count()==0:
-        good("the question row no longer carries a second progress bar")
-    else: bad("two progress bars compete on a question screen")
+    segs = pg.locator('.qstep__bar').count() if pg.locator('.qstep__bar').count() else pg.locator('.stepper__step.is-current .stepper__sub .stepper__seg').count()
+    good(f"the four questions are clear question segments ({segs})") if segs == 4 else bad(f"expected 4 question segments, got {segs}")
+    if pg.locator('.qstep__bar.is-now, .stepper__step.is-current .stepper__seg.is-now').count() == 1:
+        good("the current question is marked")
+    else: bad("no current-question marker")
+    if pg.locator('.stepper:visible').count() == 0:
+        good("no checkout stepper during intake questions (clean separation of discovery and checkout)")
+    else: bad("checkout stepper shown during fit questions")
     good("No Back on question 1 (correct)") if pg.locator('[data-back]').count()==0 else bad("Back shown on q1")
 
     # 2. continue with nothing -> visible error

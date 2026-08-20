@@ -93,7 +93,7 @@ function coverageBlock(rec, match, plan) {
   </div>`;
 }
 
-function planDrawer(plan, price, each, commitment, isRec, hereT, cheaperPlan, cheaperT, visitsFor, wp, altBox, allPlans, maxUpsell) {
+function planDrawer(plan, price, each, commitment, isRec, hereT, cheaperPlan, cheaperT, visitsFor, wp, allPlans) {
   if (!PLAN_DRAWER_OPEN) return '';
   const perkText = S.commitmentId === 'biennial'
     ? 'Includes 2 free wellness apps (0 € extra)'
@@ -167,13 +167,17 @@ function planDrawer(plan, price, each, commitment, isRec, hereT, cheaperPlan, ch
 }
 
 function recommendationScreen() {
-  const a = A(), match = matchVenues(a), rec = recommend(a,match);
+  const a = A();
+  const baseAnswers = Object.assign({}, S.answers, { radiusKm: S.answers.radiusKm || '3' });
+  const baseMatch = matchVenues(baseAnswers);
+  const rec = recommend(baseAnswers, baseMatch);
   /* what they said they'd actually do, used by every comparison on this screen */
   const groups = (a.activities||[]).filter(x=>x!==SKIP), groupsForAlt = groups;
-  if (!S.planOverridden) S.chosenPlanId = rec.planId;
+  if (!S.planOverridden) S.chosenPlanId = S.chosenPlanId || rec.planId;
   const plan = planById(S.chosenPlanId||rec.planId);
   const isRec = plan.id===rec.planId;
   const price = priceFor(plan,S.commitmentId), commitment = commitmentById(S.commitmentId);
+  const match = matchVenues(a);
   const pool = match.pool||[];
   const where = whereName(match);
 
@@ -260,11 +264,19 @@ function recommendationScreen() {
   const resolveVenue = rawV => {
     if (!rawV) return null;
     let v = rawV;
+    const from = (match.areas && match.areas.length) ? match.areas : [match.area || ANYWHERE];
     if (typeof v.distanceKm !== 'number') {
-      const from = (match.areas && match.areas.length) ? match.areas : [match.area || ANYWHERE];
       const km = Math.round(Math.min(...from.map(a => distanceKm(a, v))) * 10) / 10;
       const nearestArea = from.reduce((best, a) => distanceKm(a, v) < distanceKm(best, v) ? a : best, from[0]);
       v = { ...v, distanceKm: km, nearestArea };
+    }
+    if (typeof v.matchPct !== 'number') {
+      const chosen = activityIdsFor(a.activities || []);
+      const hits = (v.activities || []).filter(x => chosen.includes(x));
+      const basePct = hits.length > 0 ? 98 : 72;
+      const distPenalty = Math.min(28, Math.round((v.distanceKm || 0) * 2.5));
+      const matchPct = Math.max(45, Math.min(99, basePct - distPenalty));
+      v = { ...v, matchPct };
     }
     return v;
   };
@@ -348,31 +360,82 @@ function recommendationScreen() {
   </div>`;
 
   const displayGroups = ACTIVE_CATEGORY_FILTER === 'all' 
-    ? (groups.length ? groups : ACTIVITY_GROUPS.slice(0, 4))
+    ? ACTIVITY_GROUPS
     : ACTIVITY_GROUPS.filter(g => g.id === ACTIVE_CATEGORY_FILTER);
 
   const curatedCards = [];
-  displayGroups.forEach(g => {
-    const grp = groupById(g.id || g);
-    if (!grp) return;
-    const grpVenues = pool.filter(v => venueInGroup(v, grp) && !EXCLUDED_VENUES.has(v.id) && (!nq || venueHit(v)));
-    const maxPerGroup = displayGroups.length === 1 ? 6 : Math.max(2, Math.ceil(4 / displayGroups.length));
-    const take = ACTIVE_CATEGORY_FILTER === 'all' ? grpVenues.slice(0, maxPerGroup) : grpVenues;
-    take.forEach(v => {
-      curatedCards.push({ grp, v });
-    });
-  });
+  const seenVenueIds = new Set();
 
+  if (nq) {
+    const searchHits = pool.filter(v => venueHit(v) && !EXCLUDED_VENUES.has(v.id));
+    searchHits.forEach(v => {
+      const grp = ACTIVITY_GROUPS.find(g => venueInGroup(v, g)) || ACTIVITY_GROUPS[0];
+      curatedCards.push({ grp, v });
+      seenVenueIds.add(v.id);
+    });
+  } else if (ACTIVE_CATEGORY_FILTER === 'all') {
+    const userGroups = groups.length ? groups.map(groupById).filter(Boolean) : ACTIVITY_GROUPS;
+    userGroups.forEach(grp => {
+      const grpVenues = pool.filter(v => venueInGroup(v, grp) && !EXCLUDED_VENUES.has(v.id) && !seenVenueIds.has(v.id));
+      const take = (S.radiusKm === 'any' || userGroups.length <= 2) ? grpVenues : grpVenues.slice(0, 4);
+      take.forEach(v => {
+        curatedCards.push({ grp, v });
+        seenVenueIds.add(v.id);
+      });
+    });
+    ACTIVITY_GROUPS.forEach(grp => {
+      const grpVenues = pool.filter(v => venueInGroup(v, grp) && !EXCLUDED_VENUES.has(v.id) && !seenVenueIds.has(v.id));
+      const take = (S.radiusKm === 'any') ? grpVenues : grpVenues.slice(0, 3);
+      take.forEach(v => {
+        curatedCards.push({ grp, v });
+        seenVenueIds.add(v.id);
+      });
+    });
+  } else {
+    displayGroups.forEach(grp => {
+      const grpVenues = pool.filter(v => venueInGroup(v, grp) && !EXCLUDED_VENUES.has(v.id));
+      grpVenues.forEach(v => {
+        if (!seenVenueIds.has(v.id)) {
+          curatedCards.push({ grp, v });
+          seenVenueIds.add(v.id);
+        }
+      });
+    });
+  }
+
+  const isAllBerlin = S.radiusKm === 'any';
   const matchingActivitiesCount = groups.length || ACTIVITY_GROUPS.length;
   const matchingVenuesCount = (hereT && hereT.included) ? hereT.included : (wanted.length || pool.length);
 
+  const activitiesTitle = isAllBerlin
+    ? 'Activities across Berlin'
+    : `Activities in ${esc(where)}`;
+
+  const activitiesSubtext = nq
+    ? `${curatedCards.length} places matching &ldquo;${esc(VENUEQ)}&rdquo;`
+    : (ACTIVE_CATEGORY_FILTER === 'all'
+        ? (isAllBerlin
+            ? `${curatedCards.length} places loaded across ${ACTIVITY_GROUPS.length} activity categories in Berlin`
+            : `${curatedCards.length} places across ${matchingActivitiesCount} sports in ${esc(where)}`)
+        : (() => {
+            const grp = groupById(ACTIVE_CATEGORY_FILTER);
+            return `${curatedCards.length} ${curatedCards.length === 1 ? 'place' : 'places'} for ${esc(grp ? grp.label : 'this activity')} ${isAllBerlin ? 'across Berlin' : `in ${esc(where)}`}`;
+          })());
+
   const activitiesGalleryBlock = `<div class="places made-for-you">
     <div class="made-for-you__head">
-      <div>
-        <h2 class="made-for-you__title">Activities in ${esc(where)}</h2>
-        <p class="made-for-you__sub">${matchingActivitiesCount} sports &middot; ${matchingVenuesCount} places &middot; Based on your preferences</p>
+      <div class="made-for-you__title-wrap">
+        <h2 class="made-for-you__title">${activitiesTitle}</h2>
+        <p class="made-for-you__sub">${activitiesSubtext}</p>
       </div>
-      <div class="made-for-you__controls">
+    </div>
+    <div class="made-for-you__toolbar">
+      <div class="made-for-you__search-box">
+        <span class="made-for-you__search-icon">${icon('search', 14)}</span>
+        <input type="text" class="made-for-you__search-input" placeholder="AI search for venues &amp; activities with Urby..." value="${esc(VENUEQ||'')}" data-venue-input autocomplete="off" spellcheck="false" aria-label="Search venues or sports in page">
+        ${VENUEQ ? `<button class="made-for-you__search-clear" type="button" data-venue-clear aria-label="Clear search">${icon('close', 12)}</button>` : ''}
+      </div>
+      <div class="made-for-you__filters">
         <div class="radius-toggle radius" role="group" aria-label="Distance radius">
           ${RADII.map(r=>`<button class="radius-toggle__btn chip-sm ${(S.radiusKm||'auto')===r.id?'is-active is-current':''}" type="button" data-radius="${esc(r.id)}">${esc(r.label)}</button>`).join('')}
         </div>
@@ -408,59 +471,62 @@ function recommendationScreen() {
     </div>` : ''}
 
     ${curatedCards.length ? `<div class="activity-gallery-wrap">
-      <button class="gallery-nav-btn gallery-nav-btn--prev" type="button" data-scroll-gallery="prev" aria-label="Previous activities" style="display:none">
+      <button class="gallery-nav-btn gallery-nav-btn--prev is-disabled" type="button" data-scroll-gallery="prev" aria-label="Previous activities" aria-disabled="true">
         ${icon('chevron', 16)}
       </button>
-      <div class="activity-gallery" id="activity-gallery-scroll">
-        <div class="activity-gallery__track venue-grid--big is-rail">
-          ${curatedCards.map(({ grp, v }) => {
-            const vResolved = resolveVenue(v);
-            const inPlan = includedIn(vResolved, plan.id);
-            const areaLabel = vResolved.nearestArea ? vResolved.nearestArea.name : (AREAS.find(a=>a.id===vResolved.area)||{}).name || '';
-            const distLabel = areaLabel ? `${vResolved.distanceKm} km from ${esc(areaLabel)}` : `${vResolved.distanceKm} km away`;
-            const isStarred = Boolean(S.starredVenues && S.starredVenues[vResolved.id]);
+      <div class="activity-gallery venue-grid--big is-rail" id="activity-gallery-scroll">
+        ${curatedCards.map(({ grp, v }) => {
+          const vResolved = resolveVenue(v);
+          const inPlan = includedIn(vResolved, plan.id);
+          const areaLabel = vResolved.nearestArea ? vResolved.nearestArea.name : (AREAS.find(a=>a.id===vResolved.area)||{}).name || '';
+          const distLabel = areaLabel ? `${vResolved.distanceKm} km from ${esc(areaLabel)}` : `${vResolved.distanceKm} km away`;
+          const isStarred = Boolean(S.starredVenues && S.starredVenues[vResolved.id]);
 
-            const accessBadge = inPlan
-              ? (vResolved.tier === 'plus'
-                  ? `<span class="access-pill access-pill--plus-overlay">${icon('checkThin', 11)} Plus access</span>`
-                  : vResolved.tier === 'premium'
-                  ? `<span class="access-pill access-pill--premium-overlay">${icon('checkThin', 11)} Premium</span>`
-                  : `<span class="access-pill access-pill--included-overlay">${icon('checkThin', 11)} Included</span>`)
-              /* The tier is not the access map. Ask which published plan actually opens this
-                 venue instead of inferring it, or the badge lies whenever the two disagree. */
-              : `<span class="access-pill access-pill--locked-overlay venue-card__lock">${icon('lock', 11)} Needs ${esc((firstPlanWithAccess(vResolved) || {}).name || 'a higher plan')}</span>`;
+          const accessBadge = inPlan
+            ? (vResolved.tier === 'plus'
+                ? `<span class="access-pill access-pill--plus-overlay">${icon('checkThin', 11)} Plus access</span>`
+                : vResolved.tier === 'premium'
+                ? `<span class="access-pill access-pill--premium-overlay">${icon('checkThin', 11)} Premium</span>`
+                : `<span class="access-pill access-pill--included-overlay">${icon('checkThin', 11)} Included</span>`)
+            /* The tier is not the access map. Ask which published plan actually opens this
+               venue instead of inferring it, or the badge lies whenever the two disagree. */
+            : `<span class="access-pill access-pill--locked-overlay venue-card__lock">${icon('lock', 11)} Needs ${esc((firstPlanWithAccess(vResolved) || {}).name || 'a higher plan')}</span>`;
 
-            return `<div class="activity-card venue-card ${inPlan ? '' : 'is-locked'} ${isStarred ? 'is-starred' : ''}" draggable="true" data-drag-venue="${esc(vResolved.id)}" data-drag-name="${esc(vResolved.name)}">
-              <div class="activity-card__badges">
-                ${accessBadge}
+          const matchBadge = vResolved.matchPct
+            ? `<span class="activity-card__badge">${vResolved.matchPct}% match</span>`
+            : '';
+
+          return `<div class="activity-card venue-card ${inPlan ? '' : 'is-locked'} ${isStarred ? 'is-starred' : ''}" draggable="true" data-drag-venue="${esc(vResolved.id)}" data-drag-name="${esc(vResolved.name)}">
+            <div class="activity-card__badges">
+              ${matchBadge}
+              ${accessBadge}
+            </div>
+            <button class="activity-card__star-btn ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(vResolved.id)}" aria-label="${isStarred ? `Remove ${esc(vResolved.name)} from routine` : `Add ${esc(vResolved.name)} to routine`}" title="${isStarred ? 'In your routine' : 'Add to routine'}">
+              ${icon(isStarred ? 'starFill' : 'star', 15)}
+            </button>
+            <button class="activity-card__media-btn" data-venue="${esc(vResolved.id)}" aria-label="Details about ${esc(vResolved.name)}">
+              <span class="activity-card__media">${venueMedia(vResolved)}</span>
+              <span class="activity-card__icon-badge">${icon(grp.icon, 16)}</span>
+            </button>
+            <div class="activity-card__content">
+              <div class="activity-card__activity"><b>${esc(grp.label)}</b></div>
+              <div class="venue-card__meta" style="display:none">for ${esc(grp.label.toLowerCase())}</div>
+              <button class="activity-card__vname venue-card__name linkish" data-venue="${esc(vResolved.id)}">${esc(vResolved.name)}</button>
+              <div class="activity-card__dist">${distLabel}</div>
+              <div class="activity-card__actions">
+                ${isStarred ? `
+                  <button class="btn-pill btn-pill--sm btn-pill--starred btn-pill--block" type="button" data-toggle-star="${esc(vResolved.id)}" title="Click to remove from routine">
+                    ${icon('starFill', 12)} <span>In routine</span>
+                  </button>
+                ` : `
+                  <button class="btn-pill btn-pill--sm btn-pill--block" type="button" data-toggle-star="${esc(vResolved.id)}">
+                    ${icon('plus', 11)} <span>Add to routine</span>
+                  </button>
+                `}
               </div>
-              <button class="activity-card__star-btn ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(vResolved.id)}" aria-label="${isStarred ? `Remove ${esc(vResolved.name)} from routine` : `Add ${esc(vResolved.name)} to routine`}" title="${isStarred ? 'In your routine' : 'Add to routine'}">
-                ${icon(isStarred ? 'starFill' : 'star', 15)}
-              </button>
-              <button class="activity-card__media-btn" data-venue="${esc(vResolved.id)}" aria-label="Details about ${esc(vResolved.name)}">
-                <span class="activity-card__media">${venueMedia(vResolved)}</span>
-                <span class="activity-card__icon-badge">${icon(grp.icon, 16)}</span>
-              </button>
-              <div class="activity-card__content">
-                <div class="activity-card__activity"><b>${esc(grp.label)}</b></div>
-                <div class="venue-card__meta" style="display:none">for ${esc(grp.label.toLowerCase())}</div>
-                <button class="activity-card__vname venue-card__name linkish" data-venue="${esc(vResolved.id)}">${esc(vResolved.name)}</button>
-                <div class="activity-card__dist">${distLabel}</div>
-                <div class="activity-card__actions">
-                  ${isStarred ? `
-                    <button class="btn-pill btn-pill--sm btn-pill--starred btn-pill--block" type="button" data-toggle-star="${esc(vResolved.id)}" title="Click to remove from routine">
-                      ${icon('starFill', 12)} <span>In routine</span>
-                    </button>
-                  ` : `
-                    <button class="btn-pill btn-pill--sm btn-pill--block" type="button" data-toggle-star="${esc(vResolved.id)}">
-                      ${icon('plus', 11)} <span>Add to routine</span>
-                    </button>
-                  `}
-                </div>
-              </div>
-            </div>`;
-          }).join('')}
-        </div>
+            </div>
+          </div>`;
+        }).join('')}
       </div>
       <button class="gallery-nav-btn gallery-nav-btn--next" type="button" data-scroll-gallery="next" aria-label="Next activities">
         ${icon('chevron', 16)}
@@ -493,10 +559,10 @@ function recommendationScreen() {
   const routineCount = routineVenues.length;
   const recoTabs = `<div class="reco-tabs" role="tablist" aria-label="Recommendation view format">
     <button class="reco-tab ${RECO_VIEW==='pillars'?'is-active':''}" type="button" data-set-reco-view="pillars" aria-selected="${RECO_VIEW==='pillars'}">
-      Activities
+      Activities &amp; studios
     </button>
     <button class="reco-tab ${RECO_VIEW==='routine'||RECO_VIEW==='week'?'is-active':''}" type="button" data-set-reco-view="routine" data-toggle-routine aria-selected="${RECO_VIEW==='routine'||RECO_VIEW==='week'}">
-      My routine <span class="reco-tab__badge">${routineCount}</span>
+      ${icon('calendar', 14)} <span>My routine</span> <span class="reco-tab__badge">${routineCount}</span>
     </button>
   </div>`;
 
@@ -566,7 +632,7 @@ function recommendationScreen() {
      the rest of it stands — the grid is on the plan card, one tap from the recommendation,
      every row it lists is visible, and the `plans` screen is still one link away for the
      tier this grid is leaving out. */
-  const allPlans = `<details class="allplans"${ALTOPEN?' open':''}>
+  const allPlans = `<details class="allplans" ${ALTOPEN ? 'open' : ''}>
     <summary class="allplans__head" data-toggle-alt>
       <span class="allplans__headcopy"><span>Compare memberships</span>
         <small>${esc(listWords(gridPlans.map(pl=>pl.name)))}</small></span>${icon('chevron',18)}</summary>
@@ -584,7 +650,7 @@ function recommendationScreen() {
           ? `${hereT.included-t.included} fewer ${hereT.included-t.included===1?'place':'places'} than ${plan.name}` : '';
         const note = short || fewer;
         return `<div class="allplans__row ${here?'is-current':''}" ${here?'':`data-plan="${esc(pl.id)}" role="button" tabindex="0"`}>
-          <div class="allplans__name">${esc(pl.name)}${tag?`<span class="allplans__tag">${tag}</span>`:''}</div>
+          <div class="allplans__name">${esc(pl.name)}${tag?` <span class="allplans__tag">${tag}</span>`:''}</div>
           <div class="allplans__price">${p} €<small>/mo</small></div>
           <div class="allplans__opens">${visitsFor(pl)} visits${t&&t.nearby
             ? ` &middot; opens ${t.included} of ${t.nearby} ${t.nearby===1?'place':'places'}`
@@ -598,78 +664,7 @@ function recommendationScreen() {
       showTop?'':`, ${esc(topPlan.name)} included`}</button></p>
   </details>`;
 
-  /* Rule 33, say a thing once: when the tier below opens nothing the alternative box is
-     already comparing upwards, and the plan it lands on is this same top tier. Two boxes
-     offering the same switch is the duplication that rule exists to stop, so the shortfall
-     becomes a line inside that box instead of a second box beside it. */
-  const altIsTop = Boolean(altPlan && altPlan.id === topPlan.id);
-  const plusNote = plusShort
-    ? `Your week would use about ${plusWanted} Plus check-ins a month, and ${plan.name} includes ${plan.plusCheckIns}.`
-    : '';
-
-  const altBox = altPlan ? (() => {
-    const p = priceFor(altPlan, S.commitmentId);
-    const short = a.frequency && !carriesFrequency(altPlan, a.frequency)
-      ? `Not enough for your ${visitsWanted(a.frequency)}-visit routine` : '';
-    const opens = altT && altT.nearby
-      ? ` &middot; opens ${altT.included} of ${altT.nearby} ${altT.nearby === 1 ? 'place' : 'places'}` : '';
-    /* Downwards the honest frame is the saving; upwards it is what the extra money opens. */
-    const extra = compareUp && altT && hereT && altT.included > hereT.included
-      ? altT.included - hereT.included : 0;
-    const gain = extra ? ` &middot; ${extra} more ${extra === 1 ? 'place' : 'places'} than ${esc(plan.name)}` : '';
-    return `<div class="altbox">
-      <div class="altbox__head">${compareUp ? 'Opens more near you' : 'Cheaper option'}</div>
-      <div class="altbox__card" data-plan="${esc(altPlan.id)}" role="button" tabindex="0"
-        aria-label="Switch to ${esc(altPlan.name)} for ${p} euros a month">
-        <div class="altbox__row"><b>${esc(altPlan.name)}</b>
-          <span class="altbox__price">${p} €<small>/mo</small></span></div>
-        <div class="altbox__meta">${visitsFor(altPlan)} visits${opens}${gain}</div>
-        ${altIsTop && plusNote?`<p class="altbox__warn">${icon('info',15)} <span>${esc(plusNote)}</span></p>`:''}
-        ${short?`<p class="altbox__warn">${icon('info',15)} <span>${esc(short)}</span></p>`:''}
-        <span class="altbox__chev">${icon('chevron',19)}</span>
-      </div>
-    </div>`;
-  })() : '';
-
-  /* An optional upgrade, and deliberately not a decision: quiet heading, published facts
-     quoted from plans.json rather than paraphrased, and a text link to switch. It is never
-     a filled black button — this screen has exactly one of those and it belongs to the plan
-     the rules chose (rule 9). */
-  const plusLine = pl => ((pl.includes||[]).find(x => /plus check-in/i.test(x)) || '');
-  const maxUpsell = plusShort && !altIsTop ? (() => {
-    const p = priceFor(topPlan, S.commitmentId), delta = p - price;
-    return `<div class="altbox">
-      <div class="altbox__head">Optional upgrade</div>
-      <div class="altbox__row"><b>${esc(topPlan.name)}</b>
-        <span class="altbox__price">${p} €<small>/mo</small></span></div>
-      <div class="altbox__meta">${esc(plusNote)}</div>
-      <ul class="planbox__facts">
-        <li>${icon('checkThin',16)} <span>${esc(plusLine(topPlan))} &ndash; against ${esc(lowerFirst(plusLine(plan)))} on ${esc(plan.name)}</span></li>
-        <li>${icon('checkThin',16)} <span><b>${esc(topPlan.venueCount)}</b> venues, against ${esc(plan.venueCount)} on ${esc(plan.name)}</span></li>
-        <li>${icon('info',16)} <span><b>${delta} €</b> more a month. Still ${esc(lowerFirst(topPlan.checkInModel.split(',')[0]))} overall.</span></li>
-      </ul>
-      <p class="altbox__meta">Urby still recommends ${esc(planById(rec.planId).name)} &mdash; this is only here because your own week
-        asks for more Plus check-ins than it includes.
-        <button class="linkish strong" type="button" data-plan="${esc(topPlan.id)}">Switch to ${esc(topPlan.name)}</button></p>
-    </div>`;
-  })() : '';
-
-  /* Karim, 19 Aug: some visitors just want the top tier, whatever the answers say, and that is
-     a real intention rather than a mistake to protect them from. So there is always a quiet
-     way to take it — but it stays a choice the visitor makes, never a recommendation, and it
-     says outright that Urby did not pick it. It routes through the existing `data-plan`
-     override, so the "Urby would have picked X — switch back" line appears by itself
-     (rule 67). Suppressed whenever the top tier is already on screen or already offered
-     above, because saying it twice in one column is rule 33. */
-  const topAlreadyOffered = Boolean(maxUpsell) || altIsTop
-    || plan.id === topPlan.id || rec.planId === topPlan.id;
-  const splurge = topAlreadyOffered ? '' : `<p class="planbox__fine">
-      Want the most we offer? <b>${esc(topPlan.name)}</b> is ${priceFor(topPlan, S.commitmentId)} €/mo &mdash;
-      ${esc(lowerFirst(plusLine(topPlan)))}, and ${esc(topPlan.venueCount)} venues.
-      Urby did not pick it from your answers.
-      <button class="linkish strong" type="button" data-plan="${esc(topPlan.id)}">Choose ${esc(topPlan.name)}</button>
-    </p>`;
-const planAside = `<div class="planbox">
+  const planAside = `<div class="planbox">
     <div class="planbox__badge">${isRec ? 'RECOMMENDED FOR YOU' : 'Your choice'}</div>
     <div class="planbox__idrow">
       <div class="planbox__name">${esc(plan.name)}</div>
@@ -754,7 +749,7 @@ const planAside = `<div class="planbox">
     </div>
   </details>`;
 
-  return `${topbar(1)}<div class="two-col two-col--reco"><main class="two-col__main" id="main">
+  return `${topbar(1, { stepper: false })}<div class="two-col two-col--reco"><main class="two-col__main" id="main">
     ${heroBlock}
     ${chipsBlock}
     <section class="reco-canvas-box">
@@ -787,7 +782,7 @@ const planAside = `<div class="planbox">
     </div>
     <button class="btn btn--primary paybar__cta" data-go="details">Continue</button>
   </div>
-  ${planDrawer(plan, price, each, commitment, isRec, hereT, cheaperPlan, cheaperT, visitsFor, wp, altBox, allPlans, maxUpsell)}
+  ${planDrawer(plan, price, each, commitment, isRec, hereT, cheaperPlan, cheaperT, visitsFor, wp, allPlans)}
   ${exitModal()}${venueSheet()}${appSheet()}`;
 }
 
@@ -830,31 +825,60 @@ function plansScreen() {
     const price=priceFor(pl,S.commitmentId), venues=parseInt(String(pl.venueCount).replace(/\D/g,''),10)||0;
     const access=Math.max(5,Math.min(100,venues/maxVenues*100));
     const daily=Boolean(pl.dailyCheckIn), plus=pl.plusCheckIns||0, selected=selectedPlan.id===pl.id;
-    const best={
-      essential:'Starter plan (4 visits/mo at standard gyms & pools)',
-      classic:'Daily check-ins across 14,800+ studios, gyms & pools',
-      premium:'Daily check-ins + 4 Plus visits (1 massage, spas, EMS)',
-      max:'Daily check-ins + 8 Plus visits (2 massages, luxury clubs)'
-    }[pl.id]||pl.bestFor;
+    const tierMeta = {
+      essential: {
+        tagline: 'Starter · Light routine',
+        checkText: '4 visits total each month',
+        checkSub: '~1 visit a week at gyms & fitness pools',
+        best: 'Simple starter plan for gym & pool basics'
+      },
+      classic: {
+        tagline: 'Daily sports · Most popular',
+        checkText: '1 visit every day',
+        checkSub: 'Daily access across 14,800+ sports venues & classes',
+        best: 'Everyday sports, fitness studios & classes'
+      },
+      premium: {
+        tagline: 'Sports + Spas & Wellness',
+        checkText: 'Daily sports + 4 Plus visits',
+        checkSub: 'Includes 1 massage/mo, day spas & wellness',
+        best: 'Complete active lifestyle + regular spa days & massages'
+      },
+      max: {
+        tagline: 'Ultimate Luxury & Recovery',
+        checkText: 'Daily sports + 8 Plus visits',
+        checkSub: 'Includes 2 massages/mo, luxury clubs & spas',
+        best: 'High-frequency wellness, luxury day spas & top studios'
+      }
+    }[pl.id] || {
+      tagline: pl.name,
+      checkText: daily ? 'Daily check-ins' : '4 total each month',
+      checkSub: daily ? 'up to one each day' : 'about once a week',
+      best: pl.bestFor
+    };
+
     const plusCopy=plus ? `<button class="plancard__plus" type="button" data-plus-open="${esc(pl.id)}" aria-label="Explain Plus check-ins on ${esc(pl.name)}">
-        <b>${plus} Plus check-ins / month</b><span>For premium studios, spas and EMS</span>
-        <em>Includes ${pl.id==='max'?'2 massages':'1 massage'}</em><u>What are Plus check-ins?</u></button>`
-      : `<div class="plancard__locked">${icon('lock',13)}<span>Not included</span></div>`;
+        <b>${plus} Plus check-ins / month</b><span>For premium studios, day spas &amp; EMS</span>
+        <em>Includes ${pl.id==='max'?'2 massages/mo':'1 massage/mo'}</em><u>What are Plus check-ins?</u></button>`
+      : `<div class="plancard__locked">${icon('lock',13)}<span>No spa / massage included</span></div>`;
     return `<article class="plancard ${pl.mostPopular?'is-popular':''} ${selected?'is-selected':''}" data-pick-plan="${esc(pl.id)}" role="button" tabindex="0" ${selected?'aria-current="true"':''}>
       <div class="plancard__top">
         ${pl.mostPopular?`<span class="badge plancard__badge">Most popular</span>`:''}
         <div class="plancard__name">${esc(pl.name)}</div>
-        <div class="plancard__price"><b>${price} €</b><span>/mo</span></div>
+        <div class="plancard__tagline">${esc(tierMeta.tagline)}</div>
+        <div class="plancard__price"><b>${price} €</b><span>/month</span></div>
       </div>
-      <div class="plancard__section"><span class="plancard__label">Venue access</span>
-        <div class="plancard__venues">${esc(pl.venueCount)} venues</div>
-        <div class="accessbar" role="img" aria-label="${esc(pl.venueCount)} venues out of 17,800 on Max"><span class="accessbar__fill" style="width:${access}%"></span></div></div>
-      <div class="plancard__section"><span class="plancard__label">Check-ins</span>
-        <span class="plancard__check-main">${daily?'Daily':'4 total each month'}</span>
-        <span class="plancard__check-sub">${daily?'up to one each day':'about once a week'}</span>${planWeekDots(daily)}</div>
-      <div class="plancard__section"><span class="plancard__label">Plus &amp; recovery</span>${plusCopy}</div>
-      <div class="plancard__section plancard__best"><span class="plancard__label">Best for</span>${esc(best)}</div>
-      <button class="btn btn--secondary btn--block plancard__cta" type="button" data-pick-plan="${esc(pl.id)}" aria-pressed="${selected?'true':'false'}">${selected?`${icon('checkThin',17)} Selected`:`Choose ${esc(pl.name)}`}</button>
+      <button class="btn ${selected?'btn--primary':'btn--secondary'} btn--block plancard__cta" type="button" data-pick-plan="${esc(pl.id)}" aria-pressed="${selected?'true':'false'}">${selected?`${icon('checkThin',17)} Selected`:`Choose ${esc(pl.name)}`}</button>
+      <div class="plancard__features">
+        <div class="plancard__feature-item">${icon('checkThin', 16)} <span><b>${esc(tierMeta.checkText)}</b></span></div>
+        <div class="plancard__section plancard__section--venues"><span class="plancard__label">Venue access</span>
+          <div class="plancard__venues">${esc(pl.venueCount)} venues</div>
+          <div class="accessbar" role="img" aria-label="${esc(pl.venueCount)} venues out of 17,800 on Max"><span class="accessbar__fill" style="width:${access}%"></span></div></div>
+        <div class="plancard__section plancard__section--checkins"><span class="plancard__label">Routine fit</span>
+          <span class="plancard__check-main">${esc(tierMeta.checkSub)}</span>${planWeekDots(daily)}</div>
+        <div class="plancard__section plancard__section--plus"><span class="plancard__label">Plus &amp; recovery</span>${plusCopy}</div>
+        <div class="plancard__section plancard__best"><span class="plancard__label">Best for</span>${esc(tierMeta.best)}</div>
+      </div>
     </article>`;
   }).join('');
 
@@ -883,33 +907,17 @@ function plansScreen() {
     <span class="plans-guide__note">2 minutes · no email needed</span>
   </aside>`;
 
-  return `${topbar(1,{savedNote:Boolean(S.email&&S.saveOptIn)})}<main class="content plans-page" id="main">
+  return `${topbar(1,{stepper:false,savedNote:Boolean(S.email&&S.saveOptIn)})}<main class="content plans-page" id="main">
     <div class="plans-layout"><div class="plans-main">
       <div class="plans-kicker">${ulaAvatar('sm')}<span><strong>Urby</strong> · Membership guide</span></div>
       <div class="plans-head"><h1 class="h-question" tabindex="-1">Compare memberships</h1>
         <p class="reco-lede">See how venue access, visit frequency and premium benefits change with each plan.</p></div>
-      <div class="commit-row">${COMMITMENTS.map(c=>`<button class="chip-sm ${c.id===S.commitmentId?'is-current':''}" data-commit="${esc(c.id)}">${esc(c.minimumTermMonths===1?'Monthly':c.minimumTermMonths+' months')}</button>`).join('')}</div>
-      
-      <div class="plans-overview" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:20px 0 16px">
-        <div class="plans-overview__card" style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px">
-          <div style="font-weight:800;font-size:14px;color:var(--ink);margin-bottom:2px">Essential <span style="font-weight:600;color:var(--navy-soft)">35 €/mo</span></div>
-          <div style="font-size:12.5px;color:var(--navy-soft);line-height:1.4"><b>Starter</b> &middot; 4 visits a month at standard gyms &amp; pools.</div>
-        </div>
-        <div class="plans-overview__card" style="background:#fff;border:1.5px solid var(--ink);border-radius:var(--radius);padding:12px 14px;position:relative">
-          <span style="position:absolute;top:-8px;right:10px;background:var(--ink);color:#fff;font-size:10px;font-weight:800;padding:2px 6px;border-radius:999px;text-transform:uppercase">Popular</span>
-          <div style="font-weight:800;font-size:14px;color:var(--ink);margin-bottom:2px">Classic <span style="font-weight:600;color:var(--navy-soft)">75 €/mo</span></div>
-          <div style="font-size:12.5px;color:var(--navy-soft);line-height:1.4"><b>Most popular</b> &middot; 1 visit every day across 14,800+ venues.</div>
-        </div>
-        <div class="plans-overview__card" style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px">
-          <div style="font-weight:800;font-size:14px;color:var(--ink);margin-bottom:2px">Premium <span style="font-weight:600;color:var(--navy-soft)">115 €/mo</span></div>
-          <div style="font-size:12.5px;color:var(--navy-soft);line-height:1.4"><b>Spas &amp; Wellness</b> &middot; Daily visits + 4 Plus visits (1 massage, spas, EMS).</div>
-        </div>
-        <div class="plans-overview__card" style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px">
-          <div style="font-weight:800;font-size:14px;color:var(--ink);margin-bottom:2px">Max <span style="font-weight:600;color:var(--navy-soft)">165 €/mo</span></div>
-          <div style="font-size:12.5px;color:var(--navy-soft);line-height:1.4"><b>Ultimate access</b> &middot; Daily visits + 8 Plus visits (2 massages, luxury clubs).</div>
-        </div>
-      </div>
-
+      <div class="commit-row">${COMMITMENTS.map(c=>{
+        const isCur = c.id === S.commitmentId;
+        const termLabel = c.minimumTermMonths === 1 ? 'Monthly' : `${c.minimumTermMonths} months`;
+        const savingBadge = c.id === 'annual' ? '<span class="commit-save-pill">Save 15%</span>' : c.id === 'biennial' ? '<span class="commit-save-pill">Save 20%</span>' : '';
+        return `<button class="chip-sm ${isCur?'is-current':''}" data-commit="${esc(c.id)}"><span>${esc(termLabel)}</span>${savingBadge}</button>`;
+      }).join('')}</div>
       <div class="plangrid-hint"><span>Swipe to compare all 4 plans &rarr;</span></div>
       <div class="plangrid">${cards}</div>${selection}
       <div class="plans-shared">${icon('checkThin',17)}<span>Every membership includes video on demand, wellbeing apps and online classes.</span>

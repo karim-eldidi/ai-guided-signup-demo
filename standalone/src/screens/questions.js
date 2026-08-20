@@ -3,11 +3,13 @@ function answerChips(opts = {}) {
   const given = QUESTIONS.filter(q => isAnswered(S.answers[q.id]));
   if (!given.length) return '';
   return `<div class="chips-row ${compact?'chips-row--compact':''}">
-    ${label?`<span class="chips-row__label">${esc(label)}</span>`:''}
+    <div class="chips-row__header">
+      ${label ? `<span class="chips-row__label">${esc(label)}</span><span class="chips-row__hint">&middot; Tap any to edit</span>` : `<span class="chips-row__hint">Tap any answer to edit</span>`}
+    </div>
     <div class="chips-row__items">
-      ${given.map(q => `<button class="answer-chip" data-edit="${esc(q.id)}"
-          aria-label="Change your answer to: ${esc(q.prompt)}">
-          ${icon(q.icon,13)}<span>${esc(compactAnswerLabel(q.id,S.answers[q.id]))}</span>${icon('pencil',12)}</button>`).join('')}
+      ${given.map(q => `<button class="answer-chip" type="button" data-edit="${esc(q.id)}"
+          aria-label="Change your answer to: ${esc(q.prompt)}" title="Click to edit this answer">
+          ${icon(q.icon,13)}<span>${esc(compactAnswerLabel(q.id,S.answers[q.id]))}</span><span class="answer-chip__edit-icon">${icon('pencil',11)}</span></button>`).join('')}
     </div>
   </div>`;
 }
@@ -48,31 +50,25 @@ function fitScreen() {
       ${q.id==='area' ? cityChip() : (q.hint ? `<p class="qhint">${q.hint}</p>` : '')}
       <div class="options ${opts.length>6?'options--compact':opts.length>4?'options--chips':'options--tiles'}${q.id==='frequency'?' options--stack-mobile':''}"${q.maxPick?` data-maxpick="${q.maxPick}"`:''}>${cards}</div>
       ${NOCHOICE?`<p class="field-error" role="alert">${q.multi?'Pick at least one, or tell Urby in your own words.':'Pick one of the options, or tell Urby in your own words.'}</p>`:''}
-      ${q.multi&&q.id!=='area'?`<p class="small muted" style="margin:14px 0 0"><button class="linkish" type="button" data-unsure="${esc(q.id)}">I&rsquo;m not sure yet &mdash; surprise me</button></p>`:''}
       <div class="btn-row desktop-cta">
         ${idx>0?`<button class="btn btn--secondary" type="button" data-back="${esc(q.id)}">${icon('back',18)} Back</button>`:`<button class="btn btn--secondary" type="button" data-go="landing">${icon('back',18)} Back</button>`}
         <button class="btn btn--primary" type="submit" data-continue style="flex:1 1 auto">Continue</button></div>
       <div class="ownwords">
-        <!-- Testers said four questions felt like a big investment before any commitment, and
-             that the way out was hidden. This is that way out, and it is deliberately not
-             "Save for later": saving keeps your progress and is its own screen, while this
-             leaves the questions unanswered and goes browsing instead. It shares the line that
-             already offers the other alternative to picking a card, which is why it costs the
-             screen no height — a line of its own under Continue pushed two of the four
-             required viewports into scrolling. It goes exactly where the front door's "Find a
-             venue" shortcut goes. -->
-        <div class="ownwords__label">${icon('speech',15)} <span>Answer in your own words</span>
-          <button class="linkish strong" type="button" data-go="search" style="margin-left:auto"
-            aria-label="Skip the questions and browse venues instead">Browse venues instead</button></div>
+        <div class="ownwords__label">${icon('speech',15)} <span>Answer in your own words</span></div>
         <div class="ownwords__row">
           <label for="ownwords-input" class="sr-only">Answer in your own words</label>
-          <input type="text" name="freeText" id="ownwords-input" placeholder="${esc(q.placeholder)}" aria-label="Answer in your own words" autocomplete="off">
+          <input type="text" name="freeText" id="ownwords-input" placeholder="${esc(q.placeholder)}" aria-label="Answer in your own words" autocomplete="off" value="${esc(S.freeText[q.id]||'')}">
           <button class="ownwords__send" type="submit">Send</button>
         </div>
       </div>
       <div class="sticky-cta">
         ${idx>0?`<button class="btn btn--secondary" type="button" data-back="${esc(q.id)}" aria-label="Previous question">${icon('back',18)}</button>`:`<button class="btn btn--secondary" type="button" data-go="landing" aria-label="Back to home">${icon('back',18)}</button>`}
-        <button class="btn btn--primary" type="submit" data-continue>Continue</button></div>
+        <button class="btn btn--primary" type="submit" data-continue>Continue</button>
+      </div>
+      <div class="qactions-foot">
+        ${q.multi ? `<button class="linkish font-small text-muted" type="button" data-unsure="${esc(q.id)}">Skip this question &rarr;</button>` : ''}
+        <button class="linkish font-small text-muted" type="button" data-go="plans">Compare all memberships instead</button>
+      </div>
     </form>`}
   </main></div>${exitModal()}${venueSheet()}`;
 }

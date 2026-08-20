@@ -259,7 +259,9 @@ with sync_playwright() as p:
     pg.fill('#firstName','Alex'); pg.fill('#lastName','Tester'); pg.fill('#email','a@b.com'); pg.fill('#birthDate','1992-04-18')
     pg.fill('#street','Weserstr 42'); pg.fill('#postcode','12045'); pg.fill('#city','Berlin')
     pg.locator('button:has-text("Continue to payment")').click(); pg.wait_for_timeout(700)
-    terms=pg.locator('.disclosure').inner_text()
+    if pg.locator('.pay-terms-disclosure:not([open]) summary').count():
+        pg.locator('.pay-terms-disclosure:not([open]) summary').click(); pg.wait_for_timeout(350)
+    terms=pg.locator('.pay-terms-disclosure, .disclosure').first.inner_text()
     if "cannot be paused" in terms: P("Payment terms correctly say a 12-month membership cannot be paused")
     else: F(f"Pause terms still wrong: {terms[:140]}")
     if "72 hours" in terms: P("Cancellation notice is the real 72 hours")

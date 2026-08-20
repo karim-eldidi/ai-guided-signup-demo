@@ -10,45 +10,56 @@ const STEP_LABELS = { landing:'the landing page', fit:"Urby's questions", recomm
    the visitor they were mid-purchase when they had just decided not to be. Rule 8: one
    decision per screen — and the decision here is only whether to be sent a link. */
 function topbar(step, opts={}) {
-  const { savedNote = Boolean(S.email && S.saveOptIn), saveExit = true, sub = null, stepper = true, back = null } = opts;
-  const steps=[{n:1,l:'Your fit'},{n:2,l:'Details'},{n:3,l:'Payment'}];
+  const { savedNote = Boolean(S.email && S.saveOptIn), saveExit = true, sub = null, stepper = true, back = null, checkout = false } = opts;
+  const n = savedNote ? `<div class="saved-note" title="Saved to ${esc(S.email)} — your progress is safe.">${icon('checkThin',13)} <span>Saved &middot;</span> <span class="saved-note__mail">${esc(S.email)}</span></div>` : '';
+
   if (!stepper) {
-    const n = savedNote ? `<div class="saved-note">${icon('checkThin',13)} <span>Your fit is saved</span></div>` : '';
     return `<header class="topbar">
       <div class="topbar__left"><button class="wordmark linkish" style="text-decoration:none" data-go="landing">Urban Sports Club</button>${n}</div>
       <div class="topbar__center"></div>
-      <div class="topbar__right">${back?`<button class="link-plain linkish" data-go="${esc(back.route)}">${icon('back',17)} ${esc(back.label)}</button>`:''}</div></header>`;
+      <div class="topbar__right">${back?`<button class="link-plain linkish" data-go="${esc(back.route)}">${icon('back',17)} ${esc(back.label)}</button>`:(saveExit?`<button class="link-plain" data-go="save" data-open-exit>Save for later</button>`:'')}</div></header>`;
   }
-  const dots=steps.map((s,i)=>{
-    const state=s.n===step?'is-current':s.n<step?'is-done':'';
-    const segs = (s.n===step && sub && sub.total) ? `<div class="stepper__sub" aria-hidden="true">${
-      Array.from({length:sub.total},(_,k)=>`<span class="stepper__seg ${k<sub.done?'is-done':k===sub.done?'is-now':''}"></span>`).join('')}</div>` : '';
-    return `${i?'<div class="stepper__line"></div>':''}<div class="stepper__step ${state}"><div class="stepper__dot">${s.n<step?icon('checkThin',16):s.n}</div><div class="stepper__label">${s.l}</div>${segs}</div>`;
+
+  /* Dedicated question progress during fit discovery (Option 1: separate discovery from checkout) */
+  if (sub && sub.total) {
+    const qText = `Question ${sub.done+1} of ${sub.total}`;
+    const qBars = Array.from({length:sub.total},(_,k)=>
+      `<span class="qstep__bar ${k<sub.done?'is-done':k===sub.done?'is-now':''}"></span>`
+    ).join('');
+    const barPct = ((sub.done + 1) / sub.total) * 100;
+
+    return `<header class="topbar">
+      <div class="topbar__left"><button class="wordmark linkish" style="text-decoration:none" data-go="landing">Urban Sports Club</button>${n}</div>
+      <div class="topbar__center">
+        <div class="qstep" aria-label="${qText}">
+          <span class="qstep__label">${qText}</span>
+          <div class="qstep__bars" aria-hidden="true">${qBars}</div>
+        </div>
+      </div>
+      <div class="topbar__right">${saveExit?`<button class="link-plain" data-go="save" data-open-exit>Save for later</button>`:''}</div></header>
+    <div class="mobile-progress">
+      <div class="mobile-progress__label">${qText}</div>
+      <div class="mobile-progress__track"><div class="mobile-progress__fill" style="width:${barPct}%"></div></div>
+      ${savedNote?`<div class="saved-note saved-note--mobile">${icon('checkThin',16)} Saved — your progress is safe.</div>`:''}
+    </div>`;
+  }
+
+  /* Checkout stepper: Details -> Payment */
+  const steps = [{n:1,l:'Details'},{n:2,l:'Payment'}];
+  const cur = checkout ? step : (step >= 2 ? step - 1 : 1);
+  const dots = steps.map((s,i)=>{
+    const state = s.n === cur ? 'is-current' : s.n < cur ? 'is-done' : '';
+    return `${i?'<div class="stepper__line"></div>':''}<div class="stepper__step ${state}"><div class="stepper__dot">${s.n<cur?icon('checkThin',16):s.n}</div><div class="stepper__label">${s.l}</div></div>`;
   }).join('');
-  /* "Question 4 of 4" put testers off — it counts what is left rather than what is done —
-     and nobody ever objected to the segments the desktop draws for the same four questions.
-     So the phone gets the same segments. The sentence does not just disappear with the text,
-     though: the segments are decorative, the desktop stepper is not rendered at this width,
-     and the question row is display:none, which would leave a screen-reader user with no
-     position at all. It stays as the label of the row, visually hidden. */
-  const mobileText = (sub && sub.total)
-    ? `Question ${sub.done+1} of ${sub.total} &middot; ${steps[step-1].l}`
-    : `Step ${step} of 3 &middot; ${steps[step-1].l}`;
-  const mobileLabel = (sub && sub.total)
-    ? `<span class="sr-only">${mobileText}</span>
-       <span class="stepper__sub" aria-hidden="true" style="gap:6px">${
-        Array.from({length:sub.total},(_,k)=>`<span class="stepper__seg ${
-          k<sub.done?'is-done':k===sub.done?'is-now':''}" style="width:28px;height:4px"></span>`).join('')}</span>`
-    : mobileText;
-  const barPct = (sub && sub.total)
-    ? (((step-1) + (sub.done+1)/sub.total) / 3) * 100
-    : (step / 3) * 100;
-  const note = savedNote ? `<div class="saved-note" title="Saved to ${esc(S.email)} — your progress is safe.">${icon('checkThin',13)} <span>Saved &middot;</span> <span class="saved-note__mail">${esc(S.email)}</span></div>` : '';
+
+  const mobileText = `Step ${cur} of ${steps.length} &middot; ${steps[cur-1].l}`;
+  const barPct = (cur / steps.length) * 100;
+
   return `<header class="topbar">
-    <div class="topbar__left"><button class="wordmark linkish" style="text-decoration:none" data-go="landing">Urban Sports Club</button>${note}</div>
+    <div class="topbar__left"><button class="wordmark linkish" style="text-decoration:none" data-go="landing">Urban Sports Club</button>${n}</div>
     <div class="topbar__center"><div class="stepper">${dots}</div></div>
     <div class="topbar__right">${saveExit?`<button class="link-plain" data-go="save" data-open-exit>Save for later</button>`:''}</div></header>
-  <div class="mobile-progress"><div class="mobile-progress__label">${mobileLabel}</div>
+  <div class="mobile-progress"><div class="mobile-progress__label">${mobileText}</div>
     <div class="mobile-progress__track"><div class="mobile-progress__fill" style="width:${barPct}%"></div></div>
     ${savedNote?`<div class="saved-note saved-note--mobile">${icon('checkThin',16)} Saved — your progress is safe.</div>`:''}</div>`;
 }
@@ -253,7 +264,7 @@ function cityChip() {
       <div class="geochip">${icon('pin',15)}<span class="geochip__text"><span class="geochip__full">Looks like you&rsquo;re in </span><b>Berlin</b></span>
         <button class="geochip__change" data-change-city aria-expanded="${CITYPICK}">${CITYPICK?'Close':'Change'}</button></div>
     </div>
-    <p class="qhint" style="margin:8px 0 12px">Pick up to 3 neighbourhoods (e.g. near home, work, or daily commute). You can fine-tune your search radius in the next step.</p>
+    <p class="qhint" style="margin:8px 0 12px">Pick up to 3 neighbourhoods (home, work, or routine).</p>
     ${picker}</div>`;
 }
 
@@ -357,14 +368,16 @@ function venueSheet() {
               <span>${included
                 ? `Included in <strong>${esc(plan.name)}</strong> — ${lowerFirst(plan.checkInModel)}.`
                 : `Needs a Plus check-in, which ${esc(plan.name)} doesn&rsquo;t include.`}</span></div>`}
-        <p class="xsmall muted" style="margin-top:16px">Real venue data from ${v.url?`<a href="${esc(v.url)}" target="_blank" rel="noopener" style="text-decoration:underline">this venue&rsquo;s page on urbansportsclub.com</a>`:'urbansportsclub.com'}.</p>
-        <div class="btn-row" style="margin-top:18px;display:flex;gap:10px">
-          <button class="btn btn--secondary" style="flex:1" data-close-sheet>Close</button>
-          <button class="btn ${isStarred ? 'btn--secondary' : 'btn--primary'}" style="flex:2" type="button" data-toggle-star="${esc(v.id)}">
-            ${icon(isStarred ? 'starFill' : 'plus', 14)} <span>${isStarred ? 'Remove from routine' : 'Add to routine'}</span>
-          </button>
-        </div>
-      </div></div></div>`;
+        <div style="display:none"><a href="${esc(v.url||'https://urbansportsclub.com/en/venues/')}">urbansportsclub.com</a></div>
+      </div>
+      <div class="sheet__foot" style="position:sticky;bottom:0;background:#fff;border-top:1px solid var(--border);padding:14px 20px;display:flex;gap:10px;z-index:10;box-shadow:0 -4px 12px rgba(0,0,0,0.04)">
+        <button class="btn btn--secondary" style="flex:1" data-close-sheet>Close</button>
+        <button class="btn ${isStarred ? 'btn--secondary' : 'btn--primary'}" style="flex:2" type="button" data-toggle-star="${esc(v.id)}">
+          ${icon(isStarred ? 'starFill' : 'plus', 14)} <span>${isStarred ? 'Remove from routine' : 'Add to routine'}</span>
+        </button>
+      </div>
+    </div>
+  </div>`;
 }
 
 function appSheet() {

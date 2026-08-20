@@ -116,23 +116,39 @@ function advance(nextRoute) {
    throw the reader back to the heading. */
 function renderInPlace() {
   const y = window.scrollY;
+  const at = document.activeElement;
+  const isVenueInput = at && at.matches && at.matches('[data-venue-input]');
+  const isVenueFilter = at && at.matches && at.matches('[data-form="venue-filter"] input');
+  const caret = at && at.selectionStart;
+
   render(false);
   window.scrollTo(0, y);
+
+  if (isVenueInput) {
+    const box = document.querySelector('[data-venue-input]');
+    if (box) {
+      box.focus({ preventScroll: true });
+      const p = (caret === null || caret === undefined) ? box.value.length : caret;
+      try { box.setSelectionRange(p, p); } catch (_) {}
+    }
+  } else if (isVenueFilter) {
+    const box = document.querySelector('[data-form="venue-filter"] input');
+    if (box) {
+      box.focus({ preventScroll: true });
+      const p = (caret === null || caret === undefined) ? box.value.length : caret;
+      try { box.setSelectionRange(p, p); } catch (_) {}
+    }
+  }
 }
 function renderVenueFilter() {
-  const y = window.scrollY;
-  const at = document.activeElement, caret = at && at.selectionStart;
-  render(false);
-  window.scrollTo(0, y);
-  const box = document.querySelector('[data-form="venue-filter"] input');
-  if (box) { box.focus({ preventScroll:true });
-    const p = caret === null || caret === undefined ? box.value.length : caret;
-    try { box.setSelectionRange(p, p); } catch (_) {} }
+  renderInPlace();
 }
 document.addEventListener('input', e => {
-  if (!e.target.matches('[data-form="venue-filter"] input')) return;
-  VENUEQ = e.target.value;
-  renderVenueFilter();
+  if (e.target.matches('[data-form="venue-filter"] input, [data-venue-input]')) {
+    VENUEQ = e.target.value;
+    renderInPlace();
+    return;
+  }
 });
 /* The venue page's two dropdowns. They are native selects because a filter with eight
    options is a select — and because it then works with the keyboard, on a phone, and
@@ -176,18 +192,43 @@ document.addEventListener('change', e => {
   SEEALL = false;
   renderInPlace();
 });
+document.addEventListener('wheel', e => {
+  const g = e.target.closest('#activity-gallery-scroll, #category-pills-scroll');
+  if (g && Math.abs(e.deltaY) > Math.abs(e.deltaX) && (g.scrollWidth > g.clientWidth)) {
+    const canScrollLeft = e.deltaY < 0 && g.scrollLeft > 0;
+    const canScrollRight = e.deltaY > 0 && (g.scrollLeft + g.clientWidth < g.scrollWidth - 1);
+    if (canScrollLeft || canScrollRight) {
+      g.scrollLeft += e.deltaY;
+      e.preventDefault();
+    }
+  }
+}, { passive: false });
 document.addEventListener('scroll', e => {
   if (e.target && e.target.id === 'activity-gallery-scroll') {
     const g = e.target;
     const prev = document.querySelector('.gallery-nav-btn--prev');
     const next = document.querySelector('.gallery-nav-btn--next');
-    if (prev) prev.style.display = g.scrollLeft > 10 ? 'grid' : 'none';
-    if (next) next.style.display = (g.scrollLeft + g.clientWidth < g.scrollWidth - 10) ? 'grid' : 'none';
+    if (prev) {
+      const atStart = g.scrollLeft <= 8;
+      prev.classList.toggle('is-disabled', atStart);
+      prev.setAttribute('aria-disabled', atStart ? 'true' : 'false');
+    }
+    if (next) {
+      const atEnd = (g.scrollLeft + g.clientWidth) >= (g.scrollWidth - 8);
+      next.classList.toggle('is-disabled', atEnd);
+      next.setAttribute('aria-disabled', atEnd ? 'true' : 'false');
+    }
   }
 }, true);
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-app],[data-close-app-sheet],[data-change-city],[data-city],[data-unsure],[data-radius],[data-toggle-apps],[data-toggle-more],[data-more],[data-toggle-alt],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-search-example],[data-venue-search-all],[data-toggle-where],[data-where],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-filter-category],[data-scroll-pills],[data-scroll-gallery],[data-toggle-star],[data-open-plan-drawer],[data-close-plan-drawer],[data-open-order-summary],[data-close-order-summary]');
+  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-app],[data-close-app-sheet],[data-change-city],[data-city],[data-unsure],[data-radius],[data-toggle-apps],[data-toggle-more],[data-more],[data-toggle-alt],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-search-example],[data-venue-search-all],[data-venue-clear],[data-toggle-where],[data-where],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-filter-category],[data-scroll-pills],[data-scroll-gallery],[data-toggle-star],[data-open-plan-drawer],[data-close-plan-drawer],[data-open-order-summary],[data-close-order-summary]');
   if (!t) return;
+
+  if (t.dataset.venueClear !== undefined) {
+    VENUEQ = '';
+    renderInPlace();
+    return;
+  }
 
   if (t.dataset.scrollPills) {
     const p = document.getElementById('category-pills-scroll');
@@ -197,13 +238,9 @@ document.addEventListener('click', e => {
   if (t.dataset.scrollGallery) {
     const g = document.getElementById('activity-gallery-scroll');
     if (g) {
-      g.scrollBy({ left: t.dataset.scrollGallery === 'prev' ? -250 : 250, behavior: 'smooth' });
-      setTimeout(() => {
-        const prev = document.querySelector('.gallery-nav-btn--prev');
-        const next = document.querySelector('.gallery-nav-btn--next');
-        if (prev) prev.style.display = g.scrollLeft > 10 ? 'grid' : 'none';
-        if (next) next.style.display = (g.scrollLeft + g.clientWidth < g.scrollWidth - 10) ? 'grid' : 'none';
-      }, 260);
+      const card = g.querySelector('.activity-card');
+      const step = card ? (card.offsetWidth + 14) : 280;
+      g.scrollBy({ left: t.dataset.scrollGallery === 'prev' ? -step : step, behavior: 'smooth' });
     }
     return;
   }
@@ -527,10 +564,8 @@ document.addEventListener('click', e => {
   if (t.dataset.toggleMore !== undefined) { MOREOPEN = !MOREOPEN; return; }
   if (t.dataset.radius) {
     S.radiusKm = t.dataset.radius;
-    S.weekDays = []; S.weekSwap = {};              // the week is rebuilt from what is in range now
-    if (!S.planOverridden) S.chosenPlanId = null;  // and so is the plan
     log('radius_changed', { radius: S.radiusKm });
-    render(false); return;
+    renderInPlace(); return;
   }
   if (t.dataset.unsure) {
     S.answers[t.dataset.unsure] = [SKIP];

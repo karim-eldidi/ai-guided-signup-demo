@@ -147,7 +147,7 @@ function paymentScreen() {
           </div>
 
           <!-- 2. Transparent Cancellation & Flexibility (Collapsible) -->
-          <details class="pay-terms-disclosure pay-section-card disclosure" open>
+          <details class="pay-terms-disclosure pay-section-card">
             <summary>
               <div class="pay-terms-summary-left">
                 <span class="pay-step-badge">2</span>

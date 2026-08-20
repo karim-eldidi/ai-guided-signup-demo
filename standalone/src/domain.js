@@ -33,7 +33,10 @@ function matchVenues(answers = {}, limit = 6) {
   const scored = VENUES.map(v => {
     const km = nearestOf(v), hits = v.activities.filter(x => aff.includes(x));
     const nearestArea = from.reduce((best,a)=>distanceKm(a,v)<distanceKm(best,v)?a:best, from[0]);
-    return { ...v, distanceKm: km, nearestArea, affinityHits: hits, score: anywhere ? hits.length * 3 - km * 0.05 : hits.length * 1.5 - km };
+    const basePct = hits.length > 0 ? 98 : 72;
+    const distPenalty = Math.min(28, Math.round(km * 2.5));
+    const matchPct = Math.max(45, Math.min(99, basePct - distPenalty));
+    return { ...v, distanceKm: km, nearestArea, affinityHits: hits, matchPct, score: anywhere ? hits.length * 3 - km * 0.05 : hits.length * 1.5 - km };
   }).sort((x,y) => y.score - x.score);
   if (anywhere) return { venues: scored.slice(0,limit), pool: scored, area, areas: from, radiusKm:null, widened:false, anywhere:true,
                          categories:[...new Set(scored.slice(0,limit).flatMap(v=>v.activities))] };

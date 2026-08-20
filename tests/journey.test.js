@@ -465,10 +465,17 @@ describe('end-to-end journey', () => {
     // wait for the port to answer
     for (let i = 0; i < 60; i++) {
       try {
-        await fetch(base + '/', { redirect: 'manual' });
+        await fetch(`http://127.0.0.1:${port}/`, { redirect: 'manual' });
+        base = `http://127.0.0.1:${port}`;
         return;
       } catch {
-        await new Promise((r) => setTimeout(r, 100));
+        try {
+          await fetch(`http://localhost:${port}/`, { redirect: 'manual' });
+          base = `http://localhost:${port}`;
+          return;
+        } catch {
+          await new Promise((r) => setTimeout(r, 100));
+        }
       }
     }
     throw new Error('server did not start');
