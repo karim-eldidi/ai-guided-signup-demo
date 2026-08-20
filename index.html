@@ -1891,8 +1891,8 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
 }
 
 /* Details should feel like one short administrative step, not another questionnaire. */
-.details-title { margin: 10px 0 4px; font-size: clamp(32px, 3vw, 42px); }
-.details-lede { margin: 0 0 16px; color: var(--navy); font-size: 16px; line-height: 1.45; }
+.details-title { margin: 8px 0 4px; font-size: clamp(24px, 2.3vw, 30px); font-weight: 800; line-height: 1.25; }
+.details-lede { margin: 0 0 16px; color: var(--navy-soft); font-size: 15px; line-height: 1.45; }
 .details-lede strong { color: var(--ink); }
 .details-form {
   max-width: 860px; padding: 24px; background: #fff;
@@ -1923,16 +1923,18 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
 .details-section .fitpanel__label { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
 .details-grid { display: grid; gap: 11px; }
 .details-grid + .details-grid { margin-top: 11px; }
-.details-grid--person { grid-template-columns: 1fr 1fr .85fr; }
-.details-grid--contact { grid-template-columns: 1.15fr .85fr; }
-.details-grid--address { grid-template-columns: 1.55fr .55fr .8fr; }
+.details-grid--person { grid-template-columns: 1fr 1fr; }
+.details-grid--person .field:last-child { grid-column: 1 / -1; }
+.details-grid--contact { grid-template-columns: 1fr; }
+.details-grid--address { grid-template-columns: 1fr 1.4fr; }
+.details-grid--address .field:first-child { grid-column: 1 / -1; }
 .details-form .field { gap: 5px; }
 /* The label carries its own "Optional" tag on the right, so the one field that is
    not required says so where it is asked rather than in a blanket line at the top. */
 .details-form .field label { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; font-size: 13px; font-weight: 600; color: var(--navy); }
 .field__opt { flex: 0 0 auto; color: var(--navy-soft); font-weight: 400; font-size: 12.5px; }
 .details-form .field input, .details-form .field select { height: 46px; padding: 0 13px; font-size: 14.5px; border-radius: 8px; }
-.details-form .field__why { font-size: 12px; color: var(--navy-soft); }
+.details-form .field__why { font-size: 12px; color: var(--navy-soft); line-height: 1.4; margin-top: 4px; }
 .details-form__actions { margin-top: 20px; }
 .details-form__actions .btn { width: 100%; height: 54px; margin: 0; }
 .details-form__actions .reassure { margin: 12px 0 0; }
@@ -1960,7 +1962,7 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
   .details-form__actions { margin-top: 18px; }
   .details-form__actions .reassure { margin: 0; }
   .details-page-wrap, .pay-page {
-    padding-bottom: 120px !important;
+    padding-bottom: calc(140px + env(safe-area-inset-bottom)) !important;
   }
 }
 
@@ -4905,12 +4907,12 @@ button.appcard:hover .appcard__info-icon {
   .venuepage__intro { margin-bottom: 8px; }
   .venuepage__h1 { font-size: 21px; line-height: 1.25; margin: 4px 0 8px; }
   .search__guide { margin: 0 0 4px; font-size: 13px; }
-  
+
   .findbar { padding: 12px 12px 14px; border-radius: 12px; }
   .findbar__where { margin-bottom: 8px; gap: 4px 10px; }
   .findbar__wheretext { font-size: 13px; }
   .findbar__wherechange { font-size: 12.5px; }
-  
+
   .findsearch input[type="search"] { height: 44px; font-size: 13.5px; padding: 0 84px 0 38px; }
   .findsearch__icon { left: 12px; }
   .findsearch__icon svg { width: 16px; height: 16px; }
@@ -7335,12 +7337,46 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   align-items: baseline;
   font-size: 13.5px;
 }
+.pay-detail-row--editable {
+  align-items: flex-start;
+}
 .pay-detail-label {
   color: var(--navy-soft);
 }
 .pay-detail-val {
   color: var(--ink);
   text-align: right;
+}
+.pay-detail-val--select {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+.pay-select {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+  text-align: right;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.pay-select:hover {
+  border-color: var(--ink);
+}
+.pay-select:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 1px;
+}
+.pay-detail-subtext {
+  font-size: 11.5px;
+  color: var(--navy-soft);
+  line-height: 1.3;
 }
 .pay-receipt {
   display: flex;
@@ -7393,11 +7429,16 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
     position: static;
     order: -1;
   }
-  .pay-actions.desktop-cta {
+  .pay-actions .desktop-cta {
     display: none;
   }
+  .pay-actions__secondary {
+    justify-content: center;
+    gap: 16px;
+    margin-top: 8px;
+  }
   .pay-page {
-    padding: 16px 14px 100px;
+    padding: 16px 14px calc(120px + env(safe-area-inset-bottom)) !important;
   }
   .pay-section-card, .pay-summary-card {
     padding: 18px 16px;
@@ -9260,12 +9301,12 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
     border-radius: var(--radius);
     margin-bottom: 16px;
   }
-  
+
   /* Binary Grid ↔ Map toggle on mobile */
   .view-toggle-btn--gallery {
     display: none !important;
   }
-  
+
   /* Sufficient bottom spacing for venue page so sticky bottom bar never clips */
   main.content.venuepage {
     padding-bottom: 110px !important;
@@ -10082,10 +10123,14 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
 <<<<<<< HEAD
+<<<<<<< HEAD
   <span class="demo-banner__build">build d91caf8 + local edits</span>
 =======
   <span class="demo-banner__build">build e2f5946 + local edits</span>
 >>>>>>> codex/catalog-fixes
+=======
+  <span class="demo-banner__build">build e2f5946 + local edits</span>
+>>>>>>> codex/checkout-fixes
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -10679,7 +10724,7 @@ function weekPlan(groupIds = [], venues = [], planId = 'classic', frequency = 't
     const custom = (S.weekSwap||{})[day];
     const customVenue = custom && typeof custom === 'object' ? venues.find(v=>v.id===custom.venueId) : null;
     const customGroup = customVenue && custom.groupId ? groupById(custom.groupId) : null;
-    
+
     if (customVenue) {
       const group = customGroup || ACTIVITY_GROUPS.find(grp => venueInGroup(customVenue, grp)) || { id: 'other', label: 'Workout', icon: 'bolt' };
       const included = includedIn(customVenue, planId);
@@ -11781,7 +11826,7 @@ function venueSheet() {
       <div class="sheet__panel sheet__panel--quickadd">
         <div class="sheet__handle" aria-hidden="true"></div>
         <button class="sheet__close" data-close-sheet aria-label="Close">&times;</button>
-        
+
         <div class="quickadd-card">
           <div class="quickadd-head">
             <div class="quickadd-thumb">${venueMedia(v)}</div>
@@ -12065,7 +12110,7 @@ function appSheet() {
     <div class="sheet__panel sheet__panel--app">
       <div class="sheet__handle" aria-hidden="true"></div>
       <button class="sheet__close" data-close-app-sheet aria-label="Close dialog">&times;</button>
-      
+
       <div class="app-popup">
         <div class="app-popup__head">
           <div class="app-popup__logo-box">${appLogo(a)}</div>
@@ -12689,7 +12734,7 @@ function interactiveBerlinMap(b) {
   const kmPerLat = 110.6, kmPerLng = 111.32 * Math.cos(lat0 * Math.PI/180);
   const span = Math.max(1.2, ...all.map(p => Math.max(
     Math.abs((p.lng-lng0)*kmPerLng), Math.abs((p.lat-lat0)*kmPerLat))));
-  
+
   const at = p => {
     const x = (p.lng-lng0)*kmPerLng, y = (p.lat-lat0)*kmPerLat;
     return {
@@ -13178,7 +13223,7 @@ function searchScreen() {
       <div class="venuepage__primary">
         <div class="venue-explorer-card">
           ${weekPickBar()}
-          
+
           <div class="venue-filter-container">
             <div class="findbar__where">
               <span class="findbar__wheretext">${icon('pin', 16)}<span>${S.answers.area ? `Showing places ${esc(b.label)}` : `Looks like you&rsquo;re near <b>${esc(b.origins[0].name)}, Berlin</b> &mdash; showing places ${esc(b.label)}`}</span></span>
@@ -13479,7 +13524,7 @@ function fitScreen() {
           <div class="options ${opts.length > 6 ? 'options--compact' : opts.length > 4 ? 'options--chips' : 'options--tiles'}${q.id === 'frequency' ? ' options--stack-mobile' : ''}"${q.maxPick ? ` data-maxpick="${q.maxPick}"` : ''}>${cards}</div>
         `}
         ${NOCHOICE ? `<p class="field-error" role="alert">${q.multi ? 'Pick at least one, or tell Urby in your own words.' : 'Pick one of the options, or tell Urby in your own words.'}</p>` : ''}
-        
+
         <div class="btn-row desktop-cta">
           ${idx > 0 ? `<button class="btn btn--secondary" type="button" data-back="${esc(q.id)}">${icon('back', 18)} Back</button>` : `<button class="btn btn--secondary" type="button" data-go="landing">${icon('back', 18)} Back</button>`}
           <button class="btn btn--primary" type="submit" data-continue style="flex:1 1 auto">${isLastQuestion ? 'See my recommendation &rarr;' : 'Continue &rarr;'}</button>
@@ -13883,7 +13928,7 @@ function recommendationScreen() {
     `}
   </div>`;
 
-  const displayGroups = ACTIVE_CATEGORY_FILTER === 'all' 
+  const displayGroups = ACTIVE_CATEGORY_FILTER === 'all'
     ? ACTIVITY_GROUPS
     : ACTIVITY_GROUPS.filter(g => g.id === ACTIVE_CATEGORY_FILTER);
 
@@ -14608,6 +14653,8 @@ function fitSummary() {
            commitment: commitmentById(S.commitmentId), price: priceFor(plan,S.commitmentId),
            isRec: !S.planOverridden };
 }
+
+
 /* A photograph, a name and a distance. Nothing tappable: this is a receipt for a decision
    already made, and a card that opens a sheet here would take you off the form. */
 const asideVenue = v => {
@@ -14620,128 +14667,6 @@ const asideVenue = v => {
   return `<div class="asidevenue"><div class="asidevenue__media">${venueMedia(v)}</div>
   <div><div class="asidevenue__name">${esc(v.name)}${tierTag}</div><div class="asidevenue__meta">${kmLabel}</div></div></div>`;
 };
-
-/* A place in the recap: the photograph large enough to recognise, the name, the
-   distance. Nothing tappable — this is a receipt for a decision already made, and a
-   card that opened a sheet from here would take you off the form. */
-const saveVenue = v => {
-  const kmLabel = typeof v.distanceKm === 'number' ? `${v.distanceKm} km away` : 'in Berlin';
-  return `<div class="savevenue"><div class="savevenue__media">${venueMedia(v)}</div>
-  <div class="savevenue__text"><div class="savevenue__name">${esc(v.name)}</div>
-    <div class="savevenue__meta">${kmLabel}</div></div></div>`;
-};
-
-/* the way out — show what is being kept before asking for anywhere to send it.
-   Rule 71: it is reachable from anywhere, so it says only what is true at the point
-   the visitor left. Before the four questions there is no plan and no match, so it
-   shows the answers so far and where they stopped, and nothing else. */
-function saveScreen() {
-  const hasPlan = fitComplete(S.answers) || S.planOverridden;
-  const F = hasPlan ? fitSummary() : null;
-  const answered = QUESTIONS.filter(q => isAnswered(S.answers[q.id])).length;
-  
-  const starredKeys = Object.keys(S.starredVenues || {});
-  const allStarredRoutine = F ? (starredKeys.length
-    ? starredKeys.map(id => F.included.find(v => v.id === id) || VENUES.find(v => v.id === id)).filter(Boolean)
-    : F.included.slice(0, 3)) : [];
-  const savedRoutine = allStarredRoutine.slice(0, 6);
-  const morePlaces = F ? Math.max(0, allStarredRoutine.length - savedRoutine.length) : 0;
-
-  const recapSection = hasPlan ? `
-    <div class="saverecap savepanel__recap">
-      <div class="saverecap__head">
-        <span class="saverecap__tag savepanel__plabel">${F.isRec ? 'Recommended membership' : 'The membership you chose'}</span>
-        <div class="saverecap__plan saveplan">
-          <b class="savepanel__name">${esc(F.plan.name)}</b>
-          <span>${F.price} €<small>/mo</small></span>
-        </div>
-        <div class="saverecap__meta">${F.totals
-          ? (F.totals.included === F.totals.nearby
-              ? (F.totals.included === 1 ? 'Includes your matching place' : F.totals.included === 2 ? 'Includes both of your matching places' : `Includes all ${F.totals.included} of your matching places`)
-              : `Includes ${F.totals.included} of your ${F.totals.nearby} matching places`)
-          : (savedRoutine.length ? `Includes ${savedRoutine.length} places in your routine` : '')} &middot; ${esc(F.commitment.label)} &middot; ${plural(visitsFor(F.plan, S.answers.frequency),'visit','visits')}/mo</div>
-      </div>
-
-      ${savedRoutine.length ? `
-      <div class="saverecap__venues">
-        <div class="saverecap__label">Your saved routine (${plural(savedRoutine.length, 'place', 'places')})</div>
-        <div class="saverecap__venue-grid">
-          ${savedRoutine.map(v => {
-            const tierTag = v.tier === 'premium'
-              ? '<span class="tier-tag tier-tag--premium" style="font-size:10px;padding:1px 5px">✨ Premium</span>'
-              : v.tier === 'plus'
-              ? '<span class="tier-tag tier-tag--plus" style="font-size:10px;padding:1px 5px">⚡ Plus</span>'
-              : '<span class="tier-tag tier-tag--standard" style="font-size:10px;padding:1px 5px">Classic</span>';
-            const kmLabel = typeof v.distanceKm === 'number' ? `${v.distanceKm} km away` : 'in Berlin';
-            return `<div class="saverecap__venue-card">
-              <div class="saverecap__venue-img">${venueMedia(v)}</div>
-              <div class="saverecap__venue-info">
-                <span class="saverecap__venue-title">${esc(v.name)}</span>
-                <span class="saverecap__venue-dist">${kmLabel} &middot; ${tierTag}</span>
-              </div>
-            </div>`;
-          }).join('')}
-        </div>
-        ${morePlaces ? `<div class="saverecap__more">+${morePlaces} more matching ${plural(morePlaces,'place','places')} included</div>` : ''}
-      </div>` : ''}
-    </div>
-  ` : `
-    <div class="saverecap">
-      <div class="saverecap__head">
-        <span class="saverecap__tag">Your progress so far</span>
-        <div class="saverecap__plan savepanel__where"><b>question ${Math.min(answered + 1, QUESTIONS.length)} of ${QUESTIONS.length}</b></div>
-        <div class="saverecap__meta">We'll save every answer you've given so far.</div>
-      </div>
-      <div class="saverecap__chips">
-        ${answerChips({ label:'', compact:true })}
-      </div>
-      <div class="saverecap__incentive" style="margin-top:12px;padding:9px 12px;background:#fefce8;border:1px solid #fef08a;border-radius:8px;font-size:12px;color:#713f12;line-height:1.4">
-        ${icon('sparkle',14)} <strong>Perk:</strong> Saving your progress locks in <strong>10% off your first month</strong> when you return.
-      </div>
-    </div>
-  `;
-
-  return `${topbar(1,{ stepper:false, savedNote:Boolean(S.email&&S.saveOptIn),
-                       back: hasPlan ? { route:'recommendation', label:'Back to recommendation' }
-                                     : { route:'fit', label:'Back to your questions' } })}
-  <main class="savewrap" id="main">
-    <div class="savepanel">
-      <div class="savepanel__left">
-        <div class="savepanel__guide">${ulaAvatar('sm')}<span>Urby &middot; Membership guide</span></div>
-        <h1 class="savepanel__title" tabindex="-1">Here&rsquo;s what you&rsquo;re saving</h1>
-        <p class="savepanel__sub">${hasPlan ? 'Your custom routine, matching studios, and membership plan.' : 'Your answers and progress so far.'}</p>
-        ${recapSection}
-      </div>
-
-      <div class="savepanel__right">
-        <h2 class="savepanel__asktitle">Keep your progress</h2>
-        <p class="savepanel__asksub">Email yourself a secure link to pick up right where you left off.</p>
-
-        <form data-form="save" novalidate class="saveform">
-          <label class="savefield__label" for="save-email">Email address</label>
-          <input id="save-email" class="savefield" type="email" name="email" placeholder="Your email address" value="${esc(FIELDS.email||'')}">
-          ${ERRORS.email?`<p class="field-error" role="alert">${esc(ERRORS.email)}</p>`:''}
-          <button class="btn btn--primary btn--block" type="submit">Save my progress</button>
-          <div class="save-perk-badge" style="display:flex;align-items:center;justify-content:center;gap:6px;margin:8px 0 2px;font-size:12px;color:#854d0e;background:#fefce8;border:1px solid #fef08a;padding:5px 10px;border-radius:6px;font-weight:600">
-            ${icon('sparkle',13)} <span>Save progress &amp; get <strong>10% off</strong> first month</span>
-          </div>
-          <div class="orline"><span>or continue with</span></div>
-          <div class="sso-row" style="max-width:none">
-            <button class="sso-btn" type="submit" name="provider" value="google" aria-label="Save with Google">${GOOGLE} Google <small class="muted">(simulated)</small></button>
-            <button class="sso-btn" type="submit" name="provider" value="apple" aria-label="Save with Apple">${APPLE} Apple <small class="muted">(simulated)</small></button></div>
-          <div class="consent-row" style="max-width:none;margin:16px 0 12px"><label class="checkbox"><input type="checkbox" name="marketing" id="marketing" ${S.marketing?'checked':''}><span></span></label>
-            <label class="consent-label" for="marketing">Send me occasional offers and activity inspiration.<br><span class="muted">Optional</span></label></div>
-          <div class="notice notice--soft">${icon('lock',18)}<span><b>No payment will be taken.</b> Private return link.</span></div>
-          <p class="terms-line" style="margin-top:12px">By continuing, you agree to our <button class="linkish" data-go="terms">Terms</button> and <button class="linkish" data-go="privacy">Privacy Policy</button>.</p>
-        </form>
-        <p class="save-out"><button class="linkish strong" data-skip-save>Continue without saving</button></p>
-      </div>
-    </div>
-    <p class="savefoot"><button class="linkish" data-go="terms">Terms</button>
-      <button class="linkish" data-go="privacy">Privacy</button>
-      <button class="linkish" data-go="data">About this pilot</button></p>
-  </main>${venueSheet()}`;
-}
 
 /* the way through — the only thing between the plan and the payment review */
 function detailsScreen() {
@@ -14756,14 +14681,9 @@ function detailsScreen() {
       ${o.auto?`autocomplete="${o.auto}"`:''} ${o.mode?`inputmode="${o.mode}"`:''}
       ${o.max?`max="${esc(o.max)}"`:''} ${o.min?`min="${esc(o.min)}"`:''} ${o.optional?'':'required aria-required="true"'}>
     ${ERRORS[name]?`<div class="field-error">${esc(ERRORS[name])}</div>`:''}
-    ${o.why?`<div class="field__why">${icon('info',14)} ${esc(o.why)}</div>`:''}</div>`;
+    ${o.why?`<div class="field__why">${icon('info',14)} <span>${esc(o.why)}</span></div>`:''}</div>`;
   const each = perSession(F.price, S.answers.frequency, plan);
   const shown = F.included.slice(0,3), more = Math.max(0, F.included.length - shown.length);
-  const chosenFor = [
-    ...F.groups.map(groupById).filter(Boolean).map(g => ({ i:g.icon, l:g.label })),
-    isAnswered(S.answers.frequency) && S.answers.frequency !== SKIP
-      ? { i:'calendar', l:answerLabel('frequency', S.answers.frequency) } : null
-  ].filter(Boolean);
   const aside = `<div class="ordercard">
     <div class="fitpanel__label">Order summary</div>
     <div class="ordercard__idrow">
@@ -14771,13 +14691,11 @@ function detailsScreen() {
       <div class="ordercard__price"><b>${F.price} €</b><span>/ month</span></div>
     </div>
     <div class="ordercard__term">${esc(commitment.label)} &middot; Cancel anytime</div>
-    
+
     ${shown.length ? `
     <div class="ordercard__venues">
       <div class="ordercard__venues-title">Included from your routine:</div>
       <div class="asidevenues">
-
-
         ${shown.map(asideVenue).join('')}
       </div>
       ${more > 0 ? `<div class="ordercard__venues-more">+ ${more} more places included in ${esc(plan.name)}</div>` : ''}
@@ -14799,7 +14717,7 @@ function detailsScreen() {
   return `${topbar(2)}<main class="details-page-wrap" id="main">
     <div class="details-header-block">
       <h1 class="details-title" tabindex="-1">Your details</h1>
-      <p class="details-lede">Set up your <strong>${esc(plan.name)}</strong> membership &middot; Nothing is charged today.</p>
+      <p class="details-lede">Set up your <strong>${esc(plan.name)}</strong> membership.</p>
     </div>
     <div class="two-col two-col--form">
       <div class="two-col__main">
@@ -14871,7 +14789,6 @@ function orderSummaryDrawer(aside) {
 function paymentScreen() {
   const plan = currentPlan(), commitment = commitmentById(S.commitmentId), price = priceFor(plan,S.commitmentId);
   const each = perSession(price, S.answers.frequency, plan);
-  const renewal = commitment.renewal;
   const method = FIELDS.method||'card';
   const match = matchVenues(A());
   const where = whereName(match);
@@ -14882,7 +14799,6 @@ function paymentScreen() {
       <h1 class="h-question" style="margin-top:0" tabindex="-1">Review and confirm</h1>
       <p class="pay-sub">Final step before your routine begins. Everything you agree to is transparently listed below.</p>
     </div>
-    ${ulaNote('Review your membership details and confirmed start date before confirming.')}
 
     <div class="pay-layout">
       <!-- LEFT COLUMN: Main Form & Actions -->
@@ -14890,78 +14806,126 @@ function paymentScreen() {
         <form data-form="payment">
           <!-- 1. Payment Method Section -->
           <div class="pay-section-card">
-            <div class="pay-section-title">
+            <div class="pay-card-head">
               <span class="pay-step-badge">1</span>
-              <span>Choose payment method</span>
+              <h2 class="pay-card-title">Payment method</h2>
             </div>
-            <div class="options">
-              <label class="option-card ${method==='card'?'is-selected':''}" data-card>
-                <input class="option-card__input" type="radio" name="method" value="card" ${method==='card'?'checked':''}>
-                <span class="option-card__icon">${icon('card',21)}<span class="option-card__check">${icon('checkThin',17)}</span></span>
-                <span class="option-card__label">
-                  <strong>Credit or debit card</strong>
-                  <span class="xsmall muted" style="display:block;font-weight:400;margin-top:2px">Visa, Mastercard, Amex</span>
+            <p class="pay-card-sub">Choose how you'd like to pay. Payment is simulated for this pilot.</p>
+
+            <div class="pay-method-tabs" role="radiogroup" aria-label="Payment method">
+              <label class="pay-tab ${method==='card'?'is-selected':''}">
+                <input type="radio" name="method" value="card" ${method==='card'?'checked':''} class="sr-only">
+                <span class="pay-tab__radio"></span>
+                <span class="pay-tab__content">
+                  <span class="pay-tab__label">Credit or Debit Card</span>
+                  <span class="pay-tab__icons">
+                    ${icon('card',20)}
+                  </span>
                 </span>
               </label>
-              <label class="option-card ${method==='paypal'?'is-selected':''}" data-card>
-                <input class="option-card__input" type="radio" name="method" value="paypal" ${method==='paypal'?'checked':''}>
-                <span class="option-card__icon">${icon('paypal',21)}<span class="option-card__check">${icon('checkThin',17)}</span></span>
-                <span class="option-card__label">
-                  <strong>PayPal</strong>
-                  <span class="xsmall muted" style="display:block;font-weight:400;margin-top:2px">Fast &amp; secure checkout with PayPal</span>
+
+              <label class="pay-tab ${method==='paypal'?'is-selected':''}">
+                <input type="radio" name="method" value="paypal" ${method==='paypal'?'checked':''} class="sr-only">
+                <span class="pay-tab__radio"></span>
+                <span class="pay-tab__content">
+                  <span class="pay-tab__label">PayPal</span>
+                  <span class="pay-tab__icons">${icon('paypal',18)}</span>
                 </span>
               </label>
-              <label class="option-card ${method==='wallet'?'is-selected':''}" data-card>
-                <input class="option-card__input" type="radio" name="method" value="wallet" ${method==='wallet'?'checked':''}>
-                <span class="option-card__icon">${icon('wallet',21)}<span class="option-card__check">${icon('checkThin',17)}</span></span>
-                <span class="option-card__label">
-                  <strong>Apple Pay &amp; Google Pay</strong>
-                  <span class="xsmall muted" style="display:block;font-weight:400;margin-top:2px">1-tap device checkout</span>
+
+              <label class="pay-tab ${method==='wallet'?'is-selected':''}">
+                <input type="radio" name="method" value="wallet" ${method==='wallet'?'checked':''} class="sr-only">
+                <span class="pay-tab__radio"></span>
+                <span class="pay-tab__content">
+                  <span class="pay-tab__label">Apple / Google Pay</span>
+                  <span class="pay-tab__icons">${APPLE} ${GOOGLE}</span>
                 </span>
               </label>
             </div>
-            <div class="pay-mock-notice">
-              ${icon('lock',14)} <span>Powered by Adyen. In production, this is where the secure Adyen drop-in is embedded. Payment is simulated in this pilot.</span>
+
+            <!-- Adyen Mock Form / Drop-in -->
+            <div class="pay-mock-form">
+              ${method === 'card' ? `
+                <div class="pay-field-group">
+                  <label class="pay-label" for="mock-card-num">Card number</label>
+                  <div class="pay-input-wrap">
+                    <input id="mock-card-num" class="pay-input font-mono" type="text" placeholder="4532 &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; 8890" value="4532 &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; 8890" readonly>
+                    <span class="pay-input-icon">${icon('lock', 15)}</span>
+                  </div>
+                </div>
+                <div class="pay-field-row">
+                  <div class="pay-field-group">
+                    <label class="pay-label" for="mock-card-exp">Expiry</label>
+                    <input id="mock-card-exp" class="pay-input font-mono" type="text" placeholder="MM/YY" value="08/28" readonly>
+                  </div>
+                  <div class="pay-field-group">
+                    <label class="pay-label" for="mock-card-cvc">CVC / CVV</label>
+                    <input id="mock-card-cvc" class="pay-input font-mono" type="text" placeholder="CVC" value="&bull;&bull;&bull;" readonly>
+                  </div>
+                </div>
+              ` : method === 'paypal' ? `
+                <div class="pay-wallet-box">
+                  ${icon('paypal', 28)}
+                  <div>
+                    <b>PayPal account connected</b>
+                    <p class="xsmall muted" style="margin:2px 0 0">Simulation: will authorize automatically on confirmation.</p>
+                  </div>
+                </div>
+              ` : `
+                <div class="pay-wallet-box">
+                  <div style="display:flex;gap:8px">${APPLE} ${GOOGLE}</div>
+                  <div>
+                    <b>Device Wallet Ready</b>
+                    <p class="xsmall muted" style="margin:2px 0 0">Simulation: standard biometrics check passed.</p>
+                  </div>
+                </div>
+              `}
+
+              <div class="pay-adyen-badge">
+                ${icon('lock',14)}
+                <span>Powered by Adyen. In production, this is where the secure Adyen drop-in is embedded. Payment is simulated in this pilot.</span>
+              </div>
             </div>
           </div>
 
-          <!-- 2. Transparent Cancellation & Flexibility (Collapsible) -->
-          <details class="pay-terms-disclosure pay-section-card">
-            <summary>
-              <div class="pay-terms-summary-left">
-                <span class="pay-step-badge">2</span>
-                <span>Cancellation, pause &amp; terms</span>
-              </div>
-              <span class="pay-terms-chevron">${icon('chevronDown', 18)}</span>
-            </summary>
-            <div class="pay-terms-body">
-              <ul class="pay-terms-list">
-                <li>
-                  ${icon('checkThin',17)}
-                  <span><strong>${esc(renewal)}</strong></span>
-                </li>
-                <li>
-                  ${icon('checkThin',17)}
-                  <span><strong>Cancellation notice:</strong> ${esc(RULES.cancellationNotice)}</span>
-                </li>
-                <li>
-                  ${icon(commitment.canPause?'checkThin':'info',17)}
-                  <span>${commitment.canPause ? '<strong>Free pause:</strong> Pause your membership for 1 to 6 full months at zero cost.' : `<strong>No pause:</strong> A ${commitment.minimumTermMonths}-month membership cannot be paused (monthly memberships are fully flexible without pause).`}</span>
-                </li>
-                <li>
-                  ${icon('sparkle',17)}
-                  <span><strong>Instant access:</strong> Check in at any included venue via the USC app starting ${esc(fmtDate(S.startDate))}.</span>
-                </li>
-              </ul>
-              <p class="xsmall muted" style="margin:14px 0 0">Real published terms. You can always review or update your membership in the USC app.</p>
+          <!-- 2. Terms & Confirmation Checklist -->
+          <div class="pay-section-card">
+            <div class="pay-card-head">
+              <span class="pay-step-badge">2</span>
+              <h2 class="pay-card-title">Agreement &amp; terms</h2>
             </div>
-          </details>
+            <ul class="pay-terms-list">
+              <li>
+                ${icon('checkThin', 16)}
+                <div>
+                  <strong>Recurring monthly membership.</strong>
+                  <span>Your plan renews automatically every month unless cancelled with ${esc(RULES.cancellationNotice.replace(/\.*$/, ''))}.</span>
+                </div>
+              </li>
+              <li>
+                ${icon('checkThin', 16)}
+                <div>
+                  <strong>14-day statutory right of withdrawal.</strong>
+                  <span>You may withdraw within 14 days of joining without penalty.</span>
+                </div>
+              </li>
+              <li>
+                ${icon('checkThin', 16)}
+                <div>
+                  <strong>Terms &amp; privacy accepted.</strong>
+                  <span>By confirming, you agree to the <button class="linkish" data-go="terms">General Terms and Conditions</button> and <button class="linkish" data-go="privacy">Privacy Policy</button>.</span>
+                </div>
+              </li>
+            </ul>
+          </div>
 
-          <!-- 3. Primary Action Row -->
-          <div class="btn-row pay-actions desktop-cta">
-            <button class="btn btn--primary btn--lg" type="submit" style="width:100%">
-              Confirm and start membership &mdash; ${price} &euro; / mo
-            </button>
+          <!-- 3. Primary & Secondary Action Row -->
+          <div class="pay-actions">
+            <div class="desktop-cta">
+              <button class="btn btn--primary btn--lg" type="submit" style="width:100%">
+                Confirm and start membership &mdash; ${price} &euro; / mo
+              </button>
+            </div>
             <div class="pay-actions__secondary">
               <button class="btn btn--secondary" type="button" data-go="details">${icon('back',16)} Back to details</button>
               <button class="linkish xsmall muted" type="button" data-go="save">Save progress for later</button>
@@ -14985,18 +14949,16 @@ function paymentScreen() {
         </form>
       </div>
 
-      <!-- RIGHT COLUMN: Sticky Order Summary Sidebar -->
-      <aside class="pay-sidebar" aria-label="Order summary">
+      <!-- RIGHT COLUMN: Sticky Order Summary & Receipt (38%) -->
+      <aside class="pay-sidebar">
         <div class="pay-summary-card">
-          <div class="pay-summary-head">
-            <div>
-              <span class="pay-plan-badge">${esc(plan.name)}</span>
-              <h2 class="pay-summary-title">${esc(plan.name)} Membership</h2>
-              <span class="pay-summary-term">${esc(commitment.label)}</span>
-            </div>
+          <div class="fitpanel__label">Order summary</div>
+
+          <div class="pay-summary-hero">
+            <div class="pay-summary-plan-badge">${esc(plan.name)}</div>
             <div class="pay-summary-price">
-              <b>${price} &euro;</b>
-              <small>/ month</small>
+              <b>${price} &euro;</b> <span>/ month</span>
+              <small>${esc(commitment.label)} &middot; Auto-renews</small>
             </div>
           </div>
 
@@ -15012,14 +14974,14 @@ function paymentScreen() {
               <span class="pay-detail-label">Email</span>
               <span class="pay-detail-val">${esc(S.email || '—')}</span>
             </div>
-            <div class="pay-detail-row">
+            <div class="pay-detail-row pay-detail-row--editable">
               <span class="pay-detail-label"><label for="start-date">Start date</label></span>
-              <span class="pay-detail-val">
-                <select id="start-date" data-start-date style="font:inherit;color:inherit;background:transparent;border:1px solid var(--cream-line);border-radius:var(--radius);padding:4px 8px">
+              <div class="pay-detail-val pay-detail-val--select">
+                <select id="start-date" class="pay-select" data-start-date>
                   ${startDateChoices().map(d => `<option value="${esc(d)}"${d === S.startDate ? ' selected' : ''}>${esc(fmtDate(d))}</option>`).join('')}
                 </select>
-                <small class="muted">memberships start on the 1st</small>
-              </span>
+                <span class="pay-detail-subtext">Memberships start on the 1st</span>
+              </div>
             </div>
             <div class="pay-detail-row">
               <span class="pay-detail-label">Monthly visits</span>
@@ -15034,10 +14996,10 @@ function paymentScreen() {
 
           <div class="pay-summary-divider"></div>
 
-          <!-- Receipt / Price Breakdown -->
+          <!-- Transparent Receipt Calculation -->
           <div class="pay-receipt">
             <div class="pay-receipt-row">
-              <span>${esc(plan.name)} (Monthly)</span>
+              <span>Monthly membership (${esc(plan.name)})</span>
               <span>${price}.00 &euro;</span>
             </div>
             <div class="pay-receipt-row">
@@ -15045,19 +15007,12 @@ function paymentScreen() {
               <span class="pay-free-tag">FREE (0.00 &euro;)</span>
             </div>
             <div class="pay-receipt-row pay-receipt-total">
-              <span>Total due today</span>
+              <span>Due today</span>
               <span>${price}.00 &euro;</span>
             </div>
             <div class="pay-receipt-subtext">
               Billed monthly. Auto-renews unless cancelled.
             </div>
-          </div>
-
-          <div class="pay-summary-divider"></div>
-
-          <div class="pay-urby-reassurance">
-            ${ulaAvatar('sm')}
-            <p>Everything is flexible. You can adjust your plan, switch commitments, or cancel whenever you need.</p>
           </div>
         </div>
       </aside>
@@ -15100,13 +15055,13 @@ function confirmationScreen() {
     <div class="confirm-layout">
       <!-- LEFT MAIN COLUMN: Kickoff & Visual Gyms (62%) -->
       <div class="confirm-main">
-        
+
         <!-- 1. Visual App & Kickoff Card -->
         <div class="confirm-card confirm-kickoff-card">
           <div class="confirm-card__head">
             <h2 class="confirm-card__title">Ready for your first check-in</h2>
           </div>
-          
+
           <div class="confirm-kickoff-grid">
             <div class="confirm-kickoff-step">
               <div class="confirm-kickoff-step__num">1</div>
@@ -15195,10 +15150,8 @@ function confirmationScreen() {
             </div>
             <span class="confirm-receipt-chevron">${icon('chevronDown', 16)}</span>
           </summary>
-          
+
           <div class="confirm-receipt-body">
-
-
             <div class="confirm-receipt-list">
               <div class="confirm-receipt-row">
                 <span class="muted">Plan</span>
@@ -15266,6 +15219,126 @@ function confirmationScreen() {
   </main>`;
 }
 
+
+/* A place in the recap: the photograph large enough to recognise, the name, the
+   distance. Nothing tappable — this is a receipt for a decision already made, and a
+   card that opened a sheet from here would take you off the form. */
+const saveVenue = v => {
+  const kmLabel = typeof v.distanceKm === 'number' ? `${v.distanceKm} km away` : 'in Berlin';
+  return `<div class="savevenue"><div class="savevenue__media">${venueMedia(v)}</div>
+  <div class="savevenue__text"><div class="savevenue__name">${esc(v.name)}</div>
+    <div class="savevenue__meta">${kmLabel}</div></div></div>`;
+};
+
+/* the way out — show what is being kept before asking for anywhere to send it.
+   Rule 71: it is reachable from anywhere, so it says only what is true at the point
+   the visitor left. Before the four questions there is no plan and no match, so it
+   shows the answers so far and where they stopped, and nothing else. */
+function saveScreen() {
+  const hasPlan = fitComplete(S.answers) || S.planOverridden;
+  const F = hasPlan ? fitSummary() : null;
+  const answered = QUESTIONS.filter(q => isAnswered(S.answers[q.id])).length;
+
+  const starredKeys = Object.keys(S.starredVenues || {});
+  const allStarredRoutine = F ? (starredKeys.length
+    ? starredKeys.map(id => F.included.find(v => v.id === id) || VENUES.find(v => v.id === id)).filter(Boolean)
+    : F.included.slice(0, 3)) : [];
+  const savedRoutine = allStarredRoutine.slice(0, 6);
+  const morePlaces = F ? Math.max(0, allStarredRoutine.length - savedRoutine.length) : 0;
+
+  const recapSection = hasPlan ? `
+    <div class="saverecap savepanel__recap">
+      <div class="saverecap__head">
+        <span class="saverecap__tag savepanel__plabel">${F.isRec ? 'Recommended membership' : 'The membership you chose'}</span>
+        <div class="saverecap__plan saveplan">
+          <b class="savepanel__name">${esc(F.plan.name)}</b>
+          <span>${F.price} €<small>/mo</small></span>
+        </div>
+        <div class="saverecap__meta">${F.totals
+          ? (F.totals.included === F.totals.nearby
+              ? (F.totals.included === 1 ? 'Includes your matching place' : F.totals.included === 2 ? 'Includes both of your matching places' : `Includes all ${F.totals.included} of your matching places`)
+              : `Includes ${F.totals.included} of your ${F.totals.nearby} matching places`)
+          : (savedRoutine.length ? `Includes ${savedRoutine.length} places in your routine` : '')} &middot; ${esc(F.commitment.label)} &middot; ${plural(visitsFor(F.plan, S.answers.frequency),'visit','visits')}/mo</div>
+      </div>
+
+      ${savedRoutine.length ? `
+      <div class="saverecap__venues">
+        <div class="saverecap__label">Your saved routine (${plural(savedRoutine.length, 'place', 'places')})</div>
+        <div class="saverecap__venue-grid">
+          ${savedRoutine.map(v => {
+            const tierTag = v.tier === 'premium'
+              ? '<span class="tier-tag tier-tag--premium" style="font-size:10px;padding:1px 5px">✨ Premium</span>'
+              : v.tier === 'plus'
+              ? '<span class="tier-tag tier-tag--plus" style="font-size:10px;padding:1px 5px">⚡ Plus</span>'
+              : '<span class="tier-tag tier-tag--standard" style="font-size:10px;padding:1px 5px">Classic</span>';
+            const kmLabel = typeof v.distanceKm === 'number' ? `${v.distanceKm} km away` : 'in Berlin';
+            return `<div class="saverecap__venue-card">
+              <div class="saverecap__venue-img">${venueMedia(v)}</div>
+              <div class="saverecap__venue-info">
+                <span class="saverecap__venue-title">${esc(v.name)}</span>
+                <span class="saverecap__venue-dist">${kmLabel} &middot; ${tierTag}</span>
+              </div>
+            </div>`;
+          }).join('')}
+        </div>
+        ${morePlaces ? `<div class="saverecap__more">+${morePlaces} more matching ${plural(morePlaces,'place','places')} included</div>` : ''}
+      </div>` : ''}
+    </div>
+  ` : `
+    <div class="saverecap">
+      <div class="saverecap__head">
+        <span class="saverecap__tag">Your progress so far</span>
+        <div class="saverecap__plan savepanel__where"><b>question ${Math.min(answered + 1, QUESTIONS.length)} of ${QUESTIONS.length}</b></div>
+        <div class="saverecap__meta">We'll save every answer you've given so far.</div>
+      </div>
+      <div class="saverecap__chips">
+        ${answerChips({ label:'', compact:true })}
+      </div>
+    </div>
+  `;
+
+  return `${topbar(1,{ stepper:false, savedNote:Boolean(S.email&&S.saveOptIn),
+                       back: hasPlan ? { route:'recommendation', label:'Back to recommendation' }
+                                     : { route:'fit', label:'Back to your questions' } })}
+  <main class="savewrap" id="main">
+    <div class="savepanel">
+      <div class="savepanel__left">
+        <div class="savepanel__guide">${ulaAvatar('sm')}<span>Urby &middot; Membership guide</span></div>
+        <h1 class="savepanel__title" tabindex="-1">Here&rsquo;s what you&rsquo;re saving</h1>
+        <p class="savepanel__sub">${hasPlan ? 'Your custom routine, matching studios, and membership plan.' : 'Your answers and progress so far.'}</p>
+        ${recapSection}
+      </div>
+
+      <div class="savepanel__right">
+        <h2 class="savepanel__asktitle">Keep your progress</h2>
+        <p class="savepanel__asksub">Email yourself a secure link to pick up right where you left off.</p>
+
+        <form data-form="save" novalidate class="saveform">
+          <label class="savefield__label" for="save-email">Email address</label>
+          <input id="save-email" class="savefield" type="email" name="email" placeholder="Your email address" value="${esc(FIELDS.email||'')}">
+          ${ERRORS.email?`<p class="field-error" role="alert">${esc(ERRORS.email)}</p>`:''}
+          <button class="btn btn--primary btn--block" type="submit">Save my progress</button>
+          <div class="save-perk-badge" style="display:flex;align-items:center;justify-content:center;gap:6px;margin:8px 0 2px;font-size:12px;color:#854d0e;background:#fefce8;border:1px solid #fef08a;padding:5px 10px;border-radius:6px;font-weight:600">
+            ${icon('sparkle',13)} <span>Save progress &amp; get <strong>10% off</strong> first month</span>
+          </div>
+          <div class="orline"><span>or continue with</span></div>
+          <div class="sso-row" style="max-width:none">
+            <button class="sso-btn" type="submit" name="provider" value="google" aria-label="Save with Google">${GOOGLE} Google <small class="muted">(simulated)</small></button>
+            <button class="sso-btn" type="submit" name="provider" value="apple" aria-label="Save with Apple">${APPLE} Apple <small class="muted">(simulated)</small></button></div>
+          <div class="consent-row" style="max-width:none;margin:16px 0 12px"><label class="checkbox"><input type="checkbox" name="marketing" id="marketing" ${S.marketing?'checked':''}><span></span></label>
+            <label class="consent-label" for="marketing">Email me occasional offers &amp; updates <span class="muted">(optional)</span></label></div>
+          <div class="notice notice--soft">${icon('lock',18)}<span><b>No payment will be taken.</b> Private return link.</span></div>
+          <p class="terms-line" style="margin-top:12px">By continuing, you agree to our <button class="linkish" data-go="terms">Terms</button> and <button class="linkish" data-go="privacy">Privacy Policy</button>.</p>
+        </form>
+        <p class="save-out"><button class="linkish strong" data-skip-save>Continue without saving</button></p>
+      </div>
+    </div>
+    <p class="savefoot"><button class="linkish" data-go="terms">Terms</button>
+      <button class="linkish" data-go="privacy">Privacy</button>
+      <button class="linkish" data-go="data">About this pilot</button></p>
+  </main>${venueSheet()}`;
+}
+
 function leftScreen() {
   return `${topbar(1,{saveExit:false})}<main class="content" id="main">
     <div style="display:flex;align-items:center;gap:14px;margin:24px 0 8px">${ulaAvatar('lg')}
@@ -15303,8 +15376,6 @@ function emailScreen() {
   if (!S.email) return `<div class="email-page"><div class="email-card" style="padding:44px 36px">
     <h1 class="h-question" style="margin-top:0" tabindex="-1">No identified visitor yet</h1>
     <p class="lede" style="margin-top:0">The follow-up email only exists once someone has chosen to save their progress. Walk the journey and press Save, then come back.</p>
-
-
     <div class="btn-row"><button class="btn btn--primary" data-go="landing">Start the journey</button></div></div></div>`;
   return `<div class="email-page">
     <div style="max-width:620px;margin:0 auto 18px"><p class="small muted" style="margin:0 0 6px">Preview of the follow-up email · nothing is actually sent</p>
@@ -15325,6 +15396,7 @@ function emailScreen() {
         ${S.marketing?'<div style="margin-top:8px">You receive this because you asked us to email you.</div>':''}</div></div>
     <div style="max-width:620px;margin:26px auto 0"><button class="btn btn--secondary btn--block" data-go="data">Journey data</button></div></div>`;
 }
+
 
 function dataScreen() {
   const order=['landing','fit','recommendation','save','details','payment','converted'];
@@ -15987,7 +16059,7 @@ document.addEventListener('click', e => {
     const chosen=(S.answers.activities||[]).filter(x=>x!==SKIP);
     if (!chosen.includes(group.id)) S.answers.activities=[...chosen,group.id];
     S.weekSwap=Object.assign({},S.weekSwap,{[WEEK_ADD_DAY]:{venueId:venue.id,groupId:group.id}});
-    
+
     const curDays = new Set(S.weekDays && S.weekDays.length ? S.weekDays : weekPlan(A().activities||[], matchVenues(A()).pool||[], currentPlan().id, S.answers.frequency).sessions.map(x=>x.day));
     curDays.add(WEEK_ADD_DAY);
     S.weekDays = DAY_ORDER.filter(d => curDays.has(d));
@@ -16012,7 +16084,7 @@ document.addEventListener('click', e => {
         DAYNOTE = `Added <b>${esc(venue.name)}</b> to ${WEEK_ADD_DAY}`;
       }
     }
-    
+
     log('week_venue_added',{day:WEEK_ADD_DAY,venue:venue.id,activity:group.id});
     SHEET=null; WEEK_ADD_MODE=false; WEEK_ADD_DAY=null; document.body.style.overflow = '';
     RECO_VIEW = 'week';
@@ -16413,7 +16485,7 @@ let DRAGGED_PILLAR = null;
 document.addEventListener('dragstart', e => {
   const pillar = e.target.closest('[data-drag-pillar]');
   const card = e.target.closest('[data-drag-venue]');
-  
+
   if (pillar && !card) {
     DRAGGED_PILLAR = { id: pillar.dataset.dragPillar };
     try {
@@ -16424,7 +16496,7 @@ document.addEventListener('dragstart', e => {
     document.body.classList.add('is-dragging-pillar');
     return;
   }
-  
+
   if (card) {
     const fromPillar = card.closest('.pillar-card');
     DRAGGED_VENUE = {
@@ -16457,7 +16529,7 @@ document.addEventListener('dragend', e => {
 document.addEventListener('dragover', e => {
   const freedomDrop = e.target.closest('[data-drop-freedom]');
   const dayDrop = e.target.closest('[data-drop-day]');
-  
+
   if (freedomDrop) {
     e.preventDefault();
     try { e.dataTransfer.dropEffect = 'copy'; } catch (_) {}
@@ -16490,7 +16562,7 @@ document.addEventListener('dragleave', e => {
 document.addEventListener('drop', e => {
   const freedomDrop = e.target.closest('[data-drop-freedom]');
   const dayDrop = e.target.closest('[data-drop-day]');
-  
+
   // CASE 1: Dragged a sport pillar OUTSIDE the container -> THROW AWAY!
   if (DRAGGED_PILLAR && !freedomDrop) {
     e.preventDefault();
@@ -16510,7 +16582,7 @@ document.addEventListener('drop', e => {
     }
     return;
   }
-  
+
   // CASE 2: Dragged a venue INTO the Activity Freedom container -> Auto-create sport!
   if (freedomDrop && DRAGGED_VENUE) {
     e.preventDefault();
@@ -16518,10 +16590,10 @@ document.addEventListener('drop', e => {
     const venueId = DRAGGED_VENUE.id;
     const venue = VENUES.find(v => v.id === venueId);
     if (!venue) return;
-    
+
     let group = (A().activities || []).map(groupById).find(g => g && venueInGroup(venue, g));
     if (!group) group = ACTIVITY_GROUPS.find(g => venueInGroup(venue, g)) || ACTIVITY_GROUPS[0];
-    
+
     const cur = (S.answers.activities || []).filter(x => x !== SKIP);
     if (!cur.includes(group.id)) {
       S.answers.activities = [...cur, group.id];
@@ -16532,7 +16604,7 @@ document.addEventListener('drop', e => {
     }
     return;
   }
-  
+
   // CASE 3: Dropped onto a Day in Week Schedule
   if (dayDrop) {
     e.preventDefault();

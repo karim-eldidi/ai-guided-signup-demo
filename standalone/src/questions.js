@@ -195,7 +195,7 @@ function optionsFor(q) {
   if (q.optionsFrom === 'areas') {
     const venueCountFor = id => VENUES.filter(v => v.area === id).length;
     return [
-      ...AREAS.map(a => ({ id:a.id, label:a.name, sub:`${plural(venueCountFor(a.id),'venue','venues')} · ~3 km`, echo:`I'm looking around ${a.name}`, icon:'pin' })),
+      ...AREAS.map(a => ({ id:a.id, label:a.name, sub:plural(venueCountFor(a.id),'venue','venues'), echo:`I'm looking around ${a.name}`, icon:'pin' })),
       { id:'anywhere', label:'Anywhere in Berlin', sub:`All ${VENUES.length} venues across city`, echo:"I'm open to anywhere in Berlin", icon:'city' }
     ];
   }

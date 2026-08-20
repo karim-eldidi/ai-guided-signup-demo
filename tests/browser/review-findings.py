@@ -90,6 +90,13 @@ with sync_playwright() as p:
     if 'does not save' in why.lower(): P("and says it does not save your progress")
     else: F(f"the email field does not explain itself: '{why}'")
 
+    # Details screen redundant notice check
+    det_txt = pg.locator('#main').inner_text()
+    if 'Nothing will be charged today' not in det_txt and 'Enter your details' not in det_txt:
+        P("details screen removed redundant 'Enter your details... Nothing will be charged today' notice")
+    else:
+        F("details screen still contains redundant notice")
+
     _MAX_DOB = f"{datetime.date.today().year - 18:04d}-{datetime.date.today().month:02d}-{datetime.date.today().day:02d}"
 
     # 2. no validation leaking between screens
@@ -126,25 +133,66 @@ with sync_playwright() as p:
     top=pg.locator('.topbar').inner_text()
     if 'Saved to' not in top: P("still not claiming 'saved' on the payment screen")
     else: F(f"payment screen claims: '{top}'")
-    # 7. start date explained. It used to read "(1st of next month)", which stopped being true
-    # once the visitor could defer the start — the picker offers the 1st of the next three
-    # months. The rule it states is what must be on screen, not that one hardcoded month.
+
+    # 7. start date explained and editable
     main=pg.locator('#main').inner_text()
     if 'start on the 1st' in main or '1st of next month' in main: P("the start date explains itself")
     else: F(f"start date still unexplained: {main[:120]}")
+    if pg.locator('.pay-detail-row--editable #start-date.pay-select').count():
+        P("the start-date row is clearly editable and styled with .pay-select")
+    else:
+        F("start-date row missing .pay-detail-row--editable or .pay-select")
+    subtext = pg.locator('.pay-detail-subtext').inner_text() if pg.locator('.pay-detail-subtext').count() else ''
+    if 'Memberships start on the 1st' in subtext:
+        P("start-date helper sits below cleanly")
+    else:
+        F(f"start-date helper subtext unexpected: '{subtext}'")
+
+    # Payment review screen cleanups
+    if pg.locator('.notice--simulated:visible').count() >= 1:
+        P("payment review keeps simulation disclosure visible")
+    else:
+        F("payment review missing visible simulation disclosure")
+    if pg.locator('button[data-go="details"]:visible').count() >= 1:
+        P("payment review has visible secondary 'Back to details' action")
+    else:
+        F("payment review missing secondary Back button")
     pg.screenshot(path=os.path.join(OUT, "payment.png"), full_page=True)
 
     # and the opposite: someone who DID ask to save should be told so
     c2=b.new_context(viewport={'width':1440,'height':900}); pg2=c2.new_page()
     pg2.goto(U); pg2.wait_for_timeout(400)
-    # The address is asked for on the save screen now, not on the landing page: after
-    # there is a week and a plan worth keeping (rule 61). So getting to "Saved" means
-    # walking the journey and then choosing to save.
     pg2.locator('[data-start-fit]').click(); pg2.wait_for_timeout(700)
     for want in ['Move more','Gym & strength','Mitte','Twice a week']:
         pg2.locator(f'.option-card:has-text("{want}")').first.click()
         pg2.locator('[data-continue]:visible').first.click(); pg2.wait_for_timeout(700)
     pg2.locator('[data-go="save"]:visible').first.click(); pg2.wait_for_timeout(600)
+
+    # Save screen assertions:
+    # (1) 10% perk shown once on save form, not duplicated in recap
+    perk_badges = pg2.locator('.save-perk-badge').count()
+    recap_perks = pg2.locator('.saverecap__incentive').count()
+    if perk_badges == 1 and recap_perks == 0:
+        P("save screen shows the 10% perk badge once, not duplicated")
+    else:
+        F(f"save screen perk badge count={perk_badges}, recap incentive count={recap_perks}")
+
+    # (2) Shortened marketing copy and separate unchecked consent
+    consent_lbl = pg2.locator('.consent-label[for="marketing"]').inner_text()
+    if 'occasional offers' in consent_lbl.lower() and 'optional' in consent_lbl.lower():
+        P(f"save screen has shortened marketing copy: '{consent_lbl}'")
+    else:
+        F(f"save screen marketing copy unexpected: '{consent_lbl}'")
+    is_checked = pg2.locator('#marketing').is_checked()
+    if not is_checked:
+        P("save screen marketing consent is unchecked by default")
+    else:
+        F("save screen marketing consent was checked by default")
+    if pg2.locator('[data-skip-save]:visible').count():
+        P("save screen preserves 'Continue without saving'")
+    else:
+        F("save screen missing 'Continue without saving'")
+
     pg2.fill('form[data-form="save"] input[name="email"]','karim@example.com')
     pg2.locator('form[data-form="save"] button[type="submit"]').first.click(); pg2.wait_for_timeout(700)
     pg2.locator('[data-close-exit]:visible').first.click(); pg2.wait_for_timeout(400)
@@ -157,6 +205,46 @@ with sync_playwright() as p:
     size = pg2.evaluate("() => { const n=document.querySelector('.topbar .saved-note'); return n?parseFloat(getComputedStyle(n).fontSize):null }")
     if size and size <= 13: P(f"and it is the smallest type on the page ({size}px)")
     else: F(f"the saved note is still shouting at {size}px")
-    c2.close(); b.close()
+    c2.close()
+
+    # Mobile 390x844 details scroll reachability and payment Back button test
+    c3=b.new_context(viewport={'width':390,'height':844}, is_mobile=True, has_touch=True); pg3=c3.new_page()
+    pg3.goto(U); pg3.wait_for_timeout(400)
+    pg3.locator('[data-start-fit]').click(); pg3.wait_for_timeout(700)
+    for want in ['Move more','Gym & strength','Mitte','Twice a week']:
+        pg3.locator(f'.option-card:has-text("{want}")').first.click()
+        pg3.locator('[data-continue]:visible').first.click(); pg3.wait_for_timeout(700)
+    pg3.locator('.planbox__cta button:visible, .paybar button:visible').first.click(force=True); pg3.wait_for_timeout(600)
+
+    # On 390x844 details screen, scroll to bottom and ensure postcode, city, and continue action are reachable
+    pg3.evaluate("window.scrollTo(0, document.body.scrollHeight)"); pg3.wait_for_timeout(400)
+    postcode_box = pg3.locator('#postcode').bounding_box()
+    city_box = pg3.locator('#city').bounding_box()
+    paybar_box = pg3.locator('.paybar').bounding_box()
+
+    # Check that postcode and city bottom can scroll above the top of the sticky paybar
+    if postcode_box and paybar_box and (postcode_box['y'] + postcode_box['height'] <= paybar_box['y']):
+        P(f"mobile 390x844: #postcode is reachable above sticky paybar (postcode bottom: {int(postcode_box['y'] + postcode_box['height'])}, paybar top: {int(paybar_box['y'])})")
+    else:
+        F(f"mobile 390x844: #postcode is obscured by paybar ({postcode_box}, paybar: {paybar_box})")
+
+    if city_box and paybar_box and (city_box['y'] + city_box['height'] <= paybar_box['y']):
+        P(f"mobile 390x844: #city is reachable above sticky paybar (city bottom: {int(city_box['y'] + city_box['height'])}, paybar top: {int(paybar_box['y'])})")
+    else:
+        F(f"mobile 390x844: #city is obscured by paybar ({city_box}, paybar: {paybar_box})")
+
+    # Fill and proceed to payment on mobile
+    for f,v in [('#firstName','Alex'),('#lastName','T'),('#email','a@b.com'),('#phone','+49 151 12345678'),('#birthDate','1992-04-18'),('#street','W 42'),('#postcode','12045'),('#city','Berlin')]: pg3.fill(f,v)
+    pg3.locator('.paybar button:visible').first.click(force=True); pg3.wait_for_timeout(700)
+
+    # On mobile payment screen, verify secondary back button is visible
+    pg3.evaluate("window.scrollTo(0, document.body.scrollHeight)"); pg3.wait_for_timeout(400)
+    if pg3.locator('.pay-actions__secondary button[data-go="details"]:visible').count() == 1:
+        P("mobile 390x844: secondary 'Back to details' button is visible")
+    else:
+        F("mobile 390x844: secondary 'Back to details' button is missing or hidden")
+    c3.close()
+
+    b.close()
 print(f"\n=== {len(ok)} passed, {len(bad)} failed ===")
 for x in bad: print("  !",x)

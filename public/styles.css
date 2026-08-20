@@ -1878,8 +1878,8 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
 }
 
 /* Details should feel like one short administrative step, not another questionnaire. */
-.details-title { margin: 10px 0 4px; font-size: clamp(32px, 3vw, 42px); }
-.details-lede { margin: 0 0 16px; color: var(--navy); font-size: 16px; line-height: 1.45; }
+.details-title { margin: 8px 0 4px; font-size: clamp(24px, 2.3vw, 30px); font-weight: 800; line-height: 1.25; }
+.details-lede { margin: 0 0 16px; color: var(--navy-soft); font-size: 15px; line-height: 1.45; }
 .details-lede strong { color: var(--ink); }
 .details-form {
   max-width: 860px; padding: 24px; background: #fff;
@@ -1910,16 +1910,18 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
 .details-section .fitpanel__label { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
 .details-grid { display: grid; gap: 11px; }
 .details-grid + .details-grid { margin-top: 11px; }
-.details-grid--person { grid-template-columns: 1fr 1fr .85fr; }
-.details-grid--contact { grid-template-columns: 1.15fr .85fr; }
-.details-grid--address { grid-template-columns: 1.55fr .55fr .8fr; }
+.details-grid--person { grid-template-columns: 1fr 1fr; }
+.details-grid--person .field:last-child { grid-column: 1 / -1; }
+.details-grid--contact { grid-template-columns: 1fr; }
+.details-grid--address { grid-template-columns: 1fr 1.4fr; }
+.details-grid--address .field:first-child { grid-column: 1 / -1; }
 .details-form .field { gap: 5px; }
 /* The label carries its own "Optional" tag on the right, so the one field that is
    not required says so where it is asked rather than in a blanket line at the top. */
 .details-form .field label { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; font-size: 13px; font-weight: 600; color: var(--navy); }
 .field__opt { flex: 0 0 auto; color: var(--navy-soft); font-weight: 400; font-size: 12.5px; }
 .details-form .field input, .details-form .field select { height: 46px; padding: 0 13px; font-size: 14.5px; border-radius: 8px; }
-.details-form .field__why { font-size: 12px; color: var(--navy-soft); }
+.details-form .field__why { font-size: 12px; color: var(--navy-soft); line-height: 1.4; margin-top: 4px; }
 .details-form__actions { margin-top: 20px; }
 .details-form__actions .btn { width: 100%; height: 54px; margin: 0; }
 .details-form__actions .reassure { margin: 12px 0 0; }
@@ -1947,7 +1949,7 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
   .details-form__actions { margin-top: 18px; }
   .details-form__actions .reassure { margin: 0; }
   .details-page-wrap, .pay-page {
-    padding-bottom: 120px !important;
+    padding-bottom: calc(140px + env(safe-area-inset-bottom)) !important;
   }
 }
 
@@ -4892,12 +4894,12 @@ button.appcard:hover .appcard__info-icon {
   .venuepage__intro { margin-bottom: 8px; }
   .venuepage__h1 { font-size: 21px; line-height: 1.25; margin: 4px 0 8px; }
   .search__guide { margin: 0 0 4px; font-size: 13px; }
-  
+
   .findbar { padding: 12px 12px 14px; border-radius: 12px; }
   .findbar__where { margin-bottom: 8px; gap: 4px 10px; }
   .findbar__wheretext { font-size: 13px; }
   .findbar__wherechange { font-size: 12.5px; }
-  
+
   .findsearch input[type="search"] { height: 44px; font-size: 13.5px; padding: 0 84px 0 38px; }
   .findsearch__icon { left: 12px; }
   .findsearch__icon svg { width: 16px; height: 16px; }
@@ -7322,12 +7324,46 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   align-items: baseline;
   font-size: 13.5px;
 }
+.pay-detail-row--editable {
+  align-items: flex-start;
+}
 .pay-detail-label {
   color: var(--navy-soft);
 }
 .pay-detail-val {
   color: var(--ink);
   text-align: right;
+}
+.pay-detail-val--select {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+.pay-select {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+  text-align: right;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.pay-select:hover {
+  border-color: var(--ink);
+}
+.pay-select:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 1px;
+}
+.pay-detail-subtext {
+  font-size: 11.5px;
+  color: var(--navy-soft);
+  line-height: 1.3;
 }
 .pay-receipt {
   display: flex;
@@ -7380,11 +7416,16 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
     position: static;
     order: -1;
   }
-  .pay-actions.desktop-cta {
+  .pay-actions .desktop-cta {
     display: none;
   }
+  .pay-actions__secondary {
+    justify-content: center;
+    gap: 16px;
+    margin-top: 8px;
+  }
   .pay-page {
-    padding: 16px 14px 100px;
+    padding: 16px 14px calc(120px + env(safe-area-inset-bottom)) !important;
   }
   .pay-section-card, .pay-summary-card {
     padding: 18px 16px;
@@ -9247,12 +9288,12 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
     border-radius: var(--radius);
     margin-bottom: 16px;
   }
-  
+
   /* Binary Grid ↔ Map toggle on mobile */
   .view-toggle-btn--gallery {
     display: none !important;
   }
-  
+
   /* Sufficient bottom spacing for venue page so sticky bottom bar never clips */
   main.content.venuepage {
     padding-bottom: 110px !important;
