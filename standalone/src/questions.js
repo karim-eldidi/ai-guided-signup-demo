@@ -59,6 +59,107 @@ const appLogo = a => `<span class="appcard__logo">${a.domain
   ? `<img src="https://www.google.com/s2/favicons?domain=${esc(a.domain)}&sz=128" alt="" loading="lazy" onerror="this.remove()">`
   : ''}<b>${esc(a.name.replace(/[^A-Za-z]/g,'').charAt(0)||'?')}</b></span>`;
 const ANYWHERE = { id:'anywhere', name:'Anywhere in Berlin', lat:52.5200, lng:13.4050 };
+/* Berlin postcode prefixes → sample areas for deterministic resolution and suggestions */
+const POSTCODES = {
+  '12043':'neukoelln','12045':'neukoelln','12047':'neukoelln','12049':'neukoelln','12051':'neukoelln','12053':'neukoelln','12055':'neukoelln','12057':'neukoelln','12059':'neukoelln',
+  '10961':'kreuzberg','10963':'kreuzberg','10965':'kreuzberg','10967':'kreuzberg','10969':'kreuzberg','10997':'kreuzberg','10999':'kreuzberg',
+  '10115':'mitte','10117':'mitte','10119':'mitte','10178':'mitte','10179':'mitte','10551':'mitte','10557':'mitte','10559':'mitte',
+  '10405':'prenzlauer-berg','10407':'prenzlauer-berg','10409':'prenzlauer-berg','10435':'prenzlauer-berg','10437':'prenzlauer-berg','10439':'prenzlauer-berg','13187':'prenzlauer-berg','13189':'prenzlauer-berg',
+  '10243':'friedrichshain','10245':'friedrichshain','10247':'friedrichshain','10249':'friedrichshain',
+  '10585':'charlottenburg','10587':'charlottenburg','10589':'charlottenburg','10623':'charlottenburg','10625':'charlottenburg','10627':'charlottenburg','10629':'charlottenburg','10707':'charlottenburg','10709':'charlottenburg','10711':'charlottenburg','10713':'charlottenburg','10715':'charlottenburg','10719':'charlottenburg',
+  '13347':'wedding','13349':'wedding','13351':'wedding','13353':'wedding','13355':'wedding','13357':'wedding','13359':'wedding'
+};
+
+function getAreaSuggestions(query) {
+  const q = (query || '').trim().toLowerCase();
+  if (!q || q.length < 1) return [];
+  const results = [];
+  const addedKeys = new Set();
+
+  // 1. Postcodes
+  for (const [pc, areaId] of Object.entries(POSTCODES)) {
+    if (pc.startsWith(q) || (q.length >= 3 && pc.includes(q))) {
+      const area = AREAS.find(a => a.id === areaId);
+      if (area) {
+        const key = `pc-${pc}`;
+        if (!addedKeys.has(key)) {
+          addedKeys.add(key);
+          results.push({
+            id: area.id,
+            type: 'postcode',
+            label: `${pc} Berlin (${area.name})`,
+            areaName: area.name,
+            sub: `Postcode mapped to ${area.name}`,
+            icon: 'pin'
+          });
+        }
+      }
+    }
+  }
+
+  // 2. Area names (neighbourhoods)
+  for (const a of AREAS) {
+    const n = a.name.toLowerCase();
+    const nClean = n.replace('ö', 'o').replace('ä', 'a').replace('ü', 'u');
+    const qClean = q.replace('ö', 'o').replace('ä', 'a').replace('ü', 'u');
+    if (n.includes(q) || nClean.includes(qClean)) {
+      const key = `area-${a.id}`;
+      if (!addedKeys.has(key)) {
+        addedKeys.add(key);
+        const venueCount = VENUES.filter(v => v.area === a.id).length;
+        results.push({
+          id: a.id,
+          type: 'area',
+          label: `${a.name}, Berlin`,
+          areaName: a.name,
+          sub: plural(venueCount, 'venue', 'venues'),
+          icon: 'pin'
+        });
+      }
+    }
+  }
+
+  // 3. Known street addresses from venues
+  const seenStreets = new Set();
+  for (const v of VENUES) {
+    if (v.address && v.address.toLowerCase().includes(q)) {
+      const street = v.address.split(',')[0].trim();
+      const streetNorm = street.toLowerCase();
+      if (!seenStreets.has(streetNorm)) {
+        seenStreets.add(streetNorm);
+        const area = AREAS.find(a => a.id === v.area);
+        const areaName = area ? area.name : v.area;
+        const key = `addr-${streetNorm}`;
+        if (!addedKeys.has(key)) {
+          addedKeys.add(key);
+          results.push({
+            id: v.area,
+            type: 'address',
+            label: street,
+            areaName: areaName,
+            sub: `Near ${areaName} · ${v.address}`,
+            icon: 'pin'
+          });
+        }
+      }
+    }
+  }
+
+  // 4. Anywhere in Berlin
+  if ('anywhere in berlin'.includes(q) || 'all of berlin'.includes(q) || 'whole city'.includes(q)) {
+    results.push({
+      id: 'anywhere',
+      type: 'anywhere',
+      label: 'Anywhere in Berlin',
+      areaName: 'All Berlin',
+      sub: `All ${VENUES.length} venues across city`,
+      icon: 'city'
+    });
+  }
+
+  return results.slice(0, 8);
+}
+
 /* Real Urban Sports Club cities in Germany. Only Berlin has venues loaded here. */
 const CITIES = ['Berlin','Hamburg','Munich','Cologne','Frankfurt','Stuttgart','D\u00fcsseldorf','Leipzig'];
 /* Venue data uses fine-grained activity ids ('strength', 'barre'…). Nobody picks

@@ -503,12 +503,13 @@ function venueSheet() {
           <span class="venue-profile-header__mobile-title">Venue details</span>
         </div>
         <div class="venue-profile-header__right">
-          <button class="venue-profile-header__back linkish" type="button" data-close-sheet>
+          <button class="venue-profile-header__back linkish" type="button" data-close-sheet aria-label="Back to places">
             ${icon('back', 16)} <span>Back to places</span>
           </button>
-          <button class="activity-card__star-btn venue-profile-header__mobile-star ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(v.id)}" aria-label="${isStarred ? 'Remove from routine' : 'Add to routine'}">
+          <button class="activity-card__star-btn venue-profile-header__mobile-star ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(v.id)}" aria-label="${isStarred ? 'Remove from routine' : 'Add to routine'}" title="${isStarred ? 'In your routine' : 'Add to routine'}">
             ${icon(isStarred ? 'starFill' : 'star', 18)}
           </button>
+          <button class="sheet__close venue-profile-header__close" type="button" data-close-sheet aria-label="Close venue details">&times;</button>
         </div>
       </header>
 

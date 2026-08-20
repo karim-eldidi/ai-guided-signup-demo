@@ -246,7 +246,16 @@ document.addEventListener('scroll', e => {
   }
 }, true);
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-open-login],[data-close-login],[data-open-review-answers],[data-close-review-answers],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-app],[data-close-app-sheet],[data-change-city],[data-city],[data-unsure],[data-radius],[data-toggle-apps],[data-toggle-more],[data-more],[data-toggle-alt],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-search-example],[data-venue-search-all],[data-venue-clear],[data-toggle-where],[data-where],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-filter-category],[data-scroll-pills],[data-scroll-gallery],[data-toggle-star],[data-open-plan-drawer],[data-close-plan-drawer],[data-open-order-summary],[data-close-order-summary],[data-toggle-more-filters],[data-toggle-tier-filter],[data-toggle-act-filter],[data-clear-all-filters],[data-apply-filters],[data-act-search-clear],[data-remove-tier-filter],[data-remove-act-filter],[data-remove-cat-filter],[data-remove-radius-filter],[data-venue-view-mode],[data-map-pin],[data-map-close-preview]');
+  if (!e.target.closest('[data-area-search-wrap]')) {
+    const s = document.getElementById('area-suggestions');
+    if (s) s.hidden = true;
+  }
+  if (!e.target.closest('[data-where-search-wrap]')) {
+    const ws = document.querySelector('[data-where-suggestions]');
+    if (ws) ws.hidden = true;
+  }
+
+  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-open-login],[data-close-login],[data-open-review-answers],[data-close-review-answers],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-app],[data-close-app-sheet],[data-change-city],[data-city],[data-unsure],[data-radius],[data-toggle-apps],[data-toggle-more],[data-more],[data-toggle-alt],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-search-example],[data-venue-search-all],[data-venue-clear],[data-toggle-where],[data-where],[data-select-area],[data-area-search-clear],[data-where-search-clear],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-filter-category],[data-scroll-pills],[data-scroll-gallery],[data-toggle-star],[data-open-plan-drawer],[data-close-plan-drawer],[data-open-order-summary],[data-close-order-summary],[data-toggle-more-filters],[data-toggle-tier-filter],[data-toggle-act-filter],[data-clear-all-filters],[data-apply-filters],[data-act-search-clear],[data-remove-tier-filter],[data-remove-act-filter],[data-remove-cat-filter],[data-remove-radius-filter],[data-venue-view-mode],[data-map-pin],[data-map-close-preview]');
   if (!t) return;
 
   if (t.dataset.openReviewAnswers !== undefined) {
@@ -426,6 +435,61 @@ document.addEventListener('click', e => {
 
   /* ---- the venue page. Four controls, and three of them are answers. ---- */
   if (t.dataset.toggleWhere !== undefined) { WHEREPICK = !WHEREPICK; renderInPlace(); return; }
+  if (t.dataset.areaSearchClear !== undefined) {
+    const wrap = t.closest('[data-area-search-wrap]');
+    if (wrap) {
+      const input = wrap.querySelector('[data-area-search-input]');
+      if (input) { input.value = ''; input.focus(); }
+      const sugg = wrap.querySelector('#area-suggestions');
+      if (sugg) { sugg.hidden = true; sugg.innerHTML = ''; }
+      t.hidden = true;
+    }
+    return;
+  }
+  if (t.dataset.whereSearchClear !== undefined) {
+    const wrap = t.closest('[data-where-search-wrap]');
+    if (wrap) {
+      const input = wrap.querySelector('[data-where-search-input]');
+      if (input) { input.value = ''; input.focus(); }
+      const sugg = wrap.querySelector('[data-where-suggestions]');
+      if (sugg) { sugg.hidden = true; sugg.innerHTML = ''; }
+      t.hidden = true;
+    }
+    return;
+  }
+  if (t.dataset.selectArea) {
+    const areaId = t.dataset.selectArea;
+    const label = t.dataset.areaLabel;
+    const form = t.closest('form[data-form="answer"]');
+    if (form) {
+      const radio = form.querySelector(`input[name="choice"][value="${areaId}"]`);
+      if (radio) {
+        radio.checked = true;
+        form.querySelectorAll('.option-card').forEach(c => c.classList.remove('is-selected'));
+        radio.closest('.option-card')?.classList.add('is-selected');
+      } else {
+        let dyn = form.querySelector(`input[name="choice"][value="${areaId}"]`);
+        if (!dyn) {
+          const custom = document.createElement('input');
+          custom.type = 'radio';
+          custom.name = 'choice';
+          custom.value = areaId;
+          custom.checked = true;
+          custom.style.display = 'none';
+          form.appendChild(custom);
+        } else {
+          dyn.checked = true;
+        }
+      }
+      const searchInput = form.querySelector('[data-area-search-input]');
+      if (searchInput && label) searchInput.value = label;
+      const sugg = form.querySelector('#area-suggestions');
+      if (sugg) { sugg.hidden = true; sugg.innerHTML = ''; }
+      const clearBtn = form.querySelector('[data-area-search-clear]');
+      if (clearBtn) clearBtn.hidden = false;
+      return;
+    }
+  }
   if (t.dataset.where) {
     /* Picking a place to look from is the answer to one of the four questions, so it is
        recorded as one and Urby will not ask it again (rule 11). Everything downstream of
@@ -825,11 +889,79 @@ document.addEventListener('click', e => {
   try { localStorage.setItem('usc_banner_collapsed', collapsed ? '1' : '0'); } catch (_) {}
 });
 document.addEventListener('input', e => {
-  if (e.target.id !== 'landing-email') return;
-  const row = document.querySelector('[data-consent-row]'); if (!row) return;
-  const wanted = e.target.value.trim().length > 0;
-  row.hidden = !wanted;
-  if (!wanted) { const box = row.querySelector('input[type="checkbox"]'); if (box) box.checked = false; }
+  if (e.target.id === 'landing-email') {
+    const row = document.querySelector('[data-consent-row]'); if (!row) return;
+    const wanted = e.target.value.trim().length > 0;
+    row.hidden = !wanted;
+    if (!wanted) { const box = row.querySelector('input[type="checkbox"]'); if (box) box.checked = false; }
+    return;
+  }
+
+  const areaInput = e.target.closest('[data-area-search-input]');
+  if (areaInput) {
+    const wrap = areaInput.closest('[data-area-search-wrap]');
+    if (!wrap) return;
+    const clearBtn = wrap.querySelector('[data-area-search-clear]');
+    const suggContainer = wrap.querySelector('#area-suggestions');
+    const q = areaInput.value.trim();
+    if (clearBtn) clearBtn.hidden = !q.length;
+    if (!suggContainer) return;
+    if (!q) {
+      suggContainer.hidden = true;
+      suggContainer.innerHTML = '';
+      return;
+    }
+    const suggestions = getAreaSuggestions(q);
+    if (!suggestions.length) {
+      suggContainer.innerHTML = '<div style="padding:10px 12px;font-size:13px;color:var(--navy-soft)">No matching Berlin neighbourhoods, postcodes, or addresses found.</div>';
+      suggContainer.hidden = false;
+      return;
+    }
+    suggContainer.innerHTML = suggestions.map(s => `
+      <button type="button" class="area-suggestion-item" data-select-area="${esc(s.id)}" data-area-label="${esc(s.label)}" role="option">
+        <span class="area-suggestion-icon">${icon(s.icon || 'pin', 16)}</span>
+        <span class="area-suggestion-text">
+          <span class="area-suggestion-title">${esc(s.label)}</span>
+          <span class="area-suggestion-sub">${esc(s.sub)}</span>
+        </span>
+      </button>
+    `).join('');
+    suggContainer.hidden = false;
+    return;
+  }
+
+  const whereInput = e.target.closest('[data-where-search-input]');
+  if (whereInput) {
+    const wrap = whereInput.closest('[data-where-search-wrap]');
+    if (!wrap) return;
+    const clearBtn = wrap.querySelector('[data-where-search-clear]');
+    const suggContainer = wrap.querySelector('[data-where-suggestions]');
+    const q = whereInput.value.trim();
+    if (clearBtn) clearBtn.hidden = !q.length;
+    if (!suggContainer) return;
+    if (!q) {
+      suggContainer.hidden = true;
+      suggContainer.innerHTML = '';
+      return;
+    }
+    const suggestions = getAreaSuggestions(q);
+    if (!suggestions.length) {
+      suggContainer.innerHTML = '<div style="padding:10px 12px;font-size:13px;color:var(--navy-soft)">No matching Berlin areas found.</div>';
+      suggContainer.hidden = false;
+      return;
+    }
+    suggContainer.innerHTML = suggestions.map(s => `
+      <button type="button" class="area-suggestion-item" data-where="${esc(s.id)}" role="option">
+        <span class="area-suggestion-icon">${icon(s.icon || 'pin', 16)}</span>
+        <span class="area-suggestion-text">
+          <span class="area-suggestion-title">${esc(s.label)}</span>
+          <span class="area-suggestion-sub">${esc(s.sub)}</span>
+        </span>
+      </button>
+    `).join('');
+    suggContainer.hidden = false;
+    return;
+  }
 });
 document.addEventListener('change', e => {
   if (!e.target.matches('input[type="radio"]')) return;

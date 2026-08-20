@@ -457,6 +457,177 @@ b, strong { font-weight: 700; }
 .options--compact .option-card.is-selected { padding: 9px 15px; }
 .options--compact .option-card__icon { width: 30px; height: 30px; }
 
+/* Area / Neighbourhood Search & Autocomplete Suggestions */
+.area-search-wrap {
+  position: relative;
+  margin-bottom: 12px;
+  width: 100%;
+}
+.area-search-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.area-search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--navy-soft);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+}
+.area-search-input {
+  width: 100%;
+  height: 42px;
+  padding: 0 36px 0 38px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  font-size: 14.5px;
+  color: var(--ink);
+  transition: border-color .15s ease, box-shadow .15s ease;
+  box-sizing: border-box;
+}
+.area-search-input:focus {
+  outline: none;
+  border-color: var(--ink);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+}
+.area-search-clear {
+  position: absolute;
+  right: 10px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  padding: 4px;
+  color: var(--navy-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+.area-search-clear:hover {
+  color: var(--ink);
+}
+.area-suggestions {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+  z-index: 50;
+  max-height: 260px;
+  overflow-y: auto;
+  padding: 4px;
+}
+.area-suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: background .12s ease;
+}
+.area-suggestion-item:hover,
+.area-suggestion-item:focus {
+  background: #f1f5f9;
+  outline: none;
+}
+.area-suggestion-icon {
+  flex: 0 0 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--yellow-pale);
+  color: var(--ink);
+}
+.area-suggestion-text {
+  min-width: 0;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+.area-suggestion-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.3;
+}
+.area-suggestion-sub {
+  font-size: 11.5px;
+  color: var(--navy-soft);
+  line-height: 1.2;
+}
+
+.area-section {
+  margin-top: 10px;
+  margin-bottom: 6px;
+}
+.area-section__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.area-section__title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--navy-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.area-section__hint {
+  font-size: 11.5px;
+  color: var(--navy-soft);
+}
+.area-section--anywhere {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--border);
+}
+.options--anywhere .option-card {
+  min-height: 48px;
+  padding: 10px 14px;
+}
+
+/* Wherepick in Venue Search Bar */
+.wherepick-search-wrap {
+  margin: 10px 0 12px;
+}
+.wherepick__shortcuts {
+  margin-bottom: 10px;
+}
+.wherepick__subheading {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--navy-soft);
+  margin-bottom: 6px;
+}
+.wherepick__anywhere-wrap {
+  margin: 10px 0;
+  padding-top: 8px;
+  border-top: 1px dashed var(--border);
+}
+.chip-sm--anywhere {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+}
+
 /* The input is the real control: off-screen but focusable, full-size to the
    browser, so keyboard and screen-reader behaviour is the native one. */
 .option-card__input {
@@ -2319,7 +2490,14 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 /* Rule 48: a flex item that cannot shrink cannot let its contents wrap. This holds a
    row of app chips, so it takes its own line and is allowed to narrow — otherwise the
    last chips render outside the card they belong to. */
-.appgrid { flex: 1 1 100%; min-width: 0; display: flex; align-items: stretch; gap: 8px; flex-wrap: wrap; }
+.appgrid {
+  flex: 1 1 100%;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+  gap: 10px;
+  width: 100%;
+}
 .appgrid.is-locked .appcard {
   opacity: 0.5;
   filter: grayscale(1);
@@ -2339,10 +2517,19 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   color: #999;
 }
 button.appcard, .appcard {
-  display: inline-flex; align-items: center; gap: 10px;
-  background: #fff; border: 1px solid var(--border); border-radius: 999px;
-  padding: 6px 14px 6px 6px; text-align: left; white-space: nowrap;
-  cursor: pointer; text-decoration: none; color: inherit;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 8px 12px 8px 8px;
+  text-align: left;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  box-sizing: border-box;
+  width: 100%;
   transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease, opacity .15s ease;
 }
 button.appcard:hover {
@@ -2363,17 +2550,17 @@ button.appchip:hover {
   transform: translateY(-1px);
 }
 .appcard__logo {
-  position: relative; flex: 0 0 auto; display: block; width: 30px; height: 30px;
-  border-radius: 50%; background: var(--yellow-pale); overflow: hidden;
+  position: relative; flex: 0 0 32px; display: block; width: 32px; height: 32px;
+  border-radius: 8px; background: var(--yellow-pale); overflow: hidden;
 }
 .appcard__logo b {
   position: absolute; inset: 0; display: grid; place-items: center;
   font-size: 13px; font-weight: 700; color: var(--ink);
 }
 .appcard__logo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; padding: 3px; background: #fff; }
-.appcard__text { min-width: 0; display: block; }
-.appcard__name { display: block; font-size: 13px; font-weight: 700; line-height: 1.25; }
-.appcard__cat { display: block; font-size: 11.5px; line-height: 1.25; color: var(--navy-soft); }
+.appcard__text { min-width: 0; flex: 1 1 auto; overflow: hidden; display: block; }
+.appcard__name { display: block; font-size: 13px; font-weight: 700; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.appcard__cat { display: block; font-size: 11.5px; line-height: 1.25; color: var(--navy-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .appcard__info-icon {
   margin-left: 2px;
   color: var(--navy-soft);
@@ -3489,6 +3676,14 @@ button.appcard:hover .appcard__info-icon {
   .hits--one.hit--week, .hits--one .hit--week { flex-direction: column; }
   .hits--one .hit--week .hit__details { flex-direction: row; }
   .hits--one .hit--week .hit__actions { padding: 0 26px 22px; }
+
+  /* Two hits: intentional horizontal compact cards side-by-side without vast empty space */
+  .hits--two {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 360px));
+    gap: 18px;
+    justify-content: flex-start;
+  }
 }
 
 /* The step from "yes, it's here" to "and this is what it would cost you". */
@@ -3969,6 +4164,26 @@ button.appcard:hover .appcard__info-icon {
   min-width: 245px;
   max-width: 265px;
   box-sizing: border-box;
+}
+
+/* Two or fewer results: intentional horizontal compact cards without huge blank space */
+.venue-carousel-scroll--few {
+  overflow-x: visible;
+}
+.venue-carousel-track--few {
+  display: grid;
+  grid-template-rows: none;
+  grid-auto-flow: row;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 340px));
+  gap: 16px;
+  width: 100%;
+  max-width: 720px;
+}
+.venue-carousel-track--few .activity-card {
+  scroll-snap-align: none;
+  min-width: 0;
+  max-width: 340px;
+  width: 100%;
 }
 
 /* Elevated Interactive Berlin Map View */
@@ -8085,9 +8300,25 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   transition: background 0.15s ease, color 0.15s ease;
 }
 
-.venue-profile-header__back:hover {
+.venue-profile-header__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
   background: var(--cream);
+  border: 1px solid var(--border);
+  font-size: 20px;
+  line-height: 1;
   color: var(--ink);
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+.venue-profile-header__close:hover {
+  background: #e2e8f0;
+  transform: scale(1.05);
 }
 
 .venue-profile-header__mobile-star {
@@ -8717,12 +8948,33 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
     border-bottom: 1px solid #f1f5f9;
     background: #ffffff;
     z-index: 10;
-  }
-
-  .venue-profile-header__mobile-title,
-  .venue-profile-header__mobile-star {
     display: flex;
     align-items: center;
+    justify-content: space-between;
+  }
+
+  .venue-profile-header__left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .venue-profile-header__mobile-title {
+    display: block;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .venue-profile-header__right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 0 0 auto;
   }
 
   .venue-profile-header__back span,
@@ -8731,9 +8983,45 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   }
 
   .venue-profile-header__back {
-    padding: 8px;
-    border-radius: 50%;
-    background: #f1f5f9;
+    display: none;
+  }
+
+  .venue-profile-header__mobile-star {
+    position: static !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
+    background: #f1f5f9 !important;
+    border: 1px solid #e2e8f0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    color: var(--ink) !important;
+  }
+
+  .venue-profile-header__mobile-star svg {
+    display: block !important;
+    margin: 0 !important;
+  }
+
+  .venue-profile-header__close {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
+    background: #f1f5f9 !important;
+    border: 1px solid #e2e8f0 !important;
+    font-size: 22px !important;
+    line-height: 1 !important;
+    color: var(--ink) !important;
+    cursor: pointer !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
 
   .venue-profile-grid {
@@ -9793,7 +10081,11 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
+<<<<<<< HEAD
   <span class="demo-banner__build">build d91caf8 + local edits</span>
+=======
+  <span class="demo-banner__build">build e2f5946 + local edits</span>
+>>>>>>> codex/catalog-fixes
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -9956,6 +10248,108 @@ const appLogo = a => `<span class="appcard__logo">${a.domain
   ? `<img src="https://www.google.com/s2/favicons?domain=${esc(a.domain)}&sz=128" alt="" loading="lazy" onerror="this.remove()">`
   : ''}<b>${esc(a.name.replace(/[^A-Za-z]/g,'').charAt(0)||'?')}</b></span>`;
 const ANYWHERE = { id:'anywhere', name:'Anywhere in Berlin', lat:52.5200, lng:13.4050 };
+/* Berlin postcode prefixes → sample areas for deterministic resolution and suggestions */
+const POSTCODES = {
+  '12043':'neukoelln','12045':'neukoelln','12047':'neukoelln','12049':'neukoelln','12051':'neukoelln','12053':'neukoelln','12055':'neukoelln','12057':'neukoelln','12059':'neukoelln',
+  '10961':'kreuzberg','10963':'kreuzberg','10965':'kreuzberg','10967':'kreuzberg','10969':'kreuzberg','10997':'kreuzberg','10999':'kreuzberg',
+  '10115':'mitte','10117':'mitte','10119':'mitte','10178':'mitte','10179':'mitte','10551':'mitte','10557':'mitte','10559':'mitte',
+  '10405':'prenzlauer-berg','10407':'prenzlauer-berg','10409':'prenzlauer-berg','10435':'prenzlauer-berg','10437':'prenzlauer-berg','10439':'prenzlauer-berg','13187':'prenzlauer-berg','13189':'prenzlauer-berg',
+  '10243':'friedrichshain','10245':'friedrichshain','10247':'friedrichshain','10249':'friedrichshain',
+  '10585':'charlottenburg','10587':'charlottenburg','10589':'charlottenburg','10623':'charlottenburg','10625':'charlottenburg','10627':'charlottenburg','10629':'charlottenburg','10707':'charlottenburg','10709':'charlottenburg','10711':'charlottenburg','10713':'charlottenburg','10715':'charlottenburg','10719':'charlottenburg',
+  '10777':'charlottenburg','10779':'charlottenburg','10781':'kreuzberg','10783':'mitte','10823':'kreuzberg','10825':'charlottenburg','10827':'charlottenburg','10829':'kreuzberg',
+  '13347':'wedding','13349':'wedding','13351':'wedding','13353':'wedding','13355':'wedding','13357':'wedding','13359':'wedding'
+};
+
+function getAreaSuggestions(query) {
+  const q = (query || '').trim().toLowerCase();
+  if (!q || q.length < 1) return [];
+  const results = [];
+  const addedKeys = new Set();
+
+  // 1. Postcodes
+  for (const [pc, areaId] of Object.entries(POSTCODES)) {
+    if (pc.startsWith(q) || (q.length >= 3 && pc.includes(q))) {
+      const area = AREAS.find(a => a.id === areaId);
+      if (area) {
+        const key = `pc-${pc}`;
+        if (!addedKeys.has(key)) {
+          addedKeys.add(key);
+          results.push({
+            id: area.id,
+            type: 'postcode',
+            label: `${pc} Berlin (${area.name})`,
+            areaName: area.name,
+            sub: `Postcode in ${area.name} · ~3 km`,
+            icon: 'pin'
+          });
+        }
+      }
+    }
+  }
+
+  // 2. Area names (neighbourhoods)
+  for (const a of AREAS) {
+    const n = a.name.toLowerCase();
+    const nClean = n.replace('ö', 'o').replace('ä', 'a').replace('ü', 'u');
+    const qClean = q.replace('ö', 'o').replace('ä', 'a').replace('ü', 'u');
+    if (n.includes(q) || nClean.includes(qClean)) {
+      const key = `area-${a.id}`;
+      if (!addedKeys.has(key)) {
+        addedKeys.add(key);
+        const venueCount = VENUES.filter(v => v.area === a.id).length;
+        results.push({
+          id: a.id,
+          type: 'area',
+          label: `${a.name}, Berlin`,
+          areaName: a.name,
+          sub: `${plural(venueCount, 'venue', 'venues')} · ~3 km`,
+          icon: 'pin'
+        });
+      }
+    }
+  }
+
+  // 3. Known street addresses from venues
+  const seenStreets = new Set();
+  for (const v of VENUES) {
+    if (v.address && v.address.toLowerCase().includes(q)) {
+      const street = v.address.split(',')[0].trim();
+      const streetNorm = street.toLowerCase();
+      if (!seenStreets.has(streetNorm)) {
+        seenStreets.add(streetNorm);
+        const area = AREAS.find(a => a.id === v.area);
+        const areaName = area ? area.name : v.area;
+        const key = `addr-${streetNorm}`;
+        if (!addedKeys.has(key)) {
+          addedKeys.add(key);
+          results.push({
+            id: v.area,
+            type: 'address',
+            label: street,
+            areaName: areaName,
+            sub: `Near ${areaName} · ${v.address}`,
+            icon: 'pin'
+          });
+        }
+      }
+    }
+  }
+
+  // 4. Anywhere in Berlin
+  if ('anywhere in berlin'.includes(q) || 'all of berlin'.includes(q) || 'whole city'.includes(q)) {
+    results.push({
+      id: 'anywhere',
+      type: 'anywhere',
+      label: 'Anywhere in Berlin',
+      areaName: 'All Berlin',
+      sub: `All ${VENUES.length} venues across city`,
+      icon: 'city'
+    });
+  }
+
+  return results.slice(0, 8);
+}
+
 /* Real Urban Sports Club cities in Germany. Only Berlin has venues loaded here. */
 const CITIES = ['Berlin','Hamburg','Munich','Cologne','Frankfurt','Stuttgart','D\u00fcsseldorf','Leipzig'];
 /* Venue data uses fine-grained activity ids ('strength', 'barre'…). Nobody picks
@@ -10524,14 +10918,6 @@ const KEYWORDS = {
   frequency:{ once:['once','1x','one time','one session','weekly'], twice:['twice','2x','two times','two sessions','couple'],
               often:['three','3x','four','4x','few times','several'], daily:['five','5x','six','seven','daily','every day','each day'] }
 };
-const POSTCODES = { '12043':'neukoelln','12045':'neukoelln','12047':'neukoelln','12049':'neukoelln','12053':'neukoelln',
-  '10997':'kreuzberg','10999':'kreuzberg','10961':'kreuzberg','10965':'kreuzberg','10967':'kreuzberg',
-  '10117':'mitte','10178':'mitte','10179':'mitte','10115':'mitte','10119':'mitte',
-  '10435':'prenzlauer-berg','10437':'prenzlauer-berg','10439':'prenzlauer-berg','10405':'prenzlauer-berg',
-  '10243':'friedrichshain','10245':'friedrichshain','10247':'friedrichshain','10249':'friedrichshain',
-  '10707':'charlottenburg','10711':'charlottenburg','10719':'charlottenburg','10585':'charlottenburg',
-  '10777':'schoeneberg','10779':'schoeneberg','10827':'schoeneberg','10829':'schoeneberg',
-  '13347':'wedding','13353':'wedding','13355':'wedding','13357':'wedding' };
 function interpret(qid, text) {
   const lower=(text||'').toLowerCase();
   /* Multi-select too, now: "I live in Kreuzberg but work in Mitte" is two answers,
@@ -11468,12 +11854,13 @@ function venueSheet() {
           <span class="venue-profile-header__mobile-title">Venue details</span>
         </div>
         <div class="venue-profile-header__right">
-          <button class="venue-profile-header__back linkish" type="button" data-close-sheet>
+          <button class="venue-profile-header__back linkish" type="button" data-close-sheet aria-label="Back to places">
             ${icon('back', 16)} <span>Back to places</span>
           </button>
-          <button class="activity-card__star-btn venue-profile-header__mobile-star ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(v.id)}" aria-label="${isStarred ? 'Remove from routine' : 'Add to routine'}">
+          <button class="activity-card__star-btn venue-profile-header__mobile-star ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(v.id)}" aria-label="${isStarred ? 'Remove from routine' : 'Add to routine'}" title="${isStarred ? 'In your routine' : 'Add to routine'}">
             ${icon(isStarred ? 'starFill' : 'star', 18)}
           </button>
+          <button class="sheet__close venue-profile-header__close" type="button" data-close-sheet aria-label="Close venue details">&times;</button>
         </div>
       </header>
 
@@ -12799,7 +13186,28 @@ function searchScreen() {
             </div>
             ${WHEREPICK ? `<div class="wherepick">
               <div class="wherepick__label">Where should we look?</div>
-              <div class="wherepick__grid">${optionsFor(qById('area')).map(o => `<button class="chip-sm ${areaIds(S.answers.area).includes(o.id) ? 'is-current' : ''}" type="button" data-where="${esc(o.id)}">${esc(o.label)}</button>`).join('')}</div>
+              <div class="area-search-wrap wherepick-search-wrap" data-where-search-wrap>
+                <div class="area-search-field">
+                  <span class="area-search-icon" aria-hidden="true">${icon('search', 15)}</span>
+                  <input type="text"
+                         class="area-search-input"
+                         placeholder="Search neighbourhood, postcode, or address..."
+                         aria-label="Search location in Berlin"
+                         autocomplete="off"
+                         data-where-search-input>
+                  <button type="button" class="area-search-clear" data-where-search-clear aria-label="Clear location search" hidden>${icon('close', 12)}</button>
+                </div>
+                <div class="area-suggestions wherepick-suggestions" data-where-suggestions role="listbox" hidden></div>
+              </div>
+              <div class="wherepick__shortcuts">
+                <span class="wherepick__subheading">Shortcuts</span>
+                <div class="wherepick__grid">${AREAS.map(o => `<button class="chip-sm ${areaIds(S.answers.area).includes(o.id) ? 'is-current' : ''}" type="button" data-where="${esc(o.id)}">${esc(o.name)}</button>`).join('')}</div>
+              </div>
+              <div class="wherepick__anywhere-wrap">
+                <button class="chip-sm chip-sm--anywhere ${areaIds(S.answers.area).includes('anywhere') ? 'is-current' : ''}" type="button" data-where="anywhere">
+                  ${icon('city', 14)} Anywhere in Berlin
+                </button>
+              </div>
               <p class="wherepick__note">${icon('info', 16)} <span>This is one of Urby&rsquo;s four questions, so picking here means she won&rsquo;t ask it again.</span></p>
             </div>` : ''}
 
@@ -12857,26 +13265,21 @@ function searchScreen() {
 
           ${searched ? '' : `
           <section class="placesrow">
-            <div class="placesrow__head">
-              <div class="placesrow__title">
-                <h2>${countHeading}</h2>
-                <p>${b.within.length
-                  ? `Nearest first, from the ${VENUES.length} real Berlin venues loaded in this pilot.`
-                  : `None of the ${VENUES.length} venues loaded here match these filters.`}</p>
-              </div>
-              <div class="placesrow__tools">
+            <div class="venue-results-header placesrow__title">
+              <h2 class="venue-results-header__title" id="results-count">${searched ? 'Search results' : countHeading}</h2>
+              ${searched ? '' : `
                 <div class="venue-view-toggle" role="group" aria-label="View mode">
-                  <button class="view-toggle-btn view-toggle-btn--gallery ${VENUE_VIEW_MODE === 'scroll' ? 'is-active' : ''}" type="button" data-venue-view-mode="scroll" aria-pressed="${VENUE_VIEW_MODE === 'scroll'}" title="2-row gallery scroll view">
+                  <button class="venue-view-toggle__btn ${VENUE_VIEW_MODE === 'scroll' ? 'is-active' : ''}" type="button" data-venue-view-mode="scroll" aria-label="Carousel gallery view" title="Carousel view">
                     ${icon('grid', 14)} <span>Gallery</span>
                   </button>
-                  <button class="view-toggle-btn view-toggle-btn--grid ${VENUE_VIEW_MODE === 'grid' ? 'is-active' : ''}" type="button" data-venue-view-mode="grid" aria-pressed="${VENUE_VIEW_MODE === 'grid'}" title="Full grid view">
-                    ${icon('adjust', 14)} <span>Grid</span>
+                  <button class="venue-view-toggle__btn ${VENUE_VIEW_MODE === 'grid' ? 'is-active' : ''}" type="button" data-venue-view-mode="grid" aria-label="Grid layout view" title="Grid view">
+                    ${icon('checkThin', 14)} <span>Grid</span>
                   </button>
-                  <button class="view-toggle-btn view-toggle-btn--map ${VENUE_VIEW_MODE === 'map' ? 'is-active' : ''}" type="button" data-venue-view-mode="map" aria-pressed="${VENUE_VIEW_MODE === 'map'}" title="Map view">
-                    ${icon('pin', 14)} <span>Map</span>
+                  <button class="venue-view-toggle__btn ${VENUE_VIEW_MODE === 'map' ? 'is-active' : ''}" type="button" data-venue-view-mode="map" aria-label="Interactive map view" title="Map view">
+                    ${icon('city', 14)} <span>Map</span>
                   </button>
                 </div>
-              </div>
+              `}
             </div>
             ${venueActiveFilterChips(b)}
 
@@ -12884,22 +13287,22 @@ function searchScreen() {
               ${interactiveBerlinMap(b)}
             ` : (shown.length ? `
               ${VENUE_VIEW_MODE === 'grid' ? `
-                <div class="hits venue-grid--catalog hits--row">
+                <div class="hits venue-grid--catalog ${shown.length === 1 ? 'hits--one' : shown.length === 2 ? 'hits--two' : 'hits--row'}">
                   ${shown.map(v => placeCard(v)).join('')}
                 </div>
               ` : `
                 <div class="activity-gallery-wrap venue-gallery-wrap">
-                  <button class="gallery-nav-btn gallery-nav-btn--prev is-disabled" type="button" data-scroll-gallery="prev" aria-label="Scroll left" title="Scroll left">
+                  ${shown.length > 2 ? `<button class="gallery-nav-btn gallery-nav-btn--prev is-disabled" type="button" data-scroll-gallery="prev" aria-label="Scroll left" title="Scroll left">
                     ${icon('chevron', 14)}
-                  </button>
-                  <div class="activity-gallery venue-carousel-scroll" id="activity-gallery-scroll">
-                    <div class="venue-carousel-track hits hits--row">
+                  </button>` : ''}
+                  <div class="activity-gallery venue-carousel-scroll ${shown.length <= 2 ? 'venue-carousel-scroll--few' : ''}" id="activity-gallery-scroll">
+                    <div class="venue-carousel-track hits hits--row ${shown.length <= 2 ? 'venue-carousel-track--few' : ''}">
                       ${shown.map(v => placeCard(v)).join('')}
                     </div>
                   </div>
-                  <button class="gallery-nav-btn gallery-nav-btn--next ${shown.length <= 4 ? 'is-disabled' : ''}" type="button" data-scroll-gallery="next" aria-label="Scroll right" title="Scroll right">
+                  ${shown.length > 2 ? `<button class="gallery-nav-btn gallery-nav-btn--next ${shown.length <= 4 ? 'is-disabled' : ''}" type="button" data-scroll-gallery="next" aria-label="Scroll right" title="Scroll right">
                     ${icon('chevron', 14)}
-                  </button>
+                  </button>` : ''}
                 </div>
               `}
             ` : `<div class="notice notice--grey">${icon('info', 19)}<span>${b.list.length
@@ -12911,7 +13314,7 @@ function searchScreen() {
           ${searched ? `
             <p class="search__read">${icon('sparkle', 17)} <span>${reading}</span></p>
             ${r && r.approximated ? `<p class="xsmall muted" style="margin-top:12px">${icon('info', 14)} The pilot has no map service, so distances are measured from ${esc(from.name)} rather than from your door.</p>` : ''}
-            ${r && r.venues && r.venues.length ? `<div class="hits ${r.venues.length === 1 ? 'hits--one' : 'hits--row'}">${r.venues.map(hitCard).join('')}</div>` : ''}
+            ${r && r.venues && r.venues.length ? `<div class="hits ${r.venues.length === 1 ? 'hits--one' : r.venues.length === 2 ? 'hits--two' : 'hits--row'}">${r.venues.map(hitCard).join('')}</div>` : ''}
             ${miss}
             ${!WEEK_ADD_MODE && r && r.venues && r.venues.length ? `<div class="searchnext">
               <p class="searchnext__line">${icon('sparkle', 18)} <span>Those are the cheapest memberships that open each place. Which one is right for
@@ -13029,7 +13432,52 @@ function fitScreen() {
         : `<form data-form="answer" data-qid="${esc(q.id)}">
         <h1 class="h-question" tabindex="-1">${esc(q.prompt)}</h1>
         ${q.id === 'area' ? cityChip() : (q.hint ? `<p class="qhint">${q.hint}</p>` : '')}
-        <div class="options ${opts.length > 6 ? 'options--compact' : opts.length > 4 ? 'options--chips' : 'options--tiles'}${q.id === 'frequency' ? ' options--stack-mobile' : ''}"${q.maxPick ? ` data-maxpick="${q.maxPick}"` : ''}>${cards}</div>
+        ${q.id === 'area' ? `
+          <div class="area-search-wrap" data-area-search-wrap>
+            <div class="area-search-field">
+              <span class="area-search-icon" aria-hidden="true">${icon('search', 16)}</span>
+              <input type="text"
+                     class="area-search-input"
+                     id="area-search-input"
+                     placeholder="Search neighbourhood, postcode (e.g. 10115), or address..."
+                     aria-label="Search neighbourhood, postcode, or address"
+                     autocomplete="off"
+                     data-area-search-input>
+              <button type="button" class="area-search-clear" data-area-search-clear aria-label="Clear location search" hidden>${icon('close', 12)}</button>
+            </div>
+            <div class="area-suggestions" id="area-suggestions" role="listbox" aria-label="Location suggestions" hidden></div>
+          </div>
+
+          <div class="area-section">
+            <div class="area-section__header">
+              <span class="area-section__title">Popular neighbourhoods</span>
+              <span class="area-section__hint">Tap to select</span>
+            </div>
+            <div class="options options--compact area-shortcuts-grid">
+              ${AREAS.map(a => {
+                const isSel = picked.includes(a.id);
+                const venueCount = VENUES.filter(v => v.area === a.id).length;
+                return `<label class="option-card ${isSel ? 'is-selected' : ''}" data-card>
+                  <input class="option-card__input" type="${q.multi ? 'checkbox' : 'radio'}" name="choice" value="${esc(a.id)}" ${isSel ? 'checked' : ''}>
+                  <span class="option-card__icon">${icon('pin', 20)}<span class="option-card__check">${icon('checkThin', 17)}</span></span>
+                  <span class="option-card__label">${esc(a.name)}<span class="option-card__sub">${plural(venueCount, 'venue', 'venues')} · ~3 km</span></span>
+                </label>`;
+              }).join('')}
+            </div>
+          </div>
+
+          <div class="area-section area-section--anywhere">
+            <div class="options options--anywhere">
+              <label class="option-card option-card--anywhere ${picked.includes('anywhere') ? 'is-selected' : ''}" data-card>
+                <input class="option-card__input" type="${q.multi ? 'checkbox' : 'radio'}" name="choice" value="anywhere" ${picked.includes('anywhere') ? 'checked' : ''}>
+                <span class="option-card__icon">${icon('city', 20)}<span class="option-card__check">${icon('checkThin', 17)}</span></span>
+                <span class="option-card__label">Anywhere in Berlin<span class="option-card__sub">All ${VENUES.length} venues across the city · No radius limit</span></span>
+              </label>
+            </div>
+          </div>
+        ` : `
+          <div class="options ${opts.length > 6 ? 'options--compact' : opts.length > 4 ? 'options--chips' : 'options--tiles'}${q.id === 'frequency' ? ' options--stack-mobile' : ''}"${q.maxPick ? ` data-maxpick="${q.maxPick}"` : ''}>${cards}</div>
+        `}
         ${NOCHOICE ? `<p class="field-error" role="alert">${q.multi ? 'Pick at least one, or tell Urby in your own words.' : 'Pick one of the options, or tell Urby in your own words.'}</p>` : ''}
         
         <div class="btn-row desktop-cta">
@@ -15185,7 +15633,16 @@ document.addEventListener('scroll', e => {
   }
 }, true);
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-open-login],[data-close-login],[data-open-review-answers],[data-close-review-answers],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-app],[data-close-app-sheet],[data-change-city],[data-city],[data-unsure],[data-radius],[data-toggle-apps],[data-toggle-more],[data-more],[data-toggle-alt],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-search-example],[data-venue-search-all],[data-venue-clear],[data-toggle-where],[data-where],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-filter-category],[data-scroll-pills],[data-scroll-gallery],[data-toggle-star],[data-open-plan-drawer],[data-close-plan-drawer],[data-open-order-summary],[data-close-order-summary],[data-toggle-more-filters],[data-toggle-tier-filter],[data-toggle-act-filter],[data-clear-all-filters],[data-apply-filters],[data-act-search-clear],[data-remove-tier-filter],[data-remove-act-filter],[data-remove-cat-filter],[data-remove-radius-filter],[data-venue-view-mode],[data-map-pin],[data-map-close-preview]');
+  if (!e.target.closest('[data-area-search-wrap]')) {
+    const s = document.getElementById('area-suggestions');
+    if (s) s.hidden = true;
+  }
+  if (!e.target.closest('[data-where-search-wrap]')) {
+    const ws = document.querySelector('[data-where-suggestions]');
+    if (ws) ws.hidden = true;
+  }
+
+  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-open-login],[data-close-login],[data-open-review-answers],[data-close-review-answers],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-app],[data-close-app-sheet],[data-change-city],[data-city],[data-unsure],[data-radius],[data-toggle-apps],[data-toggle-more],[data-more],[data-toggle-alt],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-search-example],[data-venue-search-all],[data-venue-clear],[data-toggle-where],[data-where],[data-select-area],[data-area-search-clear],[data-where-search-clear],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-filter-category],[data-scroll-pills],[data-scroll-gallery],[data-toggle-star],[data-open-plan-drawer],[data-close-plan-drawer],[data-open-order-summary],[data-close-order-summary],[data-toggle-more-filters],[data-toggle-tier-filter],[data-toggle-act-filter],[data-clear-all-filters],[data-apply-filters],[data-act-search-clear],[data-remove-tier-filter],[data-remove-act-filter],[data-remove-cat-filter],[data-remove-radius-filter],[data-venue-view-mode],[data-map-pin],[data-map-close-preview]');
   if (!t) return;
 
   if (t.dataset.openReviewAnswers !== undefined) {
@@ -15365,6 +15822,61 @@ document.addEventListener('click', e => {
 
   /* ---- the venue page. Four controls, and three of them are answers. ---- */
   if (t.dataset.toggleWhere !== undefined) { WHEREPICK = !WHEREPICK; renderInPlace(); return; }
+  if (t.dataset.areaSearchClear !== undefined) {
+    const wrap = t.closest('[data-area-search-wrap]');
+    if (wrap) {
+      const input = wrap.querySelector('[data-area-search-input]');
+      if (input) { input.value = ''; input.focus(); }
+      const sugg = wrap.querySelector('#area-suggestions');
+      if (sugg) { sugg.hidden = true; sugg.innerHTML = ''; }
+      t.hidden = true;
+    }
+    return;
+  }
+  if (t.dataset.whereSearchClear !== undefined) {
+    const wrap = t.closest('[data-where-search-wrap]');
+    if (wrap) {
+      const input = wrap.querySelector('[data-where-search-input]');
+      if (input) { input.value = ''; input.focus(); }
+      const sugg = wrap.querySelector('[data-where-suggestions]');
+      if (sugg) { sugg.hidden = true; sugg.innerHTML = ''; }
+      t.hidden = true;
+    }
+    return;
+  }
+  if (t.dataset.selectArea) {
+    const areaId = t.dataset.selectArea;
+    const label = t.dataset.areaLabel;
+    const form = t.closest('form[data-form="answer"]');
+    if (form) {
+      const radio = form.querySelector(`input[name="choice"][value="${areaId}"]`);
+      if (radio) {
+        radio.checked = true;
+        form.querySelectorAll('.option-card').forEach(c => c.classList.remove('is-selected'));
+        radio.closest('.option-card')?.classList.add('is-selected');
+      } else {
+        let dyn = form.querySelector(`input[name="choice"][value="${areaId}"]`);
+        if (!dyn) {
+          const custom = document.createElement('input');
+          custom.type = 'radio';
+          custom.name = 'choice';
+          custom.value = areaId;
+          custom.checked = true;
+          custom.style.display = 'none';
+          form.appendChild(custom);
+        } else {
+          dyn.checked = true;
+        }
+      }
+      const searchInput = form.querySelector('[data-area-search-input]');
+      if (searchInput && label) searchInput.value = label;
+      const sugg = form.querySelector('#area-suggestions');
+      if (sugg) { sugg.hidden = true; sugg.innerHTML = ''; }
+      const clearBtn = form.querySelector('[data-area-search-clear]');
+      if (clearBtn) clearBtn.hidden = false;
+      return;
+    }
+  }
   if (t.dataset.where) {
     /* Picking a place to look from is the answer to one of the four questions, so it is
        recorded as one and Urby will not ask it again (rule 11). Everything downstream of
@@ -15764,11 +16276,79 @@ document.addEventListener('click', e => {
   try { localStorage.setItem('usc_banner_collapsed', collapsed ? '1' : '0'); } catch (_) {}
 });
 document.addEventListener('input', e => {
-  if (e.target.id !== 'landing-email') return;
-  const row = document.querySelector('[data-consent-row]'); if (!row) return;
-  const wanted = e.target.value.trim().length > 0;
-  row.hidden = !wanted;
-  if (!wanted) { const box = row.querySelector('input[type="checkbox"]'); if (box) box.checked = false; }
+  if (e.target.id === 'landing-email') {
+    const row = document.querySelector('[data-consent-row]'); if (!row) return;
+    const wanted = e.target.value.trim().length > 0;
+    row.hidden = !wanted;
+    if (!wanted) { const box = row.querySelector('input[type="checkbox"]'); if (box) box.checked = false; }
+    return;
+  }
+
+  const areaInput = e.target.closest('[data-area-search-input]');
+  if (areaInput) {
+    const wrap = areaInput.closest('[data-area-search-wrap]');
+    if (!wrap) return;
+    const clearBtn = wrap.querySelector('[data-area-search-clear]');
+    const suggContainer = wrap.querySelector('#area-suggestions');
+    const q = areaInput.value.trim();
+    if (clearBtn) clearBtn.hidden = !q.length;
+    if (!suggContainer) return;
+    if (!q) {
+      suggContainer.hidden = true;
+      suggContainer.innerHTML = '';
+      return;
+    }
+    const suggestions = getAreaSuggestions(q);
+    if (!suggestions.length) {
+      suggContainer.innerHTML = '<div style="padding:10px 12px;font-size:13px;color:var(--navy-soft)">No matching Berlin neighbourhoods, postcodes, or addresses found.</div>';
+      suggContainer.hidden = false;
+      return;
+    }
+    suggContainer.innerHTML = suggestions.map(s => `
+      <button type="button" class="area-suggestion-item" data-select-area="${esc(s.id)}" data-area-label="${esc(s.label)}" role="option">
+        <span class="area-suggestion-icon">${icon(s.icon || 'pin', 16)}</span>
+        <span class="area-suggestion-text">
+          <span class="area-suggestion-title">${esc(s.label)}</span>
+          <span class="area-suggestion-sub">${esc(s.sub)}</span>
+        </span>
+      </button>
+    `).join('');
+    suggContainer.hidden = false;
+    return;
+  }
+
+  const whereInput = e.target.closest('[data-where-search-input]');
+  if (whereInput) {
+    const wrap = whereInput.closest('[data-where-search-wrap]');
+    if (!wrap) return;
+    const clearBtn = wrap.querySelector('[data-where-search-clear]');
+    const suggContainer = wrap.querySelector('[data-where-suggestions]');
+    const q = whereInput.value.trim();
+    if (clearBtn) clearBtn.hidden = !q.length;
+    if (!suggContainer) return;
+    if (!q) {
+      suggContainer.hidden = true;
+      suggContainer.innerHTML = '';
+      return;
+    }
+    const suggestions = getAreaSuggestions(q);
+    if (!suggestions.length) {
+      suggContainer.innerHTML = '<div style="padding:10px 12px;font-size:13px;color:var(--navy-soft)">No matching Berlin areas found.</div>';
+      suggContainer.hidden = false;
+      return;
+    }
+    suggContainer.innerHTML = suggestions.map(s => `
+      <button type="button" class="area-suggestion-item" data-where="${esc(s.id)}" role="option">
+        <span class="area-suggestion-icon">${icon(s.icon || 'pin', 16)}</span>
+        <span class="area-suggestion-text">
+          <span class="area-suggestion-title">${esc(s.label)}</span>
+          <span class="area-suggestion-sub">${esc(s.sub)}</span>
+        </span>
+      </button>
+    `).join('');
+    suggContainer.hidden = false;
+    return;
+  }
 });
 document.addEventListener('change', e => {
   if (!e.target.matches('input[type="radio"]')) return;
