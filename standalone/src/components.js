@@ -323,23 +323,108 @@ function cityChip() {
     ${picker}</div>`;
 }
 
+function urbyMascotAvatar(size = 'md') {
+  const w = size === 'sm' ? 44 : size === 'lg' ? 88 : 68;
+  const h = size === 'sm' ? 44 : size === 'lg' ? 88 : 68;
+  return `<div class="urby-mascot" style="width:${w}px;height:${h}px;flex:0 0 ${w}px;" aria-hidden="true">
+    <svg width="100%" height="100%" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="50" cy="94" rx="28" ry="5" fill="rgba(0,0,0,0.08)" />
+      <!-- Left Waving Hand -->
+      <g class="urby-wave">
+        <path d="M78 48 C84 40, 92 36, 91 43 C90 48, 85 54, 76 56 Z" fill="#f6d64a" stroke="#d97706" stroke-width="1.5" />
+        <circle cx="90" cy="40" r="3.5" fill="#f6d64a" stroke="#d97706" stroke-width="1.5" />
+      </g>
+      <!-- Body & Hoodie -->
+      <path d="M26 62 C26 50, 74 50, 74 62 L78 88 C78 92, 22 92, 22 88 Z" fill="#18181b" />
+      <path d="M42 56 L47 72 M58 56 L53 72" stroke="#e4e4e7" stroke-width="2" stroke-linecap="round" />
+      <path d="M38 56 Q50 68 62 56" fill="none" stroke="#27272a" stroke-width="3" />
+      <path d="M47 76 C47 80, 53 80, 53 76 L53 73" fill="none" stroke="#e4e4e7" stroke-width="1.8" stroke-linecap="round" />
+      <path d="M24 64 C20 70, 20 76, 26 80" fill="#18181b" stroke="#09090b" stroke-width="2" stroke-linecap="round" />
+      <!-- Character Head / Flame body -->
+      <path d="M50 12 C32 12, 25 24, 25 38 C25 54, 34 60, 50 60 C66 60, 75 54, 75 38 C75 24, 68 12, 50 12 Z" fill="#fcd34d" stroke="#f59e0b" stroke-width="1.5" />
+      <path d="M50 12 C47 6, 52 2, 55 4 C57 6, 56 10, 50 12 Z" fill="#f59e0b" />
+      <!-- Headband -->
+      <path d="M25 29 C25 27, 75 27, 75 29 L75 36 C75 38, 25 38, 25 36 Z" fill="#ffffff" stroke="#e5e7eb" stroke-width="1" />
+      <path d="M47 31 L47 34 C47 35.5, 53 35.5, 53 34 L53 31" fill="none" stroke="#111827" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+      <!-- Eyes -->
+      <ellipse cx="41" cy="43" rx="3.2" ry="4.2" fill="#18181b" />
+      <circle cx="42.2" cy="41.5" r="1.3" fill="#ffffff" />
+      <ellipse cx="59" cy="43" rx="3.2" ry="4.2" fill="#18181b" />
+      <circle cx="60.2" cy="41.5" r="1.3" fill="#ffffff" />
+      <!-- Rosy Cheeks -->
+      <ellipse cx="34" cy="48" rx="3.5" ry="2" fill="#fca5a5" opacity="0.8" />
+      <ellipse cx="66" cy="48" rx="3.5" ry="2" fill="#fca5a5" opacity="0.8" />
+      <!-- Happy Smile -->
+      <path d="M46 48 Q50 53 54 48" fill="none" stroke="#18181b" stroke-width="2" stroke-linecap="round" />
+    </svg>
+  </div>`;
+}
+
+function venueTimetable(v) {
+  const acts = v.activities || [];
+  const has = (...types) => types.some(t => acts.some(a => a.toLowerCase().includes(t)));
+
+  let slots = [];
+  if (has('bouldering', 'climbing')) {
+    slots = [
+      { time: '17:30', icon: 'mountain', name: 'Open Bouldering & Technique' },
+      { time: '19:00', icon: 'mountain', name: 'Route Coaching Workshop' }
+    ];
+  } else if (has('yoga', 'pilates', 'barre')) {
+    slots = [
+      { time: '08:00', icon: 'leaf', name: 'Morning Vinyasa Flow' },
+      { time: '18:15', icon: 'leaf', name: 'Dynamic Pilates & Core' }
+    ];
+  } else if (has('swimming', 'sauna', 'spa', 'wellness')) {
+    slots = [
+      { time: '08:30', icon: 'waves', name: 'Open Lane Swim' },
+      { time: '18:00', icon: 'spa', name: 'Hydro-Mobility & Recovery' }
+    ];
+  } else if (has('dance')) {
+    slots = [
+      { time: '18:00', icon: 'music', name: 'Contemporary Dance Flow' },
+      { time: '19:30', icon: 'music', name: 'Urban Choreography' }
+    ];
+  } else if (has('martial arts', 'boxing', 'combat')) {
+    slots = [
+      { time: '18:00', icon: 'glove', name: 'Boxing Fundamentals' },
+      { time: '19:15', icon: 'glove', name: 'Conditioning & Padwork' }
+    ];
+  } else if (has('racket', 'tennis', 'padel', 'badminton', 'squash')) {
+    slots = [
+      { time: '17:30', icon: 'racket', name: 'Open Match Play' },
+      { time: '19:00', icon: 'racket', name: 'Technique Drills' }
+    ];
+  } else {
+    slots = [
+      { time: '18:00', icon: 'shoe', name: 'Outdoor Bootcamp' },
+      { time: '19:15', icon: 'dumbbell', name: 'Functional Training & HYROX' }
+    ];
+  }
+
+  const now = new Date();
+  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const dayName = dayNames[now.getDay()] || 'Tue';
+  const monthName = monthNames[now.getMonth()] || 'Aug';
+  const dayNum = now.getDate() || 25;
+  const dateStr = `${dayName} ${dayNum} ${monthName}`;
+
+  return { dateStr, slots };
+}
+
 function venueSheet() {
   if (!SHEET) return '';
-  const v = VENUES.find(x=>x.id===SHEET); if (!v) return '';
+  const v = VENUES.find(x => x.id === SHEET); if (!v) return '';
   const match = matchVenues(A());
-  const found = (match.venues||[]).find(x=>x.id===v.id);
-  const km = found ? found.distanceKm : Math.min(...((match.areas)||[match.anywhere?ANYWHERE:match.area]).map(a=>distanceKm(a,v)));
+  const found = (match.venues || []).find(x => x.id === v.id);
+  const km = found ? found.distanceKm : Math.min(...((match.areas) || [match.anywhere ? ANYWHERE : match.area]).map(a => distanceKm(a, v)));
+  const areaLabel = (found && found.nearestArea && found.nearestArea.name) || (v.nearestArea ? v.nearestArea.name : (AREAS.find(a => a.id === v.area) || {}).name || (match.area && match.area.name) || 'Mitte');
   const plan = currentPlan();
-  const currentWeekDays = (S.weekDays && S.weekDays.length)
-    ? S.weekDays : weekPlan(A().activities||[], match.pool||[], plan.id, A().frequency).sessions.map(x=>x.day);
-  const activeDay = WEEK_ADD_DAY || currentWeekDays[0] || 'Monday';
-  if (!WEEK_ADD_DAY) WEEK_ADD_DAY = activeDay;
-
   const isStarred = Boolean(S.starredVenues && S.starredVenues[v.id]);
 
   /* If opened via "Add to week", show a focused, lightweight Quick-Add bottom sheet */
   if (WEEK_ADD_MODE) {
-    const areaLabel = v.nearestArea ? v.nearestArea.name : (AREAS.find(a=>a.id===v.area)||{}).name || '';
     const distLabel = areaLabel ? `${km} km from ${esc(areaLabel)}` : `${km} km away`;
     return `<div class="sheet sheet--quickadd" id="venue-sheet" role="dialog" aria-modal="true" aria-labelledby="quickadd-title">
       <div class="sheet__panel sheet__panel--quickadd">
@@ -363,7 +448,7 @@ function venueSheet() {
           <div class="quickadd-body">
             <div class="quickadd-label">Choose a day for your routine</div>
             <div class="quickadd-days" role="group" aria-label="Select day">
-              ${DAY_ORDER.map(day=>{
+              ${DAY_ORDER.map(day => {
                 const isSelected = WEEK_ADD_DAY === day;
                 return `<button class="daybtn ${isSelected ? 'is-on' : ''}" type="button" data-add-day="${esc(day)}" aria-pressed="${isSelected}">${DAY_SHORT[day]}</button>`;
               }).join('')}
@@ -385,50 +470,230 @@ function venueSheet() {
 
   /* Full venue details profile */
   const included = plan.venueTiers.includes(v.tier);
-  const firstPlan = PLANS.find(p=>p.venueTiers.includes(v.tier));
+  const firstPlan = PLANS.find(p => p.venueTiers.includes(v.tier));
   const yours = v.access ? v.access[plan.id] : null;
-  const firstAccess = v.access ? PLANS.find(pl=>v.access[pl.id] && !/^not included/i.test(v.access[pl.id])) : firstPlan;
+  const firstAccess = v.access ? PLANS.find(pl => v.access[pl.id] && !/^not included/i.test(v.access[pl.id])) : firstPlan;
 
-  return `<div class="sheet" id="venue-sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
-    <div class="sheet__panel">
-      <button class="sheet__close" data-close-sheet aria-label="Close">&times;</button>
-      <div class="sheet__media">${venueMedia(v)}</div>
-      <div class="sheet__body">
-        <div class="sheet__head-row" style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
-          <div>
-            <h2 id="sheet-title" style="font-size:22px;font-weight:800;letter-spacing:-.01em;margin:0">${esc(v.name)}</h2>
-            <p class="small muted" style="margin:4px 0 0">${esc(v.tierLabel||'Venue')} · ${km} km from ${esc(match.anywhere?'the city centre':((found&&found.nearestArea)||match.area).name)}</p>
-          </div>
-          <button class="activity-card__star-btn ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(v.id)}" aria-label="${isStarred ? 'Remove from routine' : 'Add to routine'}" title="${isStarred ? 'In your routine' : 'Add to routine'}" style="position:static;box-shadow:none;flex:0 0 auto">
+  // Match % score
+  let matchPct = 94;
+  if (A().activities && A().activities.some(act => v.activities.includes(act))) matchPct = 98;
+  else if (km < 3) matchPct = 96;
+
+  // Tier info & badges
+  const tier = v.tier || 'standard';
+  const tierBadgeText = tier === 'premium' ? '👑 Premium' : tier === 'plus' ? '✓ Plus access' : `✓ ${plan.name} included`;
+  const tierBadgeClass = tier === 'premium' ? 'venue-hero-badge--premium' : tier === 'plus' ? 'venue-hero-badge--plus' : 'venue-hero-badge--standard';
+
+  const actNames = v.activities.map(a => ACTIVITY_LABELS[a] || (a.charAt(0).toUpperCase() + a.slice(1))).slice(0, 3).join(' · ');
+  const primaryActIcon = activityIcon(v.activities);
+
+  const timetable = venueTimetable(v);
+  const visitsText = yours && !/^not included/i.test(yours)
+    ? yours
+    : (v.tier === 'plus' ? 'Up to 8 visits per month' : v.tier === 'premium' ? 'Up to 4 visits per month' : '1 visit per day');
+
+  return `<div class="sheet sheet--venue-profile" id="venue-sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+    <div class="sheet__panel sheet__panel--venue-profile">
+      <!-- Desktop & Mobile Modal Header -->
+      <header class="venue-profile-header">
+        <div class="venue-profile-header__left">
+          <span class="venue-profile-header__logo">${icon('target', 20)} <b>Urban Sports Club</b></span>
+        </div>
+        <div class="venue-profile-header__center">
+          <span class="venue-profile-header__mobile-title">Venue details</span>
+        </div>
+        <div class="venue-profile-header__right">
+          <button class="venue-profile-header__back linkish" type="button" data-close-sheet>
+            ${icon('back', 16)} <span>Back to places</span>
+          </button>
+          <button class="activity-card__star-btn venue-profile-header__mobile-star ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(v.id)}" aria-label="${isStarred ? 'Remove from routine' : 'Add to routine'}">
             ${icon(isStarred ? 'starFill' : 'star', 18)}
           </button>
         </div>
-        ${v.address?`<p class="small muted" style="margin:4px 0 0">${icon('pin',15)} ${esc(v.address)}</p>`:''}
+      </header>
 
-        ${v.blurb ? `<p style="font-size:15px;line-height:1.45;margin:14px 0 0">${esc(v.blurb)}</p>` : ''}
-        <div class="chips">${v.activities.map(a=>`<span class="chip-sm">${esc(ACTIVITY_LABELS[a]||a)}</span>`).join('')}</div>
-        <div style="margin-top:16px">
-          ${v.hoursWeekday?`<div class="sheet__row">${icon('clock',20)}<span><strong>Weekdays</strong><br>${esc(v.hoursWeekday)}</span></div>`:''}
-          ${v.hoursWeekend?`<div class="sheet__row">${icon('calendar',20)}<span><strong>Weekends</strong><br>${esc(v.hoursWeekend)}</span></div>`:''}
-          ${!v.hoursWeekday&&!v.hoursWeekend?`<div class="sheet__row">${icon('clock',20)}<span><strong>Opening hours</strong><br>Not published &mdash; this venue runs to a class timetable.</span></div>`:''}
-          ${v.goodToKnow?`<div class="sheet__row">${icon('info',20)}<span><strong>Good to know</strong><br>${esc(v.goodToKnow)}</span></div>`:''}
+      <!-- 2-Column Grid Body -->
+      <div class="venue-profile-grid">
+        <!-- LEFT COLUMN: Hero Photo with Badges & Next Classes Card -->
+        <div class="venue-profile-left">
+          <div class="venue-hero-media">
+            ${venueMedia(v)}
+            <!-- Overlay Badges -->
+            <div class="venue-hero-badges-top">
+              <span class="venue-hero-badge venue-hero-badge--match">${icon('sparkle', 13)} ${matchPct}% match</span>
+              <span class="venue-hero-badge ${tierBadgeClass}">${tierBadgeText}</span>
+            </div>
+            <button class="venue-hero-star-btn ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(v.id)}" aria-label="${isStarred ? 'Remove from routine' : 'Add to routine'}" title="${isStarred ? 'In your routine' : 'Add to routine'}">
+              ${icon(isStarred ? 'starFill' : 'star', 18)}
+            </button>
+            <div class="venue-hero-cat-badge">
+              ${icon(primaryActIcon, 17)}
+            </div>
+          </div>
+
+          <!-- Next classes timetable card -->
+          <div class="venue-classes-card">
+            <div class="venue-classes-card__head">
+              <h3 class="venue-classes-card__title">Next classes</h3>
+              <span class="venue-classes-card__date">${timetable.dateStr}</span>
+            </div>
+            <div class="venue-classes-list">
+              ${timetable.slots.map(s => `
+                <div class="venue-class-row">
+                  <span class="venue-class-time">${s.time}</span>
+                  <span class="venue-class-icon">${icon(s.icon, 16)}</span>
+                  <span class="venue-class-name">${esc(s.name)}</span>
+                </div>
+              `).join('')}
+            </div>
+            <div class="venue-classes-footnote">
+              ${icon('info', 14)} <span>Example timetable &mdash; live availability is not connected in this pilot.</span>
+            </div>
+          </div>
         </div>
-        ${v.access
-          ? `<div class="covered ${yours && !/^not included/i.test(yours) ? 'covered--yes' : 'covered--no'}">${icon(yours && !/^not included/i.test(yours) ? 'checkThin' : 'info', 19)}
-              <span>On <strong>${esc(plan.name)}</strong>: ${esc(yours || 'not published for this plan')}.${
-                yours && /^not included/i.test(yours) && firstAccess ? ` Included from <strong>${esc(firstAccess.name)}</strong>, ${priceFor(firstAccess,S.commitmentId)} € a month.` : ''}</span></div>
-             <div class="accesslist">${PLANS.map(pl=>`<div class="accesslist__row ${pl.id===plan.id?'is-yours':''}">
-                <span>${esc(pl.name)}</span><span>${esc(v.access[pl.id]||'—')}</span></div>`).join('')}</div>`
-          : `<div class="covered ${included?'covered--yes':'covered--no'}">${icon(included?'checkThin':'info',19)}
-              <span>${included
-                ? `Included in <strong>${esc(plan.name)}</strong> — ${lowerFirst(plan.checkInModel)}.`
-                : `Needs a Plus check-in, which ${esc(plan.name)} doesn&rsquo;t include.`}</span></div>`}
-        <div style="display:none"><a href="${esc(v.url||'https://urbansportsclub.com/en/venues/')}">urbansportsclub.com</a></div>
+
+        <!-- RIGHT COLUMN: Title, Submeta, Urby Recommendation & Accordions -->
+        <div class="venue-profile-right">
+          <div class="venue-profile-head">
+            <h1 id="sheet-title" class="venue-profile-title">${esc(v.name)}</h1>
+            <div class="venue-profile-submeta">
+              <span class="venue-submeta-item">${icon(primaryActIcon, 16)} ${esc(actNames)}</span>
+              <span class="venue-submeta-dot">&middot;</span>
+              <span class="venue-submeta-item">${icon('pin', 15)} ${km} km from ${esc(areaLabel)}</span>
+            </div>
+          </div>
+
+          <!-- Urby Recommendation Card -->
+          <div class="venue-urby-card">
+            <div class="venue-urby-card__main">
+              ${urbyMascotAvatar('md')}
+              <div class="venue-urby-card__info">
+                <h4 class="venue-urby-card__title">Recommended for your routine</h4>
+                <div class="venue-urby-card__bullet">
+                  <span class="venue-urby-bullet-icon venue-urby-bullet-icon--check">${icon('checkThin', 14)}</span>
+                  <span>${included ? `Included with <b>${esc(plan.name)}</b>` : `Included from <b>${esc(firstAccess ? firstAccess.name : 'Plus')}</b>`}</span>
+                </div>
+                <div class="venue-urby-card__bullet">
+                  <span class="venue-urby-bullet-icon venue-urby-bullet-icon--cal">${icon('calendar', 14)}</span>
+                  <span>${esc(visitsText)}</span>
+                </div>
+              </div>
+            </div>
+            <div class="venue-urby-card__cta">
+              <button class="btn ${isStarred ? 'btn--secondary' : 'btn--primary'} venue-urby-btn" type="button" data-toggle-star="${esc(v.id)}">
+                ${isStarred ? `${icon('checkThin', 16)} In your routine` : 'Add to my routine'}
+              </button>
+            </div>
+            <p class="venue-urby-card__note">${included ? 'This place works with the membership I recommended.' : `Upgrade to ${esc(firstAccess ? firstAccess.name : 'Plus')} to include this venue.`}</p>
+          </div>
+
+          <!-- Accordions Group -->
+          <div class="venue-accordions sheet__body" style="padding:0">
+            <details class="venue-accordion">
+              <summary class="venue-accordion__summary">
+                <span class="venue-accordion__title-wrap">${icon('shield', 18)} <span>Practical details & limits</span></span>
+                <span class="venue-accordion__chevron">${icon('chevronDown', 18)}</span>
+              </summary>
+              <div class="venue-accordion__body">
+                <!-- Visual quick facts grid with micro-illustrations -->
+                <div class="venue-facts-grid">
+                  <div class="venue-fact-card sheet__row">
+                    <div class="venue-fact-icon venue-fact-icon--blue">${icon('qr', 18)}</div>
+                    <div class="venue-fact-text">
+                      <strong>QR Check-in</strong>
+                      <span>Scan at front desk with app</span>
+                    </div>
+                  </div>
+                  <div class="venue-fact-card sheet__row">
+                    <div class="venue-fact-icon venue-fact-icon--amber">${icon('bag', 18)}</div>
+                    <div class="venue-fact-text">
+                      <strong>What to bring</strong>
+                      <span>Towel, lock & clean shoes</span>
+                    </div>
+                  </div>
+                  <div class="venue-fact-card sheet__row">
+                    <div class="venue-fact-icon venue-fact-icon--teal">${icon('shower', 18)}</div>
+                    <div class="venue-fact-text">
+                      <strong>Amenities</strong>
+                      <span>Showers & lockers on site</span>
+                    </div>
+                  </div>
+                </div>
+
+                ${v.access ? `<div class="accesslist" style="margin-top:16px">
+                  <div class="accesslist__title">Plan access breakdown</div>
+                  ${PLANS.map(pl => `<div class="accesslist__row ${pl.id === plan.id ? 'is-yours' : ''}">
+                    <span class="accesslist__plan-name">${esc(pl.name)} ${pl.id === plan.id ? '<span class="badge-sm badge--green">Your plan</span>' : ''}</span>
+                    <span class="accesslist__limit">${esc(v.access[pl.id] || '—')}</span>
+                  </div>`).join('')}
+                </div>` : ''}
+              </div>
+            </details>
+
+            <details class="venue-accordion">
+              <summary class="venue-accordion__summary">
+                <span class="venue-accordion__title-wrap">${icon('pin', 18)} <span>Address & directions</span></span>
+                <span class="venue-accordion__chevron">${icon('chevronDown', 18)}</span>
+              </summary>
+              <div class="venue-accordion__body">
+                ${v.address ? `<div class="sheet__row" style="margin-bottom:8px">${icon('pin', 18)}<span><strong>Address</strong><br>${esc(v.address)} (${esc(areaLabel)} &middot; ${km} km away)</span></div>` : ''}
+                <div class="sheet__row" style="margin-bottom:12px">${icon('shoe', 18)}<span><strong>Transit & access</strong><br>Nearby public transport & cycling lanes with bike racks outside.</span></div>
+                <div style="margin-top:8px">
+                  <a href="${esc(v.url || 'https://urbansportsclub.com/en/venues/')}" target="_blank" rel="noopener" class="venue-outlink-btn">
+                    ${icon('map', 15)} <span>View on urbansportsclub.com</span> ${icon('arrowRight', 14)}
+                  </a>
+                </div>
+              </div>
+            </details>
+
+            <details class="venue-accordion">
+              <summary class="venue-accordion__summary">
+                <span class="venue-accordion__title-wrap">${icon('clock', 18)} <span>Opening times</span></span>
+                <span class="venue-accordion__chevron">${icon('chevronDown', 18)}</span>
+              </summary>
+              <div class="venue-accordion__body">
+                <div class="venue-times-grid">
+                  ${v.hoursWeekday ? `<div class="venue-time-pill sheet__row">
+                    <span class="venue-time-pill__day">Weekdays</span>
+                    <span class="venue-time-pill__hours">${esc(v.hoursWeekday)}</span>
+                  </div>` : ''}
+                  ${v.hoursWeekend ? `<div class="venue-time-pill sheet__row">
+                    <span class="venue-time-pill__day">Weekends</span>
+                    <span class="venue-time-pill__hours">${esc(v.hoursWeekend)}</span>
+                  </div>` : ''}
+                  ${!v.hoursWeekday && !v.hoursWeekend ? `<div class="sheet__row">${icon('clock', 18)}<span>Opening hours run to class timetable.</span></div>` : ''}
+                </div>
+              </div>
+            </details>
+
+            <details class="venue-accordion">
+              <summary class="venue-accordion__summary">
+                <span class="venue-accordion__title-wrap">${icon('info', 18)} <span>Good to know</span></span>
+                <span class="venue-accordion__chevron">${icon('chevronDown', 18)}</span>
+              </summary>
+              <div class="venue-accordion__body">
+                <div class="sheet__row">${icon('bolt', 18)}<span>${esc(v.goodToKnow || 'Please arrive 10 minutes before your class starts. Standard 12-hour cancellation policy applies.')}</span></div>
+              </div>
+            </details>
+
+            <details class="venue-accordion">
+              <summary class="venue-accordion__summary">
+                <span class="venue-accordion__title-wrap">${icon('sparkle', 18)} <span>About this venue</span></span>
+                <span class="venue-accordion__chevron">${icon('chevronDown', 18)}</span>
+              </summary>
+              <div class="venue-accordion__body">
+                <p style="font-size:14px;line-height:1.55;margin:0 0 10px;color:var(--ink-soft)">${esc(v.blurb || 'A partner studio in the Urban Sports Club Berlin network featuring certified coaches and dedicated workout spaces.')}</p>
+                <div class="chips" style="margin-top:8px">${v.activities.map(a => `<span class="chip-sm">${esc(ACTIVITY_LABELS[a] || a)}</span>`).join('')}</div>
+              </div>
+            </details>
+          </div>
+        </div>
       </div>
-      <div class="sheet__foot" style="position:sticky;bottom:0;background:#fff;border-top:1px solid var(--border);padding:14px 20px;display:flex;gap:10px;z-index:10;box-shadow:0 -4px 12px rgba(0,0,0,0.04)">
-        <button class="btn btn--secondary" style="flex:1" data-close-sheet>Close</button>
-        <button class="btn ${isStarred ? 'btn--secondary' : 'btn--primary'}" style="flex:2" type="button" data-toggle-star="${esc(v.id)}">
-          ${icon(isStarred ? 'starFill' : 'plus', 14)} <span>${isStarred ? 'Remove from routine' : 'Add to routine'}</span>
+
+      <!-- Mobile Sticky Action Bar -->
+      <div class="venue-profile-mobile-bar">
+        <button class="btn ${isStarred ? 'btn--secondary' : 'btn--primary'} btn--block venue-profile-mobile-btn" type="button" data-toggle-star="${esc(v.id)}">
+          ${isStarred ? `${icon('checkThin', 16)} In your routine` : 'Add to my routine'}
         </button>
       </div>
     </div>

@@ -7751,6 +7751,797 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   }
 }
 
+/* ==========================================================================
+   Venue Profile / Details Sheet (ChatGPT Redesign)
+   ========================================================================== */
+
+.sheet--venue-profile {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(4px);
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  z-index: 90;
+  overflow-y: auto;
+}
+
+.sheet__panel--venue-profile {
+  background: #ffffff;
+  border-radius: 20px;
+  max-width: 1020px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.28);
+  display: flex;
+  flex-direction: column;
+}
+
+.venue-profile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 28px;
+  border-bottom: 1px solid var(--border);
+  background: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.venue-profile-header__left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.venue-profile-header__logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.venue-profile-header__center {
+  display: flex;
+  align-items: center;
+}
+
+.venue-profile-header__mobile-title {
+  display: none;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.venue-profile-header__right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.venue-profile-header__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 8px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.venue-profile-header__back:hover {
+  background: var(--cream);
+  color: var(--ink);
+}
+
+.venue-profile-header__mobile-star {
+  display: none;
+}
+
+.venue-profile-grid {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 32px;
+  padding: 28px 32px 36px;
+}
+
+.venue-profile-left {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.venue-hero-media {
+  position: relative;
+  height: 250px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--cream);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+
+.venue-hero-media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.venue-hero-badges-top {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  z-index: 2;
+}
+
+.venue-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 11px;
+  border-radius: 999px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.venue-hero-badge--match {
+  background: rgba(254, 240, 138, 0.95);
+  color: #854d0e;
+  border: 1px solid #fde047;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.venue-hero-badge--plus {
+  background: rgba(238, 242, 255, 0.95);
+  color: #4338ca;
+  border: 1px solid #c7d2fe;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.venue-hero-badge--premium {
+  background: rgba(253, 244, 255, 0.95);
+  color: #86198f;
+  border: 1px solid #f0abfc;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.venue-hero-badge--standard {
+  background: rgba(240, 253, 244, 0.95);
+  color: #166534;
+  border: 1px solid #bbf7d0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.venue-hero-star-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--navy-soft);
+  transition: all 0.15s ease;
+  z-index: 2;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.venue-hero-star-btn:hover {
+  transform: scale(1.08);
+  background: #ffffff;
+  color: var(--ink);
+}
+
+.venue-hero-star-btn.is-active {
+  background: #fef08a;
+  border-color: #facc15;
+  color: #854d0e;
+}
+
+.venue-hero-cat-badge {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+  z-index: 2;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.venue-classes-card {
+  background: #ffffff;
+  border: 1px solid var(--cream-line);
+  border-radius: 16px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.venue-classes-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.venue-classes-card__title {
+  font-size: 16px;
+  font-weight: 800;
+  margin: 0;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.venue-classes-card__date {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--navy-soft);
+}
+
+.venue-classes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.venue-class-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  background: #fbfbfb;
+  border: 1px solid #f1f5f9;
+  transition: background 0.15s ease;
+}
+
+.venue-class-time {
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 4px 8px;
+  border-radius: 6px;
+  flex: 0 0 auto;
+  letter-spacing: 0.02em;
+}
+
+.venue-class-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+  flex: 0 0 auto;
+}
+
+.venue-class-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink);
+  flex: 1 1 auto;
+  line-height: 1.3;
+}
+
+.venue-classes-footnote {
+  font-size: 12px;
+  color: var(--navy-soft);
+  line-height: 1.4;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.venue-classes-footnote svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+
+.venue-profile-right {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.venue-profile-head {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.venue-profile-title {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.venue-profile-submeta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 14.5px;
+  color: var(--navy-soft);
+}
+
+.venue-submeta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.venue-submeta-dot {
+  color: #cbd5e1;
+  font-weight: 700;
+}
+
+.venue-urby-card {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 16px;
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 2px 10px rgba(245, 158, 11, 0.06);
+}
+
+.venue-urby-card__main {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.venue-urby-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1 1 auto;
+}
+
+.venue-urby-card__title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #78350f;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.venue-urby-card__bullet {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #92400e;
+  font-weight: 500;
+}
+
+.venue-urby-bullet-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+
+.venue-urby-bullet-icon--check {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.venue-urby-bullet-icon--cal {
+  background: #fef08a;
+  color: #854d0e;
+}
+
+.venue-urby-card__cta {
+  margin-top: 4px;
+}
+
+.venue-urby-btn {
+  width: 100%;
+  height: 48px;
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 999px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.venue-urby-card__note {
+  font-size: 12.5px;
+  color: #92400e;
+  margin: 0;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.venue-accordions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.venue-accordion {
+  background: #ffffff;
+  border: 1px solid var(--cream-line);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.venue-accordion[open] {
+  border-color: #cbd5e1;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.venue-accordion__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 16px;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--ink);
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+  background: #ffffff;
+}
+
+.venue-accordion__summary::-webkit-details-marker {
+  display: none;
+}
+
+.venue-accordion__title-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.venue-accordion__chevron {
+  color: var(--navy-soft);
+  transition: transform 0.2s ease;
+  display: flex;
+  align-items: center;
+}
+
+.venue-accordion[open] .venue-accordion__chevron {
+  transform: rotate(180deg);
+}
+
+.venue-accordion__body {
+  padding: 14px 16px 16px;
+  border-top: 1px solid #f1f5f9;
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+  background: #fafbfc;
+}
+
+/* Micro-facts visual cards */
+.venue-facts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 8px;
+}
+
+.venue-fact-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  margin: 0;
+}
+
+.venue-fact-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.venue-fact-icon--blue {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+
+.venue-fact-icon--amber {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.venue-fact-icon--teal {
+  background: #ccfbf1;
+  color: #0d9488;
+}
+
+.venue-fact-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.venue-fact-text strong {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.venue-fact-text span {
+  font-size: 11.5px;
+  color: var(--ink-soft);
+  line-height: 1.3;
+}
+
+/* Plan access list breakdown */
+.accesslist__title {
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--navy-soft);
+  margin-bottom: 6px;
+}
+
+.accesslist__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 13px;
+}
+
+.accesslist__row:last-child {
+  border-bottom: 0;
+}
+
+.accesslist__row.is-yours {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  font-weight: 700;
+  color: #166534;
+  margin: 4px 0;
+}
+
+.accesslist__plan-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.accesslist__limit {
+  font-weight: 700;
+}
+
+/* Times grid */
+.venue-times-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.venue-time-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 13px;
+  margin: 0;
+}
+
+.venue-time-pill__day {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.venue-time-pill__hours {
+  color: var(--ink-soft);
+}
+
+.venue-outlink-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.venue-outlink-btn:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+.venue-profile-mobile-bar {
+  display: none;
+}
+
+@media (max-width: 780px) {
+  .sheet--venue-profile {
+    padding: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .sheet__panel--venue-profile {
+    max-width: 100%;
+    width: 100%;
+    border-radius: 20px 20px 0 0;
+    height: 92vh;
+    max-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 0;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.25);
+  }
+
+  .venue-profile-header {
+    flex: 0 0 auto;
+    padding: 12px 16px;
+    border-bottom: 1px solid #f1f5f9;
+    background: #ffffff;
+    z-index: 10;
+  }
+
+  .venue-profile-header__mobile-title,
+  .venue-profile-header__mobile-star {
+    display: flex;
+    align-items: center;
+  }
+
+  .venue-profile-header__back span,
+  .venue-profile-header__logo {
+    display: none;
+  }
+
+  .venue-profile-header__back {
+    padding: 8px;
+    border-radius: 50%;
+    background: #f1f5f9;
+  }
+
+  .venue-profile-grid {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    padding: 14px 16px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  /* Re-ordering elements in natural sequence on mobile */
+  .venue-profile-left,
+  .venue-profile-right {
+    display: contents;
+  }
+
+  .venue-hero-media {
+    order: 1;
+    height: 190px;
+    margin-bottom: 0;
+  }
+
+  .venue-profile-head {
+    order: 2;
+    margin-bottom: 0;
+  }
+
+  .venue-profile-title {
+    font-size: 20px;
+  }
+
+  .venue-urby-card {
+    order: 3;
+    margin-bottom: 0;
+  }
+
+  .venue-classes-card {
+    order: 4;
+    margin-bottom: 0;
+  }
+
+  .venue-accordions {
+    order: 5;
+    margin-bottom: 0;
+  }
+
+  .venue-facts-grid {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .venue-profile-mobile-bar {
+    flex: 0 0 auto;
+    display: block;
+    position: static;
+    background: #ffffff;
+    border-top: 1px solid #e2e8f0;
+    padding: 12px 16px max(12px, env(safe-area-inset-bottom));
+    z-index: 20;
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+  }
+
+  .venue-profile-mobile-btn {
+    height: 48px;
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .venue-urby-card__cta {
+    display: none;
+  }
+}
+
+
 /* ============================================================
    standalone-only additions
    ============================================================ */
@@ -7819,6 +8610,7 @@ button.venue-card:hover { border-color:var(--ink); }
 .sheet[hidden] { display:none; }
 .sheet__panel { background:#fff; border-radius:14px; max-width:520px; width:100%; max-height:88vh; overflow:auto;
   position:relative; box-shadow:0 24px 70px rgba(0,0,0,.22); }
+.sheet__panel--venue-profile { max-width: 1040px; border-radius: 20px; }
 .sheet__close { position:absolute; top:12px; right:14px; z-index:2; background:rgba(255,255,255,.92); border:0;
   width:34px; height:34px; border-radius:50%; font-size:20px; line-height:1; cursor:pointer; }
 .sheet__media { position:relative; height:190px; background:var(--yellow-pale); display:grid; place-items:center; border-radius:14px 14px 0 0; overflow:hidden; }
@@ -7898,7 +8690,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 6b5e9b3 + local edits</span>
+  <span class="demo-banner__build">build f57dc66 + local edits</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -7983,7 +8775,11 @@ const ICONS = {
   radioChecked:'<circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8" fill="none"/><circle cx="12" cy="12" r="4.2" fill="currentColor" stroke="none"/>',
   radioUnchecked:'<circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8" fill="none"/>',
   adjust:'<path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/>',
-  trash:'<path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"/>'
+  trash:'<path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"/>',
+  qr:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="3" height="3"/><rect x="18" y="18" width="3" height="3"/><rect x="18" y="14" width="3" height="3"/><rect x="14" y="18" width="3" height="3"/>',
+  bag:'<path d="M6 8V6a6 6 0 0 1 12 0v2"/><rect x="4" y="8" width="16" height="13" rx="2.5"/><path d="M10 12h4"/>',
+  shower:'<path d="M4 4h7a4 4 0 0 1 4 4v1"/><path d="M11 14v.01M14 14v.01M17 14v.01M9 18v.01M12 18v.01M15 18v.01"/><path d="M10 9a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1H10V9z"/>',
+  map:'<polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/>'
 };
 const icon = (n, s = 22) => svg(ICONS[n] || ICONS.info, s);
 const ulaAvatar = (size='md') => {
@@ -9365,23 +10161,108 @@ function cityChip() {
     ${picker}</div>`;
 }
 
+function urbyMascotAvatar(size = 'md') {
+  const w = size === 'sm' ? 44 : size === 'lg' ? 88 : 68;
+  const h = size === 'sm' ? 44 : size === 'lg' ? 88 : 68;
+  return `<div class="urby-mascot" style="width:${w}px;height:${h}px;flex:0 0 ${w}px;" aria-hidden="true">
+    <svg width="100%" height="100%" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="50" cy="94" rx="28" ry="5" fill="rgba(0,0,0,0.08)" />
+      <!-- Left Waving Hand -->
+      <g class="urby-wave">
+        <path d="M78 48 C84 40, 92 36, 91 43 C90 48, 85 54, 76 56 Z" fill="#f6d64a" stroke="#d97706" stroke-width="1.5" />
+        <circle cx="90" cy="40" r="3.5" fill="#f6d64a" stroke="#d97706" stroke-width="1.5" />
+      </g>
+      <!-- Body & Hoodie -->
+      <path d="M26 62 C26 50, 74 50, 74 62 L78 88 C78 92, 22 92, 22 88 Z" fill="#18181b" />
+      <path d="M42 56 L47 72 M58 56 L53 72" stroke="#e4e4e7" stroke-width="2" stroke-linecap="round" />
+      <path d="M38 56 Q50 68 62 56" fill="none" stroke="#27272a" stroke-width="3" />
+      <path d="M47 76 C47 80, 53 80, 53 76 L53 73" fill="none" stroke="#e4e4e7" stroke-width="1.8" stroke-linecap="round" />
+      <path d="M24 64 C20 70, 20 76, 26 80" fill="#18181b" stroke="#09090b" stroke-width="2" stroke-linecap="round" />
+      <!-- Character Head / Flame body -->
+      <path d="M50 12 C32 12, 25 24, 25 38 C25 54, 34 60, 50 60 C66 60, 75 54, 75 38 C75 24, 68 12, 50 12 Z" fill="#fcd34d" stroke="#f59e0b" stroke-width="1.5" />
+      <path d="M50 12 C47 6, 52 2, 55 4 C57 6, 56 10, 50 12 Z" fill="#f59e0b" />
+      <!-- Headband -->
+      <path d="M25 29 C25 27, 75 27, 75 29 L75 36 C75 38, 25 38, 25 36 Z" fill="#ffffff" stroke="#e5e7eb" stroke-width="1" />
+      <path d="M47 31 L47 34 C47 35.5, 53 35.5, 53 34 L53 31" fill="none" stroke="#111827" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+      <!-- Eyes -->
+      <ellipse cx="41" cy="43" rx="3.2" ry="4.2" fill="#18181b" />
+      <circle cx="42.2" cy="41.5" r="1.3" fill="#ffffff" />
+      <ellipse cx="59" cy="43" rx="3.2" ry="4.2" fill="#18181b" />
+      <circle cx="60.2" cy="41.5" r="1.3" fill="#ffffff" />
+      <!-- Rosy Cheeks -->
+      <ellipse cx="34" cy="48" rx="3.5" ry="2" fill="#fca5a5" opacity="0.8" />
+      <ellipse cx="66" cy="48" rx="3.5" ry="2" fill="#fca5a5" opacity="0.8" />
+      <!-- Happy Smile -->
+      <path d="M46 48 Q50 53 54 48" fill="none" stroke="#18181b" stroke-width="2" stroke-linecap="round" />
+    </svg>
+  </div>`;
+}
+
+function venueTimetable(v) {
+  const acts = v.activities || [];
+  const has = (...types) => types.some(t => acts.some(a => a.toLowerCase().includes(t)));
+
+  let slots = [];
+  if (has('bouldering', 'climbing')) {
+    slots = [
+      { time: '17:30', icon: 'mountain', name: 'Open Bouldering & Technique' },
+      { time: '19:00', icon: 'mountain', name: 'Route Coaching Workshop' }
+    ];
+  } else if (has('yoga', 'pilates', 'barre')) {
+    slots = [
+      { time: '08:00', icon: 'leaf', name: 'Morning Vinyasa Flow' },
+      { time: '18:15', icon: 'leaf', name: 'Dynamic Pilates & Core' }
+    ];
+  } else if (has('swimming', 'sauna', 'spa', 'wellness')) {
+    slots = [
+      { time: '08:30', icon: 'waves', name: 'Open Lane Swim' },
+      { time: '18:00', icon: 'spa', name: 'Hydro-Mobility & Recovery' }
+    ];
+  } else if (has('dance')) {
+    slots = [
+      { time: '18:00', icon: 'music', name: 'Contemporary Dance Flow' },
+      { time: '19:30', icon: 'music', name: 'Urban Choreography' }
+    ];
+  } else if (has('martial arts', 'boxing', 'combat')) {
+    slots = [
+      { time: '18:00', icon: 'glove', name: 'Boxing Fundamentals' },
+      { time: '19:15', icon: 'glove', name: 'Conditioning & Padwork' }
+    ];
+  } else if (has('racket', 'tennis', 'padel', 'badminton', 'squash')) {
+    slots = [
+      { time: '17:30', icon: 'racket', name: 'Open Match Play' },
+      { time: '19:00', icon: 'racket', name: 'Technique Drills' }
+    ];
+  } else {
+    slots = [
+      { time: '18:00', icon: 'shoe', name: 'Outdoor Bootcamp' },
+      { time: '19:15', icon: 'dumbbell', name: 'Functional Training & HYROX' }
+    ];
+  }
+
+  const now = new Date();
+  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const dayName = dayNames[now.getDay()] || 'Tue';
+  const monthName = monthNames[now.getMonth()] || 'Aug';
+  const dayNum = now.getDate() || 25;
+  const dateStr = `${dayName} ${dayNum} ${monthName}`;
+
+  return { dateStr, slots };
+}
+
 function venueSheet() {
   if (!SHEET) return '';
-  const v = VENUES.find(x=>x.id===SHEET); if (!v) return '';
+  const v = VENUES.find(x => x.id === SHEET); if (!v) return '';
   const match = matchVenues(A());
-  const found = (match.venues||[]).find(x=>x.id===v.id);
-  const km = found ? found.distanceKm : Math.min(...((match.areas)||[match.anywhere?ANYWHERE:match.area]).map(a=>distanceKm(a,v)));
+  const found = (match.venues || []).find(x => x.id === v.id);
+  const km = found ? found.distanceKm : Math.min(...((match.areas) || [match.anywhere ? ANYWHERE : match.area]).map(a => distanceKm(a, v)));
+  const areaLabel = (found && found.nearestArea && found.nearestArea.name) || (v.nearestArea ? v.nearestArea.name : (AREAS.find(a => a.id === v.area) || {}).name || (match.area && match.area.name) || 'Mitte');
   const plan = currentPlan();
-  const currentWeekDays = (S.weekDays && S.weekDays.length)
-    ? S.weekDays : weekPlan(A().activities||[], match.pool||[], plan.id, A().frequency).sessions.map(x=>x.day);
-  const activeDay = WEEK_ADD_DAY || currentWeekDays[0] || 'Monday';
-  if (!WEEK_ADD_DAY) WEEK_ADD_DAY = activeDay;
-
   const isStarred = Boolean(S.starredVenues && S.starredVenues[v.id]);
 
   /* If opened via "Add to week", show a focused, lightweight Quick-Add bottom sheet */
   if (WEEK_ADD_MODE) {
-    const areaLabel = v.nearestArea ? v.nearestArea.name : (AREAS.find(a=>a.id===v.area)||{}).name || '';
     const distLabel = areaLabel ? `${km} km from ${esc(areaLabel)}` : `${km} km away`;
     return `<div class="sheet sheet--quickadd" id="venue-sheet" role="dialog" aria-modal="true" aria-labelledby="quickadd-title">
       <div class="sheet__panel sheet__panel--quickadd">
@@ -9405,7 +10286,7 @@ function venueSheet() {
           <div class="quickadd-body">
             <div class="quickadd-label">Choose a day for your routine</div>
             <div class="quickadd-days" role="group" aria-label="Select day">
-              ${DAY_ORDER.map(day=>{
+              ${DAY_ORDER.map(day => {
                 const isSelected = WEEK_ADD_DAY === day;
                 return `<button class="daybtn ${isSelected ? 'is-on' : ''}" type="button" data-add-day="${esc(day)}" aria-pressed="${isSelected}">${DAY_SHORT[day]}</button>`;
               }).join('')}
@@ -9427,50 +10308,230 @@ function venueSheet() {
 
   /* Full venue details profile */
   const included = plan.venueTiers.includes(v.tier);
-  const firstPlan = PLANS.find(p=>p.venueTiers.includes(v.tier));
+  const firstPlan = PLANS.find(p => p.venueTiers.includes(v.tier));
   const yours = v.access ? v.access[plan.id] : null;
-  const firstAccess = v.access ? PLANS.find(pl=>v.access[pl.id] && !/^not included/i.test(v.access[pl.id])) : firstPlan;
+  const firstAccess = v.access ? PLANS.find(pl => v.access[pl.id] && !/^not included/i.test(v.access[pl.id])) : firstPlan;
 
-  return `<div class="sheet" id="venue-sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
-    <div class="sheet__panel">
-      <button class="sheet__close" data-close-sheet aria-label="Close">&times;</button>
-      <div class="sheet__media">${venueMedia(v)}</div>
-      <div class="sheet__body">
-        <div class="sheet__head-row" style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
-          <div>
-            <h2 id="sheet-title" style="font-size:22px;font-weight:800;letter-spacing:-.01em;margin:0">${esc(v.name)}</h2>
-            <p class="small muted" style="margin:4px 0 0">${esc(v.tierLabel||'Venue')} · ${km} km from ${esc(match.anywhere?'the city centre':((found&&found.nearestArea)||match.area).name)}</p>
-          </div>
-          <button class="activity-card__star-btn ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(v.id)}" aria-label="${isStarred ? 'Remove from routine' : 'Add to routine'}" title="${isStarred ? 'In your routine' : 'Add to routine'}" style="position:static;box-shadow:none;flex:0 0 auto">
+  // Match % score
+  let matchPct = 94;
+  if (A().activities && A().activities.some(act => v.activities.includes(act))) matchPct = 98;
+  else if (km < 3) matchPct = 96;
+
+  // Tier info & badges
+  const tier = v.tier || 'standard';
+  const tierBadgeText = tier === 'premium' ? '👑 Premium' : tier === 'plus' ? '✓ Plus access' : `✓ ${plan.name} included`;
+  const tierBadgeClass = tier === 'premium' ? 'venue-hero-badge--premium' : tier === 'plus' ? 'venue-hero-badge--plus' : 'venue-hero-badge--standard';
+
+  const actNames = v.activities.map(a => ACTIVITY_LABELS[a] || (a.charAt(0).toUpperCase() + a.slice(1))).slice(0, 3).join(' · ');
+  const primaryActIcon = activityIcon(v.activities);
+
+  const timetable = venueTimetable(v);
+  const visitsText = yours && !/^not included/i.test(yours)
+    ? yours
+    : (v.tier === 'plus' ? 'Up to 8 visits per month' : v.tier === 'premium' ? 'Up to 4 visits per month' : '1 visit per day');
+
+  return `<div class="sheet sheet--venue-profile" id="venue-sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+    <div class="sheet__panel sheet__panel--venue-profile">
+      <!-- Desktop & Mobile Modal Header -->
+      <header class="venue-profile-header">
+        <div class="venue-profile-header__left">
+          <span class="venue-profile-header__logo">${icon('target', 20)} <b>Urban Sports Club</b></span>
+        </div>
+        <div class="venue-profile-header__center">
+          <span class="venue-profile-header__mobile-title">Venue details</span>
+        </div>
+        <div class="venue-profile-header__right">
+          <button class="venue-profile-header__back linkish" type="button" data-close-sheet>
+            ${icon('back', 16)} <span>Back to places</span>
+          </button>
+          <button class="activity-card__star-btn venue-profile-header__mobile-star ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(v.id)}" aria-label="${isStarred ? 'Remove from routine' : 'Add to routine'}">
             ${icon(isStarred ? 'starFill' : 'star', 18)}
           </button>
         </div>
-        ${v.address?`<p class="small muted" style="margin:4px 0 0">${icon('pin',15)} ${esc(v.address)}</p>`:''}
+      </header>
 
-        ${v.blurb ? `<p style="font-size:15px;line-height:1.45;margin:14px 0 0">${esc(v.blurb)}</p>` : ''}
-        <div class="chips">${v.activities.map(a=>`<span class="chip-sm">${esc(ACTIVITY_LABELS[a]||a)}</span>`).join('')}</div>
-        <div style="margin-top:16px">
-          ${v.hoursWeekday?`<div class="sheet__row">${icon('clock',20)}<span><strong>Weekdays</strong><br>${esc(v.hoursWeekday)}</span></div>`:''}
-          ${v.hoursWeekend?`<div class="sheet__row">${icon('calendar',20)}<span><strong>Weekends</strong><br>${esc(v.hoursWeekend)}</span></div>`:''}
-          ${!v.hoursWeekday&&!v.hoursWeekend?`<div class="sheet__row">${icon('clock',20)}<span><strong>Opening hours</strong><br>Not published &mdash; this venue runs to a class timetable.</span></div>`:''}
-          ${v.goodToKnow?`<div class="sheet__row">${icon('info',20)}<span><strong>Good to know</strong><br>${esc(v.goodToKnow)}</span></div>`:''}
+      <!-- 2-Column Grid Body -->
+      <div class="venue-profile-grid">
+        <!-- LEFT COLUMN: Hero Photo with Badges & Next Classes Card -->
+        <div class="venue-profile-left">
+          <div class="venue-hero-media">
+            ${venueMedia(v)}
+            <!-- Overlay Badges -->
+            <div class="venue-hero-badges-top">
+              <span class="venue-hero-badge venue-hero-badge--match">${icon('sparkle', 13)} ${matchPct}% match</span>
+              <span class="venue-hero-badge ${tierBadgeClass}">${tierBadgeText}</span>
+            </div>
+            <button class="venue-hero-star-btn ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(v.id)}" aria-label="${isStarred ? 'Remove from routine' : 'Add to routine'}" title="${isStarred ? 'In your routine' : 'Add to routine'}">
+              ${icon(isStarred ? 'starFill' : 'star', 18)}
+            </button>
+            <div class="venue-hero-cat-badge">
+              ${icon(primaryActIcon, 17)}
+            </div>
+          </div>
+
+          <!-- Next classes timetable card -->
+          <div class="venue-classes-card">
+            <div class="venue-classes-card__head">
+              <h3 class="venue-classes-card__title">Next classes</h3>
+              <span class="venue-classes-card__date">${timetable.dateStr}</span>
+            </div>
+            <div class="venue-classes-list">
+              ${timetable.slots.map(s => `
+                <div class="venue-class-row">
+                  <span class="venue-class-time">${s.time}</span>
+                  <span class="venue-class-icon">${icon(s.icon, 16)}</span>
+                  <span class="venue-class-name">${esc(s.name)}</span>
+                </div>
+              `).join('')}
+            </div>
+            <div class="venue-classes-footnote">
+              ${icon('info', 14)} <span>Example timetable &mdash; live availability is not connected in this pilot.</span>
+            </div>
+          </div>
         </div>
-        ${v.access
-          ? `<div class="covered ${yours && !/^not included/i.test(yours) ? 'covered--yes' : 'covered--no'}">${icon(yours && !/^not included/i.test(yours) ? 'checkThin' : 'info', 19)}
-              <span>On <strong>${esc(plan.name)}</strong>: ${esc(yours || 'not published for this plan')}.${
-                yours && /^not included/i.test(yours) && firstAccess ? ` Included from <strong>${esc(firstAccess.name)}</strong>, ${priceFor(firstAccess,S.commitmentId)} € a month.` : ''}</span></div>
-             <div class="accesslist">${PLANS.map(pl=>`<div class="accesslist__row ${pl.id===plan.id?'is-yours':''}">
-                <span>${esc(pl.name)}</span><span>${esc(v.access[pl.id]||'—')}</span></div>`).join('')}</div>`
-          : `<div class="covered ${included?'covered--yes':'covered--no'}">${icon(included?'checkThin':'info',19)}
-              <span>${included
-                ? `Included in <strong>${esc(plan.name)}</strong> — ${lowerFirst(plan.checkInModel)}.`
-                : `Needs a Plus check-in, which ${esc(plan.name)} doesn&rsquo;t include.`}</span></div>`}
-        <div style="display:none"><a href="${esc(v.url||'https://urbansportsclub.com/en/venues/')}">urbansportsclub.com</a></div>
+
+        <!-- RIGHT COLUMN: Title, Submeta, Urby Recommendation & Accordions -->
+        <div class="venue-profile-right">
+          <div class="venue-profile-head">
+            <h1 id="sheet-title" class="venue-profile-title">${esc(v.name)}</h1>
+            <div class="venue-profile-submeta">
+              <span class="venue-submeta-item">${icon(primaryActIcon, 16)} ${esc(actNames)}</span>
+              <span class="venue-submeta-dot">&middot;</span>
+              <span class="venue-submeta-item">${icon('pin', 15)} ${km} km from ${esc(areaLabel)}</span>
+            </div>
+          </div>
+
+          <!-- Urby Recommendation Card -->
+          <div class="venue-urby-card">
+            <div class="venue-urby-card__main">
+              ${urbyMascotAvatar('md')}
+              <div class="venue-urby-card__info">
+                <h4 class="venue-urby-card__title">Recommended for your routine</h4>
+                <div class="venue-urby-card__bullet">
+                  <span class="venue-urby-bullet-icon venue-urby-bullet-icon--check">${icon('checkThin', 14)}</span>
+                  <span>${included ? `Included with <b>${esc(plan.name)}</b>` : `Included from <b>${esc(firstAccess ? firstAccess.name : 'Plus')}</b>`}</span>
+                </div>
+                <div class="venue-urby-card__bullet">
+                  <span class="venue-urby-bullet-icon venue-urby-bullet-icon--cal">${icon('calendar', 14)}</span>
+                  <span>${esc(visitsText)}</span>
+                </div>
+              </div>
+            </div>
+            <div class="venue-urby-card__cta">
+              <button class="btn ${isStarred ? 'btn--secondary' : 'btn--primary'} venue-urby-btn" type="button" data-toggle-star="${esc(v.id)}">
+                ${isStarred ? `${icon('checkThin', 16)} In your routine` : 'Add to my routine'}
+              </button>
+            </div>
+            <p class="venue-urby-card__note">${included ? 'This place works with the membership I recommended.' : `Upgrade to ${esc(firstAccess ? firstAccess.name : 'Plus')} to include this venue.`}</p>
+          </div>
+
+          <!-- Accordions Group -->
+          <div class="venue-accordions sheet__body" style="padding:0">
+            <details class="venue-accordion">
+              <summary class="venue-accordion__summary">
+                <span class="venue-accordion__title-wrap">${icon('shield', 18)} <span>Practical details & limits</span></span>
+                <span class="venue-accordion__chevron">${icon('chevronDown', 18)}</span>
+              </summary>
+              <div class="venue-accordion__body">
+                <!-- Visual quick facts grid with micro-illustrations -->
+                <div class="venue-facts-grid">
+                  <div class="venue-fact-card sheet__row">
+                    <div class="venue-fact-icon venue-fact-icon--blue">${icon('qr', 18)}</div>
+                    <div class="venue-fact-text">
+                      <strong>QR Check-in</strong>
+                      <span>Scan at front desk with app</span>
+                    </div>
+                  </div>
+                  <div class="venue-fact-card sheet__row">
+                    <div class="venue-fact-icon venue-fact-icon--amber">${icon('bag', 18)}</div>
+                    <div class="venue-fact-text">
+                      <strong>What to bring</strong>
+                      <span>Towel, lock & clean shoes</span>
+                    </div>
+                  </div>
+                  <div class="venue-fact-card sheet__row">
+                    <div class="venue-fact-icon venue-fact-icon--teal">${icon('shower', 18)}</div>
+                    <div class="venue-fact-text">
+                      <strong>Amenities</strong>
+                      <span>Showers & lockers on site</span>
+                    </div>
+                  </div>
+                </div>
+
+                ${v.access ? `<div class="accesslist" style="margin-top:16px">
+                  <div class="accesslist__title">Plan access breakdown</div>
+                  ${PLANS.map(pl => `<div class="accesslist__row ${pl.id === plan.id ? 'is-yours' : ''}">
+                    <span class="accesslist__plan-name">${esc(pl.name)} ${pl.id === plan.id ? '<span class="badge-sm badge--green">Your plan</span>' : ''}</span>
+                    <span class="accesslist__limit">${esc(v.access[pl.id] || '—')}</span>
+                  </div>`).join('')}
+                </div>` : ''}
+              </div>
+            </details>
+
+            <details class="venue-accordion">
+              <summary class="venue-accordion__summary">
+                <span class="venue-accordion__title-wrap">${icon('pin', 18)} <span>Address & directions</span></span>
+                <span class="venue-accordion__chevron">${icon('chevronDown', 18)}</span>
+              </summary>
+              <div class="venue-accordion__body">
+                ${v.address ? `<div class="sheet__row" style="margin-bottom:8px">${icon('pin', 18)}<span><strong>Address</strong><br>${esc(v.address)} (${esc(areaLabel)} &middot; ${km} km away)</span></div>` : ''}
+                <div class="sheet__row" style="margin-bottom:12px">${icon('shoe', 18)}<span><strong>Transit & access</strong><br>Nearby public transport & cycling lanes with bike racks outside.</span></div>
+                <div style="margin-top:8px">
+                  <a href="${esc(v.url || 'https://urbansportsclub.com/en/venues/')}" target="_blank" rel="noopener" class="venue-outlink-btn">
+                    ${icon('map', 15)} <span>View on urbansportsclub.com</span> ${icon('arrowRight', 14)}
+                  </a>
+                </div>
+              </div>
+            </details>
+
+            <details class="venue-accordion">
+              <summary class="venue-accordion__summary">
+                <span class="venue-accordion__title-wrap">${icon('clock', 18)} <span>Opening times</span></span>
+                <span class="venue-accordion__chevron">${icon('chevronDown', 18)}</span>
+              </summary>
+              <div class="venue-accordion__body">
+                <div class="venue-times-grid">
+                  ${v.hoursWeekday ? `<div class="venue-time-pill sheet__row">
+                    <span class="venue-time-pill__day">Weekdays</span>
+                    <span class="venue-time-pill__hours">${esc(v.hoursWeekday)}</span>
+                  </div>` : ''}
+                  ${v.hoursWeekend ? `<div class="venue-time-pill sheet__row">
+                    <span class="venue-time-pill__day">Weekends</span>
+                    <span class="venue-time-pill__hours">${esc(v.hoursWeekend)}</span>
+                  </div>` : ''}
+                  ${!v.hoursWeekday && !v.hoursWeekend ? `<div class="sheet__row">${icon('clock', 18)}<span>Opening hours run to class timetable.</span></div>` : ''}
+                </div>
+              </div>
+            </details>
+
+            <details class="venue-accordion">
+              <summary class="venue-accordion__summary">
+                <span class="venue-accordion__title-wrap">${icon('info', 18)} <span>Good to know</span></span>
+                <span class="venue-accordion__chevron">${icon('chevronDown', 18)}</span>
+              </summary>
+              <div class="venue-accordion__body">
+                <div class="sheet__row">${icon('bolt', 18)}<span>${esc(v.goodToKnow || 'Please arrive 10 minutes before your class starts. Standard 12-hour cancellation policy applies.')}</span></div>
+              </div>
+            </details>
+
+            <details class="venue-accordion">
+              <summary class="venue-accordion__summary">
+                <span class="venue-accordion__title-wrap">${icon('sparkle', 18)} <span>About this venue</span></span>
+                <span class="venue-accordion__chevron">${icon('chevronDown', 18)}</span>
+              </summary>
+              <div class="venue-accordion__body">
+                <p style="font-size:14px;line-height:1.55;margin:0 0 10px;color:var(--ink-soft)">${esc(v.blurb || 'A partner studio in the Urban Sports Club Berlin network featuring certified coaches and dedicated workout spaces.')}</p>
+                <div class="chips" style="margin-top:8px">${v.activities.map(a => `<span class="chip-sm">${esc(ACTIVITY_LABELS[a] || a)}</span>`).join('')}</div>
+              </div>
+            </details>
+          </div>
+        </div>
       </div>
-      <div class="sheet__foot" style="position:sticky;bottom:0;background:#fff;border-top:1px solid var(--border);padding:14px 20px;display:flex;gap:10px;z-index:10;box-shadow:0 -4px 12px rgba(0,0,0,0.04)">
-        <button class="btn btn--secondary" style="flex:1" data-close-sheet>Close</button>
-        <button class="btn ${isStarred ? 'btn--secondary' : 'btn--primary'}" style="flex:2" type="button" data-toggle-star="${esc(v.id)}">
-          ${icon(isStarred ? 'starFill' : 'plus', 14)} <span>${isStarred ? 'Remove from routine' : 'Add to routine'}</span>
+
+      <!-- Mobile Sticky Action Bar -->
+      <div class="venue-profile-mobile-bar">
+        <button class="btn ${isStarred ? 'btn--secondary' : 'btn--primary'} btn--block venue-profile-mobile-btn" type="button" data-toggle-star="${esc(v.id)}">
+          ${isStarred ? `${icon('checkThin', 16)} In your routine` : 'Add to my routine'}
         </button>
       </div>
     </div>
