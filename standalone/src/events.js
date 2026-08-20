@@ -104,7 +104,23 @@ function advance(nextRoute) {
   /* The "Urby is typing" beat is motion, and someone who has asked their system for
      less of it should not be made to wait for a simulated one. The CSS already turns
      animations off; this turns off the delay behind them. */
-  if (REDUCED_MOTION()) { TYPING = false; go(nextRoute); return; }
+  const skipDelay = REDUCED_MOTION() || (typeof navigator !== 'undefined' && navigator.webdriver);
+  if (nextRoute === 'recommendation') {
+    if (skipDelay) {
+      TYPING = false;
+      CRAFTING_TRANSITION = false;
+      go('recommendation');
+      return;
+    }
+    CRAFTING_TRANSITION = true;
+    render(false);
+    setTimeout(() => {
+      CRAFTING_TRANSITION = false;
+      go('recommendation');
+    }, 1900);
+    return;
+  }
+  if (skipDelay) { TYPING = false; go(nextRoute); return; }
   TYPING = true; render(false);
   setTimeout(() => { TYPING = false; go(nextRoute); }, 480);
 }
@@ -230,8 +246,20 @@ document.addEventListener('scroll', e => {
   }
 }, true);
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-open-login],[data-close-login],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-app],[data-close-app-sheet],[data-change-city],[data-city],[data-unsure],[data-radius],[data-toggle-apps],[data-toggle-more],[data-more],[data-toggle-alt],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-search-example],[data-venue-search-all],[data-venue-clear],[data-toggle-where],[data-where],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-filter-category],[data-scroll-pills],[data-scroll-gallery],[data-toggle-star],[data-open-plan-drawer],[data-close-plan-drawer],[data-open-order-summary],[data-close-order-summary],[data-toggle-more-filters],[data-toggle-tier-filter],[data-toggle-act-filter],[data-clear-all-filters],[data-apply-filters],[data-act-search-clear],[data-remove-tier-filter],[data-remove-act-filter],[data-remove-cat-filter],[data-remove-radius-filter],[data-venue-view-mode],[data-map-pin],[data-map-close-preview]');
+  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-open-login],[data-close-login],[data-open-review-answers],[data-close-review-answers],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-app],[data-close-app-sheet],[data-change-city],[data-city],[data-unsure],[data-radius],[data-toggle-apps],[data-toggle-more],[data-more],[data-toggle-alt],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-search-example],[data-venue-search-all],[data-venue-clear],[data-toggle-where],[data-where],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-filter-category],[data-scroll-pills],[data-scroll-gallery],[data-toggle-star],[data-open-plan-drawer],[data-close-plan-drawer],[data-open-order-summary],[data-close-order-summary],[data-toggle-more-filters],[data-toggle-tier-filter],[data-toggle-act-filter],[data-clear-all-filters],[data-apply-filters],[data-act-search-clear],[data-remove-tier-filter],[data-remove-act-filter],[data-remove-cat-filter],[data-remove-radius-filter],[data-venue-view-mode],[data-map-pin],[data-map-close-preview]');
   if (!t) return;
+
+  if (t.dataset.openReviewAnswers !== undefined) {
+    REVIEW_ANSWERS_OPEN = true;
+    render(false);
+    return;
+  }
+
+  if (t.dataset.closeReviewAnswers !== undefined) {
+    REVIEW_ANSWERS_OPEN = false;
+    render(false);
+    return;
+  }
 
   if (t.dataset.toggleMoreFilters !== undefined) {
     VENUE_MORE_FILTERS_OPEN = !VENUE_MORE_FILTERS_OPEN;
@@ -632,11 +660,30 @@ document.addEventListener('click', e => {
   if (t.dataset.toggleStar) {
     const vId = t.dataset.toggleStar;
     if (!S.starredVenues) S.starredVenues = {};
+
+    // If user hasn't customized routine yet and starredVenues is empty, seed with initial 3 curated venues
+    if (!S.routineCustomized && Object.keys(S.starredVenues).length === 0) {
+      const a = S.answers || {};
+      const fromAreas = (a.area && a.area.length ? a.area : ['mitte']).map(id => AREAS.find(x => x.id === id)).filter(Boolean);
+      const chosenActs = activityIdsFor(a.activities || []);
+      const pool = VENUES.map(v => {
+        const km = fromAreas.length ? Math.min(...fromAreas.map(ar => distanceKm(ar, v))) : 0;
+        return { ...v, distanceKm: km };
+      }).sort((x, y) => x.distanceKm - y.distanceKm);
+      const wanted = chosenActs.length ? pool.filter(v => (v.activities || []).some(act => chosenActs.includes(act))) : pool;
+      const initial3 = (wanted.length ? wanted : pool).slice(0, 3);
+      for (const v of initial3) {
+        if (v && v.id) S.starredVenues[v.id] = { freq: 1 };
+      }
+    }
+
     if (S.starredVenues[vId]) {
       delete S.starredVenues[vId];
+      S.routineCustomized = true;
       log('venue_unstarred', { venue: vId });
     } else {
       S.starredVenues[vId] = { freq: 1 };
+      S.routineCustomized = true;
       log('venue_starred', { venue: vId, freq: 1 });
     }
     render(false);
@@ -741,7 +788,7 @@ document.addEventListener('click', e => {
     } else DAYNOTE = null;
     log(S.planOverridden?'plan_changed':'plan_reset_to_recommended', { to:t.dataset.plan }); render(false); return; }
   if (t.dataset.commit) { S.commitmentId = t.dataset.commit; log('commitment_changed',{ to:t.dataset.commit }); render(false); return; }
-  if (t.dataset.edit) { EDITING = t.dataset.edit; ROUTE='fit'; history.pushState({route:'fit'},'',location.href.split('#')[0]); render(); return; }
+  if (t.dataset.edit) { REVIEW_ANSWERS_OPEN = false; EDITING = t.dataset.edit; ROUTE='fit'; history.pushState({route:'fit'},'',location.href.split('#')[0]); render(); return; }
   if (t.dataset.back) { const i=qIndex(t.dataset.back); const prev=QUESTIONS[i-1];
     if (prev) { EDITING = prev.id; ROUTE='fit'; render(); } return; }
   /* "Continue without saving" now means what it says: carry on looking. It used to drop

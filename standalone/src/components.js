@@ -559,7 +559,7 @@ function venueSheet() {
             <div class="venue-profile-submeta">
               <span class="venue-submeta-item">${icon(primaryActIcon, 16)} ${esc(actNames)}</span>
               <span class="venue-submeta-dot">&middot;</span>
-              <span class="venue-submeta-item">${icon('pin', 15)} ${km} km from ${esc(areaLabel)}</span>
+              <span class="venue-submeta-item">${icon('pin', 15)} ${v.address ? `${esc(v.address)} (${km} km)` : `${km} km from ${esc(areaLabel)}`}</span>
             </div>
           </div>
 
@@ -839,3 +839,52 @@ function partnerAsk(match, groups) {
     <p class="xsmall muted">We pass this to the partnerships team. Nothing here is booked or shared with the place itself.</p>
   </details>`;
 }
+
+function reviewAnswersSheet() {
+  if (!REVIEW_ANSWERS_OPEN) return '';
+  const questionsList = [
+    { id: 'goal', label: 'Goal', icon: 'target', prompt: 'What would you love to do more of?' },
+    { id: 'activities', label: 'Activities', icon: 'dumbbell', prompt: 'What sports or activities interest you?' },
+    { id: 'area', label: 'Area', icon: 'pin', prompt: 'Where do you want to work out?' },
+    { id: 'frequency', label: 'Frequency', icon: 'calendar', prompt: 'How often would you realistically like to go?' }
+  ];
+
+  const items = questionsList.map(q => {
+    const val = S.answers[q.id];
+    const answered = isAnswered(val);
+    const summary = answered ? compactAnswerLabel(q.id, val) : 'Not answered yet';
+    return `<div class="review-answers-item">
+      <div class="review-answers-item__icon">${icon(q.icon, 18)}</div>
+      <div class="review-answers-item__body">
+        <span class="review-answers-item__label">${esc(q.label)}</span>
+        <strong class="review-answers-item__val ${answered ? '' : 'is-empty'}">${esc(summary)}</strong>
+      </div>
+      <button class="btn btn--secondary btn--sm review-answers-item__edit" type="button" data-edit="${esc(q.id)}" aria-label="Edit answer for ${esc(q.label)}">
+        Edit
+      </button>
+    </div>`;
+  }).join('');
+
+  return `<div class="sheet sheet--review-answers" role="dialog" aria-modal="true" aria-label="Review your answers">
+    <div class="sheet__backdrop" data-close-review-answers></div>
+    <div class="sheet__panel sheet__panel--review">
+      <header class="sheet__head">
+        <div class="sheet__head-text">
+          <div class="sheet__guide">${ulaAvatar('sm')} <span>Urby &middot; Membership guide</span></div>
+          <h2 class="sheet__title">Your answers & preferences</h2>
+        </div>
+        <button class="sheet__close" type="button" data-close-review-answers aria-label="Close answers panel">&times;</button>
+      </header>
+      <div class="sheet__body">
+        <p class="review-answers-sub">You can review or change any answer at any time. Your routine and recommendation update immediately.</p>
+        <div class="review-answers-list">
+          ${items}
+        </div>
+      </div>
+      <footer class="sheet__foot">
+        <button class="btn btn--primary btn--block" type="button" data-close-review-answers>Done</button>
+      </footer>
+    </div>
+  </div>`;
+}
+

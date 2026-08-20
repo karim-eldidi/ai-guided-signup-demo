@@ -5,7 +5,7 @@
    then typed the address the membership legally requires. Those are two different
    things and the interface must not conflate them. */
 const BLANK = { email:null, authMethod:null, saveOptIn:false, marketing:false, marketingAsked:false, answers:{}, freeText:{}, radiusKm:'auto',
-                weekDays:[], weekSwap:{}, starredVenues:{},
+                weekDays:[], weekSwap:{}, starredVenues:{}, routineCustomized:false,
                 chosenPlanId:null, planOverridden:false, commitmentId:'monthly', details:{}, startDate:null,
                 paid:false, lastStep:'landing', returns:0, events:[], source:null, campaign:null, variant:VARIANT };
 let S = JSON.parse(JSON.stringify(BLANK));
@@ -15,6 +15,7 @@ let ASK={q:'',result:null};
    your studio to get back to it would be the search version of asking twice. */
 let SEARCH={q:'',result:null};
 let ROUTE='landing', ACKTEXT=null, UNCLEAR=false, NOCHOICE=false, EDITING=null, ERRORS={}, FIELDS={}, TYPING=false, SHEET=null, PANEL_OPEN=false;
+let CRAFTING_TRANSITION=false, REVIEW_ANSWERS_OPEN=false;
 let LOGIN_MODAL_OPEN=false, LOGIN_ERROR=null, LOGIN_SUCCESS=false;
 /* City is "detected" in production (IP or browser location). The pilot only has
    venue data loaded for Berlin, so the chip says so plainly and a Change link

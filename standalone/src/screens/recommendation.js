@@ -120,7 +120,7 @@ function planDrawer(plan, price, each, commitment, isRec, hereT, cheaperPlan, ch
             aria-pressed="${c.id===S.commitmentId}"><b>${c.minimumTermMonths===1?'Monthly':c.minimumTermMonths+' months'}</b><span>${p} €/mo</span></button>`;
         }).join('')}
       </div>
-      <div class="termpick__perk-banner" style="font-size:12px;color:var(--navy);background:var(--cream);border:1px solid var(--cream-line);padding:6px 10px;border-radius:var(--radius);margin-bottom:12px;display:flex;align-items:center;gap:5px">
+      <div class="termpick__perk-banner">
         ${icon('sparkle',12)} <span>${perkText}</span>
       </div>
 
@@ -143,9 +143,6 @@ function planDrawer(plan, price, each, commitment, isRec, hereT, cheaperPlan, ch
         <li>${icon('checkThin',15)} <span>Flexible &ndash; cancel anytime</span></li>
       </ul>
 
-      <!-- On a phone the plan column is not rendered at all, so the optional upgrade has to
-           live here or the shortfall it answers would only ever be visible on a desktop. -->
-      ${maxUpsell || ''}
 
       ${allPlans ? `
         <details class="drawer-compare" style="margin-top:10px;margin-bottom:14px;border:1px solid var(--border);border-radius:var(--radius);background:#fff">
@@ -292,7 +289,7 @@ function recommendationScreen() {
   let routineVenues = [];
   if (starredKeys.length) {
     routineVenues = starredKeys.map(id => resolveVenue(VENUES.find(v => v.id === id))).filter(Boolean);
-  } else {
+  } else if (!S.routineCustomized) {
     // Default initial routine from matched venues in their goal/area
     routineVenues = (wanted.length ? wanted : pool).slice(0, 3).map(resolveVenue).filter(Boolean);
   }
@@ -677,7 +674,7 @@ function recommendationScreen() {
           aria-pressed="${c.id===S.commitmentId}"><b>${c.minimumTermMonths===1?'Monthly':c.minimumTermMonths+' months'}</b><span>${p} €/mo</span></button>`;
       }).join('')}
     </div>
-    <div class="termpick__perk-banner" style="font-size:12.5px;color:var(--navy);background:var(--cream);border:1px solid var(--cream-line);padding:6px 10px;border-radius:var(--radius);margin-top:8px;margin-bottom:14px;display:flex;align-items:center;gap:6px">
+    <div class="termpick__perk-banner">
       ${icon('sparkle',13)} <span>${S.commitmentId==='biennial'?'Includes 2 free wellness apps (0 € extra)':S.commitmentId==='annual'?'Includes 1 free wellness app (0 € extra)':'12 & 24 mo include free partner apps'}</span>
     </div>
 
@@ -712,16 +709,14 @@ function recommendationScreen() {
     ${allPlans}
   </div>`;
 
-  const goalPhraseMap = { move_more:'moving more', unwind:'unwinding', try_new:'trying new things' };
-  const goalListRaw = Array.isArray(a.goal) ? a.goal.filter(x => x !== SKIP) : (a.goal && a.goal !== SKIP ? [a.goal] : []);
-  const goalPhrases = goalListRaw.map(g => goalPhraseMap[g]).filter(Boolean);
-  const goalTitleStr = goalPhrases.length ? listWords(goalPhrases) : null;
   const heroBlock = `${ulaRow()}
-    <h1 class="h-question reco-hero__title" tabindex="-1">${MOBILE()
-      ? 'Your week, made to fit'
-      : (goalTitleStr ? `Your plan for ${goalTitleStr}` : `Your plan near ${esc(where)}`)}</h1>
+    <div class="reco-hero-header">
+      <h1 class="h-question reco-hero__title" tabindex="-1">Your plan</h1>
+      <button class="reco-edit-answers-btn" type="button" data-open-review-answers title="Review and edit your answers">
+        ${icon('pencil',13)} <span>Edit answers</span>
+      </button>
+    </div>
     ${match.reachedFurther?`<div class="notice notice--grey">${icon('info',19)}<span>Nothing in this pilot&rsquo;s venue data does ${esc(groupWords(groups))} right by ${esc(where)}, so I looked across the city. The distances below are real.</span></div>`:''}`;
-  const chipsBlock = answerChips({ label:'You told us' });
 
   const moreRow = `<details class="rowcard rowcard--more"${MOREOPEN?' open':''}>
     <summary class="rowcard__head" data-toggle-more>
@@ -751,7 +746,6 @@ function recommendationScreen() {
 
   return `${topbar(1, { stepper: false })}<div class="two-col two-col--reco"><main class="two-col__main" id="main">
     ${heroBlock}
-    ${chipsBlock}
     <section class="reco-canvas-box">
       ${recoTabs}
       <div class="reco-main-canvas">
@@ -783,7 +777,7 @@ function recommendationScreen() {
     <button class="btn btn--primary paybar__cta" data-go="details">Continue</button>
   </div>
   ${planDrawer(plan, price, each, commitment, isRec, hereT, cheaperPlan, cheaperT, visitsFor, wp, allPlans)}
-  ${exitModal()}${venueSheet()}${appSheet()}`;
+  ${exitModal()}${venueSheet()}${appSheet()}${reviewAnswersSheet()}`;
 }
 
 /* For the visitor who already knows. Aligned in the PM session: a way past the
@@ -996,16 +990,16 @@ function plansScreen() {
   return `${topbar(1, { stepper: false, savedNote: Boolean(S.email && S.saveOptIn) })}<main class="content plans-page" id="main">
     <div class="plans-layout">
       <div class="plans-main">
+        <div class="plans-head">
+          <h1 class="h-question" tabindex="-1">Choose your membership</h1>
+        </div>
+
         <div class="commit-row">${COMMITMENTS.map(c => {
           const isCur = c.id === S.commitmentId;
           const termLabel = c.minimumTermMonths === 1 ? 'Monthly' : `${c.minimumTermMonths} months`;
           const savingBadge = c.id === 'annual' ? '<span class="commit-save-pill">Save 15%</span>' : c.id === 'biennial' ? '<span class="commit-save-pill">Save 20%</span>' : '';
           return `<button class="chip-sm ${isCur ? 'is-current' : ''}" type="button" data-commit="${esc(c.id)}"><span>${esc(termLabel)}</span>${savingBadge}</button>`;
         }).join('')}</div>
-
-        <div class="plans-head">
-          <h1 class="h-question" tabindex="-1">Choose your membership</h1>
-        </div>
 
         <div class="plan-lines-group">${planLines}</div>
 

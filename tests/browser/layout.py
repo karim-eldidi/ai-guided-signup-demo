@@ -38,8 +38,8 @@ with sync_playwright() as p:
         # answering in your own words is visible and labelled, not hidden behind a link
         if pg.locator('.ownwords input').is_visible(): P(f"{label}: own-words field is visible")
         else: F(f"{label}: own-words field is hidden")
-        lbl=pg.locator('.ownwords__label').inner_text()
-        P(f"{label}: own-words is labelled: '{lbl[:44]}'") if 'own words' in lbl else F(f"{label}: unclear label: {lbl[:60]}")
+        lbl=pg.locator('.ownwords input').get_attribute('placeholder') or ''
+        P(f"{label}: own-words is labelled: '{lbl[:44]}'") if 'own words' in lbl.lower() else F(f"{label}: unclear label: {lbl[:60]}")
         if pg.locator('[data-toggle-freetext]').count()==0: P(f"{label}: no leftover toggle link")
         else: F(f"{label}: the old toggle link is still there")
         # choices read as visual tiles, two per row

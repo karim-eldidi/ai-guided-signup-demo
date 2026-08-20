@@ -90,18 +90,32 @@ function landing() {
         <span class="sub-action-btn__arrow">&rarr;</span>
       </button>
     </div>`;
+  // Only show custom greeting if a real human first name is in contact details
+  const rawFirstName = (S.contact && S.contact.firstName && typeof S.contact.firstName === 'string')
+    ? S.contact.firstName.trim()
+    : '';
+  const hasRealName = rawFirstName && !rawFirstName.includes('@') && !rawFirstName.includes('.');
+  const firstName = hasRealName ? rawFirstName : null;
+
+  const loginBtnMobile = firstName
+    ? `<button class="user-nav-chip user-nav-chip--mobile" type="button" data-go="login">${icon('user', 14)} <span>Hi, ${esc(firstName)}</span></button>`
+    : `<button class="login-link login-link--mobile linkish" data-go="login">Log in</button>`;
+
+  const loginBtnDesktop = firstName
+    ? `<button class="user-nav-chip user-nav-chip--desktop" type="button" data-go="login">${icon('user', 14)} <span>Hi, ${esc(firstName)}</span></button>`
+    : `<button class="login-link login-link--desktop linkish" data-go="login">Log in</button>`;
+
   const primary = VARIANT === 'email-first' ? emailFirst : guideFirst;
   return `<main class="landing" id="main">
     <div class="landing__panel">
       <div class="landing__panelbar"><button class="wordmark linkish" style="text-decoration:none" data-go="landing">Urban Sports Club</button>
-        <button class="login-link login-link--mobile linkish" data-go="login">Log in</button></div>
+        ${loginBtnMobile}</div>
       <div class="landing__body">
         <h1 class="h-hero" tabindex="-1">Find your way<br>to move.</h1>
         <p class="lede">Build your fitness routine and find the membership that covers it.</p>
-        ${S.returns?`<div class="notice" style="max-width:560px">${icon('checkThin',20)}<span>Welcome back. Your answers are saved — continue where you left off.</span></div>`:''}
         ${primary}
       </div></div>
-    <div class="landing__media"><button class="login-link login-link--desktop linkish" data-go="login">Log in</button>
+    <div class="landing__media">${loginBtnDesktop}
       <img src="${IMG[HERO_SHOT.src]}" width="800" height="900" fetchpriority="high" alt="${esc(HERO_SHOT.alt)}" decoding="async"></div>
   </main>
   <section class="ula-section"><div class="ula-section__inner">

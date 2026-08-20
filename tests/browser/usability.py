@@ -26,11 +26,11 @@ with sync_playwright() as p:
     pg.screenshot(path=f"{OUT}/01-q1.png")
 
     # progress + no back on q1
-    prog = pg.locator('.qstep__label').inner_text() if pg.locator('.qstep__label').count() else (pg.locator('.qprogress__label').inner_text() if pg.locator('.qprogress__label').count() else '')
+    prog = pg.locator('.qstep__label, .question-card__step').inner_text() if pg.locator('.qstep__label, .question-card__step').count() else (pg.locator('.qprogress__label').inner_text() if pg.locator('.qprogress__label').count() else '')
     good(f"Question counter shown: '{prog}'")
-    segs = pg.locator('.qstep__bar').count() if pg.locator('.qstep__bar').count() else pg.locator('.stepper__step.is-current .stepper__sub .stepper__seg').count()
+    segs = pg.locator('.qstep__bar, .qcontainer-bar').count() if pg.locator('.qstep__bar, .qcontainer-bar').count() else pg.locator('.stepper__step.is-current .stepper__sub .stepper__seg').count()
     good(f"the four questions are clear question segments ({segs})") if segs == 4 else bad(f"expected 4 question segments, got {segs}")
-    if pg.locator('.qstep__bar.is-now, .stepper__step.is-current .stepper__seg.is-now').count() == 1:
+    if pg.locator('.qstep__bar.is-now, .qcontainer-bar.is-now, .stepper__step.is-current .stepper__seg.is-now').count() == 1:
         good("the current question is marked")
     else: bad("no current-question marker")
     if pg.locator('.stepper:visible').count() == 0:

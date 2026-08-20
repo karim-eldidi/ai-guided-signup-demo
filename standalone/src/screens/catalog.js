@@ -732,7 +732,6 @@ function searchScreen() {
 
   const stickyTray = (backTarget === 'recommendation') ? `
     <div class="paybar search-sticky-bar">
-      <div class="paybar__pull-handle" data-go="recommendation" aria-hidden="true"></div>
       <div class="paybar__info" data-go="recommendation" role="button" tabindex="0" aria-label="Back to your routine">
         <div class="paybar__lead">
           <b>${routineLead}</b>
@@ -773,116 +772,120 @@ function searchScreen() {
         <div class="venue-explorer-card">
           ${weekPickBar()}
           
-          <div class="findbar__where">
-            <span class="findbar__wheretext">${icon('pin', 16)}<span>${S.answers.area ? `Showing places ${esc(b.label)}` : `Looks like you&rsquo;re near <b>${esc(b.origins[0].name)}, Berlin</b> &mdash; showing places ${esc(b.label)}`}</span></span>
-            <button class="linkish strong findbar__wherechange" type="button" data-toggle-where aria-expanded="${WHEREPICK}">${WHEREPICK ? 'Close' : 'Change location'}</button>
-          </div>
-          ${WHEREPICK ? `<div class="wherepick">
-            <div class="wherepick__label">Where should we look?</div>
-            <div class="wherepick__grid">${optionsFor(qById('area')).map(o => `<button class="chip-sm ${areaIds(S.answers.area).includes(o.id) ? 'is-current' : ''}" type="button" data-where="${esc(o.id)}">${esc(o.label)}</button>`).join('')}</div>
-            <p class="wherepick__note">${icon('info', 16)} <span>This is one of Urby&rsquo;s four questions, so picking here means she won&rsquo;t ask it again.</span></p>
-          </div>` : ''}
+          <div class="venue-filter-container">
+            <div class="findbar__where">
+              <span class="findbar__wheretext">${icon('pin', 16)}<span>${S.answers.area ? `Showing places ${esc(b.label)}` : `Looks like you&rsquo;re near <b>${esc(b.origins[0].name)}, Berlin</b> &mdash; showing places ${esc(b.label)}`}</span></span>
+              <button class="linkish strong findbar__wherechange" type="button" data-toggle-where aria-expanded="${WHEREPICK}">${WHEREPICK ? 'Close' : 'Change location'}</button>
+            </div>
+            ${WHEREPICK ? `<div class="wherepick">
+              <div class="wherepick__label">Where should we look?</div>
+              <div class="wherepick__grid">${optionsFor(qById('area')).map(o => `<button class="chip-sm ${areaIds(S.answers.area).includes(o.id) ? 'is-current' : ''}" type="button" data-where="${esc(o.id)}">${esc(o.label)}</button>`).join('')}</div>
+              <p class="wherepick__note">${icon('info', 16)} <span>This is one of Urby&rsquo;s four questions, so picking here means she won&rsquo;t ask it again.</span></p>
+            </div>` : ''}
 
-          <form data-form="search" class="venue-search-bar" role="search">
-            <div class="findsearch">
-              <span class="findsearch__icon" aria-hidden="true">${icon('search', 16)}</span>
-              <input type="search" name="q" id="venue-search-q" value="${esc(VENUEQ || (typeof SEARCH !== 'undefined' && SEARCH && SEARCH.q) || '')}"
-                placeholder="Search venues, activities or addresses with Urby..." aria-label="Search venues, activities or addresses with Urby" autocomplete="off" data-venue-input>
-              ${(VENUEQ || (typeof SEARCH !== 'undefined' && SEARCH && SEARCH.q)) ? `<button type="button" class="findsearch__clear" data-venue-clear aria-label="Clear search">${icon('close', 12)}</button>` : ''}
-              <button class="findsearch__btn" type="submit">Search</button>
-            </div>
-            <div class="venue-toolbar-filters">
-              <label class="pillsel pillsel--radius sr-only"><span class="pillsel__icon">${icon('pin',16)}</span>
-                <select data-radius-pick aria-label="How far to look">
-                  ${RADII.map(x=>`<option value="${esc(x.id)}" ${(S.radiusKm||'3')===x.id?'selected':''}>${
-                    x.km?`Within ${x.km} km`:'All of Berlin'}</option>`).join('')}
-                </select>
-              </label>
-              <div class="radius-toggle" role="group" aria-label="Distance radius">
-                <button class="chip-sm ${(!S.radiusKm || S.radiusKm === '3' || S.radiusKm === 'auto') ? 'is-active is-current' : ''}" type="button" data-radius="3">3 km</button>
-                <button class="chip-sm ${S.radiusKm === '8' ? 'is-active is-current' : ''}" type="button" data-radius="8">8 km</button>
-                <button class="chip-sm ${S.radiusKm === 'any' ? 'is-active is-current' : ''}" type="button" data-radius="any">All Berlin</button>
+            <form data-form="search" class="venue-search-bar" role="search">
+              <div class="findsearch">
+                <span class="findsearch__icon" aria-hidden="true">${icon('search', 16)}</span>
+                <input type="search" name="q" id="venue-search-q" value="${esc(VENUEQ || (typeof SEARCH !== 'undefined' && SEARCH && SEARCH.q) || '')}"
+                  placeholder="Search venues, activities or addresses..." aria-label="Search venues, activities or addresses with Urby" autocomplete="off" data-venue-input>
+                ${(VENUEQ || (typeof SEARCH !== 'undefined' && SEARCH && SEARCH.q)) ? `<button type="button" class="findsearch__clear" data-venue-clear aria-label="Clear search">${icon('close', 12)}</button>` : ''}
+                <button class="findsearch__btn" type="submit">Search</button>
               </div>
-              <button class="btn-more-filters ${VENUE_MORE_FILTERS_OPEN || activeFiltersCount > 0 ? 'is-active' : ''}" type="button" data-toggle-more-filters aria-expanded="${VENUE_MORE_FILTERS_OPEN}">
-                ${icon('adjust', 15)} <span>More filters${activeFiltersCount > 0 ? ` (${activeFiltersCount})` : ''}</span>
-              </button>
-            </div>
-          </form>
+              <div class="venue-toolbar-filters">
+                <label class="pillsel pillsel--radius sr-only"><span class="pillsel__icon">${icon('pin',16)}</span>
+                  <select data-radius-pick aria-label="How far to look">
+                    ${RADII.map(x=>`<option value="${esc(x.id)}" ${(S.radiusKm||'3')===x.id?'selected':''}>${
+                      x.km?`Within ${x.km} km`:'All of Berlin'}</option>`).join('')}
+                  </select>
+                </label>
+                <div class="radius-toggle" role="group" aria-label="Distance radius">
+                  <button class="chip-sm ${(!S.radiusKm || S.radiusKm === '3' || S.radiusKm === 'auto') ? 'is-active is-current' : ''}" type="button" data-radius="3">3 km</button>
+                  <button class="chip-sm ${S.radiusKm === '8' ? 'is-active is-current' : ''}" type="button" data-radius="8">8 km</button>
+                  <button class="chip-sm ${S.radiusKm === 'any' ? 'is-active is-current' : ''}" type="button" data-radius="any">All Berlin</button>
+                </div>
+                <button class="btn-more-filters ${VENUE_MORE_FILTERS_OPEN || activeFiltersCount > 0 ? 'is-active' : ''}" type="button" data-toggle-more-filters aria-expanded="${VENUE_MORE_FILTERS_OPEN}">
+                  ${icon('adjust', 15)} <span>More filters${activeFiltersCount > 0 ? ` (${activeFiltersCount})` : ''}</span>
+                </button>
+              </div>
+            </form>
+
+            ${searched ? '' : `
+              <div class="category-pills-wrap">
+                <div class="category-pills" id="category-pills-scroll" role="tablist" aria-label="Filter by sport">
+                  <button class="catchip category-pill ${(!activeCats.length && !(S.answers.activities && S.answers.activities.length)) ? 'is-active is-on' : ''}" type="button" data-cat-all data-filter-category="all">
+                    ${icon('grid', 13)} <span>All</span>
+                  </button>
+                  ${ACTIVITY_GROUPS.map(g => {
+                    const isSelected = activeCats.includes(g.id) || (S.answers.activities && S.answers.activities.includes(g.id));
+                    return `
+                      <button class="catchip category-pill ${isSelected ? 'is-active is-on' : ''}" type="button" data-cat="${esc(g.id)}" data-filter-category="${esc(g.id)}">
+                        ${icon(g.icon, 13)} <span>${esc(g.label)}</span>
+                      </button>
+                    `;
+                  }).join('')}
+                </div>
+                <div class="category-pills__fade">
+                  <button class="category-pills__mini-btn" type="button" data-scroll-pills="right" aria-label="Scroll sports">
+                    ${icon('chevron', 12)}
+                  </button>
+                </div>
+              </div>
+            `}
+          </div>
+
+          ${moreFiltersDrawer(b.within.length)}
 
           ${searched ? '' : `
-            <div class="category-pills-wrap" style="margin: 14px 0 16px;">
-              <div class="category-pills" id="category-pills-scroll" role="tablist" aria-label="Filter by sport">
-                <button class="catchip category-pill ${(!activeCats.length && !(S.answers.activities && S.answers.activities.length)) ? 'is-active is-on' : ''}" type="button" data-cat-all data-filter-category="all">
-                  ${icon('grid', 13)} <span>All</span>
-                </button>
-                ${ACTIVITY_GROUPS.map(g => {
-                  const isSelected = activeCats.includes(g.id) || (S.answers.activities && S.answers.activities.includes(g.id));
-                  return `
-                    <button class="catchip category-pill ${isSelected ? 'is-active is-on' : ''}" type="button" data-cat="${esc(g.id)}" data-filter-category="${esc(g.id)}">
-                      ${icon(g.icon, 13)} <span>${esc(g.label)}</span>
-                    </button>
-                  `;
-                }).join('')}
+          <section class="placesrow">
+            <div class="placesrow__head">
+              <div class="placesrow__title">
+                <h2>${countHeading}</h2>
+                <p>${b.within.length
+                  ? `Nearest first, from the ${VENUES.length} real Berlin venues loaded in this pilot.`
+                  : `None of the ${VENUES.length} venues loaded here match these filters.`}</p>
               </div>
-              <div class="category-pills__fade">
-                <button class="category-pills__mini-btn" type="button" data-scroll-pills="right" aria-label="Scroll sports">
-                  ${icon('chevron', 12)}
-                </button>
+              <div class="placesrow__tools">
+                <div class="venue-view-toggle" role="group" aria-label="View mode">
+                  <button class="view-toggle-btn view-toggle-btn--gallery ${VENUE_VIEW_MODE === 'scroll' ? 'is-active' : ''}" type="button" data-venue-view-mode="scroll" aria-pressed="${VENUE_VIEW_MODE === 'scroll'}" title="2-row gallery scroll view">
+                    ${icon('grid', 14)} <span>Gallery</span>
+                  </button>
+                  <button class="view-toggle-btn view-toggle-btn--grid ${VENUE_VIEW_MODE === 'grid' ? 'is-active' : ''}" type="button" data-venue-view-mode="grid" aria-pressed="${VENUE_VIEW_MODE === 'grid'}" title="Full grid view">
+                    ${icon('adjust', 14)} <span>Grid</span>
+                  </button>
+                  <button class="view-toggle-btn view-toggle-btn--map ${VENUE_VIEW_MODE === 'map' ? 'is-active' : ''}" type="button" data-venue-view-mode="map" aria-pressed="${VENUE_VIEW_MODE === 'map'}" title="Map view">
+                    ${icon('pin', 14)} <span>Map</span>
+                  </button>
+                </div>
               </div>
             </div>
+            ${venueActiveFilterChips(b)}
 
-            ${moreFiltersDrawer(b.within.length)}
-
-            <section class="placesrow">
-              <div class="placesrow__head">
-                <div class="placesrow__title">
-                  <h2>${countHeading}</h2>
-                  <p>${b.within.length
-                    ? `Nearest first, from the ${VENUES.length} real Berlin venues loaded in this pilot.`
-                    : `None of the ${VENUES.length} venues loaded here match these filters.`}</p>
+            ${VENUE_VIEW_MODE === 'map' ? `
+              ${interactiveBerlinMap(b)}
+            ` : (shown.length ? `
+              ${VENUE_VIEW_MODE === 'grid' ? `
+                <div class="hits venue-grid--catalog hits--row">
+                  ${shown.map(v => placeCard(v)).join('')}
                 </div>
-                <div class="placesrow__tools">
-                  <div class="venue-view-toggle" role="group" aria-label="View mode">
-                    <button class="view-toggle-btn ${VENUE_VIEW_MODE === 'scroll' ? 'is-active' : ''}" type="button" data-venue-view-mode="scroll" aria-pressed="${VENUE_VIEW_MODE === 'scroll'}" title="2-row gallery scroll view">
-                      ${icon('grid', 14)} <span>Gallery</span>
-                    </button>
-                    <button class="view-toggle-btn ${VENUE_VIEW_MODE === 'grid' ? 'is-active' : ''}" type="button" data-venue-view-mode="grid" aria-pressed="${VENUE_VIEW_MODE === 'grid'}" title="Full grid view">
-                      ${icon('adjust', 14)} <span>Grid</span>
-                    </button>
-                    <button class="view-toggle-btn ${VENUE_VIEW_MODE === 'map' ? 'is-active' : ''}" type="button" data-venue-view-mode="map" aria-pressed="${VENUE_VIEW_MODE === 'map'}" title="Map view">
-                      ${icon('pin', 14)} <span>Map</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              ${venueActiveFilterChips(b)}
-
-              ${VENUE_VIEW_MODE === 'map' ? `
-                ${interactiveBerlinMap(b)}
-              ` : (shown.length ? `
-                ${VENUE_VIEW_MODE === 'grid' ? `
-                  <div class="hits venue-grid--catalog hits--row">
-                    ${shown.map(v => placeCard(v)).join('')}
-                  </div>
-                ` : `
-                  <div class="activity-gallery-wrap venue-gallery-wrap">
-                    <button class="gallery-nav-btn gallery-nav-btn--prev is-disabled" type="button" data-scroll-gallery="prev" aria-label="Scroll left" title="Scroll left">
-                      ${icon('chevron', 14)}
-                    </button>
-                    <div class="activity-gallery venue-carousel-scroll" id="activity-gallery-scroll">
-                      <div class="venue-carousel-track hits hits--row">
-                        ${shown.map(v => placeCard(v)).join('')}
-                      </div>
+              ` : `
+                <div class="activity-gallery-wrap venue-gallery-wrap">
+                  <button class="gallery-nav-btn gallery-nav-btn--prev is-disabled" type="button" data-scroll-gallery="prev" aria-label="Scroll left" title="Scroll left">
+                    ${icon('chevron', 14)}
+                  </button>
+                  <div class="activity-gallery venue-carousel-scroll" id="activity-gallery-scroll">
+                    <div class="venue-carousel-track hits hits--row">
+                      ${shown.map(v => placeCard(v)).join('')}
                     </div>
-                    <button class="gallery-nav-btn gallery-nav-btn--next ${shown.length <= 4 ? 'is-disabled' : ''}" type="button" data-scroll-gallery="next" aria-label="Scroll right" title="Scroll right">
-                      ${icon('chevron', 14)}
-                    </button>
                   </div>
-                `}
-              ` : `<div class="notice notice--grey">${icon('info', 19)}<span>${b.list.length
-                    ? `No venues match all selected filters. Try widening your distance or clearing filters to see more places.`
-                    : `Nothing in the pilot&rsquo;s ${VENUES.length} venues matches.`}</span></div>`)}
-            </section>
+                  <button class="gallery-nav-btn gallery-nav-btn--next ${shown.length <= 4 ? 'is-disabled' : ''}" type="button" data-scroll-gallery="next" aria-label="Scroll right" title="Scroll right">
+                    ${icon('chevron', 14)}
+                  </button>
+                </div>
+              `}
+            ` : `<div class="notice notice--grey">${icon('info', 19)}<span>${b.list.length
+                  ? `No venues match all selected filters. Try widening your distance or clearing filters to see more places.`
+                  : `Nothing in the pilot&rsquo;s ${VENUES.length} venues matches.`}</span></div>`)}
+          </section>
           `}
 
           ${searched ? `

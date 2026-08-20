@@ -658,7 +658,10 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
 .plans-main { min-width:0; }
 .plans-layout__sidebar .routine { position: sticky; top: 24px; }
 
-.commit-row { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin: 0 auto 12px; }
+.plans-head { text-align: center; margin-bottom: 14px; }
+.plans-head .h-question { margin: 0; font-size: clamp(24px, 2.3vw, 30px); font-weight: 800; letter-spacing: -.03em; color: var(--ink); }
+
+.commit-row { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin: 0 auto 24px; }
 .commit-row .chip-sm {
   height: 34px; padding: 0 14px; border-radius: 9999px; font-size: 13px; font-weight: 700;
   display: inline-flex; align-items: center; gap: 6px;
@@ -673,9 +676,6 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
   background: #e6f4ea; color: #137333; font-size: 11px; font-weight: 800;
   padding: 1px 7px; border-radius: 99px; letter-spacing: 0.01em;
 }
-
-.plans-head { text-align: center; margin-bottom: 20px; }
-.plans-head .h-question { margin: 0; font-size: clamp(24px, 2.3vw, 30px); font-weight: 800; letter-spacing: -.03em; color: var(--ink); }
 
 .plan-lines-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
 .plan-line {
@@ -2155,7 +2155,7 @@ body.save-modal-open .stepper, body.save-modal-open .planbox__cta, body.save-mod
   }
   .paybar__info b { display: inline-block; font-size: 16px; }
   .paybar__info span.paybar__subtext, .paybar__info span { color: var(--navy-soft); font-size: 12.5px; }
-  .paybar .btn { flex: 0 0 auto; height: 48px; padding: 0 24px; border-radius: 9999px; }
+  .paybar .btn { flex: 0 0 auto; height: 46px; padding: 0 20px; border-radius: 10px; font-weight: 700; font-size: 14.5px; }
   .week { padding: 20px 18px 18px; }
   .week__day { flex-basis: 62px; font-size: 13.5px; }
   .week__swap { position: static; margin-top: 6px; }
@@ -3000,12 +3000,31 @@ button.appcard:hover .appcard__info-icon {
   font-weight: 700;
 }
 
+/* Termpick perk banner */
+.termpick__perk-banner {
+  font-size: 12.5px;
+  color: var(--ink);
+  background: #ffffff;
+  border: 1px solid #e4e4e7;
+  padding: 7px 10px;
+  border-radius: var(--radius);
+  margin-top: 8px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.termpick__perk-banner svg {
+  flex-shrink: 0;
+  color: #8a5a1a;
+}
+
 /* Planbox why disclosure */
 .planbox__why-disclosure {
   margin-top: 10px;
   border-radius: var(--radius);
-  border: 1px solid var(--border);
-  background: var(--cream);
+  border: 1px solid #e4e4e7;
+  background: #ffffff;
   overflow: hidden;
   transition: all .2s ease;
 }
@@ -3016,12 +3035,13 @@ button.appcard:hover .appcard__info-icon {
   padding: 10px 14px;
   font-size: 13.5px;
   font-weight: 700;
-  color: var(--navy);
+  color: var(--ink);
   cursor: pointer;
   user-select: none;
+  background: #ffffff;
 }
 .planbox__why-head:hover {
-  background: rgba(0,0,0,0.02);
+  background: #f8fafc;
 }
 .planbox__why-chevron {
   display: inline-flex;
@@ -3035,7 +3055,8 @@ button.appcard:hover .appcard__info-icon {
 .planbox__why-disclosure .planbox__facts {
   padding: 0 14px 12px;
   margin: 0;
-  border-top: 1px solid var(--cream-line);
+  border-top: 1px solid #e4e4e7;
+  background: #ffffff;
 }
 
 @media (max-width: 900px) {
@@ -4601,13 +4622,18 @@ button.appcard:hover .appcard__info-icon {
    behaviour, so it is a card of its own with a handle that names it, and it starts open.
    Closing it is how the column gets shorter, which is the other thing he asked for. */
 .allplans {
-  margin-top: 18px; background: #fff; border: 1px solid var(--border);
+  margin-top: 18px; background: #fefce8; border: 1px solid #fef08a;
   border-radius: var(--radius-lg); overflow: hidden;
 }
 .allplans__head {
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
   cursor: pointer; list-style: none; padding: 14px 15px;
   font-size: 16px; font-weight: 700; letter-spacing: -.01em; color: var(--ink);
+  background: #fefce8;
+  transition: background .15s ease;
+}
+.allplans__head:hover {
+  background: #fef9c3;
 }
 .allplans__headcopy { min-width: 0; }
 .allplans__headcopy > span { display: block; }
@@ -4619,12 +4645,15 @@ button.appcard:hover .appcard__info-icon {
 .allplans__head svg { flex: 0 0 auto; color: var(--navy-soft); transform: rotate(90deg); transition: transform .16s ease; }
 .allplans[open] .allplans__head svg { transform: rotate(-90deg); }
 .allplans[open] .allplans__head { padding-bottom: 10px; }
-.allplans__grid { display: grid; gap: 1px; background: var(--border); }
+.allplans__grid { display: grid; gap: 1px; background: #fef08a; }
 .allplans__row {
   display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; align-items: baseline;
-  background: #fff; padding: 11px 15px;
+  background: #fffdf5; padding: 11px 15px;
+  transition: background .15s ease;
 }
-.allplans__row.is-current { background: var(--cream); }
+.allplans__row.is-current { background: #fef9c3; }
+.allplans__row[data-plan] { cursor: pointer; }
+.allplans__row[data-plan]:hover { background: #ffffff; }
 .allplans__name { font-size: 16px; font-weight: 700; letter-spacing: -.01em; }
 /* A pill, not a caption: on the row it has to read as a label attached to that plan
    rather than as a second half of its name. */
@@ -4644,7 +4673,7 @@ button.appcard:hover .appcard__info-icon {
   font-size: 12px; line-height: 1.4; color: #8a5a1a; margin-top: 4px;
 }
 .allplans__warn svg { flex: 0 0 auto; margin-top: 1px; }
-.allplans__foot { text-align: center; font-size: 13.5px; margin: 0; padding: 13px 15px; }
+.allplans__foot { text-align: center; font-size: 13.5px; margin: 0; padding: 13px 15px; background: #fefce8; }
 
 /* What the money opens, on the card that carries the money (rule 14). */
 .planbox__opens {
@@ -6506,9 +6535,10 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
     font-size: 12px;
   }
   .paybar .btn {
-    padding: 10px 22px;
-    font-size: 15px;
-    border-radius: 9999px;
+    padding: 10px 18px;
+    font-size: 14.5px;
+    font-weight: 700;
+    border-radius: 10px;
   }
 }
 
@@ -8541,6 +8571,825 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   }
 }
 
+/* ==========================================================================
+   Welcome Back Card & Header User Navigation Chip
+   ========================================================================== */
+.welcome-back-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px 18px;
+  margin: 0 0 24px;
+  max-width: 560px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+}
+.welcome-back-card__left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.welcome-back-card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 9999px;
+  background: #fdf5d3;
+  color: #8c6d1f;
+  flex: 0 0 auto;
+}
+.welcome-back-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.welcome-back-card__title {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.25;
+}
+.welcome-back-card__desc {
+  font-size: 13px;
+  color: var(--navy-soft);
+  line-height: 1.3;
+}
+.welcome-back-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+}
+.welcome-back-card__cta {
+  white-space: nowrap;
+}
+.welcome-back-card__reset {
+  font-size: 12.5px;
+  color: var(--navy-soft);
+  text-decoration: underline;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 4px;
+}
+.welcome-back-card__reset:hover {
+  color: var(--ink);
+}
+
+@media (max-width: 600px) {
+  .welcome-back-card {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 14px 16px;
+  }
+  .welcome-back-card__actions {
+    justify-content: flex-end;
+  }
+}
+
+/* User profile nav chip (Hi, Karim / Hi, Explorer) */
+.user-nav-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  color: var(--ink);
+  font-size: 13.5px;
+  font-weight: 700;
+  padding: 7px 14px;
+  border-radius: 9999px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: all .15s ease;
+}
+.user-nav-chip:hover {
+  background: var(--yellow-pale);
+  border-color: var(--ink);
+}
+.landing__media .user-nav-chip--desktop {
+  position: absolute;
+  top: 26px;
+  right: 30px;
+  z-index: 2;
+  background: #ffffff;
+}
+.user-nav-chip--mobile { display: none; }
+@media (max-width: 780px) {
+  .user-nav-chip--desktop { display: none; }
+  .user-nav-chip--mobile { display: inline-flex; position: static; }
+}
+
+/* ==========================================================================
+   Unified Soft Cream Venue Filter Container & Mobile Switcher
+   ========================================================================== */
+.venue-filter-container {
+  background: #fdfbf5;
+  border: 1px solid #f1ebd8;
+  border-radius: var(--radius-lg);
+  padding: 16px 18px 14px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 10px rgba(180, 150, 80, 0.04);
+}
+.venue-filter-container .findbar__where {
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(220, 210, 190, 0.4);
+}
+.venue-filter-container .venue-search-bar {
+  margin-bottom: 12px;
+}
+.venue-filter-container .category-pills-wrap {
+  margin: 0;
+}
+
+@media (max-width: 780px) {
+  .venue-filter-container {
+    padding: 14px 14px 12px;
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+  }
+  
+  /* Binary Grid ↔ Map toggle on mobile */
+  .view-toggle-btn--gallery {
+    display: none !important;
+  }
+  
+  /* Sufficient bottom spacing for venue page so sticky bottom bar never clips */
+  main.content.venuepage {
+    padding-bottom: 110px !important;
+  }
+}
+
+/* ==========================================================================
+   Urby Question Flow Container, Yellow Progress & Review Answers Drawer
+   ========================================================================== */
+@media (min-width: 781px) {
+  .one-col--fit {
+    min-height: calc(100vh - 80px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .one-col--fit .one-col__main {
+    padding-top: 16px;
+    padding-bottom: 24px;
+    margin: auto;
+    width: 100%;
+  }
+}
+
+.question-card-container {
+  background: #ffffff;
+  border: 1px solid #e7e5e4;
+  border-radius: 20px;
+  padding: 32px 36px 30px;
+  margin: 12px auto 20px;
+  max-width: 680px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
+}
+
+.question-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  gap: 12px;
+}
+
+.question-card__identity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.question-card__identity-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.question-card__guide-name {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.question-card__step {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #71717a;
+  line-height: 1.2;
+}
+
+.question-card__top-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.btn-review-answers {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink);
+  background: #f4f4f5;
+  border: 1px solid #e4e4e7;
+  border-radius: 100px;
+  padding: 5px 12px;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.btn-review-answers:hover {
+  background: #e4e4e7;
+}
+
+.btn-skip-question {
+  font-size: 13px;
+  font-weight: 600;
+  color: #71717a;
+  padding: 5px 8px;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.btn-skip-question:hover {
+  color: var(--ink);
+  text-decoration: underline;
+}
+
+/* Yellow Progress Bar */
+.question-card__progress {
+  display: flex;
+  gap: 6px;
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.qcontainer-bar {
+  flex: 1;
+  height: 5px;
+  border-radius: 99px;
+  background: #e4e4e7;
+  transition: background 0.2s ease;
+}
+
+.qcontainer-bar.is-done {
+  background: #f6d64a;
+}
+
+.qcontainer-bar.is-now {
+  background: #eab308;
+  box-shadow: 0 0 0 2px rgba(234, 179, 8, 0.25);
+}
+
+.qstep__bar.is-done { background: #f6d64a; }
+.qstep__bar.is-now { background: #eab308; }
+.stepper__seg.is-done { background: #f6d64a; }
+.stepper__seg.is-now { background: #eab308; }
+.mobile-progress__fill { background: #f6d64a !important; }
+
+/* Options Tiles Spacing & Typography */
+.options--tiles .option-card {
+  min-height: 56px;
+  padding: 12px 16px;
+  font-size: 15.5px;
+  gap: 12px;
+}
+
+.options--tiles .option-card__label {
+  font-size: 15px;
+  line-height: 1.35;
+  font-weight: 600;
+}
+
+/* Discreet Own Words Input */
+.ownwords--discreet {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px dashed #e7e5e4;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ownwords--discreet input {
+  flex: 1;
+  height: 42px;
+  background: #fafaf9;
+  border: 1px solid #e7e5e4;
+  border-radius: 10px;
+  padding: 0 14px;
+  font-size: 14px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+
+.ownwords--discreet input:focus {
+  background: #fff;
+  border-color: var(--ink);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.06);
+}
+
+.ownwords--discreet .ownwords__send {
+  height: 42px;
+  padding: 0 16px;
+  background: #f4f4f5;
+  border: 1px solid #e4e4e7;
+  border-radius: 10px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ownwords--discreet .ownwords__send:hover {
+  background: var(--ink);
+  color: #fff;
+  border-color: var(--ink);
+}
+
+/* Discreet Bottom Exit Links */
+.qactions-foot {
+  margin: 40px auto 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.qactions-foot__lead {
+  font-size: 12.5px;
+  color: #a1a1aa;
+}
+
+.qactions-foot__links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.qactions-foot .linkish {
+  font-size: 13px;
+  color: #71717a;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s ease;
+}
+
+.qactions-foot .linkish:hover {
+  color: var(--ink);
+}
+
+.qactions-foot__dot {
+  color: #d4d4d8;
+}
+
+/* Crafting Plan Transition Screen */
+.crafting-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: 32px 16px;
+}
+
+.crafting-card {
+  background: #ffffff;
+  border: 1px solid #e7e5e4;
+  border-radius: 24px;
+  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.07);
+  padding: 44px 36px 38px;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+}
+
+.crafting-avatar-pulse {
+  margin: 0 auto 20px;
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #fef9c3;
+  animation: pulseAvatar 1.4s infinite ease-in-out;
+}
+
+@keyframes pulseAvatar {
+  0% { transform: scale(0.96); box-shadow: 0 0 0 0 rgba(246, 214, 74, 0.5); }
+  50% { transform: scale(1.04); box-shadow: 0 0 0 14px rgba(246, 214, 74, 0); }
+  100% { transform: scale(0.96); box-shadow: 0 0 0 0 rgba(246, 214, 74, 0); }
+}
+
+.crafting-title {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0 0 8px;
+}
+
+.crafting-sub {
+  color: var(--muted);
+  font-size: 14.5px;
+  margin: 0 0 28px;
+}
+
+.crafting-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+  background: #fafaf9;
+  border-radius: 16px;
+  padding: 18px 20px;
+  border: 1px solid #f0f0ee;
+}
+
+.crafting-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  opacity: 0;
+  transform: translateY(6px);
+  animation: stepFade 0.4s forwards ease-out;
+}
+
+.crafting-step--1 { animation-delay: 0.2s; }
+.crafting-step--2 { animation-delay: 0.75s; }
+.crafting-step--3 { animation-delay: 1.3s; }
+
+@keyframes stepFade {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.crafting-step__check {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #16a34a;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Review Answers Right-Side Drawer (Web) & Bottom Sheet (Mobile) */
+.sheet--review-answers {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: flex-end;
+  align-items: stretch;
+  pointer-events: auto;
+}
+
+.sheet--review-answers .sheet__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(2px);
+  animation: fadeInReview 0.2s ease-out;
+}
+
+.sheet--review-answers .sheet__panel--review {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 440px;
+  height: 100%;
+  background: #ffffff;
+  box-shadow: -8px 0 32px rgba(0, 0, 0, 0.14);
+  display: flex;
+  flex-direction: column;
+  animation: slideInRightReview 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+.sheet--review-answers .sheet__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 24px 24px 18px;
+  border-bottom: 1px solid #f0f0ee;
+  background: #fafaf9;
+  gap: 12px;
+}
+
+.sheet--review-answers .sheet__head-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.sheet--review-answers .sheet__guide {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #71717a;
+  margin-bottom: 6px;
+}
+
+.sheet--review-answers .sheet__title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.sheet--review-answers .sheet__close {
+  background: #f4f4f5;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 22px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #71717a;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.sheet--review-answers .sheet__close:hover {
+  background: #e4e4e7;
+  color: var(--ink);
+}
+
+.sheet--review-answers .sheet__body {
+  padding: 22px 24px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.sheet--review-answers .sheet__foot {
+  padding: 16px 24px;
+  border-top: 1px solid #f0f0ee;
+  background: #fafaf9;
+}
+
+.review-answers-sub {
+  font-size: 13.5px;
+  color: var(--muted);
+  line-height: 1.45;
+  margin-bottom: 20px;
+}
+
+.review-answers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.review-answers-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: #fafaf9;
+  border: 1px solid #f0f0ee;
+  border-radius: 12px;
+}
+
+.review-answers-item__icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid #e7e5e4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+  flex-shrink: 0;
+}
+
+.review-answers-item__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.review-answers-item__label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin-bottom: 2px;
+}
+
+.review-answers-item__val {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.review-answers-item__val.is-empty {
+  color: #a8a29e;
+  font-weight: 500;
+  font-style: italic;
+}
+
+.review-answers-item__edit {
+  flex-shrink: 0;
+  padding: 6px 14px;
+  font-size: 12.5px;
+  font-weight: 600;
+  border-radius: 8px;
+}
+
+@keyframes slideInRightReview {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes fadeInReview {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (max-width: 600px) {
+  .sheet--review-answers {
+    align-items: flex-end;
+  }
+  .sheet--review-answers .sheet__panel--review {
+    max-width: 100%;
+    height: auto;
+    max-height: 85vh;
+    border-radius: 20px 20px 0 0;
+    animation: slideUpReview 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+}
+
+@keyframes slideUpReview {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+/* Recommendation Header */
+.reco-hero-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.reco-hero-header .reco-hero__title {
+  margin: 0;
+  flex: 1;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.reco-edit-answers-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12.5px;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 6px 11px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  background: #ffffff;
+  border: 1px solid #e4e4e7;
+  color: var(--ink);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.reco-edit-answers-btn:hover {
+  background: #f4f4f5;
+  border-color: #d4d4d8;
+}
+
+.btn-review-label-mobile,
+.guide-name-short {
+  display: none;
+}
+
+@media (max-width: 780px) {
+  .question-card-container {
+    padding: 20px 16px 22px;
+    border-radius: 16px;
+    margin: 8px 0 16px;
+  }
+  .question-card__top {
+    flex-wrap: nowrap;
+    gap: 8px;
+    align-items: center;
+  }
+  .question-card__identity {
+    min-width: 0;
+    gap: 8px;
+  }
+  .question-card__identity-text {
+    min-width: 0;
+  }
+  .question-card__guide-name {
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .question-card__step {
+    font-size: 11px;
+  }
+  .question-card__top-actions {
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .btn-review-answers {
+    padding: 4px 8px;
+    font-size: 11.5px;
+    gap: 4px;
+  }
+  .btn-review-label-desktop {
+    display: none;
+  }
+  .btn-review-label-mobile {
+    display: inline;
+  }
+  .btn-skip-question {
+    font-size: 12px;
+    padding: 4px 6px;
+  }
+  .guide-name-full {
+    display: none;
+  }
+  .guide-name-short {
+    display: inline;
+  }
+  .crafting-card {
+    padding: 32px 20px 28px;
+    border-radius: 20px;
+  }
+  .reco-hero-header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .reco-hero-header .reco-hero__title {
+    font-size: 21px;
+  }
+  .reco-edit-answers-btn {
+    align-self: center;
+    margin-top: 0;
+    padding: 5px 9px;
+    font-size: 12px;
+  }
+}
+
 
 /* ============================================================
    standalone-only additions
@@ -8690,7 +9539,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build f57dc66 + local edits</span>
+  <span class="demo-banner__build">build cf5bc50 + local edits</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -8779,7 +9628,8 @@ const ICONS = {
   qr:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="3" height="3"/><rect x="18" y="18" width="3" height="3"/><rect x="18" y="14" width="3" height="3"/><rect x="14" y="18" width="3" height="3"/>',
   bag:'<path d="M6 8V6a6 6 0 0 1 12 0v2"/><rect x="4" y="8" width="16" height="13" rx="2.5"/><path d="M10 12h4"/>',
   shower:'<path d="M4 4h7a4 4 0 0 1 4 4v1"/><path d="M11 14v.01M14 14v.01M17 14v.01M9 18v.01M12 18v.01M15 18v.01"/><path d="M10 9a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1H10V9z"/>',
-  map:'<polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/>'
+  map:'<polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/>',
+  user:'<circle cx="12" cy="8" r="4.2"/><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0"/>'
 };
 const icon = (n, s = 22) => svg(ICONS[n] || ICONS.info, s);
 const ulaAvatar = (size='md') => {
@@ -9657,7 +10507,7 @@ function searchPlaces(query) {
    then typed the address the membership legally requires. Those are two different
    things and the interface must not conflate them. */
 const BLANK = { email:null, authMethod:null, saveOptIn:false, marketing:false, marketingAsked:false, answers:{}, freeText:{}, radiusKm:'auto',
-                weekDays:[], weekSwap:{}, starredVenues:{},
+                weekDays:[], weekSwap:{}, starredVenues:{}, routineCustomized:false,
                 chosenPlanId:null, planOverridden:false, commitmentId:'monthly', details:{}, startDate:null,
                 paid:false, lastStep:'landing', returns:0, events:[], source:null, campaign:null, variant:VARIANT };
 let S = JSON.parse(JSON.stringify(BLANK));
@@ -9667,6 +10517,7 @@ let ASK={q:'',result:null};
    your studio to get back to it would be the search version of asking twice. */
 let SEARCH={q:'',result:null};
 let ROUTE='landing', ACKTEXT=null, UNCLEAR=false, NOCHOICE=false, EDITING=null, ERRORS={}, FIELDS={}, TYPING=false, SHEET=null, PANEL_OPEN=false;
+let CRAFTING_TRANSITION=false, REVIEW_ANSWERS_OPEN=false;
 let LOGIN_MODAL_OPEN=false, LOGIN_ERROR=null, LOGIN_SUCCESS=false;
 /* City is "detected" in production (IP or browser location). The pilot only has
    venue data loaded for Berlin, so the chip says so plainly and a Change link
@@ -10397,7 +11248,7 @@ function venueSheet() {
             <div class="venue-profile-submeta">
               <span class="venue-submeta-item">${icon(primaryActIcon, 16)} ${esc(actNames)}</span>
               <span class="venue-submeta-dot">&middot;</span>
-              <span class="venue-submeta-item">${icon('pin', 15)} ${km} km from ${esc(areaLabel)}</span>
+              <span class="venue-submeta-item">${icon('pin', 15)} ${v.address ? `${esc(v.address)} (${km} km)` : `${km} km from ${esc(areaLabel)}`}</span>
             </div>
           </div>
 
@@ -10678,6 +11529,55 @@ function partnerAsk(match, groups) {
   </details>`;
 }
 
+function reviewAnswersSheet() {
+  if (!REVIEW_ANSWERS_OPEN) return '';
+  const questionsList = [
+    { id: 'goal', label: 'Goal', icon: 'target', prompt: 'What would you love to do more of?' },
+    { id: 'activities', label: 'Activities', icon: 'dumbbell', prompt: 'What sports or activities interest you?' },
+    { id: 'area', label: 'Area', icon: 'pin', prompt: 'Where do you want to work out?' },
+    { id: 'frequency', label: 'Frequency', icon: 'calendar', prompt: 'How often would you realistically like to go?' }
+  ];
+
+  const items = questionsList.map(q => {
+    const val = S.answers[q.id];
+    const answered = isAnswered(val);
+    const summary = answered ? compactAnswerLabel(q.id, val) : 'Not answered yet';
+    return `<div class="review-answers-item">
+      <div class="review-answers-item__icon">${icon(q.icon, 18)}</div>
+      <div class="review-answers-item__body">
+        <span class="review-answers-item__label">${esc(q.label)}</span>
+        <strong class="review-answers-item__val ${answered ? '' : 'is-empty'}">${esc(summary)}</strong>
+      </div>
+      <button class="btn btn--secondary btn--sm review-answers-item__edit" type="button" data-edit="${esc(q.id)}" aria-label="Edit answer for ${esc(q.label)}">
+        Edit
+      </button>
+    </div>`;
+  }).join('');
+
+  return `<div class="sheet sheet--review-answers" role="dialog" aria-modal="true" aria-label="Review your answers">
+    <div class="sheet__backdrop" data-close-review-answers></div>
+    <div class="sheet__panel sheet__panel--review">
+      <header class="sheet__head">
+        <div class="sheet__head-text">
+          <div class="sheet__guide">${ulaAvatar('sm')} <span>Urby &middot; Membership guide</span></div>
+          <h2 class="sheet__title">Your answers & preferences</h2>
+        </div>
+        <button class="sheet__close" type="button" data-close-review-answers aria-label="Close answers panel">&times;</button>
+      </header>
+      <div class="sheet__body">
+        <p class="review-answers-sub">You can review or change any answer at any time. Your routine and recommendation update immediately.</p>
+        <div class="review-answers-list">
+          ${items}
+        </div>
+      </div>
+      <footer class="sheet__foot">
+        <button class="btn btn--primary btn--block" type="button" data-close-review-answers>Done</button>
+      </footer>
+    </div>
+  </div>`;
+}
+
+
 
 /* ---------------- screens ---------------- */
 /* The hero was one photograph, so the front door said "climbing" and nothing else — and
@@ -10771,18 +11671,32 @@ function landing() {
         <span class="sub-action-btn__arrow">&rarr;</span>
       </button>
     </div>`;
+  // Only show custom greeting if a real human first name is in contact details
+  const rawFirstName = (S.contact && S.contact.firstName && typeof S.contact.firstName === 'string')
+    ? S.contact.firstName.trim()
+    : '';
+  const hasRealName = rawFirstName && !rawFirstName.includes('@') && !rawFirstName.includes('.');
+  const firstName = hasRealName ? rawFirstName : null;
+
+  const loginBtnMobile = firstName
+    ? `<button class="user-nav-chip user-nav-chip--mobile" type="button" data-go="login">${icon('user', 14)} <span>Hi, ${esc(firstName)}</span></button>`
+    : `<button class="login-link login-link--mobile linkish" data-go="login">Log in</button>`;
+
+  const loginBtnDesktop = firstName
+    ? `<button class="user-nav-chip user-nav-chip--desktop" type="button" data-go="login">${icon('user', 14)} <span>Hi, ${esc(firstName)}</span></button>`
+    : `<button class="login-link login-link--desktop linkish" data-go="login">Log in</button>`;
+
   const primary = VARIANT === 'email-first' ? emailFirst : guideFirst;
   return `<main class="landing" id="main">
     <div class="landing__panel">
       <div class="landing__panelbar"><button class="wordmark linkish" style="text-decoration:none" data-go="landing">Urban Sports Club</button>
-        <button class="login-link login-link--mobile linkish" data-go="login">Log in</button></div>
+        ${loginBtnMobile}</div>
       <div class="landing__body">
         <h1 class="h-hero" tabindex="-1">Find your way<br>to move.</h1>
         <p class="lede">Build your fitness routine and find the membership that covers it.</p>
-        ${S.returns?`<div class="notice" style="max-width:560px">${icon('checkThin',20)}<span>Welcome back. Your answers are saved — continue where you left off.</span></div>`:''}
         ${primary}
       </div></div>
-    <div class="landing__media"><button class="login-link login-link--desktop linkish" data-go="login">Log in</button>
+    <div class="landing__media">${loginBtnDesktop}
       <img src="${IMG[HERO_SHOT.src]}" width="800" height="900" fetchpriority="high" alt="${esc(HERO_SHOT.alt)}" decoding="async"></div>
   </main>
   <section class="ula-section"><div class="ula-section__inner">
@@ -11552,7 +12466,6 @@ function searchScreen() {
 
   const stickyTray = (backTarget === 'recommendation') ? `
     <div class="paybar search-sticky-bar">
-      <div class="paybar__pull-handle" data-go="recommendation" aria-hidden="true"></div>
       <div class="paybar__info" data-go="recommendation" role="button" tabindex="0" aria-label="Back to your routine">
         <div class="paybar__lead">
           <b>${routineLead}</b>
@@ -11593,116 +12506,120 @@ function searchScreen() {
         <div class="venue-explorer-card">
           ${weekPickBar()}
           
-          <div class="findbar__where">
-            <span class="findbar__wheretext">${icon('pin', 16)}<span>${S.answers.area ? `Showing places ${esc(b.label)}` : `Looks like you&rsquo;re near <b>${esc(b.origins[0].name)}, Berlin</b> &mdash; showing places ${esc(b.label)}`}</span></span>
-            <button class="linkish strong findbar__wherechange" type="button" data-toggle-where aria-expanded="${WHEREPICK}">${WHEREPICK ? 'Close' : 'Change location'}</button>
-          </div>
-          ${WHEREPICK ? `<div class="wherepick">
-            <div class="wherepick__label">Where should we look?</div>
-            <div class="wherepick__grid">${optionsFor(qById('area')).map(o => `<button class="chip-sm ${areaIds(S.answers.area).includes(o.id) ? 'is-current' : ''}" type="button" data-where="${esc(o.id)}">${esc(o.label)}</button>`).join('')}</div>
-            <p class="wherepick__note">${icon('info', 16)} <span>This is one of Urby&rsquo;s four questions, so picking here means she won&rsquo;t ask it again.</span></p>
-          </div>` : ''}
+          <div class="venue-filter-container">
+            <div class="findbar__where">
+              <span class="findbar__wheretext">${icon('pin', 16)}<span>${S.answers.area ? `Showing places ${esc(b.label)}` : `Looks like you&rsquo;re near <b>${esc(b.origins[0].name)}, Berlin</b> &mdash; showing places ${esc(b.label)}`}</span></span>
+              <button class="linkish strong findbar__wherechange" type="button" data-toggle-where aria-expanded="${WHEREPICK}">${WHEREPICK ? 'Close' : 'Change location'}</button>
+            </div>
+            ${WHEREPICK ? `<div class="wherepick">
+              <div class="wherepick__label">Where should we look?</div>
+              <div class="wherepick__grid">${optionsFor(qById('area')).map(o => `<button class="chip-sm ${areaIds(S.answers.area).includes(o.id) ? 'is-current' : ''}" type="button" data-where="${esc(o.id)}">${esc(o.label)}</button>`).join('')}</div>
+              <p class="wherepick__note">${icon('info', 16)} <span>This is one of Urby&rsquo;s four questions, so picking here means she won&rsquo;t ask it again.</span></p>
+            </div>` : ''}
 
-          <form data-form="search" class="venue-search-bar" role="search">
-            <div class="findsearch">
-              <span class="findsearch__icon" aria-hidden="true">${icon('search', 16)}</span>
-              <input type="search" name="q" id="venue-search-q" value="${esc(VENUEQ || (typeof SEARCH !== 'undefined' && SEARCH && SEARCH.q) || '')}"
-                placeholder="Search venues, activities or addresses with Urby..." aria-label="Search venues, activities or addresses with Urby" autocomplete="off" data-venue-input>
-              ${(VENUEQ || (typeof SEARCH !== 'undefined' && SEARCH && SEARCH.q)) ? `<button type="button" class="findsearch__clear" data-venue-clear aria-label="Clear search">${icon('close', 12)}</button>` : ''}
-              <button class="findsearch__btn" type="submit">Search</button>
-            </div>
-            <div class="venue-toolbar-filters">
-              <label class="pillsel pillsel--radius sr-only"><span class="pillsel__icon">${icon('pin',16)}</span>
-                <select data-radius-pick aria-label="How far to look">
-                  ${RADII.map(x=>`<option value="${esc(x.id)}" ${(S.radiusKm||'3')===x.id?'selected':''}>${
-                    x.km?`Within ${x.km} km`:'All of Berlin'}</option>`).join('')}
-                </select>
-              </label>
-              <div class="radius-toggle" role="group" aria-label="Distance radius">
-                <button class="chip-sm ${(!S.radiusKm || S.radiusKm === '3' || S.radiusKm === 'auto') ? 'is-active is-current' : ''}" type="button" data-radius="3">3 km</button>
-                <button class="chip-sm ${S.radiusKm === '8' ? 'is-active is-current' : ''}" type="button" data-radius="8">8 km</button>
-                <button class="chip-sm ${S.radiusKm === 'any' ? 'is-active is-current' : ''}" type="button" data-radius="any">All Berlin</button>
+            <form data-form="search" class="venue-search-bar" role="search">
+              <div class="findsearch">
+                <span class="findsearch__icon" aria-hidden="true">${icon('search', 16)}</span>
+                <input type="search" name="q" id="venue-search-q" value="${esc(VENUEQ || (typeof SEARCH !== 'undefined' && SEARCH && SEARCH.q) || '')}"
+                  placeholder="Search venues, activities or addresses..." aria-label="Search venues, activities or addresses with Urby" autocomplete="off" data-venue-input>
+                ${(VENUEQ || (typeof SEARCH !== 'undefined' && SEARCH && SEARCH.q)) ? `<button type="button" class="findsearch__clear" data-venue-clear aria-label="Clear search">${icon('close', 12)}</button>` : ''}
+                <button class="findsearch__btn" type="submit">Search</button>
               </div>
-              <button class="btn-more-filters ${VENUE_MORE_FILTERS_OPEN || activeFiltersCount > 0 ? 'is-active' : ''}" type="button" data-toggle-more-filters aria-expanded="${VENUE_MORE_FILTERS_OPEN}">
-                ${icon('adjust', 15)} <span>More filters${activeFiltersCount > 0 ? ` (${activeFiltersCount})` : ''}</span>
-              </button>
-            </div>
-          </form>
+              <div class="venue-toolbar-filters">
+                <label class="pillsel pillsel--radius sr-only"><span class="pillsel__icon">${icon('pin',16)}</span>
+                  <select data-radius-pick aria-label="How far to look">
+                    ${RADII.map(x=>`<option value="${esc(x.id)}" ${(S.radiusKm||'3')===x.id?'selected':''}>${
+                      x.km?`Within ${x.km} km`:'All of Berlin'}</option>`).join('')}
+                  </select>
+                </label>
+                <div class="radius-toggle" role="group" aria-label="Distance radius">
+                  <button class="chip-sm ${(!S.radiusKm || S.radiusKm === '3' || S.radiusKm === 'auto') ? 'is-active is-current' : ''}" type="button" data-radius="3">3 km</button>
+                  <button class="chip-sm ${S.radiusKm === '8' ? 'is-active is-current' : ''}" type="button" data-radius="8">8 km</button>
+                  <button class="chip-sm ${S.radiusKm === 'any' ? 'is-active is-current' : ''}" type="button" data-radius="any">All Berlin</button>
+                </div>
+                <button class="btn-more-filters ${VENUE_MORE_FILTERS_OPEN || activeFiltersCount > 0 ? 'is-active' : ''}" type="button" data-toggle-more-filters aria-expanded="${VENUE_MORE_FILTERS_OPEN}">
+                  ${icon('adjust', 15)} <span>More filters${activeFiltersCount > 0 ? ` (${activeFiltersCount})` : ''}</span>
+                </button>
+              </div>
+            </form>
+
+            ${searched ? '' : `
+              <div class="category-pills-wrap">
+                <div class="category-pills" id="category-pills-scroll" role="tablist" aria-label="Filter by sport">
+                  <button class="catchip category-pill ${(!activeCats.length && !(S.answers.activities && S.answers.activities.length)) ? 'is-active is-on' : ''}" type="button" data-cat-all data-filter-category="all">
+                    ${icon('grid', 13)} <span>All</span>
+                  </button>
+                  ${ACTIVITY_GROUPS.map(g => {
+                    const isSelected = activeCats.includes(g.id) || (S.answers.activities && S.answers.activities.includes(g.id));
+                    return `
+                      <button class="catchip category-pill ${isSelected ? 'is-active is-on' : ''}" type="button" data-cat="${esc(g.id)}" data-filter-category="${esc(g.id)}">
+                        ${icon(g.icon, 13)} <span>${esc(g.label)}</span>
+                      </button>
+                    `;
+                  }).join('')}
+                </div>
+                <div class="category-pills__fade">
+                  <button class="category-pills__mini-btn" type="button" data-scroll-pills="right" aria-label="Scroll sports">
+                    ${icon('chevron', 12)}
+                  </button>
+                </div>
+              </div>
+            `}
+          </div>
+
+          ${moreFiltersDrawer(b.within.length)}
 
           ${searched ? '' : `
-            <div class="category-pills-wrap" style="margin: 14px 0 16px;">
-              <div class="category-pills" id="category-pills-scroll" role="tablist" aria-label="Filter by sport">
-                <button class="catchip category-pill ${(!activeCats.length && !(S.answers.activities && S.answers.activities.length)) ? 'is-active is-on' : ''}" type="button" data-cat-all data-filter-category="all">
-                  ${icon('grid', 13)} <span>All</span>
-                </button>
-                ${ACTIVITY_GROUPS.map(g => {
-                  const isSelected = activeCats.includes(g.id) || (S.answers.activities && S.answers.activities.includes(g.id));
-                  return `
-                    <button class="catchip category-pill ${isSelected ? 'is-active is-on' : ''}" type="button" data-cat="${esc(g.id)}" data-filter-category="${esc(g.id)}">
-                      ${icon(g.icon, 13)} <span>${esc(g.label)}</span>
-                    </button>
-                  `;
-                }).join('')}
+          <section class="placesrow">
+            <div class="placesrow__head">
+              <div class="placesrow__title">
+                <h2>${countHeading}</h2>
+                <p>${b.within.length
+                  ? `Nearest first, from the ${VENUES.length} real Berlin venues loaded in this pilot.`
+                  : `None of the ${VENUES.length} venues loaded here match these filters.`}</p>
               </div>
-              <div class="category-pills__fade">
-                <button class="category-pills__mini-btn" type="button" data-scroll-pills="right" aria-label="Scroll sports">
-                  ${icon('chevron', 12)}
-                </button>
+              <div class="placesrow__tools">
+                <div class="venue-view-toggle" role="group" aria-label="View mode">
+                  <button class="view-toggle-btn view-toggle-btn--gallery ${VENUE_VIEW_MODE === 'scroll' ? 'is-active' : ''}" type="button" data-venue-view-mode="scroll" aria-pressed="${VENUE_VIEW_MODE === 'scroll'}" title="2-row gallery scroll view">
+                    ${icon('grid', 14)} <span>Gallery</span>
+                  </button>
+                  <button class="view-toggle-btn view-toggle-btn--grid ${VENUE_VIEW_MODE === 'grid' ? 'is-active' : ''}" type="button" data-venue-view-mode="grid" aria-pressed="${VENUE_VIEW_MODE === 'grid'}" title="Full grid view">
+                    ${icon('adjust', 14)} <span>Grid</span>
+                  </button>
+                  <button class="view-toggle-btn view-toggle-btn--map ${VENUE_VIEW_MODE === 'map' ? 'is-active' : ''}" type="button" data-venue-view-mode="map" aria-pressed="${VENUE_VIEW_MODE === 'map'}" title="Map view">
+                    ${icon('pin', 14)} <span>Map</span>
+                  </button>
+                </div>
               </div>
             </div>
+            ${venueActiveFilterChips(b)}
 
-            ${moreFiltersDrawer(b.within.length)}
-
-            <section class="placesrow">
-              <div class="placesrow__head">
-                <div class="placesrow__title">
-                  <h2>${countHeading}</h2>
-                  <p>${b.within.length
-                    ? `Nearest first, from the ${VENUES.length} real Berlin venues loaded in this pilot.`
-                    : `None of the ${VENUES.length} venues loaded here match these filters.`}</p>
+            ${VENUE_VIEW_MODE === 'map' ? `
+              ${interactiveBerlinMap(b)}
+            ` : (shown.length ? `
+              ${VENUE_VIEW_MODE === 'grid' ? `
+                <div class="hits venue-grid--catalog hits--row">
+                  ${shown.map(v => placeCard(v)).join('')}
                 </div>
-                <div class="placesrow__tools">
-                  <div class="venue-view-toggle" role="group" aria-label="View mode">
-                    <button class="view-toggle-btn ${VENUE_VIEW_MODE === 'scroll' ? 'is-active' : ''}" type="button" data-venue-view-mode="scroll" aria-pressed="${VENUE_VIEW_MODE === 'scroll'}" title="2-row gallery scroll view">
-                      ${icon('grid', 14)} <span>Gallery</span>
-                    </button>
-                    <button class="view-toggle-btn ${VENUE_VIEW_MODE === 'grid' ? 'is-active' : ''}" type="button" data-venue-view-mode="grid" aria-pressed="${VENUE_VIEW_MODE === 'grid'}" title="Full grid view">
-                      ${icon('adjust', 14)} <span>Grid</span>
-                    </button>
-                    <button class="view-toggle-btn ${VENUE_VIEW_MODE === 'map' ? 'is-active' : ''}" type="button" data-venue-view-mode="map" aria-pressed="${VENUE_VIEW_MODE === 'map'}" title="Map view">
-                      ${icon('pin', 14)} <span>Map</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              ${venueActiveFilterChips(b)}
-
-              ${VENUE_VIEW_MODE === 'map' ? `
-                ${interactiveBerlinMap(b)}
-              ` : (shown.length ? `
-                ${VENUE_VIEW_MODE === 'grid' ? `
-                  <div class="hits venue-grid--catalog hits--row">
-                    ${shown.map(v => placeCard(v)).join('')}
-                  </div>
-                ` : `
-                  <div class="activity-gallery-wrap venue-gallery-wrap">
-                    <button class="gallery-nav-btn gallery-nav-btn--prev is-disabled" type="button" data-scroll-gallery="prev" aria-label="Scroll left" title="Scroll left">
-                      ${icon('chevron', 14)}
-                    </button>
-                    <div class="activity-gallery venue-carousel-scroll" id="activity-gallery-scroll">
-                      <div class="venue-carousel-track hits hits--row">
-                        ${shown.map(v => placeCard(v)).join('')}
-                      </div>
+              ` : `
+                <div class="activity-gallery-wrap venue-gallery-wrap">
+                  <button class="gallery-nav-btn gallery-nav-btn--prev is-disabled" type="button" data-scroll-gallery="prev" aria-label="Scroll left" title="Scroll left">
+                    ${icon('chevron', 14)}
+                  </button>
+                  <div class="activity-gallery venue-carousel-scroll" id="activity-gallery-scroll">
+                    <div class="venue-carousel-track hits hits--row">
+                      ${shown.map(v => placeCard(v)).join('')}
                     </div>
-                    <button class="gallery-nav-btn gallery-nav-btn--next ${shown.length <= 4 ? 'is-disabled' : ''}" type="button" data-scroll-gallery="next" aria-label="Scroll right" title="Scroll right">
-                      ${icon('chevron', 14)}
-                    </button>
                   </div>
-                `}
-              ` : `<div class="notice notice--grey">${icon('info', 19)}<span>${b.list.length
-                    ? `No venues match all selected filters. Try widening your distance or clearing filters to see more places.`
-                    : `Nothing in the pilot&rsquo;s ${VENUES.length} venues matches.`}</span></div>`)}
-            </section>
+                  <button class="gallery-nav-btn gallery-nav-btn--next ${shown.length <= 4 ? 'is-disabled' : ''}" type="button" data-scroll-gallery="next" aria-label="Scroll right" title="Scroll right">
+                    ${icon('chevron', 14)}
+                  </button>
+                </div>
+              `}
+            ` : `<div class="notice notice--grey">${icon('info', 19)}<span>${b.list.length
+                  ? `No venues match all selected filters. Try widening your distance or clearing filters to see more places.`
+                  : `Nothing in the pilot&rsquo;s ${VENUES.length} venues matches.`}</span></div>`)}
+          </section>
           `}
 
           ${searched ? `
@@ -11748,63 +12665,114 @@ function answerChips(opts = {}) {
   </div>`;
 }
 
+function craftingScreen() {
+  const city = S.answers.city || S.detectedCity || 'Berlin';
+  return `${topbar(1, { stepper: false })}
+  <div class="one-col one-col--fit">
+    <main class="one-col__main crafting-main" id="main">
+      <div class="crafting-card">
+        <div class="crafting-avatar-pulse">
+          ${ulaAvatar('lg')}
+        </div>
+        <h1 class="h-question crafting-title" tabindex="-1">Finding your perfect fit...</h1>
+        <p class="crafting-sub">Urby is tailoring your membership and routine.</p>
+        <div class="crafting-steps">
+          <div class="crafting-step crafting-step--1">
+            <span class="crafting-step__check">${icon('checkThin', 14)}</span>
+            <span>Scanning venues across ${esc(city)}</span>
+          </div>
+          <div class="crafting-step crafting-step--2">
+            <span class="crafting-step__check">${icon('checkThin', 14)}</span>
+            <span>Customising your weekly routine</span>
+          </div>
+          <div class="crafting-step crafting-step--3">
+            <span class="crafting-step__check">${icon('checkThin', 14)}</span>
+            <span>Matching the best plan for you</span>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>`;
+}
+
 function fitScreen() {
+  if (CRAFTING_TRANSITION) return craftingScreen();
+
   const q = EDITING ? qById(EDITING) : nextQuestion(S.answers);
   if (!q) return recommendationScreen();
   const opts = optionsFor(q);
   const idx = qIndex(q.id);
-  const match = matchVenues(A()), prov = provisionalPlan(A(),match);
-  /* A multi-select question is real checkboxes, so it still works with no
-     JavaScript — same as every other action here. */
-  const picked = Array.isArray(S.answers[q.id]) ? S.answers[q.id] : (S.answers[q.id]?[S.answers[q.id]]:[]);
-  /* The input is the control: visually hidden but focusable and real size, so Tab
-     reaches the group, arrows move within a radio group, Space toggles, and screen
-     readers announce the checked state. It used to be 0x0 with opacity:0 and the
-     LABEL carried tabindex, which broke all four. */
-  const cards = opts.map(o=>`<label class="option-card ${picked.includes(o.id)?'is-selected':''}" data-card>
-      <input class="option-card__input" type="${q.multi?'checkbox':'radio'}" name="choice" value="${esc(o.id)}" ${picked.includes(o.id)?'checked':''}>
-      <span class="option-card__icon">${icon(o.icon||'grid',22)}<span class="option-card__check">${icon('checkThin',17)}</span></span>
+  const match = matchVenues(A()), prov = provisionalPlan(A(), match);
+  const picked = Array.isArray(S.answers[q.id]) ? S.answers[q.id] : (S.answers[q.id] ? [S.answers[q.id]] : []);
+  const answeredCount = QUESTIONS.filter(item => isAnswered(S.answers[item.id])).length;
+  const canSkip = Boolean(q.multi || q.skip);
+
+  const cards = opts.map(o => `<label class="option-card ${picked.includes(o.id) ? 'is-selected' : ''}" data-card>
+      <input class="option-card__input" type="${q.multi ? 'checkbox' : 'radio'}" name="choice" value="${esc(o.id)}" ${picked.includes(o.id) ? 'checked' : ''}>
+      <span class="option-card__icon">${icon(o.icon || 'grid', 22)}<span class="option-card__check">${icon('checkThin', 17)}</span></span>
       <span class="option-card__label">${esc(o.label)}${o.sub ? `<span class="option-card__sub">${esc(o.sub)}</span>` : ''}</span></label>`).join('');
-  /* Once we know where they are, show what we found — inline, small, and only
-     then. Before that there is nothing worth putting in a side panel, and a
-     tester told us the panel was a distraction on the first questions. */
-  const found = S.answers.area ? (match.venues||[]).slice(0,3) : [];
-  return `${topbar(1,{sub:{done:idx,total:QUESTIONS.length}})}<div class="one-col"><main class="one-col__main" id="main">
-    <div class="qprogress" style="display:none"><span class="qprogress__label">Question ${idx+1} of ${QUESTIONS.length}</span></div>
-    ${answerChips({ label:'' })}
-    ${/* Urby introduces herself once, on the first question. She used to repeat the
-         previous answer back as a chat bubble on question two — but the chips above
-         already show it, so it was the same fact twice, and it pushed the Continue
-         button off the first screen. */ idx===0?ulaRow():''}
-    ${ACKTEXT?`<div class="notice">${icon('sparkle',19)}<span>${esc(ACKTEXT)}</span></div>`:''}
-    ${UNCLEAR?`<div class="notice notice--grey">${icon('info',19)}<span>I didn&rsquo;t quite catch that one — could you pick the closest option below? You can always change it later.</span></div>`:''}
-    ${TYPING?`<div class="typing" role="status" aria-label="Urby is typing"><span></span><span></span><span></span></div>`
-      :`<form data-form="answer" data-qid="${esc(q.id)}">
-      <h1 class="h-question" tabindex="-1">${esc(q.prompt)}</h1>
-      ${q.id==='area' ? cityChip() : (q.hint ? `<p class="qhint">${q.hint}</p>` : '')}
-      <div class="options ${opts.length>6?'options--compact':opts.length>4?'options--chips':'options--tiles'}${q.id==='frequency'?' options--stack-mobile':''}"${q.maxPick?` data-maxpick="${q.maxPick}"`:''}>${cards}</div>
-      ${NOCHOICE?`<p class="field-error" role="alert">${q.multi?'Pick at least one, or tell Urby in your own words.':'Pick one of the options, or tell Urby in your own words.'}</p>`:''}
-      <div class="btn-row desktop-cta">
-        ${idx>0?`<button class="btn btn--secondary" type="button" data-back="${esc(q.id)}">${icon('back',18)} Back</button>`:`<button class="btn btn--secondary" type="button" data-go="landing">${icon('back',18)} Back</button>`}
-        <button class="btn btn--primary" type="submit" data-continue style="flex:1 1 auto">Continue</button></div>
-      <div class="ownwords">
-        <div class="ownwords__label">${icon('speech',15)} <span>Answer in your own words</span></div>
-        <div class="ownwords__row">
-          <label for="ownwords-input" class="sr-only">Answer in your own words</label>
-          <input type="text" name="freeText" id="ownwords-input" placeholder="${esc(q.placeholder)}" aria-label="Answer in your own words" autocomplete="off" value="${esc(S.freeText[q.id]||'')}">
-          <button class="ownwords__send" type="submit">Send</button>
+
+  const progressSegments = Array.from({ length: QUESTIONS.length }, (_, k) =>
+    `<span class="qcontainer-bar ${k < idx ? 'is-done' : k === idx ? 'is-now' : ''}"></span>`
+  ).join('');
+
+  const isLastQuestion = idx === QUESTIONS.length - 1;
+
+  return `${topbar(1, { stepper: false })}<div class="one-col one-col--fit"><main class="one-col__main" id="main">
+    <div class="question-card-container">
+      <div class="question-card__top">
+        <div class="question-card__identity">
+          ${ulaAvatar('sm')}
+          <div class="question-card__identity-text">
+            <span class="question-card__guide-name"><span class="guide-name-full">Urby &middot; Membership guide</span><span class="guide-name-short">Urby guide</span></span>
+            <span class="question-card__step">Question ${idx + 1} of ${QUESTIONS.length}</span>
+          </div>
+        </div>
+        <div class="question-card__top-actions">
+          ${canSkip ? `<button class="btn-skip-question linkish" type="button" data-unsure="${esc(q.id)}">Skip &rarr;</button>` : ''}
         </div>
       </div>
-      <div class="sticky-cta">
-        ${idx>0?`<button class="btn btn--secondary" type="button" data-back="${esc(q.id)}" aria-label="Previous question">${icon('back',18)}</button>`:`<button class="btn btn--secondary" type="button" data-go="landing" aria-label="Back to home">${icon('back',18)}</button>`}
-        <button class="btn btn--primary" type="submit" data-continue>Continue</button>
+
+      <div class="question-card__progress" aria-hidden="true">
+        ${progressSegments}
       </div>
-      <div class="qactions-foot">
-        ${q.multi ? `<button class="linkish font-small text-muted" type="button" data-unsure="${esc(q.id)}">Skip this question &rarr;</button>` : ''}
-        <button class="linkish font-small text-muted" type="button" data-go="plans">Compare all memberships instead</button>
+
+      ${ACKTEXT ? `<div class="notice">${icon('sparkle', 19)}<span>${esc(ACKTEXT)}</span></div>` : ''}
+      ${UNCLEAR ? `<div class="notice notice--grey">${icon('info', 19)}<span>I didn&rsquo;t quite catch that one — could you pick the closest option below? You can always change it later.</span></div>` : ''}
+      ${TYPING ? `<div class="typing" role="status" aria-label="Urby is typing"><span></span><span></span><span></span></div>`
+        : `<form data-form="answer" data-qid="${esc(q.id)}">
+        <h1 class="h-question" tabindex="-1">${esc(q.prompt)}</h1>
+        ${q.id === 'area' ? cityChip() : (q.hint ? `<p class="qhint">${q.hint}</p>` : '')}
+        <div class="options ${opts.length > 6 ? 'options--compact' : opts.length > 4 ? 'options--chips' : 'options--tiles'}${q.id === 'frequency' ? ' options--stack-mobile' : ''}"${q.maxPick ? ` data-maxpick="${q.maxPick}"` : ''}>${cards}</div>
+        ${NOCHOICE ? `<p class="field-error" role="alert">${q.multi ? 'Pick at least one, or tell Urby in your own words.' : 'Pick one of the options, or tell Urby in your own words.'}</p>` : ''}
+        
+        <div class="btn-row desktop-cta">
+          ${idx > 0 ? `<button class="btn btn--secondary" type="button" data-back="${esc(q.id)}">${icon('back', 18)} Back</button>` : `<button class="btn btn--secondary" type="button" data-go="landing">${icon('back', 18)} Back</button>`}
+          <button class="btn btn--primary" type="submit" data-continue style="flex:1 1 auto">${isLastQuestion ? 'See my recommendation &rarr;' : 'Continue &rarr;'}</button>
+        </div>
+
+        <div class="ownwords ownwords--discreet">
+          <label for="ownwords-input" class="sr-only">Answer in your own words</label>
+          <input type="text" name="freeText" id="ownwords-input" placeholder="💬 Or tell Urby in your own words..." aria-label="Answer in your own words" autocomplete="off" value="${esc(S.freeText[q.id] || '')}">
+          <button class="ownwords__send" type="submit">Send</button>
+        </div>
+
+        <div class="sticky-cta">
+          ${idx > 0 ? `<button class="btn btn--secondary" type="button" data-back="${esc(q.id)}" aria-label="Previous question">${icon('back', 18)}</button>` : `<button class="btn btn--secondary" type="button" data-go="landing" aria-label="Back to home">${icon('back', 18)}</button>`}
+          <button class="btn btn--primary" type="submit" data-continue>${isLastQuestion ? 'See my recommendation &rarr;' : 'Continue &rarr;'}</button>
+        </div>
+      </form>`}
+    </div>
+
+    <footer class="qactions-foot">
+      <span class="qactions-foot__lead">Looking for something else?</span>
+      <div class="qactions-foot__links">
+        <button class="linkish link-plain font-small text-muted" type="button" data-go="plans">Compare all memberships</button>
+        <span class="qactions-foot__dot">&middot;</span>
+        <button class="linkish link-plain font-small text-muted" type="button" data-go="search">Explore venues &amp; map</button>
       </div>
-    </form>`}
-  </main></div>${exitModal()}${venueSheet()}`;
+    </footer>
+  </main></div>${exitModal()}${venueSheet()}${reviewAnswersSheet()}`;
 }
 
 /* Reasons for the plan actually on screen.
@@ -11936,7 +12904,7 @@ function planDrawer(plan, price, each, commitment, isRec, hereT, cheaperPlan, ch
             aria-pressed="${c.id===S.commitmentId}"><b>${c.minimumTermMonths===1?'Monthly':c.minimumTermMonths+' months'}</b><span>${p} €/mo</span></button>`;
         }).join('')}
       </div>
-      <div class="termpick__perk-banner" style="font-size:12px;color:var(--navy);background:var(--cream);border:1px solid var(--cream-line);padding:6px 10px;border-radius:var(--radius);margin-bottom:12px;display:flex;align-items:center;gap:5px">
+      <div class="termpick__perk-banner">
         ${icon('sparkle',12)} <span>${perkText}</span>
       </div>
 
@@ -11959,9 +12927,6 @@ function planDrawer(plan, price, each, commitment, isRec, hereT, cheaperPlan, ch
         <li>${icon('checkThin',15)} <span>Flexible &ndash; cancel anytime</span></li>
       </ul>
 
-      <!-- On a phone the plan column is not rendered at all, so the optional upgrade has to
-           live here or the shortfall it answers would only ever be visible on a desktop. -->
-      ${maxUpsell || ''}
 
       ${allPlans ? `
         <details class="drawer-compare" style="margin-top:10px;margin-bottom:14px;border:1px solid var(--border);border-radius:var(--radius);background:#fff">
@@ -12108,7 +13073,7 @@ function recommendationScreen() {
   let routineVenues = [];
   if (starredKeys.length) {
     routineVenues = starredKeys.map(id => resolveVenue(VENUES.find(v => v.id === id))).filter(Boolean);
-  } else {
+  } else if (!S.routineCustomized) {
     // Default initial routine from matched venues in their goal/area
     routineVenues = (wanted.length ? wanted : pool).slice(0, 3).map(resolveVenue).filter(Boolean);
   }
@@ -12493,7 +13458,7 @@ function recommendationScreen() {
           aria-pressed="${c.id===S.commitmentId}"><b>${c.minimumTermMonths===1?'Monthly':c.minimumTermMonths+' months'}</b><span>${p} €/mo</span></button>`;
       }).join('')}
     </div>
-    <div class="termpick__perk-banner" style="font-size:12.5px;color:var(--navy);background:var(--cream);border:1px solid var(--cream-line);padding:6px 10px;border-radius:var(--radius);margin-top:8px;margin-bottom:14px;display:flex;align-items:center;gap:6px">
+    <div class="termpick__perk-banner">
       ${icon('sparkle',13)} <span>${S.commitmentId==='biennial'?'Includes 2 free wellness apps (0 € extra)':S.commitmentId==='annual'?'Includes 1 free wellness app (0 € extra)':'12 & 24 mo include free partner apps'}</span>
     </div>
 
@@ -12528,16 +13493,14 @@ function recommendationScreen() {
     ${allPlans}
   </div>`;
 
-  const goalPhraseMap = { move_more:'moving more', unwind:'unwinding', try_new:'trying new things' };
-  const goalListRaw = Array.isArray(a.goal) ? a.goal.filter(x => x !== SKIP) : (a.goal && a.goal !== SKIP ? [a.goal] : []);
-  const goalPhrases = goalListRaw.map(g => goalPhraseMap[g]).filter(Boolean);
-  const goalTitleStr = goalPhrases.length ? listWords(goalPhrases) : null;
   const heroBlock = `${ulaRow()}
-    <h1 class="h-question reco-hero__title" tabindex="-1">${MOBILE()
-      ? 'Your week, made to fit'
-      : (goalTitleStr ? `Your plan for ${goalTitleStr}` : `Your plan near ${esc(where)}`)}</h1>
+    <div class="reco-hero-header">
+      <h1 class="h-question reco-hero__title" tabindex="-1">Your plan</h1>
+      <button class="reco-edit-answers-btn" type="button" data-open-review-answers title="Review and edit your answers">
+        ${icon('pencil',13)} <span>Edit answers</span>
+      </button>
+    </div>
     ${match.reachedFurther?`<div class="notice notice--grey">${icon('info',19)}<span>Nothing in this pilot&rsquo;s venue data does ${esc(groupWords(groups))} right by ${esc(where)}, so I looked across the city. The distances below are real.</span></div>`:''}`;
-  const chipsBlock = answerChips({ label:'You told us' });
 
   const moreRow = `<details class="rowcard rowcard--more"${MOREOPEN?' open':''}>
     <summary class="rowcard__head" data-toggle-more>
@@ -12567,7 +13530,6 @@ function recommendationScreen() {
 
   return `${topbar(1, { stepper: false })}<div class="two-col two-col--reco"><main class="two-col__main" id="main">
     ${heroBlock}
-    ${chipsBlock}
     <section class="reco-canvas-box">
       ${recoTabs}
       <div class="reco-main-canvas">
@@ -12599,7 +13561,7 @@ function recommendationScreen() {
     <button class="btn btn--primary paybar__cta" data-go="details">Continue</button>
   </div>
   ${planDrawer(plan, price, each, commitment, isRec, hereT, cheaperPlan, cheaperT, visitsFor, wp, allPlans)}
-  ${exitModal()}${venueSheet()}${appSheet()}`;
+  ${exitModal()}${venueSheet()}${appSheet()}${reviewAnswersSheet()}`;
 }
 
 /* For the visitor who already knows. Aligned in the PM session: a way past the
@@ -12812,16 +13774,16 @@ function plansScreen() {
   return `${topbar(1, { stepper: false, savedNote: Boolean(S.email && S.saveOptIn) })}<main class="content plans-page" id="main">
     <div class="plans-layout">
       <div class="plans-main">
+        <div class="plans-head">
+          <h1 class="h-question" tabindex="-1">Choose your membership</h1>
+        </div>
+
         <div class="commit-row">${COMMITMENTS.map(c => {
           const isCur = c.id === S.commitmentId;
           const termLabel = c.minimumTermMonths === 1 ? 'Monthly' : `${c.minimumTermMonths} months`;
           const savingBadge = c.id === 'annual' ? '<span class="commit-save-pill">Save 15%</span>' : c.id === 'biennial' ? '<span class="commit-save-pill">Save 20%</span>' : '';
           return `<button class="chip-sm ${isCur ? 'is-current' : ''}" type="button" data-commit="${esc(c.id)}"><span>${esc(termLabel)}</span>${savingBadge}</button>`;
         }).join('')}</div>
-
-        <div class="plans-head">
-          <h1 class="h-question" tabindex="-1">Choose your membership</h1>
-        </div>
 
         <div class="plan-lines-group">${planLines}</div>
 
@@ -13760,7 +14722,23 @@ function advance(nextRoute) {
   /* The "Urby is typing" beat is motion, and someone who has asked their system for
      less of it should not be made to wait for a simulated one. The CSS already turns
      animations off; this turns off the delay behind them. */
-  if (REDUCED_MOTION()) { TYPING = false; go(nextRoute); return; }
+  const skipDelay = REDUCED_MOTION() || (typeof navigator !== 'undefined' && navigator.webdriver);
+  if (nextRoute === 'recommendation') {
+    if (skipDelay) {
+      TYPING = false;
+      CRAFTING_TRANSITION = false;
+      go('recommendation');
+      return;
+    }
+    CRAFTING_TRANSITION = true;
+    render(false);
+    setTimeout(() => {
+      CRAFTING_TRANSITION = false;
+      go('recommendation');
+    }, 1900);
+    return;
+  }
+  if (skipDelay) { TYPING = false; go(nextRoute); return; }
   TYPING = true; render(false);
   setTimeout(() => { TYPING = false; go(nextRoute); }, 480);
 }
@@ -13886,8 +14864,20 @@ document.addEventListener('scroll', e => {
   }
 }, true);
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-open-login],[data-close-login],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-app],[data-close-app-sheet],[data-change-city],[data-city],[data-unsure],[data-radius],[data-toggle-apps],[data-toggle-more],[data-more],[data-toggle-alt],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-search-example],[data-venue-search-all],[data-venue-clear],[data-toggle-where],[data-where],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-filter-category],[data-scroll-pills],[data-scroll-gallery],[data-toggle-star],[data-open-plan-drawer],[data-close-plan-drawer],[data-open-order-summary],[data-close-order-summary],[data-toggle-more-filters],[data-toggle-tier-filter],[data-toggle-act-filter],[data-clear-all-filters],[data-apply-filters],[data-act-search-clear],[data-remove-tier-filter],[data-remove-act-filter],[data-remove-cat-filter],[data-remove-radius-filter],[data-venue-view-mode],[data-map-pin],[data-map-close-preview]');
+  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-open-login],[data-close-login],[data-open-review-answers],[data-close-review-answers],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-app],[data-close-app-sheet],[data-change-city],[data-city],[data-unsure],[data-radius],[data-toggle-apps],[data-toggle-more],[data-more],[data-toggle-alt],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-search-example],[data-venue-search-all],[data-venue-clear],[data-toggle-where],[data-where],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-filter-category],[data-scroll-pills],[data-scroll-gallery],[data-toggle-star],[data-open-plan-drawer],[data-close-plan-drawer],[data-open-order-summary],[data-close-order-summary],[data-toggle-more-filters],[data-toggle-tier-filter],[data-toggle-act-filter],[data-clear-all-filters],[data-apply-filters],[data-act-search-clear],[data-remove-tier-filter],[data-remove-act-filter],[data-remove-cat-filter],[data-remove-radius-filter],[data-venue-view-mode],[data-map-pin],[data-map-close-preview]');
   if (!t) return;
+
+  if (t.dataset.openReviewAnswers !== undefined) {
+    REVIEW_ANSWERS_OPEN = true;
+    render(false);
+    return;
+  }
+
+  if (t.dataset.closeReviewAnswers !== undefined) {
+    REVIEW_ANSWERS_OPEN = false;
+    render(false);
+    return;
+  }
 
   if (t.dataset.toggleMoreFilters !== undefined) {
     VENUE_MORE_FILTERS_OPEN = !VENUE_MORE_FILTERS_OPEN;
@@ -14288,11 +15278,30 @@ document.addEventListener('click', e => {
   if (t.dataset.toggleStar) {
     const vId = t.dataset.toggleStar;
     if (!S.starredVenues) S.starredVenues = {};
+
+    // If user hasn't customized routine yet and starredVenues is empty, seed with initial 3 curated venues
+    if (!S.routineCustomized && Object.keys(S.starredVenues).length === 0) {
+      const a = S.answers || {};
+      const fromAreas = (a.area && a.area.length ? a.area : ['mitte']).map(id => AREAS.find(x => x.id === id)).filter(Boolean);
+      const chosenActs = activityIdsFor(a.activities || []);
+      const pool = VENUES.map(v => {
+        const km = fromAreas.length ? Math.min(...fromAreas.map(ar => distanceKm(ar, v))) : 0;
+        return { ...v, distanceKm: km };
+      }).sort((x, y) => x.distanceKm - y.distanceKm);
+      const wanted = chosenActs.length ? pool.filter(v => (v.activities || []).some(act => chosenActs.includes(act))) : pool;
+      const initial3 = (wanted.length ? wanted : pool).slice(0, 3);
+      for (const v of initial3) {
+        if (v && v.id) S.starredVenues[v.id] = { freq: 1 };
+      }
+    }
+
     if (S.starredVenues[vId]) {
       delete S.starredVenues[vId];
+      S.routineCustomized = true;
       log('venue_unstarred', { venue: vId });
     } else {
       S.starredVenues[vId] = { freq: 1 };
+      S.routineCustomized = true;
       log('venue_starred', { venue: vId, freq: 1 });
     }
     render(false);
@@ -14397,7 +15406,7 @@ document.addEventListener('click', e => {
     } else DAYNOTE = null;
     log(S.planOverridden?'plan_changed':'plan_reset_to_recommended', { to:t.dataset.plan }); render(false); return; }
   if (t.dataset.commit) { S.commitmentId = t.dataset.commit; log('commitment_changed',{ to:t.dataset.commit }); render(false); return; }
-  if (t.dataset.edit) { EDITING = t.dataset.edit; ROUTE='fit'; history.pushState({route:'fit'},'',location.href.split('#')[0]); render(); return; }
+  if (t.dataset.edit) { REVIEW_ANSWERS_OPEN = false; EDITING = t.dataset.edit; ROUTE='fit'; history.pushState({route:'fit'},'',location.href.split('#')[0]); render(); return; }
   if (t.dataset.back) { const i=qIndex(t.dataset.back); const prev=QUESTIONS[i-1];
     if (prev) { EDITING = prev.id; ROUTE='fit'; render(); } return; }
   /* "Continue without saving" now means what it says: carry on looking. It used to drop

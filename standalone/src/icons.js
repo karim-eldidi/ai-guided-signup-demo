@@ -62,7 +62,8 @@ const ICONS = {
   qr:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="3" height="3"/><rect x="18" y="18" width="3" height="3"/><rect x="18" y="14" width="3" height="3"/><rect x="14" y="18" width="3" height="3"/>',
   bag:'<path d="M6 8V6a6 6 0 0 1 12 0v2"/><rect x="4" y="8" width="16" height="13" rx="2.5"/><path d="M10 12h4"/>',
   shower:'<path d="M4 4h7a4 4 0 0 1 4 4v1"/><path d="M11 14v.01M14 14v.01M17 14v.01M9 18v.01M12 18v.01M15 18v.01"/><path d="M10 9a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1H10V9z"/>',
-  map:'<polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/>'
+  map:'<polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/>',
+  user:'<circle cx="12" cy="8" r="4.2"/><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0"/>'
 };
 const icon = (n, s = 22) => svg(ICONS[n] || ICONS.info, s);
 const ulaAvatar = (size='md') => {

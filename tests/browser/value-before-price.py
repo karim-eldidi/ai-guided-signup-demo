@@ -35,9 +35,9 @@ with sync_playwright() as p:
     # line under it is their four answers written back as one sentence.
     if h1.lower().startswith('your plan'): P(f"the page opens with value: '{h1}'")
     else: F(f"the page opens with something else: '{h1}'")
-    chips=pg.locator('.chips-row')
-    if chips.count(): P("and shows the answers as editable chips")
-    else: F("answer chips are missing")
+    edit_btn=pg.locator('.reco-edit-answers-btn, [data-open-review-answers]')
+    if edit_btn.count(): P("and shows the edit answers action in header")
+    else: F("edit answers action is missing from recommendation")
     if not re.search(r'\d+\s*€', h1): P("no price in the headline")
     else: F(f"the headline still leads with a price: {h1}")
 
@@ -90,8 +90,9 @@ with sync_playwright() as p:
     else: F(f"no per-session figure: {each}")
 
     # --- session count follows the frequency answer ------------------------
-    # answers are editable chips now — the tester who could not find them looked here
-    pg.locator('.answer-chip').last.click(); pg.wait_for_timeout(800)
+    # answers are editable via the edit answers header button and review drawer
+    pg.locator('.reco-edit-answers-btn, [data-open-review-answers]').first.click(); pg.wait_for_timeout(400)
+    pg.locator('.review-answers-item__edit[data-edit="frequency"]').click(); pg.wait_for_timeout(800)
     pg.locator('.option-card:has-text("Five times a week or more")').first.click()
     pg.locator('[data-continue]:visible').first.click(); pg.wait_for_timeout(1000)
     
@@ -145,15 +146,14 @@ with sync_playwright() as p:
     def snap():
         return (pg3.locator('.routine-item').count(),
                 pg3.locator('.planbox__name').inner_text(),
-                pg3.locator('.planbox__price b').inner_text(),
-                pg3.locator('.answer-chip:visible').last.inner_text())
+                pg3.locator('.planbox__price b').inner_text())
     
-    r_count1, plan1, price1, chip1 = snap()
+    r_count1, plan1, price1 = snap()
     
     # Test removing an item from routine
     if pg3.locator('.routine-item__remove-btn').count():
         pg3.locator('.routine-item__remove-btn').first.click(); pg3.wait_for_timeout(600)
-        r_count2, plan2, price2, chip2 = snap()
+        r_count2, plan2, price2 = snap()
         if r_count2 == r_count1 - 1 or r_count2 == len(pg3.locator('.routine-item').all()):
             P(f"removing an item updates routine count ({r_count1} -> {r_count2})")
         else:
