@@ -211,7 +211,7 @@ with sync_playwright() as p:
     if "Classic" in plan and "75" in price: P("Monthly (no minimum term) price is the default: 75 €")
     elif "Classic" in plan: F(f"Classic recommended but price reads {price.strip()}")
     else: F(f"Unexpected recommendation: {plan}")
-    if head.lower().startswith('your plan'): P("the page opens with what you could do, not with a price")
+    if head.lower().startswith(('your plan', 'your personalized plan')): P("the page opens with what you could do, not with a price")
     else: F(f"the page still opens with a pitch: {head}")
     # Folded here, not gone: one of the three sections behind "Questions and details",
     # named on its own handle so nobody has to guess what is in the drawer.

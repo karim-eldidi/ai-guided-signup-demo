@@ -33,7 +33,7 @@ with sync_playwright() as p:
     h1=pg.locator('#main h1').first.inner_text()
     # Karim's design, 14 Aug: the page opens by naming what they want out of it, and the
     # line under it is their four answers written back as one sentence.
-    if h1.lower().startswith('your plan'): P(f"the page opens with value: '{h1}'")
+    if h1.lower().startswith(('your plan', 'your personalized plan')): P(f"the page opens with value: '{h1}'")
     else: F(f"the page opens with something else: '{h1}'")
     edit_btn=pg.locator('.reco-edit-answers-btn, [data-open-review-answers]')
     if edit_btn.count(): P("and shows the edit answers action in header")

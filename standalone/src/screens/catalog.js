@@ -451,7 +451,7 @@ function routinePanel() {
           esc(answerLabel(x.id,S.answers[x.id]))}</span>${icon('pencil',14)}</button>`).join('')}</div>` : ''}
     </div>
     <div class="routine__side">
-      ${left ? `<button class="btn btn--primary" data-start-fit>See my recommendation ${icon('arrowRight',18)}</button>
+      ${left ? `<button class="btn btn--primary" data-go="fit">See my recommendation ${icon('arrowRight',18)}</button>
         <p class="routine__note">${plural(left,'question','questions')} left &mdash; then one membership, with its reasons.</p>`
         : `<button class="btn btn--primary" data-go="recommendation">See my recommendation ${icon('arrowRight',18)}</button>
         <p class="routine__note">Built from your four answers, and yours to change.</p>`}
@@ -723,8 +723,18 @@ function searchScreen() {
   const shown = (SEEALL || VENUE_VIEW_MODE !== 'scroll' || hasActiveFilters) ? b.within : b.within.slice(0, 4);
 
   const backTarget = (WEEK_ADD_MODE || S.lastStep === 'recommendation' || hasSaveableProgress()) ? 'recommendation' : 'landing';
-  const backLabel = WEEK_ADD_MODE ? 'Back to my week' : (backTarget === 'recommendation' ? 'Back to recommendation' : 'Back');
-  const routineCount = Object.keys(S.starredVenues || {}).length;
+  const backLabel = WEEK_ADD_MODE ? 'Back to my week' : (backTarget === 'recommendation' ? (MOBILE() ? 'Back' : 'Back to recommendation') : 'Back');
+  let routineCount = Object.keys(S.starredVenues || {}).length;
+  if (routineCount === 0 && !S.routineCustomized) {
+    const chosenActs = activityIdsFor(S.answers.activities || []);
+    const fromAreas = (S.answers.area && S.answers.area.length ? S.answers.area : ['mitte']).map(id => AREAS.find(x => x.id === id)).filter(Boolean);
+    const poolVal = VENUES.map(v => {
+      const km = fromAreas.length ? Math.min(...fromAreas.map(ar => distanceKm(ar, v))) : 0;
+      return { ...v, distanceKm: km };
+    }).sort((x, y) => x.distanceKm - y.distanceKm);
+    const wantedVal = chosenActs.length ? poolVal.filter(v => (v.activities || []).some(act => chosenActs.includes(act))) : poolVal;
+    routineCount = (wantedVal.length ? wantedVal : poolVal).slice(0, 3).length;
+  }
   const routineLead = routineCount
     ? `${routineCount} ${routineCount === 1 ? 'place' : 'places'} in your routine`
     : 'No places in your routine yet';
@@ -757,7 +767,7 @@ function searchScreen() {
 
   return `<header class="topbar">
     <div class="topbar__left"><button class="wordmark linkish" style="text-decoration:none" data-go="landing">Urban Sports Club</button></div>
-    <div></div>
+    <div class="topbar__center"></div>
     <div class="topbar__right"><button class="link-plain linkish strong" data-go="${backTarget}">${icon('back', 17)} ${backLabel}</button></div>
   </header>
   <main class="content venuepage" id="main">
@@ -786,8 +796,8 @@ function searchScreen() {
             <form data-form="search" class="venue-search-bar" role="search">
               <div class="findsearch">
                 <span class="findsearch__icon" aria-hidden="true">${icon('search', 16)}</span>
-                <input type="search" name="q" id="venue-search-q" value="${esc(VENUEQ || (typeof SEARCH !== 'undefined' && SEARCH && SEARCH.q) || '')}"
-                  placeholder="Search venues, activities or addresses..." aria-label="Search venues, activities or addresses with Urby" autocomplete="off" data-venue-input>
+                 <input type="search" name="q" id="venue-search-q" value="${esc(VENUEQ || (typeof SEARCH !== 'undefined' && SEARCH && SEARCH.q) || '')}"
+                  placeholder="Search venues, activities, or write down any address..." aria-label="Search venues, activities or addresses with Urby" autocomplete="off" data-venue-input>
                 ${(VENUEQ || (typeof SEARCH !== 'undefined' && SEARCH && SEARCH.q)) ? `<button type="button" class="findsearch__clear" data-venue-clear aria-label="Clear search">${icon('close', 12)}</button>` : ''}
                 <button class="findsearch__btn" type="submit">Search</button>
               </div>

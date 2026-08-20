@@ -23,7 +23,6 @@
     </div>
     <div class="two-col two-col--form">
       <div class="two-col__main">
-        ${ulaNote('Enter your details to create your membership account. Nothing will be charged today.')}
         <form class="details-form" data-form="details" novalidate>
           <div class="details-sso">
             <div class="sso-row">

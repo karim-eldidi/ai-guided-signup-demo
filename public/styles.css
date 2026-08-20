@@ -341,19 +341,19 @@ b, strong { font-weight: 700; }
 .saved-note__mail { max-width: 22ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .link-plain { background: none; border: 0; padding: 0; font-size: 16px; font-weight: 700; text-decoration: none; color: var(--ink); }
 
-.stepper { display: flex; align-items: flex-start; gap: 0; }
-.stepper__step { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 96px; }
+.stepper { display: flex; align-items: center; gap: 0; }
+.stepper__step { display: flex; flex-direction: row; align-items: center; gap: 6px; width: auto; }
 .stepper__dot {
-  width: 32px; height: 32px; border-radius: 50%;
+  width: 22px; height: 22px; border-radius: 50%;
   display: grid; place-items: center;
-  font-size: 15px; font-weight: 700;
+  font-size: 11px; font-weight: 700;
   border: 1.5px solid #c9c7c1; color: #8d8b86; background: #fff;
 }
 .stepper__step.is-current .stepper__dot { background: var(--ink); border-color: var(--ink); color: #fff; }
 .stepper__step.is-done .stepper__dot { background: var(--ink); border-color: var(--ink); color: #fff; }
-.stepper__label { font-size: 14.5px; font-weight: 600; color: var(--navy-soft); }
+.stepper__label { font-size: 13px; font-weight: 600; color: var(--navy-soft); }
 .stepper__step.is-current .stepper__label { color: var(--ink); font-weight: 700; }
-.stepper__line { flex: 0 0 auto; width: 74px; height: 1.5px; background: #d8d6d0; margin-top: 15px; }
+.stepper__line { flex: 0 0 auto; width: 28px; height: 1.5px; background: #d8d6d0; margin: 0 8px; }
 /* Dedicated question progress during fit discovery (Option 1) */
 .qstep {
   display: flex;
@@ -502,6 +502,13 @@ b, strong { font-weight: 700; }
 .btn--secondary { background: #fff; color: var(--ink); border-color: var(--ink); }
 .btn--block { width: 100%; }
 .btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn--sm {
+  height: 38px;
+  padding: 0 16px;
+  font-size: 13.5px;
+  border-radius: 9999px;
+  gap: 6px;
+}
 
 .btn-row { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 22px; }
 
@@ -817,7 +824,7 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
   transition: border-color .12s ease, transform .12s ease, background-color .12s ease;
 }
 .answer-chip:hover { border-color: var(--ink); background: var(--cream); transform: translateY(-0.5px); }
-.answer-chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.answer-chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 250px; }
 .answer-chip svg:first-child { color: var(--navy-soft); flex: 0 0 auto; width: 13px; height: 13px; }
 .answer-chip__edit-icon { display: flex; align-items: center; color: var(--navy-soft); margin-left: 2px; }
 .answer-chip:hover .answer-chip__edit-icon { color: var(--ink); }
@@ -841,19 +848,22 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
    in a sticky column beside it — a consequence of the value, not the pitch. */
 /* The value column earns the width here; the plan needs only enough to be clear. */
 .two-col--reco {
-  max-width: 1280px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 390px;
+  gap: 28px;
+  align-items: start;
+  max-width: 1300px;
   margin: 0 auto;
-  grid-template-columns: minmax(0, 1fr) 400px;
-  gap: 40px;
-  padding: 0 24px;
+  padding: 0 clamp(16px, 2.5vw, 32px);
   width: 100%;
+  box-sizing: border-box;
 }
 /* The bonus material is a third grid region rather than the tail of the story column,
    so the reading order is right on both shapes: on a desktop it flows back under the
    story, on a phone it lands after the plan box instead of ahead of it. */
 .reco-tail { grid-column: 1; grid-row: 2; padding: 0 0 80px; max-width: 100%; }
-.two-col--reco .two-col__main { grid-column: 1; grid-row: 1; padding: 8px 0 80px; max-width: 100%; }
-.two-col--reco .two-col__aside { grid-column: 2; grid-row: 1 / span 2; margin: 4px 0 24px 0; }
+.two-col--reco .two-col__main { grid-column: 1; grid-row: 1; padding: 8px 0 80px 0; max-width: 100%; min-width: 0; }
+.two-col--reco .two-col__aside { grid-column: 2; grid-row: 1 / span 2; margin-top: 111px; margin-bottom: 24px; width: 100%; }
 /* Karim: "I have to get to the bottom of the page to see the rest of the side menu."
    A sticky column taller than the viewport is unreachable until you scroll past it. It
    now caps at the viewport and scrolls itself, so the plan, the alternative and the
@@ -1686,7 +1696,7 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
 .details-divider::before, .details-divider::after { content: ""; flex: 1; height: 1px; background: var(--border); }
 .details-section { margin-top: 16px; }
 .details-divider + .details-section { margin-top: 0; }
-.details-section .fitpanel__label { margin-bottom: 6px; }
+.details-section .fitpanel__label { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
 .details-grid { display: grid; gap: 11px; }
 .details-grid + .details-grid { margin-top: 11px; }
 .details-grid--person { grid-template-columns: 1fr 1fr .85fr; }
@@ -1695,10 +1705,10 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
 .details-form .field { gap: 5px; }
 /* The label carries its own "Optional" tag on the right, so the one field that is
    not required says so where it is asked rather than in a blanket line at the top. */
-.details-form .field label { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; font-size: 13.5px; }
+.details-form .field label { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; font-size: 13px; font-weight: 600; color: var(--navy); }
 .field__opt { flex: 0 0 auto; color: var(--navy-soft); font-weight: 400; font-size: 12.5px; }
-.details-form .field input, .details-form .field select { height: 46px; padding: 0 13px; }
-.details-form .field__why { font-size: 12.5px; }
+.details-form .field input, .details-form .field select { height: 46px; padding: 0 13px; font-size: 14.5px; border-radius: 8px; }
+.details-form .field__why { font-size: 12px; color: var(--navy-soft); }
 .details-form__actions { margin-top: 20px; }
 .details-form__actions .btn { width: 100%; height: 54px; margin: 0; }
 .details-form__actions .reassure { margin: 12px 0 0; }
@@ -1723,9 +1733,11 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
   .details-grid { gap: 12px; }
   .details-form .field input, .details-form .field select { height: 46px; font-size: 15px; }
   .details-form .field label { font-size: 13.5px; }
-  /* the inline button is hidden here, so this only carries the honesty line */
   .details-form__actions { margin-top: 18px; }
   .details-form__actions .reassure { margin: 0; }
+  .details-page-wrap, .pay-page {
+    padding-bottom: 120px !important;
+  }
 }
 
 @media (max-width: 620px) {
@@ -2000,7 +2012,7 @@ body.save-modal-open .stepper, body.save-modal-open .planbox__cta, body.save-mod
 
 
   /* app shell */
-  .topbar { grid-template-columns: 1fr auto; padding: 12px 16px 6px; align-items: center; }
+  .topbar { display: flex; justify-content: space-between; padding: 12px 16px 6px; align-items: center; gap: 8px; }
   .topbar__center { display: none; }
   .topbar .wordmark { font-size: 15px; }
   .topbar .link-plain { font-size: 13.5px; white-space: nowrap; }
@@ -2025,7 +2037,8 @@ body.save-modal-open .stepper, body.save-modal-open .planbox__cta, body.save-mod
   .reco-tail { padding: 0 20px 80px; max-width: none; }
   .two-col__main { padding: 10px 20px 4px; max-width: none; }
   /* room for the sticky Continue bar, so nothing sits underneath it */
-  .two-col__aside { margin: 0 20px 132px; }
+  .two-col__aside,
+  .two-col--reco .two-col__aside { margin: 0 20px 132px; }
   /* the details form ends in a paybar too, so its recap needs the same clearance. The
      desktop padding under the form held it off the page edge below its own button;
      stacked it only left a dead band between the form and the recap below it. */
@@ -3010,8 +3023,8 @@ button.appcard:hover .appcard__info-icon {
 .planbox__why-disclosure {
   margin-top: 10px;
   border-radius: var(--radius);
-  border: 1px solid #e4e4e7;
-  background: #ffffff;
+  border: 1px solid #fef08a;
+  background: #fefce8;
   overflow: hidden;
   transition: all .2s ease;
 }
@@ -3025,10 +3038,10 @@ button.appcard:hover .appcard__info-icon {
   color: var(--ink);
   cursor: pointer;
   user-select: none;
-  background: #ffffff;
+  background: #fefce8;
 }
 .planbox__why-head:hover {
-  background: #f8fafc;
+  background: #fef9c3;
 }
 .planbox__why-chevron {
   display: inline-flex;
@@ -3040,10 +3053,10 @@ button.appcard:hover .appcard__info-icon {
   transform: rotate(180deg);
 }
 .planbox__why-disclosure .planbox__facts {
-  padding: 0 14px 12px;
+  padding: 12px 14px 12px;
   margin: 0;
-  border-top: 1px solid #e4e4e7;
-  background: #ffffff;
+  border-top: 1px solid #fef08a;
+  background: #fefce8;
 }
 
 @media (max-width: 900px) {
@@ -4609,18 +4622,18 @@ button.appcard:hover .appcard__info-icon {
    behaviour, so it is a card of its own with a handle that names it, and it starts open.
    Closing it is how the column gets shorter, which is the other thing he asked for. */
 .allplans {
-  margin-top: 18px; background: #fefce8; border: 1px solid #fef08a;
+  margin-top: 18px; background: #fafaf9; border: 1px solid #e7e5e4;
   border-radius: var(--radius-lg); overflow: hidden;
 }
 .allplans__head {
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
   cursor: pointer; list-style: none; padding: 14px 15px;
-  font-size: 16px; font-weight: 700; letter-spacing: -.01em; color: var(--ink);
-  background: #fefce8;
+  font-size: 15.5px; font-weight: 700; letter-spacing: -.01em; color: var(--ink);
+  background: #fafaf9;
   transition: background .15s ease;
 }
 .allplans__head:hover {
-  background: #fef9c3;
+  background: #f5f5f4;
 }
 .allplans__headcopy { min-width: 0; }
 .allplans__headcopy > span { display: block; }
@@ -4632,24 +4645,24 @@ button.appcard:hover .appcard__info-icon {
 .allplans__head svg { flex: 0 0 auto; color: var(--navy-soft); transform: rotate(90deg); transition: transform .16s ease; }
 .allplans[open] .allplans__head svg { transform: rotate(-90deg); }
 .allplans[open] .allplans__head { padding-bottom: 10px; }
-.allplans__grid { display: grid; gap: 1px; background: #fef08a; }
+.allplans__grid { display: grid; gap: 1px; background: #e7e5e4; }
 .allplans__row {
   display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; align-items: baseline;
-  background: #fffdf5; padding: 11px 15px;
+  background: #ffffff; padding: 11px 15px;
   transition: background .15s ease;
 }
-.allplans__row.is-current { background: #fef9c3; }
+.allplans__row.is-current { background: #f4f4f5; }
 .allplans__row[data-plan] { cursor: pointer; }
-.allplans__row[data-plan]:hover { background: #ffffff; }
-.allplans__name { font-size: 16px; font-weight: 700; letter-spacing: -.01em; }
+.allplans__row[data-plan]:hover { background: #fafafa; }
+.allplans__name { font-size: 15.5px; font-weight: 700; letter-spacing: -.01em; }
 /* A pill, not a caption: on the row it has to read as a label attached to that plan
    rather than as a second half of its name. */
 .allplans__tag {
-  display: inline-block; background: var(--yellow-bright); color: var(--ink);
-  font-size: 11.5px; font-weight: 700; letter-spacing: .01em;
-  padding: 3px 8px; border-radius: 999px; margin-left: 8px; vertical-align: 1px;
+  display: inline-block; background: #fef08a; color: #713f12;
+  font-size: 11px; font-weight: 700; letter-spacing: .01em;
+  padding: 2.5px 7px; border-radius: 999px; margin-left: 8px; vertical-align: 1px;
 }
-.allplans__price { font-size: 16px; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
+.allplans__price { font-size: 15.5px; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
 .allplans__price small { font-weight: 400; font-size: 12px; color: var(--navy-soft); }
 .allplans__opens { font-size: 13.5px; color: var(--navy-soft); font-variant-numeric: tabular-nums; }
 .allplans__act { text-align: right; font-size: 13.5px; }
@@ -4660,7 +4673,7 @@ button.appcard:hover .appcard__info-icon {
   font-size: 12px; line-height: 1.4; color: #8a5a1a; margin-top: 4px;
 }
 .allplans__warn svg { flex: 0 0 auto; margin-top: 1px; }
-.allplans__foot { text-align: center; font-size: 13.5px; margin: 0; padding: 13px 15px; background: #fefce8; }
+.allplans__foot { text-align: center; font-size: 13.5px; margin: 0; padding: 13px 15px; background: #fafaf9; }
 
 /* What the money opens, on the card that carries the money (rule 14). */
 .planbox__opens {
@@ -4725,6 +4738,10 @@ button.appcard:hover .appcard__info-icon {
   background: var(--yellow-pale); color: #855800; font-size: 11.5px; font-weight: 700;
   padding: 2px 7px; border-radius: 9999px;
 }
+.reco-tab--mobile,
+.reco-tab-panel--mobile-only {
+  display: none !important;
+}
 
 /* Made For You Section */
 .made-for-you {
@@ -4734,7 +4751,7 @@ button.appcard:hover .appcard__info-icon {
   display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 12px;
 }
 .made-for-you__title {
-  font-size: 21px; font-weight: 800; margin: 0; color: var(--ink); letter-spacing: -.01em;
+  font-size: 16.5px; font-weight: 700; margin: 0; color: var(--ink); letter-spacing: -.01em;
 }
 .made-for-you__sub {
   font-size: 13px; color: var(--navy-soft); margin: 2px 0 0;
@@ -5398,30 +5415,70 @@ button.appcard:hover .appcard__info-icon {
 
 .gallery-empty-state {
   background: #faf8f5;
-  border: 1px dashed var(--border);
+  border: 1.5px dashed var(--border);
   border-radius: var(--radius-lg);
-  padding: 24px 20px;
+  padding: 32px 24px;
   text-align: center;
-  margin: 10px 0 16px;
+  margin: 16px 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
+  animation: emptyStateFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-.gallery-empty-state__icon {
-  width: 42px; height: 42px; border-radius: 50%;
-  background: #fff; border: 1px solid var(--border);
-  display: grid; place-items: center; color: var(--navy-soft);
-  margin-bottom: 2px;
+
+@keyframes emptyStateFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
 }
+
+.gallery-empty-state__avatar {
+  margin-bottom: 4px;
+  display: inline-block;
+  position: relative;
+}
+
+.gallery-empty-state__avatar .urby-mascot {
+  animation: urbyMascotFloat 3s ease-in-out infinite alternate;
+}
+
+@keyframes urbyMascotFloat {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-6px); }
+}
+
+.urby-wave {
+  transform-origin: 78px 56px;
+  animation: urbyWaveHand 1.8s ease-in-out infinite;
+}
+
+@keyframes urbyWaveHand {
+  0%, 100% { transform: rotate(0deg); }
+  30% { transform: rotate(-18deg); }
+  70% { transform: rotate(12deg); }
+}
+
 .gallery-empty-state__text b {
-  display: block; font-size: 15.5px; font-weight: 700; color: var(--ink); margin-bottom: 4px;
+  display: block; font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 6px;
+  line-height: 1.3;
 }
 .gallery-empty-state__text p {
-  font-size: 13px; color: var(--navy-soft); margin: 0; max-width: 50ch;
+  font-size: 13.5px; color: var(--navy-soft); margin: 0; max-width: 52ch;
+  line-height: 1.45;
 }
 .gallery-empty-state__actions {
-  display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 10px;
+  display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 14px;
+}
+
+@media (max-width: 480px) {
+  .gallery-empty-state__actions {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+  .gallery-empty-state__actions .btn {
+    width: 100%;
+  }
 }
 
 .made-for-you__foot {
@@ -6381,10 +6438,24 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
     margin: 0 0 12px;
     gap: 16px;
     border-bottom: 1.5px solid rgba(0,0,0,0.06);
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .reco-tabs::-webkit-scrollbar {
+    display: none;
   }
   .reco-tab {
     padding: 4px 0 8px;
-    font-size: 15px;
+    font-size: 14.5px;
+    flex: 0 0 auto;
+  }
+  .reco-tab--mobile {
+    display: inline-flex !important;
+  }
+  .reco-tab-panel--mobile-only {
+    display: block !important;
   }
 
   /* Made For You Section Header */
@@ -6399,8 +6470,8 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
     width: 100%;
   }
   .made-for-you__title {
-    font-size: 16.5px;
-    font-weight: 800;
+    font-size: 15px;
+    font-weight: 700;
     line-height: 1.25;
     margin: 0;
   }
@@ -7383,15 +7454,20 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 .confirm-receipt-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 2px;
 }
 .confirm-receipt-row {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
   gap: 12px;
+  padding: 6px 0;
   font-size: 13.5px;
   color: var(--ink);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+.confirm-receipt-row:last-child {
+  border-bottom: none;
 }
 .confirm-receipt-row .muted {
   color: var(--navy-soft);
@@ -7409,6 +7485,15 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   font-size: 16px;
   font-weight: 700;
 }
+.confirm-receipt-footer {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  font-size: 11.5px;
+  font-weight: 400;
+  color: var(--navy-soft);
+  line-height: 1.5;
+}
 .confirm-receipt-simulated-note {
   margin: 14px 0 0;
   font-size: 12px;
@@ -7419,10 +7504,16 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 }
 
 .confirm-urby-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
   background: var(--cream);
   border: 1px solid var(--cream-line);
   border-radius: var(--radius-lg);
   padding: 16px;
+}
+.confirm-urby-card > div {
+  flex: 1 1 auto;
 }
 .confirm-urby-card b {
   display: block;
@@ -7687,9 +7778,10 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   left: 8px;
   z-index: 3;
   display: flex;
-  align-items: center;
-  gap: 5px;
-  flex-wrap: nowrap;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  pointer-events: none;
 }
 
 .activity-card__badge {

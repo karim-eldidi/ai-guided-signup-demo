@@ -117,12 +117,12 @@ function advance(nextRoute) {
     setTimeout(() => {
       CRAFTING_TRANSITION = false;
       go('recommendation');
-    }, 1900);
+    }, 2400);
     return;
   }
-  if (skipDelay) { TYPING = false; go(nextRoute); return; }
-  TYPING = true; render(false);
-  setTimeout(() => { TYPING = false; go(nextRoute); }, 480);
+  // Questions transition is now instant per user request
+  TYPING = false;
+  go(nextRoute);
 }
 
 /* ---------------- interactions ---------------- */
@@ -593,7 +593,10 @@ document.addEventListener('click', e => {
       S.answers = {};
     }
     S.planOverridden = false;
-    log('started_conversation', { variant:VARIANT, from:t.dataset.areaId?'search':'landing' }); go('fit'); return; }
+    log('started_conversation', { variant:VARIANT, from:t.dataset.areaId?'search':'landing' });
+    go('fit');
+    return;
+  }
   if (t.dataset.searchExample) { SEARCH.q = t.dataset.searchExample; SEARCH.result = searchPlaces(SEARCH.q);
     log('searched', { query:SEARCH.q, matched:SEARCH.result?SEARCH.result.kind:'none', example:true });
     render(false); return; }

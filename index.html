@@ -354,19 +354,19 @@ b, strong { font-weight: 700; }
 .saved-note__mail { max-width: 22ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .link-plain { background: none; border: 0; padding: 0; font-size: 16px; font-weight: 700; text-decoration: none; color: var(--ink); }
 
-.stepper { display: flex; align-items: flex-start; gap: 0; }
-.stepper__step { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 96px; }
+.stepper { display: flex; align-items: center; gap: 0; }
+.stepper__step { display: flex; flex-direction: row; align-items: center; gap: 6px; width: auto; }
 .stepper__dot {
-  width: 32px; height: 32px; border-radius: 50%;
+  width: 22px; height: 22px; border-radius: 50%;
   display: grid; place-items: center;
-  font-size: 15px; font-weight: 700;
+  font-size: 11px; font-weight: 700;
   border: 1.5px solid #c9c7c1; color: #8d8b86; background: #fff;
 }
 .stepper__step.is-current .stepper__dot { background: var(--ink); border-color: var(--ink); color: #fff; }
 .stepper__step.is-done .stepper__dot { background: var(--ink); border-color: var(--ink); color: #fff; }
-.stepper__label { font-size: 14.5px; font-weight: 600; color: var(--navy-soft); }
+.stepper__label { font-size: 13px; font-weight: 600; color: var(--navy-soft); }
 .stepper__step.is-current .stepper__label { color: var(--ink); font-weight: 700; }
-.stepper__line { flex: 0 0 auto; width: 74px; height: 1.5px; background: #d8d6d0; margin-top: 15px; }
+.stepper__line { flex: 0 0 auto; width: 28px; height: 1.5px; background: #d8d6d0; margin: 0 8px; }
 /* Dedicated question progress during fit discovery (Option 1) */
 .qstep {
   display: flex;
@@ -515,6 +515,13 @@ b, strong { font-weight: 700; }
 .btn--secondary { background: #fff; color: var(--ink); border-color: var(--ink); }
 .btn--block { width: 100%; }
 .btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn--sm {
+  height: 38px;
+  padding: 0 16px;
+  font-size: 13.5px;
+  border-radius: 9999px;
+  gap: 6px;
+}
 
 .btn-row { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 22px; }
 
@@ -854,19 +861,22 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
    in a sticky column beside it — a consequence of the value, not the pitch. */
 /* The value column earns the width here; the plan needs only enough to be clear. */
 .two-col--reco {
-  max-width: 1280px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 390px;
+  gap: 28px;
+  align-items: start;
+  max-width: 1300px;
   margin: 0 auto;
-  grid-template-columns: minmax(0, 1fr) 400px;
-  gap: 40px;
-  padding: 0 24px;
+  padding: 0 clamp(16px, 2.5vw, 32px);
   width: 100%;
+  box-sizing: border-box;
 }
 /* The bonus material is a third grid region rather than the tail of the story column,
    so the reading order is right on both shapes: on a desktop it flows back under the
    story, on a phone it lands after the plan box instead of ahead of it. */
 .reco-tail { grid-column: 1; grid-row: 2; padding: 0 0 80px; max-width: 100%; }
-.two-col--reco .two-col__main { grid-column: 1; grid-row: 1; padding: 8px 0 80px; max-width: 100%; }
-.two-col--reco .two-col__aside { grid-column: 2; grid-row: 1 / span 2; margin: 4px 0 24px 0; }
+.two-col--reco .two-col__main { grid-column: 1; grid-row: 1; padding: 8px 0 80px 0; max-width: 100%; min-width: 0; }
+.two-col--reco .two-col__aside { grid-column: 2; grid-row: 1 / span 2; margin-top: 111px; margin-bottom: 24px; width: 100%; }
 /* Karim: "I have to get to the bottom of the page to see the rest of the side menu."
    A sticky column taller than the viewport is unreachable until you scroll past it. It
    now caps at the viewport and scrolls itself, so the plan, the alternative and the
@@ -1699,7 +1709,7 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
 .details-divider::before, .details-divider::after { content: ""; flex: 1; height: 1px; background: var(--border); }
 .details-section { margin-top: 16px; }
 .details-divider + .details-section { margin-top: 0; }
-.details-section .fitpanel__label { margin-bottom: 6px; }
+.details-section .fitpanel__label { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
 .details-grid { display: grid; gap: 11px; }
 .details-grid + .details-grid { margin-top: 11px; }
 .details-grid--person { grid-template-columns: 1fr 1fr .85fr; }
@@ -1708,10 +1718,10 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
 .details-form .field { gap: 5px; }
 /* The label carries its own "Optional" tag on the right, so the one field that is
    not required says so where it is asked rather than in a blanket line at the top. */
-.details-form .field label { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; font-size: 13.5px; }
+.details-form .field label { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; font-size: 13px; font-weight: 600; color: var(--navy); }
 .field__opt { flex: 0 0 auto; color: var(--navy-soft); font-weight: 400; font-size: 12.5px; }
-.details-form .field input, .details-form .field select { height: 46px; padding: 0 13px; }
-.details-form .field__why { font-size: 12.5px; }
+.details-form .field input, .details-form .field select { height: 46px; padding: 0 13px; font-size: 14.5px; border-radius: 8px; }
+.details-form .field__why { font-size: 12px; color: var(--navy-soft); }
 .details-form__actions { margin-top: 20px; }
 .details-form__actions .btn { width: 100%; height: 54px; margin: 0; }
 .details-form__actions .reassure { margin: 12px 0 0; }
@@ -1736,9 +1746,11 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
   .details-grid { gap: 12px; }
   .details-form .field input, .details-form .field select { height: 46px; font-size: 15px; }
   .details-form .field label { font-size: 13.5px; }
-  /* the inline button is hidden here, so this only carries the honesty line */
   .details-form__actions { margin-top: 18px; }
   .details-form__actions .reassure { margin: 0; }
+  .details-page-wrap, .pay-page {
+    padding-bottom: 120px !important;
+  }
 }
 
 @media (max-width: 620px) {
@@ -2038,7 +2050,8 @@ body.save-modal-open .stepper, body.save-modal-open .planbox__cta, body.save-mod
   .reco-tail { padding: 0 20px 80px; max-width: none; }
   .two-col__main { padding: 10px 20px 4px; max-width: none; }
   /* room for the sticky Continue bar, so nothing sits underneath it */
-  .two-col__aside { margin: 0 20px 132px; }
+  .two-col__aside,
+  .two-col--reco .two-col__aside { margin: 0 20px 132px; }
   /* the details form ends in a paybar too, so its recap needs the same clearance. The
      desktop padding under the form held it off the page edge below its own button;
      stacked it only left a dead band between the form and the recap below it. */
@@ -3023,8 +3036,8 @@ button.appcard:hover .appcard__info-icon {
 .planbox__why-disclosure {
   margin-top: 10px;
   border-radius: var(--radius);
-  border: 1px solid #e4e4e7;
-  background: #ffffff;
+  border: 1px solid #fef08a;
+  background: #fefce8;
   overflow: hidden;
   transition: all .2s ease;
 }
@@ -3038,10 +3051,10 @@ button.appcard:hover .appcard__info-icon {
   color: var(--ink);
   cursor: pointer;
   user-select: none;
-  background: #ffffff;
+  background: #fefce8;
 }
 .planbox__why-head:hover {
-  background: #f8fafc;
+  background: #fef9c3;
 }
 .planbox__why-chevron {
   display: inline-flex;
@@ -3055,8 +3068,8 @@ button.appcard:hover .appcard__info-icon {
 .planbox__why-disclosure .planbox__facts {
   padding: 0 14px 12px;
   margin: 0;
-  border-top: 1px solid #e4e4e7;
-  background: #ffffff;
+  border-top: 1px solid #fef08a;
+  background: #fefce8;
 }
 
 @media (max-width: 900px) {
@@ -4622,18 +4635,18 @@ button.appcard:hover .appcard__info-icon {
    behaviour, so it is a card of its own with a handle that names it, and it starts open.
    Closing it is how the column gets shorter, which is the other thing he asked for. */
 .allplans {
-  margin-top: 18px; background: #fefce8; border: 1px solid #fef08a;
+  margin-top: 18px; background: #fafaf9; border: 1px solid #e7e5e4;
   border-radius: var(--radius-lg); overflow: hidden;
 }
 .allplans__head {
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
   cursor: pointer; list-style: none; padding: 14px 15px;
-  font-size: 16px; font-weight: 700; letter-spacing: -.01em; color: var(--ink);
-  background: #fefce8;
+  font-size: 15.5px; font-weight: 700; letter-spacing: -.01em; color: var(--ink);
+  background: #fafaf9;
   transition: background .15s ease;
 }
 .allplans__head:hover {
-  background: #fef9c3;
+  background: #f5f5f4;
 }
 .allplans__headcopy { min-width: 0; }
 .allplans__headcopy > span { display: block; }
@@ -4645,24 +4658,24 @@ button.appcard:hover .appcard__info-icon {
 .allplans__head svg { flex: 0 0 auto; color: var(--navy-soft); transform: rotate(90deg); transition: transform .16s ease; }
 .allplans[open] .allplans__head svg { transform: rotate(-90deg); }
 .allplans[open] .allplans__head { padding-bottom: 10px; }
-.allplans__grid { display: grid; gap: 1px; background: #fef08a; }
+.allplans__grid { display: grid; gap: 1px; background: #e7e5e4; }
 .allplans__row {
   display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; align-items: baseline;
-  background: #fffdf5; padding: 11px 15px;
+  background: #ffffff; padding: 11px 15px;
   transition: background .15s ease;
 }
-.allplans__row.is-current { background: #fef9c3; }
+.allplans__row.is-current { background: #f4f4f5; }
 .allplans__row[data-plan] { cursor: pointer; }
-.allplans__row[data-plan]:hover { background: #ffffff; }
-.allplans__name { font-size: 16px; font-weight: 700; letter-spacing: -.01em; }
+.allplans__row[data-plan]:hover { background: #fafafa; }
+.allplans__name { font-size: 15.5px; font-weight: 700; letter-spacing: -.01em; }
 /* A pill, not a caption: on the row it has to read as a label attached to that plan
    rather than as a second half of its name. */
 .allplans__tag {
-  display: inline-block; background: var(--yellow-bright); color: var(--ink);
-  font-size: 11.5px; font-weight: 700; letter-spacing: .01em;
-  padding: 3px 8px; border-radius: 999px; margin-left: 8px; vertical-align: 1px;
+  display: inline-block; background: #fef08a; color: #713f12;
+  font-size: 11px; font-weight: 700; letter-spacing: .01em;
+  padding: 2.5px 7px; border-radius: 999px; margin-left: 8px; vertical-align: 1px;
 }
-.allplans__price { font-size: 16px; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
+.allplans__price { font-size: 15.5px; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
 .allplans__price small { font-weight: 400; font-size: 12px; color: var(--navy-soft); }
 .allplans__opens { font-size: 13.5px; color: var(--navy-soft); font-variant-numeric: tabular-nums; }
 .allplans__act { text-align: right; font-size: 13.5px; }
@@ -4673,7 +4686,7 @@ button.appcard:hover .appcard__info-icon {
   font-size: 12px; line-height: 1.4; color: #8a5a1a; margin-top: 4px;
 }
 .allplans__warn svg { flex: 0 0 auto; margin-top: 1px; }
-.allplans__foot { text-align: center; font-size: 13.5px; margin: 0; padding: 13px 15px; background: #fefce8; }
+.allplans__foot { text-align: center; font-size: 13.5px; margin: 0; padding: 13px 15px; background: #fafaf9; }
 
 /* What the money opens, on the card that carries the money (rule 14). */
 .planbox__opens {
@@ -4738,6 +4751,10 @@ button.appcard:hover .appcard__info-icon {
   background: var(--yellow-pale); color: #855800; font-size: 11.5px; font-weight: 700;
   padding: 2px 7px; border-radius: 9999px;
 }
+.reco-tab--mobile,
+.reco-tab-panel--mobile-only {
+  display: none !important;
+}
 
 /* Made For You Section */
 .made-for-you {
@@ -4747,7 +4764,7 @@ button.appcard:hover .appcard__info-icon {
   display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 12px;
 }
 .made-for-you__title {
-  font-size: 21px; font-weight: 800; margin: 0; color: var(--ink); letter-spacing: -.01em;
+  font-size: 16.5px; font-weight: 700; margin: 0; color: var(--ink); letter-spacing: -.01em;
 }
 .made-for-you__sub {
   font-size: 13px; color: var(--navy-soft); margin: 2px 0 0;
@@ -5411,30 +5428,70 @@ button.appcard:hover .appcard__info-icon {
 
 .gallery-empty-state {
   background: #faf8f5;
-  border: 1px dashed var(--border);
+  border: 1.5px dashed var(--border);
   border-radius: var(--radius-lg);
-  padding: 24px 20px;
+  padding: 32px 24px;
   text-align: center;
-  margin: 10px 0 16px;
+  margin: 16px 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
+  animation: emptyStateFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-.gallery-empty-state__icon {
-  width: 42px; height: 42px; border-radius: 50%;
-  background: #fff; border: 1px solid var(--border);
-  display: grid; place-items: center; color: var(--navy-soft);
-  margin-bottom: 2px;
+
+@keyframes emptyStateFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
 }
+
+.gallery-empty-state__avatar {
+  margin-bottom: 4px;
+  display: inline-block;
+  position: relative;
+}
+
+.gallery-empty-state__avatar .urby-mascot {
+  animation: urbyMascotFloat 3s ease-in-out infinite alternate;
+}
+
+@keyframes urbyMascotFloat {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-6px); }
+}
+
+.urby-wave {
+  transform-origin: 78px 56px;
+  animation: urbyWaveHand 1.8s ease-in-out infinite;
+}
+
+@keyframes urbyWaveHand {
+  0%, 100% { transform: rotate(0deg); }
+  30% { transform: rotate(-18deg); }
+  70% { transform: rotate(12deg); }
+}
+
 .gallery-empty-state__text b {
-  display: block; font-size: 15.5px; font-weight: 700; color: var(--ink); margin-bottom: 4px;
+  display: block; font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 6px;
+  line-height: 1.3;
 }
 .gallery-empty-state__text p {
-  font-size: 13px; color: var(--navy-soft); margin: 0; max-width: 50ch;
+  font-size: 13.5px; color: var(--navy-soft); margin: 0; max-width: 52ch;
+  line-height: 1.45;
 }
 .gallery-empty-state__actions {
-  display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 10px;
+  display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 14px;
+}
+
+@media (max-width: 480px) {
+  .gallery-empty-state__actions {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+  .gallery-empty-state__actions .btn {
+    width: 100%;
+  }
 }
 
 .made-for-you__foot {
@@ -6394,10 +6451,24 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
     margin: 0 0 12px;
     gap: 16px;
     border-bottom: 1.5px solid rgba(0,0,0,0.06);
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .reco-tabs::-webkit-scrollbar {
+    display: none;
   }
   .reco-tab {
     padding: 4px 0 8px;
-    font-size: 15px;
+    font-size: 14.5px;
+    flex: 0 0 auto;
+  }
+  .reco-tab--mobile {
+    display: inline-flex !important;
+  }
+  .reco-tab-panel--mobile-only {
+    display: block !important;
   }
 
   /* Made For You Section Header */
@@ -6412,8 +6483,8 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
     width: 100%;
   }
   .made-for-you__title {
-    font-size: 16.5px;
-    font-weight: 800;
+    font-size: 15px;
+    font-weight: 700;
     line-height: 1.25;
     margin: 0;
   }
@@ -7396,15 +7467,20 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 .confirm-receipt-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 2px;
 }
 .confirm-receipt-row {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
   gap: 12px;
+  padding: 6px 0;
   font-size: 13.5px;
   color: var(--ink);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+.confirm-receipt-row:last-child {
+  border-bottom: none;
 }
 .confirm-receipt-row .muted {
   color: var(--navy-soft);
@@ -7422,6 +7498,15 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   font-size: 16px;
   font-weight: 700;
 }
+.confirm-receipt-footer {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  font-size: 11.5px;
+  font-weight: 400;
+  color: var(--navy-soft);
+  line-height: 1.5;
+}
 .confirm-receipt-simulated-note {
   margin: 14px 0 0;
   font-size: 12px;
@@ -7432,10 +7517,16 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 }
 
 .confirm-urby-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
   background: var(--cream);
   border: 1px solid var(--cream-line);
   border-radius: var(--radius-lg);
   padding: 16px;
+}
+.confirm-urby-card > div {
+  flex: 1 1 auto;
 }
 .confirm-urby-card b {
   display: block;
@@ -7700,9 +7791,10 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   left: 8px;
   z-index: 3;
   display: flex;
-  align-items: center;
-  gap: 5px;
-  flex-wrap: nowrap;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  pointer-events: none;
 }
 
 .activity-card__badge {
@@ -9539,7 +9631,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build cf5bc50 + local edits</span>
+  <span class="demo-banner__build">build 0bafeb1 + local edits</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -12185,7 +12277,7 @@ function routinePanel() {
           esc(answerLabel(x.id,S.answers[x.id]))}</span>${icon('pencil',14)}</button>`).join('')}</div>` : ''}
     </div>
     <div class="routine__side">
-      ${left ? `<button class="btn btn--primary" data-start-fit>See my recommendation ${icon('arrowRight',18)}</button>
+      ${left ? `<button class="btn btn--primary" data-go="fit">See my recommendation ${icon('arrowRight',18)}</button>
         <p class="routine__note">${plural(left,'question','questions')} left &mdash; then one membership, with its reasons.</p>`
         : `<button class="btn btn--primary" data-go="recommendation">See my recommendation ${icon('arrowRight',18)}</button>
         <p class="routine__note">Built from your four answers, and yours to change.</p>`}
@@ -12457,7 +12549,7 @@ function searchScreen() {
   const shown = (SEEALL || VENUE_VIEW_MODE !== 'scroll' || hasActiveFilters) ? b.within : b.within.slice(0, 4);
 
   const backTarget = (WEEK_ADD_MODE || S.lastStep === 'recommendation' || hasSaveableProgress()) ? 'recommendation' : 'landing';
-  const backLabel = WEEK_ADD_MODE ? 'Back to my week' : (backTarget === 'recommendation' ? 'Back to recommendation' : 'Back');
+  const backLabel = WEEK_ADD_MODE ? 'Back to my week' : (backTarget === 'recommendation' ? (MOBILE() ? 'Back' : 'Back to recommendation') : 'Back');
   const routineCount = Object.keys(S.starredVenues || {}).length;
   const routineLead = routineCount
     ? `${routineCount} ${routineCount === 1 ? 'place' : 'places'} in your routine`
@@ -13317,7 +13409,7 @@ function recommendationScreen() {
       const selectedCategoryLabel = selectedGroup ? selectedGroup.label : 'this activity';
       const radiusLabel = (S.radiusKm === '8') ? '8 km' : (S.radiusKm === 'any') ? 'Berlin' : '3 km';
       return `<div class="gallery-empty-state">
-        <div class="gallery-empty-state__icon">${icon('pin', 22)}</div>
+        <div class="gallery-empty-state__avatar">${urbyMascotAvatar('md')}</div>
         <div class="gallery-empty-state__text">
           <b>No ${esc(selectedCategoryLabel.toLowerCase())} studios right within ${esc(radiusLabel)} of ${esc(where)}</b>
           <p>There are great ${esc(selectedCategoryLabel.toLowerCase())} venues across Berlin, or you can expand your search distance.</p>
@@ -13329,7 +13421,7 @@ function recommendationScreen() {
           <button class="btn btn--secondary btn--sm" type="button" data-filter-category="all">
             <span>Show all sports</span>
           </button>
-          <button class="btn btn--primary btn--sm" type="button" data-go="search">
+          <button class="btn btn--secondary btn--sm" type="button" data-go="search">
             ${icon('search', 13)} <span>Explore all venues &rarr;</span>
           </button>
         </div>
@@ -13345,6 +13437,9 @@ function recommendationScreen() {
     <button class="reco-tab ${RECO_VIEW==='routine'||RECO_VIEW==='week'?'is-active':''}" type="button" data-set-reco-view="routine" data-toggle-routine aria-selected="${RECO_VIEW==='routine'||RECO_VIEW==='week'}">
       ${icon('calendar', 14)} <span>My routine</span> <span class="reco-tab__badge">${routineCount}</span>
     </button>
+    ${MOBILE() ? `<button class="reco-tab reco-tab--mobile ${RECO_VIEW==='plan'?'is-active':''}" type="button" data-set-reco-view="plan" aria-selected="${RECO_VIEW==='plan'}">
+      ${icon('sparkle', 14)} <span>My Plan</span>
+    </button>` : ''}
   </div>`;
 
   /* ---- the plan, on the side, as a consequence of the above ---- */
@@ -13481,9 +13576,9 @@ function recommendationScreen() {
       </ul>
     </details>
 
-    <div class="planbox__cta" style="margin-top:16px">
+    ${MOBILE() ? '' : `<div class="planbox__cta" style="margin-top:16px">
       <button class="btn btn--primary btn--block" data-go="details">Continue with ${esc(plan.name)}</button>
-    </div>
+    </div>`}
     <div class="planbox__foot">
       <p class="planbox__fine">${esc(commitment.label)} &middot; no payment yet</p>
       ${S.email?'':`<button class="linkish planbox__save" type="button" data-go="save" data-open-exit>Save this and come back later</button>`}
@@ -13495,7 +13590,7 @@ function recommendationScreen() {
 
   const heroBlock = `${ulaRow()}
     <div class="reco-hero-header">
-      <h1 class="h-question reco-hero__title" tabindex="-1">Your plan</h1>
+      <h1 class="h-question reco-hero__title" tabindex="-1">Your personalized plan</h1>
       <button class="reco-edit-answers-btn" type="button" data-open-review-answers title="Review and edit your answers">
         ${icon('pencil',13)} <span>Edit answers</span>
       </button>
@@ -13540,6 +13635,9 @@ function recommendationScreen() {
         <div class="reco-tab-panel reco-tab-panel--routine reco-tab-panel--week" style="${RECO_VIEW==='routine'||RECO_VIEW==='week'?'':'display:none'}">
           ${routineBlock}
         </div>
+        ${MOBILE() ? `<div class="reco-tab-panel reco-tab-panel--plan reco-tab-panel--mobile-only" style="${RECO_VIEW==='plan'?'':'display:none'}">
+          ${planAside}
+        </div>` : ''}
       </div>
     </section>
     ${appsBlock()}
@@ -13931,6 +14029,9 @@ function saveScreen() {
       <div class="saverecap__chips">
         ${answerChips({ label:'', compact:true })}
       </div>
+      <div class="saverecap__incentive" style="margin-top:12px;padding:9px 12px;background:#fefce8;border:1px solid #fef08a;border-radius:8px;font-size:12px;color:#713f12;line-height:1.4">
+        ${icon('sparkle',14)} <strong>Perk:</strong> Saving your progress locks in <strong>10% off your first month</strong> when you return.
+      </div>
     </div>
   `;
 
@@ -13955,6 +14056,9 @@ function saveScreen() {
           <input id="save-email" class="savefield" type="email" name="email" placeholder="Your email address" value="${esc(FIELDS.email||'')}">
           ${ERRORS.email?`<p class="field-error" role="alert">${esc(ERRORS.email)}</p>`:''}
           <button class="btn btn--primary btn--block" type="submit">Save my progress</button>
+          <div class="save-perk-badge" style="display:flex;align-items:center;justify-content:center;gap:6px;margin:8px 0 2px;font-size:12px;color:#854d0e;background:#fefce8;border:1px solid #fef08a;padding:5px 10px;border-radius:6px;font-weight:600">
+            ${icon('sparkle',13)} <span>Save progress &amp; get <strong>10% off</strong> first month</span>
+          </div>
           <div class="orline"><span>or continue with</span></div>
           <div class="sso-row" style="max-width:none">
             <button class="sso-btn" type="submit" name="provider" value="google" aria-label="Save with Google">${GOOGLE} Google <small class="muted">(simulated)</small></button>
@@ -14033,7 +14137,6 @@ function detailsScreen() {
     </div>
     <div class="two-col two-col--form">
       <div class="two-col__main">
-        ${ulaNote('Enter your details to create your membership account. Nothing will be charged today.')}
         <form class="details-form" data-form="details" novalidate>
           <div class="details-sso">
             <div class="sso-row">
@@ -14057,6 +14160,7 @@ function detailsScreen() {
               ${f('street','Street and number',{auto:'street-address'})}
               ${f('postcode','Postcode',{auto:'postal-code',mode:'numeric',ph:'12045'})}${f('city','City',{auto:'address-level2',ph:'Berlin'})}
             </div></section>
+          ${ulaNote('Your details are only used to simulate the checkout. No real contract is formed.')}
           <div class="details-form__actions"><button class="btn btn--primary btn--wide desktop-cta" type="submit">Continue to payment</button>
             <p class="reassure">${icon('lock',15)} Nothing is charged yet.</p></div>
           <div class="paybar">
@@ -14735,12 +14839,12 @@ function advance(nextRoute) {
     setTimeout(() => {
       CRAFTING_TRANSITION = false;
       go('recommendation');
-    }, 1900);
+    }, 2400);
     return;
   }
-  if (skipDelay) { TYPING = false; go(nextRoute); return; }
-  TYPING = true; render(false);
-  setTimeout(() => { TYPING = false; go(nextRoute); }, 480);
+  // Questions transition is now instant per user request
+  TYPING = false;
+  go(nextRoute);
 }
 
 /* ---------------- interactions ---------------- */
@@ -15211,7 +15315,10 @@ document.addEventListener('click', e => {
       S.answers = {};
     }
     S.planOverridden = false;
-    log('started_conversation', { variant:VARIANT, from:t.dataset.areaId?'search':'landing' }); go('fit'); return; }
+    log('started_conversation', { variant:VARIANT, from:t.dataset.areaId?'search':'landing' });
+    go('fit');
+    return;
+  }
   if (t.dataset.searchExample) { SEARCH.q = t.dataset.searchExample; SEARCH.result = searchPlaces(SEARCH.q);
     log('searched', { query:SEARCH.q, matched:SEARCH.result?SEARCH.result.kind:'none', example:true });
     render(false); return; }

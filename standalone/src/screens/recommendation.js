@@ -5,7 +5,7 @@ function reasonsFor(rec, plan, match, groups) {
   const freq = S.answers.frequency;
 
   if (groups.length) {
-    const actLabels = groups.map(g => g.label).join(' & ');
+    const actLabels = groups.map(id => (groupById(id) || {}).label).filter(Boolean).join(' & ');
     out.push({ icon:'sparkle', text:`Covers your ${actLabels} activities in one flexible membership.` });
   }
 
@@ -74,8 +74,12 @@ function coverageBlock(rec, match, plan) {
   /* No card of its own any more: this is part of the argument for the plan, so it sits
      in the plan column with it. It used to be a separate box directly under the "from
      your four answers" line, and the two ran into each other as one broken sentence. */
+  const countLabel = cov.totals.included === cov.totals.nearby
+    ? `All ${plural(cov.totals.nearby,'place','places')} near you`
+    : `${cov.totals.included} of the ${plural(cov.totals.nearby,'place','places')} near you`;
+
   return `<div class="cov">
-    <p class="cov__summary"><b>${cov.totals.included} of the ${plural(cov.totals.nearby,'place','places')} near you</b>
+    <p class="cov__summary"><b>${countLabel}</b>
       ${cov.totals.included===1?'is':'are'} on ${esc(plan.name)}.
       <span class="cov__caveat">That count is this pilot&rsquo;s venue data, not the whole network of ${esc(plan.venueCount)}.</span></p>
     ${up?(()=>{ const upPlan=planById(up.planId);
@@ -533,7 +537,7 @@ function recommendationScreen() {
       const selectedCategoryLabel = selectedGroup ? selectedGroup.label : 'this activity';
       const radiusLabel = (S.radiusKm === '8') ? '8 km' : (S.radiusKm === 'any') ? 'Berlin' : '3 km';
       return `<div class="gallery-empty-state">
-        <div class="gallery-empty-state__icon">${icon('pin', 22)}</div>
+        <div class="gallery-empty-state__avatar">${urbyMascotAvatar('md')}</div>
         <div class="gallery-empty-state__text">
           <b>No ${esc(selectedCategoryLabel.toLowerCase())} studios right within ${esc(radiusLabel)} of ${esc(where)}</b>
           <p>There are great ${esc(selectedCategoryLabel.toLowerCase())} venues across Berlin, or you can expand your search distance.</p>
@@ -545,7 +549,7 @@ function recommendationScreen() {
           <button class="btn btn--secondary btn--sm" type="button" data-filter-category="all">
             <span>Show all sports</span>
           </button>
-          <button class="btn btn--primary btn--sm" type="button" data-go="search">
+          <button class="btn btn--secondary btn--sm" type="button" data-go="search">
             ${icon('search', 13)} <span>Explore all venues &rarr;</span>
           </button>
         </div>
@@ -561,6 +565,9 @@ function recommendationScreen() {
     <button class="reco-tab ${RECO_VIEW==='routine'||RECO_VIEW==='week'?'is-active':''}" type="button" data-set-reco-view="routine" data-toggle-routine aria-selected="${RECO_VIEW==='routine'||RECO_VIEW==='week'}">
       ${icon('calendar', 14)} <span>My routine</span> <span class="reco-tab__badge">${routineCount}</span>
     </button>
+    ${MOBILE() ? `<button class="reco-tab reco-tab--mobile ${RECO_VIEW==='plan'?'is-active':''}" type="button" data-set-reco-view="plan" aria-selected="${RECO_VIEW==='plan'}">
+      ${icon('sparkle', 14)} <span>My Plan</span>
+    </button>` : ''}
   </div>`;
 
   /* ---- the plan, on the side, as a consequence of the above ---- */
@@ -697,9 +704,9 @@ function recommendationScreen() {
       </ul>
     </details>
 
-    <div class="planbox__cta" style="margin-top:16px">
+    ${MOBILE() ? '' : `<div class="planbox__cta" style="margin-top:16px">
       <button class="btn btn--primary btn--block" data-go="details">Continue with ${esc(plan.name)}</button>
-    </div>
+    </div>`}
     <div class="planbox__foot">
       <p class="planbox__fine">${esc(commitment.label)} &middot; no payment yet</p>
       ${S.email?'':`<button class="linkish planbox__save" type="button" data-go="save" data-open-exit>Save this and come back later</button>`}
@@ -711,7 +718,7 @@ function recommendationScreen() {
 
   const heroBlock = `${ulaRow()}
     <div class="reco-hero-header">
-      <h1 class="h-question reco-hero__title" tabindex="-1">Your plan</h1>
+      <h1 class="h-question reco-hero__title" tabindex="-1">Your personalized plan</h1>
       <button class="reco-edit-answers-btn" type="button" data-open-review-answers title="Review and edit your answers">
         ${icon('pencil',13)} <span>Edit answers</span>
       </button>
@@ -756,6 +763,9 @@ function recommendationScreen() {
         <div class="reco-tab-panel reco-tab-panel--routine reco-tab-panel--week" style="${RECO_VIEW==='routine'||RECO_VIEW==='week'?'':'display:none'}">
           ${routineBlock}
         </div>
+        ${MOBILE() ? `<div class="reco-tab-panel reco-tab-panel--plan reco-tab-panel--mobile-only" style="${RECO_VIEW==='plan'?'':'display:none'}">
+          ${planAside}
+        </div>` : ''}
       </div>
     </section>
     ${appsBlock()}
@@ -1094,10 +1104,11 @@ function saveScreen() {
   const answered = QUESTIONS.filter(q => isAnswered(S.answers[q.id])).length;
   
   const starredKeys = Object.keys(S.starredVenues || {});
-  const savedRoutine = F ? (starredKeys.length
+  const allStarredRoutine = F ? (starredKeys.length
     ? starredKeys.map(id => F.included.find(v => v.id === id) || VENUES.find(v => v.id === id)).filter(Boolean)
     : F.included.slice(0, 3)) : [];
-  const morePlaces = F ? Math.max(0, F.included.length - savedRoutine.length) : 0;
+  const savedRoutine = allStarredRoutine.slice(0, 6);
+  const morePlaces = F ? Math.max(0, allStarredRoutine.length - savedRoutine.length) : 0;
 
   const recapSection = hasPlan ? `
     <div class="saverecap savepanel__recap">
@@ -1116,7 +1127,7 @@ function saveScreen() {
 
       ${savedRoutine.length ? `
       <div class="saverecap__venues">
-        <div class="saverecap__label">Your saved routine (${savedRoutine.length} ${plural(savedRoutine.length, 'place', 'places')})</div>
+        <div class="saverecap__label">Your saved routine (${plural(savedRoutine.length, 'place', 'places')})</div>
         <div class="saverecap__venue-grid">
           ${savedRoutine.map(v => {
             const tierTag = v.tier === 'premium'
@@ -1147,6 +1158,9 @@ function saveScreen() {
       <div class="saverecap__chips">
         ${answerChips({ label:'', compact:true })}
       </div>
+      <div class="saverecap__incentive" style="margin-top:12px;padding:9px 12px;background:#fefce8;border:1px solid #fef08a;border-radius:8px;font-size:12px;color:#713f12;line-height:1.4">
+        ${icon('sparkle',14)} <strong>Perk:</strong> Saving your progress locks in <strong>10% off your first month</strong> when you return.
+      </div>
     </div>
   `;
 
@@ -1171,6 +1185,9 @@ function saveScreen() {
           <input id="save-email" class="savefield" type="email" name="email" placeholder="Your email address" value="${esc(FIELDS.email||'')}">
           ${ERRORS.email?`<p class="field-error" role="alert">${esc(ERRORS.email)}</p>`:''}
           <button class="btn btn--primary btn--block" type="submit">Save my progress</button>
+          <div class="save-perk-badge" style="display:flex;align-items:center;justify-content:center;gap:6px;margin:8px 0 2px;font-size:12px;color:#854d0e;background:#fefce8;border:1px solid #fef08a;padding:5px 10px;border-radius:6px;font-weight:600">
+            ${icon('sparkle',13)} <span>Save progress &amp; get <strong>10% off</strong> first month</span>
+          </div>
           <div class="orline"><span>or continue with</span></div>
           <div class="sso-row" style="max-width:none">
             <button class="sso-btn" type="submit" name="provider" value="google" aria-label="Save with Google">${GOOGLE} Google <small class="muted">(simulated)</small></button>
