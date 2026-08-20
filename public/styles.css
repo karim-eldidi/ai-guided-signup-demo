@@ -808,25 +808,30 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
 .chips-row__hint {
   font-size: 12px; color: var(--navy-soft); font-weight: 500;
 }
+.chips-row {
+  max-width: 100%;
+}
 .chips-row__items {
   display: flex; align-items: center; gap: 6px;
   overflow-x: auto; flex-wrap: wrap;
   scrollbar-width: none; -webkit-overflow-scrolling: touch;
   padding: 2px 0;
+  max-width: 100%;
 }
 .chips-row__items::-webkit-scrollbar { display: none; }
 .answer-chip {
   display: inline-flex; align-items: center; gap: 5px;
   background: #fff; border: 1px solid var(--border); border-radius: 999px;
   padding: 4px 10px 4px 8px; font-size: 12.5px; font-weight: 600; color: var(--ink);
-  white-space: nowrap; flex: 0 0 auto; cursor: pointer; height: 30px;
+  white-space: nowrap; flex: 0 1 auto; max-width: 100%; cursor: pointer; height: 30px;
   box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  box-sizing: border-box;
   transition: border-color .12s ease, transform .12s ease, background-color .12s ease;
 }
 .answer-chip:hover { border-color: var(--ink); background: var(--cream); transform: translateY(-0.5px); }
-.answer-chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 250px; }
+.answer-chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 220px; min-width: 0; flex: 0 1 auto; }
 .answer-chip svg:first-child { color: var(--navy-soft); flex: 0 0 auto; width: 13px; height: 13px; }
-.answer-chip__edit-icon { display: flex; align-items: center; color: var(--navy-soft); margin-left: 2px; }
+.answer-chip__edit-icon { display: flex; align-items: center; color: var(--navy-soft); margin-left: 2px; flex: 0 0 auto; }
 .answer-chip:hover .answer-chip__edit-icon { color: var(--ink); }
 
 /* the questions own the screen — no side panel to compete with them */
@@ -909,8 +914,8 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
 .planbox__each { font-size: 13.5px; color: var(--navy); font-weight: 600; }
 .planbox__factshead { font-size: 14px; font-weight: 700; letter-spacing: -.01em; margin-top: 20px; color: var(--ink); }
 .planbox__facts { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
-.planbox__facts li { display: flex; gap: 10px; font-size: 14.5px; line-height: 1.35; color: var(--ink); }
-.planbox__facts svg { flex: 0 0 auto; margin-top: 2px; color: #1f9d55; }
+.planbox__facts li { display: flex; align-items: center; gap: 10px; font-size: 14.5px; line-height: 1.35; color: var(--ink); }
+.planbox__facts svg { flex: 0 0 auto; margin-top: 0; color: #1f9d55; display: block; }
 .planbox__cta { margin-top: 20px; }
 .planbox__cta .btn { height: 50px; font-size: 16px; font-weight: 700; border-radius: 12px; }
 .planbox__foot {
@@ -1093,6 +1098,35 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
 .cov__row.is-full .cov__bar span { background: #2f6b3f; }
 .cov__detail { font-size: 14.5px; line-height: 1.45; color: var(--navy); }
 
+.cov__comparison {
+  margin: 12px 0 16px;
+  padding: 12px 14px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius);
+}
+.cov__comparison--up {
+  background: #fefce8;
+  border-color: #fef08a;
+}
+.cov__comparison .cov__line {
+  margin: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--ink);
+}
+.cov__comparison .cov__line svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  color: #b45309;
+}
+.cov__comparison--down .cov__line svg {
+  color: var(--navy-soft);
+}
+
 .cov__upsell {
   display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
   margin-top: 22px; padding: 18px 20px;
@@ -1102,7 +1136,7 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
 .cov__upsell-head { display: flex; align-items: center; gap: 8px; font-size: 16.5px; font-weight: 700; }
 .cov__upsell-body { font-size: 14.5px; line-height: 1.45; color: var(--navy); margin-top: 5px; }
 .cov__upsell .btn { height: 50px; padding: 0 20px; font-size: 16px; }
-.cov__down { display: flex; align-items: flex-start; gap: 8px; font-size: 14.5px; line-height: 1.45; margin: 14px 0 0; }
+.cov__down { display: flex; align-items: flex-start; gap: 8px; font-size: 14.5px; line-height: 1.45; margin: 0; }
 .cov__down svg { flex: 0 0 auto; margin-top: 3px; }
 
 /* a venue the current plan does not cover says so, rather than looking available */
@@ -3026,8 +3060,8 @@ button.appcard:hover .appcard__info-icon {
 .planbox__why-disclosure {
   margin-top: 10px;
   border-radius: var(--radius);
-  border: 1px solid #fef08a;
-  background: #fefce8;
+  border: 1px solid var(--border);
+  background: #ffffff;
   overflow: hidden;
   transition: all .2s ease;
 }
@@ -3041,10 +3075,10 @@ button.appcard:hover .appcard__info-icon {
   color: var(--ink);
   cursor: pointer;
   user-select: none;
-  background: #fefce8;
+  background: #ffffff;
 }
 .planbox__why-head:hover {
-  background: #fef9c3;
+  background: #f8fafc;
 }
 .planbox__why-chevron {
   display: inline-flex;
@@ -3056,10 +3090,10 @@ button.appcard:hover .appcard__info-icon {
   transform: rotate(180deg);
 }
 .planbox__why-disclosure .planbox__facts {
-  padding: 12px 14px 12px;
+  padding: 12px 14px 14px;
   margin: 0;
-  border-top: 1px solid #fef08a;
-  background: #fefce8;
+  border-top: 1px solid var(--border);
+  background: #ffffff;
 }
 
 @media (max-width: 900px) {
@@ -3159,11 +3193,12 @@ button.appcard:hover .appcard__info-icon {
 
 /* the reasons, after the evidence and without the card chrome */
 .why__list { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
-.why__list li { display: flex; align-items: flex-start; gap: 11px; font-size: 15.5px; line-height: 1.45; color: var(--navy); }
+.why__list li { display: flex; align-items: center; gap: 11px; font-size: 15.5px; line-height: 1.45; color: var(--navy); }
 .why__list .why__icon {
   flex: 0 0 auto; width: 28px; height: 28px; border-radius: 50%;
-  background: var(--yellow-pale); display: grid; place-items: center; margin-top: -1px;
+  background: var(--yellow-pale); display: flex; align-items: center; justify-content: center; margin: 0;
 }
+.why__list .why__icon svg { display: block; }
 
 @media (max-width: 900px) {
   .venue-grid--big.is-rail { grid-auto-columns: 76%; gap: 10px; }
@@ -3197,17 +3232,47 @@ button.appcard:hover .appcard__info-icon {
 .shelf__row + .shelf__row { border-top: 1px solid var(--border); }
 .shelf__head {
   display: flex; align-items: center; gap: 12px; cursor: pointer; list-style: none;
-  padding: 16px 18px; font-size: 15.5px; font-weight: 700;
+  padding: 14px 18px; font-size: 15.5px; font-weight: 700;
+  min-height: 58px; box-sizing: border-box; line-height: 1.3;
 }
 .shelf__head::-webkit-details-marker { display: none; }
-.shelf__head > :first-child { flex: 0 0 auto; color: var(--navy-soft); }
-.shelf__label { min-width: 0; }
-.shelf__hint { font-size: 13.5px; font-weight: 400; color: var(--navy-soft); margin-left: auto; text-align: right; }
-.shelf__head > svg:last-child { flex: 0 0 auto; margin-left: auto; color: var(--navy-soft); transform: rotate(90deg); transition: transform .16s ease; }
+.shelf__icon {
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  flex: 0 0 28px; color: var(--navy-soft); border-radius: 6px;
+}
+.shelf__icon svg {
+  width: 18px; height: 18px; flex-shrink: 0; display: block;
+}
+.shelf__head > :first-child:not(.shelf__icon):not(.shelf__label) {
+  flex: 0 0 28px; width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--navy-soft);
+}
+.shelf__label {
+  flex: 0 1 auto; min-width: 0; color: var(--ink);
+}
+.shelf__hint {
+  font-size: 13.5px; font-weight: 400; color: var(--navy-soft);
+  margin-left: auto; text-align: right; padding-right: 4px; white-space: nowrap;
+}
+.shelf__chev {
+  width: 20px; height: 20px;
+  display: flex; align-items: center; justify-content: center;
+  flex: 0 0 20px; color: var(--navy-soft);
+}
+.shelf__chev svg,
+.shelf__head > svg:last-child {
+  width: 18px; height: 18px; flex-shrink: 0; display: block;
+  color: var(--navy-soft); transform: rotate(90deg); transition: transform .16s ease;
+}
+.shelf__head > svg:last-child { margin-left: auto; }
+.shelf__hint + .shelf__chev,
 .shelf__hint + svg { margin-left: 0 !important; }
+.shelf__row[open] > .shelf__head .shelf__chev svg,
 .shelf__row[open] > .shelf__head > svg:last-child { transform: rotate(-90deg); }
 .shelf__row[open] > .shelf__head { border-bottom: 1px solid var(--cream-line); }
-.shelf__body { padding: 18px; }
+.shelf__body { padding: 18px; background: #ffffff; }
 /* Ask Urby keeps its own insides but gives up its own box: inside the shelf it is a row. */
 .shelf .ask, .shelf .ask--compact { border: 0; background: transparent; padding: 0; margin: 0; border-radius: 0; }
 .shelf .ask--fold > .shelf__head { padding-right: 18px; }
@@ -3215,6 +3280,54 @@ button.appcard:hover .appcard__info-icon {
 .reco-why .cov { margin-top: 16px; padding-top: 15px; border-top: 1px solid var(--cream-line); }
 .reco-why .why__foot { margin-top: 14px; }
 @media (max-width: 700px) { .shelf__hint { display: none; } }
+
+/* Ask Urby compact search bar at the top of Need more detail */
+.more-quick-ask {
+  padding: 14px 18px 16px;
+  background: #fdfdfd;
+  border-bottom: 1px solid var(--border);
+}
+.more-quick-ask__form {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 3px 4px 3px 12px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.more-quick-ask__form:focus-within {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.05);
+}
+.more-quick-ask__icon {
+  display: flex;
+  align-items: center;
+  color: var(--navy-soft);
+  flex-shrink: 0;
+}
+.more-quick-ask__input {
+  flex: 1 1 auto;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font-size: 13.5px;
+  color: var(--ink);
+  min-width: 0;
+  padding: 6px 0;
+}
+.more-quick-ask__input::placeholder {
+  color: var(--navy-soft);
+}
+.more-quick-ask__btn {
+  flex-shrink: 0;
+  height: 32px;
+  padding: 0 14px;
+  font-size: 13px;
+  border-radius: 999px;
+}
 
 /* Every card the same height, and a name that never clips: the rail was showing four
    cards of four different heights with "Holmes Place Gendarmenmarkt" running off the
@@ -8356,12 +8469,29 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   font-weight: 700;
   color: var(--ink);
 }
+.venue-accordion__title-wrap svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  display: block;
+  color: var(--navy-soft);
+}
 
 .venue-accordion__chevron {
-  color: var(--navy-soft);
-  transition: transform 0.2s ease;
+  width: 18px;
+  height: 18px;
   display: flex;
   align-items: center;
+  justify-content: center;
+  flex: 0 0 18px;
+  color: var(--navy-soft);
+  transition: transform 0.2s ease;
+}
+.venue-accordion__chevron svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  display: block;
 }
 
 .venue-accordion[open] .venue-accordion__chevron {
@@ -8387,12 +8517,14 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 .venue-fact-card {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   padding: 10px 12px;
   background: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 10px;
   margin: 0;
+  min-height: 52px;
+  box-sizing: border-box;
 }
 
 .venue-fact-icon {
@@ -8402,7 +8534,13 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex: 0 0 32px;
+}
+.venue-fact-icon svg {
+  width: 18px;
+  height: 18px;
   flex-shrink: 0;
+  display: block;
 }
 
 .venue-fact-icon--blue {

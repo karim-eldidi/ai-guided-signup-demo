@@ -448,7 +448,7 @@ function routinePanel() {
       ${given.length ? `<div class="routine__fit">${icon('checkFill',18)}<span class="routine__fitlabel">Your fit</span>
         ${given.map(x=>`<button class="answer-chip" data-edit="${esc(x.id)}"
           aria-label="Change your answer to: ${esc(x.prompt)}">${icon(x.icon,15)}<span>${
-          esc(answerLabel(x.id,S.answers[x.id]))}</span>${icon('pencil',14)}</button>`).join('')}</div>` : ''}
+          esc(compactAnswerLabel(x.id,S.answers[x.id]))}</span><span class="answer-chip__edit-icon">${icon('pencil',11)}</span></button>`).join('')}</div>` : ''}
     </div>
     <div class="routine__side">
       ${left ? `<button class="btn btn--primary" data-go="fit">See my recommendation ${icon('arrowRight',18)}</button>

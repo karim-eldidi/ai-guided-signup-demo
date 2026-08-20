@@ -597,21 +597,21 @@ function venueSheet() {
               <div class="venue-accordion__body">
                 <!-- Visual quick facts grid with micro-illustrations -->
                 <div class="venue-facts-grid">
-                  <div class="venue-fact-card sheet__row">
+                  <div class="venue-fact-card">
                     <div class="venue-fact-icon venue-fact-icon--blue">${icon('qr', 18)}</div>
                     <div class="venue-fact-text">
                       <strong>QR Check-in</strong>
                       <span>Scan at front desk with app</span>
                     </div>
                   </div>
-                  <div class="venue-fact-card sheet__row">
+                  <div class="venue-fact-card">
                     <div class="venue-fact-icon venue-fact-icon--amber">${icon('bag', 18)}</div>
                     <div class="venue-fact-text">
                       <strong>What to bring</strong>
                       <span>Towel, lock & clean shoes</span>
                     </div>
                   </div>
-                  <div class="venue-fact-card sheet__row">
+                  <div class="venue-fact-card">
                     <div class="venue-fact-icon venue-fact-icon--teal">${icon('shower', 18)}</div>
                     <div class="venue-fact-text">
                       <strong>Amenities</strong>

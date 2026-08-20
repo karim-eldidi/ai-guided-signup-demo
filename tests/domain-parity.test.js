@@ -79,7 +79,8 @@ function loadStandaloneDomain() {
   return {
     /** Driven the way standalone/src/state.js drives it: match, then recommend. */
     run: (answers, presetMatch) => JSON.parse(call(answers, presetMatch)),
-    optionIds: (questionId) => JSON.parse(vm.runInContext(`JSON.stringify(optionsFor(qById(${JSON.stringify(questionId)})).map((o) => o.id))`, context))
+    optionIds: (questionId) => JSON.parse(vm.runInContext(`JSON.stringify(optionsFor(qById(${JSON.stringify(questionId)})).map((o) => o.id))`, context)),
+    compactAnswerLabel: (qid, v) => vm.runInContext(`compactAnswerLabel(${JSON.stringify(qid)}, ${JSON.stringify(v)})`, context)
   };
 }
 
@@ -284,3 +285,12 @@ test('neither engine reports coverage of nowhere', () => {
     assert.equal(counted, undefined, `${name} put a zero count on the page: "${counted}"`);
   }
 });
+
+test('compactAnswerLabel formats activities concisely without overflowing', () => {
+  assert.equal(standalone.compactAnswerLabel('activities', ['gym']), 'Gym & strength');
+  assert.equal(standalone.compactAnswerLabel('activities', ['gym', 'swim']), 'Gym & Swimming');
+  assert.equal(standalone.compactAnswerLabel('activities', ['gym', 'swim', 'spa']), 'Gym +2');
+  assert.equal(standalone.compactAnswerLabel('activities', ['yoga', 'fight', 'dance', 'climb']), 'Yoga +3');
+  assert.equal(standalone.compactAnswerLabel('frequency', 'twice'), '2x / wk');
+});
+
