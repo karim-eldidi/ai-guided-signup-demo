@@ -10122,15 +10122,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-<<<<<<< HEAD
-<<<<<<< HEAD
-  <span class="demo-banner__build">build d91caf8 + local edits</span>
-=======
-  <span class="demo-banner__build">build e2f5946 + local edits</span>
->>>>>>> codex/catalog-fixes
-=======
-  <span class="demo-banner__build">build e2f5946 + local edits</span>
->>>>>>> codex/checkout-fixes
+  <span class="demo-banner__build">build 7f54a65 + local edits</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -10301,7 +10293,6 @@ const POSTCODES = {
   '10405':'prenzlauer-berg','10407':'prenzlauer-berg','10409':'prenzlauer-berg','10435':'prenzlauer-berg','10437':'prenzlauer-berg','10439':'prenzlauer-berg','13187':'prenzlauer-berg','13189':'prenzlauer-berg',
   '10243':'friedrichshain','10245':'friedrichshain','10247':'friedrichshain','10249':'friedrichshain',
   '10585':'charlottenburg','10587':'charlottenburg','10589':'charlottenburg','10623':'charlottenburg','10625':'charlottenburg','10627':'charlottenburg','10629':'charlottenburg','10707':'charlottenburg','10709':'charlottenburg','10711':'charlottenburg','10713':'charlottenburg','10715':'charlottenburg','10719':'charlottenburg',
-  '10777':'charlottenburg','10779':'charlottenburg','10781':'kreuzberg','10783':'mitte','10823':'kreuzberg','10825':'charlottenburg','10827':'charlottenburg','10829':'kreuzberg',
   '13347':'wedding','13349':'wedding','13351':'wedding','13353':'wedding','13355':'wedding','13357':'wedding','13359':'wedding'
 };
 
@@ -10324,7 +10315,7 @@ function getAreaSuggestions(query) {
             type: 'postcode',
             label: `${pc} Berlin (${area.name})`,
             areaName: area.name,
-            sub: `Postcode in ${area.name} · ~3 km`,
+            sub: `Postcode mapped to ${area.name}`,
             icon: 'pin'
           });
         }
@@ -10347,7 +10338,7 @@ function getAreaSuggestions(query) {
           type: 'area',
           label: `${a.name}, Berlin`,
           areaName: a.name,
-          sub: `${plural(venueCount, 'venue', 'venues')} · ~3 km`,
+          sub: plural(venueCount, 'venue', 'venues'),
           icon: 'pin'
         });
       }
@@ -10430,7 +10421,7 @@ function optionsFor(q) {
   if (q.optionsFrom === 'areas') {
     const venueCountFor = id => VENUES.filter(v => v.area === id).length;
     return [
-      ...AREAS.map(a => ({ id:a.id, label:a.name, sub:`${plural(venueCountFor(a.id),'venue','venues')} · ~3 km`, echo:`I'm looking around ${a.name}`, icon:'pin' })),
+      ...AREAS.map(a => ({ id:a.id, label:a.name, sub:plural(venueCountFor(a.id),'venue','venues'), echo:`I'm looking around ${a.name}`, icon:'pin' })),
       { id:'anywhere', label:'Anywhere in Berlin', sub:`All ${VENUES.length} venues across city`, echo:"I'm open to anywhere in Berlin", icon:'city' }
     ];
   }
@@ -13314,13 +13305,13 @@ function searchScreen() {
               <h2 class="venue-results-header__title" id="results-count">${searched ? 'Search results' : countHeading}</h2>
               ${searched ? '' : `
                 <div class="venue-view-toggle" role="group" aria-label="View mode">
-                  <button class="venue-view-toggle__btn ${VENUE_VIEW_MODE === 'scroll' ? 'is-active' : ''}" type="button" data-venue-view-mode="scroll" aria-label="Carousel gallery view" title="Carousel view">
+                  <button class="view-toggle-btn view-toggle-btn--gallery ${VENUE_VIEW_MODE === 'scroll' ? 'is-active' : ''}" type="button" data-venue-view-mode="scroll" aria-label="Carousel gallery view" aria-pressed="${VENUE_VIEW_MODE === 'scroll'}" title="Carousel view">
                     ${icon('grid', 14)} <span>Gallery</span>
                   </button>
-                  <button class="venue-view-toggle__btn ${VENUE_VIEW_MODE === 'grid' ? 'is-active' : ''}" type="button" data-venue-view-mode="grid" aria-label="Grid layout view" title="Grid view">
+                  <button class="view-toggle-btn ${VENUE_VIEW_MODE === 'grid' ? 'is-active' : ''}" type="button" data-venue-view-mode="grid" aria-label="Grid layout view" aria-pressed="${VENUE_VIEW_MODE === 'grid'}" title="Grid view">
                     ${icon('checkThin', 14)} <span>Grid</span>
                   </button>
-                  <button class="venue-view-toggle__btn ${VENUE_VIEW_MODE === 'map' ? 'is-active' : ''}" type="button" data-venue-view-mode="map" aria-label="Interactive map view" title="Map view">
+                  <button class="view-toggle-btn ${VENUE_VIEW_MODE === 'map' ? 'is-active' : ''}" type="button" data-venue-view-mode="map" aria-label="Interactive map view" aria-pressed="${VENUE_VIEW_MODE === 'map'}" title="Map view">
                     ${icon('city', 14)} <span>Map</span>
                   </button>
                 </div>
@@ -13505,7 +13496,7 @@ function fitScreen() {
                 return `<label class="option-card ${isSel ? 'is-selected' : ''}" data-card>
                   <input class="option-card__input" type="${q.multi ? 'checkbox' : 'radio'}" name="choice" value="${esc(a.id)}" ${isSel ? 'checked' : ''}>
                   <span class="option-card__icon">${icon('pin', 20)}<span class="option-card__check">${icon('checkThin', 17)}</span></span>
-                  <span class="option-card__label">${esc(a.name)}<span class="option-card__sub">${plural(venueCount, 'venue', 'venues')} · ~3 km</span></span>
+                  <span class="option-card__label">${esc(a.name)}<span class="option-card__sub">${plural(venueCount, 'venue', 'venues')}</span></span>
                 </label>`;
               }).join('')}
             </div>
@@ -14789,6 +14780,7 @@ function orderSummaryDrawer(aside) {
 function paymentScreen() {
   const plan = currentPlan(), commitment = commitmentById(S.commitmentId), price = priceFor(plan,S.commitmentId);
   const each = perSession(price, S.answers.frequency, plan);
+  const renewal = commitment.renewal;
   const method = FIELDS.method||'card';
   const match = matchVenues(A());
   const where = whereName(match);
@@ -14812,101 +14804,45 @@ function paymentScreen() {
             </div>
             <p class="pay-card-sub">Choose how you'd like to pay. Payment is simulated for this pilot.</p>
 
-            <div class="pay-method-tabs" role="radiogroup" aria-label="Payment method">
-              <label class="pay-tab ${method==='card'?'is-selected':''}">
-                <input type="radio" name="method" value="card" ${method==='card'?'checked':''} class="sr-only">
-                <span class="pay-tab__radio"></span>
-                <span class="pay-tab__content">
-                  <span class="pay-tab__label">Credit or Debit Card</span>
-                  <span class="pay-tab__icons">
-                    ${icon('card',20)}
-                  </span>
-                </span>
+            <div class="options">
+              <label class="option-card ${method==='card'?'is-selected':''}" data-card>
+                <input class="option-card__input" type="radio" name="method" value="card" ${method==='card'?'checked':''}>
+                <span class="option-card__icon">${icon('card',21)}<span class="option-card__check">${icon('checkThin',17)}</span></span>
+                <span class="option-card__label"><strong>Credit or debit card</strong><span class="xsmall muted" style="display:block;font-weight:400;margin-top:2px">Visa, Mastercard, Amex</span></span>
               </label>
-
-              <label class="pay-tab ${method==='paypal'?'is-selected':''}">
-                <input type="radio" name="method" value="paypal" ${method==='paypal'?'checked':''} class="sr-only">
-                <span class="pay-tab__radio"></span>
-                <span class="pay-tab__content">
-                  <span class="pay-tab__label">PayPal</span>
-                  <span class="pay-tab__icons">${icon('paypal',18)}</span>
-                </span>
+              <label class="option-card ${method==='paypal'?'is-selected':''}" data-card>
+                <input class="option-card__input" type="radio" name="method" value="paypal" ${method==='paypal'?'checked':''}>
+                <span class="option-card__icon">${icon('paypal',21)}<span class="option-card__check">${icon('checkThin',17)}</span></span>
+                <span class="option-card__label"><strong>PayPal</strong><span class="xsmall muted" style="display:block;font-weight:400;margin-top:2px">Fast &amp; secure checkout with PayPal</span></span>
               </label>
-
-              <label class="pay-tab ${method==='wallet'?'is-selected':''}">
-                <input type="radio" name="method" value="wallet" ${method==='wallet'?'checked':''} class="sr-only">
-                <span class="pay-tab__radio"></span>
-                <span class="pay-tab__content">
-                  <span class="pay-tab__label">Apple / Google Pay</span>
-                  <span class="pay-tab__icons">${APPLE} ${GOOGLE}</span>
-                </span>
+              <label class="option-card ${method==='wallet'?'is-selected':''}" data-card>
+                <input class="option-card__input" type="radio" name="method" value="wallet" ${method==='wallet'?'checked':''}>
+                <span class="option-card__icon">${icon('wallet',21)}<span class="option-card__check">${icon('checkThin',17)}</span></span>
+                <span class="option-card__label"><strong>Apple Pay &amp; Google Pay</strong><span class="xsmall muted" style="display:block;font-weight:400;margin-top:2px">1-tap device checkout</span></span>
               </label>
             </div>
-
-            <!-- Adyen Mock Form / Drop-in -->
-            <div class="pay-mock-form">
-              ${method === 'card' ? `
-                <div class="pay-field-group">
-                  <label class="pay-label" for="mock-card-num">Card number</label>
-                  <div class="pay-input-wrap">
-                    <input id="mock-card-num" class="pay-input font-mono" type="text" placeholder="4532 &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; 8890" value="4532 &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; 8890" readonly>
-                    <span class="pay-input-icon">${icon('lock', 15)}</span>
-                  </div>
-                </div>
-                <div class="pay-field-row">
-                  <div class="pay-field-group">
-                    <label class="pay-label" for="mock-card-exp">Expiry</label>
-                    <input id="mock-card-exp" class="pay-input font-mono" type="text" placeholder="MM/YY" value="08/28" readonly>
-                  </div>
-                  <div class="pay-field-group">
-                    <label class="pay-label" for="mock-card-cvc">CVC / CVV</label>
-                    <input id="mock-card-cvc" class="pay-input font-mono" type="text" placeholder="CVC" value="&bull;&bull;&bull;" readonly>
-                  </div>
-                </div>
-              ` : method === 'paypal' ? `
-                <div class="pay-wallet-box">
-                  ${icon('paypal', 28)}
-                  <div>
-                    <b>PayPal account connected</b>
-                    <p class="xsmall muted" style="margin:2px 0 0">Simulation: will authorize automatically on confirmation.</p>
-                  </div>
-                </div>
-              ` : `
-                <div class="pay-wallet-box">
-                  <div style="display:flex;gap:8px">${APPLE} ${GOOGLE}</div>
-                  <div>
-                    <b>Device Wallet Ready</b>
-                    <p class="xsmall muted" style="margin:2px 0 0">Simulation: standard biometrics check passed.</p>
-                  </div>
-                </div>
-              `}
-
-              <div class="pay-adyen-badge">
-                ${icon('lock',14)}
-                <span>Powered by Adyen. In production, this is where the secure Adyen drop-in is embedded. Payment is simulated in this pilot.</span>
-              </div>
-            </div>
+            <div class="pay-mock-notice">${icon('lock',14)} <span>Powered by Adyen. In production, this is where the secure Adyen drop-in is embedded. Payment is simulated in this pilot.</span></div>
           </div>
 
-          <!-- 2. Terms & Confirmation Checklist -->
-          <div class="pay-section-card">
-            <div class="pay-card-head">
-              <span class="pay-step-badge">2</span>
-              <h2 class="pay-card-title">Agreement &amp; terms</h2>
-            </div>
-            <ul class="pay-terms-list">
+          <!-- 2. Terms stay available without taking over the payment decision. -->
+          <details class="pay-terms-disclosure pay-section-card">
+            <summary>
+              <div class="pay-terms-summary-left"><span class="pay-step-badge">2</span><span>Cancellation, pause &amp; terms</span></div>
+              <span class="pay-terms-chevron">${icon('chevronDown', 18)}</span>
+            </summary>
+            <div class="pay-terms-body"><ul class="pay-terms-list">
               <li>
                 ${icon('checkThin', 16)}
                 <div>
-                  <strong>Recurring monthly membership.</strong>
-                  <span>Your plan renews automatically every month unless cancelled with ${esc(RULES.cancellationNotice.replace(/\.*$/, ''))}.</span>
+                  <strong>${esc(renewal)}</strong>
+                  <span>Cancellation notice: ${esc(RULES.cancellationNotice)}</span>
                 </div>
               </li>
               <li>
                 ${icon('checkThin', 16)}
                 <div>
-                  <strong>14-day statutory right of withdrawal.</strong>
-                  <span>You may withdraw within 14 days of joining without penalty.</span>
+                  <strong>${commitment.canPause ? 'Free pause available.' : 'Pause not available for this commitment.'}</strong>
+                  <span>${commitment.canPause ? 'Pause your membership for 1 to 6 full months at zero cost.' : `This ${commitment.minimumTermMonths}-month membership cannot be paused.`}</span>
                 </div>
               </li>
               <li>
@@ -14916,11 +14852,11 @@ function paymentScreen() {
                   <span>By confirming, you agree to the <button class="linkish" data-go="terms">General Terms and Conditions</button> and <button class="linkish" data-go="privacy">Privacy Policy</button>.</span>
                 </div>
               </li>
-            </ul>
-          </div>
+            </ul></div>
+          </details>
 
           <!-- 3. Primary & Secondary Action Row -->
-          <div class="pay-actions">
+          <div class="btn-row pay-actions">
             <div class="desktop-cta">
               <button class="btn btn--primary btn--lg" type="submit" style="width:100%">
                 Confirm and start membership &mdash; ${price} &euro; / mo
@@ -15010,10 +14946,11 @@ function paymentScreen() {
               <span>Due today</span>
               <span>${price}.00 &euro;</span>
             </div>
-            <div class="pay-receipt-subtext">
-              Billed monthly. Auto-renews unless cancelled.
+          <div class="pay-receipt-subtext">
+              Billed monthly. ${esc(renewal)}
             </div>
           </div>
+          ${ulaNote('Review your membership details and start date before confirming.')}
         </div>
       </aside>
     </div>

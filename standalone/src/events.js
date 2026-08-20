@@ -600,7 +600,7 @@ document.addEventListener('click', e => {
     const chosen=(S.answers.activities||[]).filter(x=>x!==SKIP);
     if (!chosen.includes(group.id)) S.answers.activities=[...chosen,group.id];
     S.weekSwap=Object.assign({},S.weekSwap,{[WEEK_ADD_DAY]:{venueId:venue.id,groupId:group.id}});
-    
+
     const curDays = new Set(S.weekDays && S.weekDays.length ? S.weekDays : weekPlan(A().activities||[], matchVenues(A()).pool||[], currentPlan().id, S.answers.frequency).sessions.map(x=>x.day));
     curDays.add(WEEK_ADD_DAY);
     S.weekDays = DAY_ORDER.filter(d => curDays.has(d));
@@ -625,7 +625,7 @@ document.addEventListener('click', e => {
         DAYNOTE = `Added <b>${esc(venue.name)}</b> to ${WEEK_ADD_DAY}`;
       }
     }
-    
+
     log('week_venue_added',{day:WEEK_ADD_DAY,venue:venue.id,activity:group.id});
     SHEET=null; WEEK_ADD_MODE=false; WEEK_ADD_DAY=null; document.body.style.overflow = '';
     RECO_VIEW = 'week';
@@ -1026,7 +1026,7 @@ let DRAGGED_PILLAR = null;
 document.addEventListener('dragstart', e => {
   const pillar = e.target.closest('[data-drag-pillar]');
   const card = e.target.closest('[data-drag-venue]');
-  
+
   if (pillar && !card) {
     DRAGGED_PILLAR = { id: pillar.dataset.dragPillar };
     try {
@@ -1037,7 +1037,7 @@ document.addEventListener('dragstart', e => {
     document.body.classList.add('is-dragging-pillar');
     return;
   }
-  
+
   if (card) {
     const fromPillar = card.closest('.pillar-card');
     DRAGGED_VENUE = {
@@ -1070,7 +1070,7 @@ document.addEventListener('dragend', e => {
 document.addEventListener('dragover', e => {
   const freedomDrop = e.target.closest('[data-drop-freedom]');
   const dayDrop = e.target.closest('[data-drop-day]');
-  
+
   if (freedomDrop) {
     e.preventDefault();
     try { e.dataTransfer.dropEffect = 'copy'; } catch (_) {}
@@ -1103,7 +1103,7 @@ document.addEventListener('dragleave', e => {
 document.addEventListener('drop', e => {
   const freedomDrop = e.target.closest('[data-drop-freedom]');
   const dayDrop = e.target.closest('[data-drop-day]');
-  
+
   // CASE 1: Dragged a sport pillar OUTSIDE the container -> THROW AWAY!
   if (DRAGGED_PILLAR && !freedomDrop) {
     e.preventDefault();
@@ -1123,7 +1123,7 @@ document.addEventListener('drop', e => {
     }
     return;
   }
-  
+
   // CASE 2: Dragged a venue INTO the Activity Freedom container -> Auto-create sport!
   if (freedomDrop && DRAGGED_VENUE) {
     e.preventDefault();
@@ -1131,10 +1131,10 @@ document.addEventListener('drop', e => {
     const venueId = DRAGGED_VENUE.id;
     const venue = VENUES.find(v => v.id === venueId);
     if (!venue) return;
-    
+
     let group = (A().activities || []).map(groupById).find(g => g && venueInGroup(venue, g));
     if (!group) group = ACTIVITY_GROUPS.find(g => venueInGroup(venue, g)) || ACTIVITY_GROUPS[0];
-    
+
     const cur = (S.answers.activities || []).filter(x => x !== SKIP);
     if (!cur.includes(group.id)) {
       S.answers.activities = [...cur, group.id];
@@ -1145,7 +1145,7 @@ document.addEventListener('drop', e => {
     }
     return;
   }
-  
+
   // CASE 3: Dropped onto a Day in Week Schedule
   if (dayDrop) {
     e.preventDefault();

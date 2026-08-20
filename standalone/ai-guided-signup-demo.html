@@ -10122,7 +10122,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build d6bfb5e + local edits</span>
+  <span class="demo-banner__build">build 7f54a65 + local edits</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -10715,7 +10715,7 @@ function weekPlan(groupIds = [], venues = [], planId = 'classic', frequency = 't
     const custom = (S.weekSwap||{})[day];
     const customVenue = custom && typeof custom === 'object' ? venues.find(v=>v.id===custom.venueId) : null;
     const customGroup = customVenue && custom.groupId ? groupById(custom.groupId) : null;
-    
+
     if (customVenue) {
       const group = customGroup || ACTIVITY_GROUPS.find(grp => venueInGroup(customVenue, grp)) || { id: 'other', label: 'Workout', icon: 'bolt' };
       const included = includedIn(customVenue, planId);
@@ -11817,7 +11817,7 @@ function venueSheet() {
       <div class="sheet__panel sheet__panel--quickadd">
         <div class="sheet__handle" aria-hidden="true"></div>
         <button class="sheet__close" data-close-sheet aria-label="Close">&times;</button>
-        
+
         <div class="quickadd-card">
           <div class="quickadd-head">
             <div class="quickadd-thumb">${venueMedia(v)}</div>
@@ -12101,7 +12101,7 @@ function appSheet() {
     <div class="sheet__panel sheet__panel--app">
       <div class="sheet__handle" aria-hidden="true"></div>
       <button class="sheet__close" data-close-app-sheet aria-label="Close dialog">&times;</button>
-      
+
       <div class="app-popup">
         <div class="app-popup__head">
           <div class="app-popup__logo-box">${appLogo(a)}</div>
@@ -12725,7 +12725,7 @@ function interactiveBerlinMap(b) {
   const kmPerLat = 110.6, kmPerLng = 111.32 * Math.cos(lat0 * Math.PI/180);
   const span = Math.max(1.2, ...all.map(p => Math.max(
     Math.abs((p.lng-lng0)*kmPerLng), Math.abs((p.lat-lat0)*kmPerLat))));
-  
+
   const at = p => {
     const x = (p.lng-lng0)*kmPerLng, y = (p.lat-lat0)*kmPerLat;
     return {
@@ -13214,7 +13214,7 @@ function searchScreen() {
       <div class="venuepage__primary">
         <div class="venue-explorer-card">
           ${weekPickBar()}
-          
+
           <div class="venue-filter-container">
             <div class="findbar__where">
               <span class="findbar__wheretext">${icon('pin', 16)}<span>${S.answers.area ? `Showing places ${esc(b.label)}` : `Looks like you&rsquo;re near <b>${esc(b.origins[0].name)}, Berlin</b> &mdash; showing places ${esc(b.label)}`}</span></span>
@@ -13515,7 +13515,7 @@ function fitScreen() {
           <div class="options ${opts.length > 6 ? 'options--compact' : opts.length > 4 ? 'options--chips' : 'options--tiles'}${q.id === 'frequency' ? ' options--stack-mobile' : ''}"${q.maxPick ? ` data-maxpick="${q.maxPick}"` : ''}>${cards}</div>
         `}
         ${NOCHOICE ? `<p class="field-error" role="alert">${q.multi ? 'Pick at least one, or tell Urby in your own words.' : 'Pick one of the options, or tell Urby in your own words.'}</p>` : ''}
-        
+
         <div class="btn-row desktop-cta">
           ${idx > 0 ? `<button class="btn btn--secondary" type="button" data-back="${esc(q.id)}">${icon('back', 18)} Back</button>` : `<button class="btn btn--secondary" type="button" data-go="landing">${icon('back', 18)} Back</button>`}
           <button class="btn btn--primary" type="submit" data-continue style="flex:1 1 auto">${isLastQuestion ? 'See my recommendation &rarr;' : 'Continue &rarr;'}</button>
@@ -14824,13 +14824,13 @@ function paymentScreen() {
             <div class="pay-mock-notice">${icon('lock',14)} <span>Powered by Adyen. In production, this is where the secure Adyen drop-in is embedded. Payment is simulated in this pilot.</span></div>
           </div>
 
-          <!-- 2. Terms & Confirmation Checklist -->
-          <div class="pay-section-card">
-            <div class="pay-card-head">
-              <span class="pay-step-badge">2</span>
-              <h2 class="pay-card-title">Agreement &amp; terms</h2>
-            </div>
-            <ul class="pay-terms-list">
+          <!-- 2. Terms stay available without taking over the payment decision. -->
+          <details class="pay-terms-disclosure pay-section-card">
+            <summary>
+              <div class="pay-terms-summary-left"><span class="pay-step-badge">2</span><span>Cancellation, pause &amp; terms</span></div>
+              <span class="pay-terms-chevron">${icon('chevronDown', 18)}</span>
+            </summary>
+            <div class="pay-terms-body"><ul class="pay-terms-list">
               <li>
                 ${icon('checkThin', 16)}
                 <div>
@@ -14852,11 +14852,11 @@ function paymentScreen() {
                   <span>By confirming, you agree to the <button class="linkish" data-go="terms">General Terms and Conditions</button> and <button class="linkish" data-go="privacy">Privacy Policy</button>.</span>
                 </div>
               </li>
-            </ul>
-          </div>
+            </ul></div>
+          </details>
 
           <!-- 3. Primary & Secondary Action Row -->
-          <div class="pay-actions">
+          <div class="btn-row pay-actions">
             <div class="desktop-cta">
               <button class="btn btn--primary btn--lg" type="submit" style="width:100%">
                 Confirm and start membership &mdash; ${price} &euro; / mo
@@ -14946,10 +14946,11 @@ function paymentScreen() {
               <span>Due today</span>
               <span>${price}.00 &euro;</span>
             </div>
-            <div class="pay-receipt-subtext">
-              Billed monthly. Auto-renews unless cancelled.
+          <div class="pay-receipt-subtext">
+              Billed monthly. ${esc(renewal)}
             </div>
           </div>
+          ${ulaNote('Review your membership details and start date before confirming.')}
         </div>
       </aside>
     </div>
@@ -15995,7 +15996,7 @@ document.addEventListener('click', e => {
     const chosen=(S.answers.activities||[]).filter(x=>x!==SKIP);
     if (!chosen.includes(group.id)) S.answers.activities=[...chosen,group.id];
     S.weekSwap=Object.assign({},S.weekSwap,{[WEEK_ADD_DAY]:{venueId:venue.id,groupId:group.id}});
-    
+
     const curDays = new Set(S.weekDays && S.weekDays.length ? S.weekDays : weekPlan(A().activities||[], matchVenues(A()).pool||[], currentPlan().id, S.answers.frequency).sessions.map(x=>x.day));
     curDays.add(WEEK_ADD_DAY);
     S.weekDays = DAY_ORDER.filter(d => curDays.has(d));
@@ -16020,7 +16021,7 @@ document.addEventListener('click', e => {
         DAYNOTE = `Added <b>${esc(venue.name)}</b> to ${WEEK_ADD_DAY}`;
       }
     }
-    
+
     log('week_venue_added',{day:WEEK_ADD_DAY,venue:venue.id,activity:group.id});
     SHEET=null; WEEK_ADD_MODE=false; WEEK_ADD_DAY=null; document.body.style.overflow = '';
     RECO_VIEW = 'week';
@@ -16421,7 +16422,7 @@ let DRAGGED_PILLAR = null;
 document.addEventListener('dragstart', e => {
   const pillar = e.target.closest('[data-drag-pillar]');
   const card = e.target.closest('[data-drag-venue]');
-  
+
   if (pillar && !card) {
     DRAGGED_PILLAR = { id: pillar.dataset.dragPillar };
     try {
@@ -16432,7 +16433,7 @@ document.addEventListener('dragstart', e => {
     document.body.classList.add('is-dragging-pillar');
     return;
   }
-  
+
   if (card) {
     const fromPillar = card.closest('.pillar-card');
     DRAGGED_VENUE = {
@@ -16465,7 +16466,7 @@ document.addEventListener('dragend', e => {
 document.addEventListener('dragover', e => {
   const freedomDrop = e.target.closest('[data-drop-freedom]');
   const dayDrop = e.target.closest('[data-drop-day]');
-  
+
   if (freedomDrop) {
     e.preventDefault();
     try { e.dataTransfer.dropEffect = 'copy'; } catch (_) {}
@@ -16498,7 +16499,7 @@ document.addEventListener('dragleave', e => {
 document.addEventListener('drop', e => {
   const freedomDrop = e.target.closest('[data-drop-freedom]');
   const dayDrop = e.target.closest('[data-drop-day]');
-  
+
   // CASE 1: Dragged a sport pillar OUTSIDE the container -> THROW AWAY!
   if (DRAGGED_PILLAR && !freedomDrop) {
     e.preventDefault();
@@ -16518,7 +16519,7 @@ document.addEventListener('drop', e => {
     }
     return;
   }
-  
+
   // CASE 2: Dragged a venue INTO the Activity Freedom container -> Auto-create sport!
   if (freedomDrop && DRAGGED_VENUE) {
     e.preventDefault();
@@ -16526,10 +16527,10 @@ document.addEventListener('drop', e => {
     const venueId = DRAGGED_VENUE.id;
     const venue = VENUES.find(v => v.id === venueId);
     if (!venue) return;
-    
+
     let group = (A().activities || []).map(groupById).find(g => g && venueInGroup(venue, g));
     if (!group) group = ACTIVITY_GROUPS.find(g => venueInGroup(venue, g)) || ACTIVITY_GROUPS[0];
-    
+
     const cur = (S.answers.activities || []).filter(x => x !== SKIP);
     if (!cur.includes(group.id)) {
       S.answers.activities = [...cur, group.id];
@@ -16540,7 +16541,7 @@ document.addEventListener('drop', e => {
     }
     return;
   }
-  
+
   // CASE 3: Dropped onto a Day in Week Schedule
   if (dayDrop) {
     e.preventDefault();

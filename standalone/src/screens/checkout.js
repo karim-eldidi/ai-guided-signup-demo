@@ -176,13 +176,13 @@ function paymentScreen() {
             <div class="pay-mock-notice">${icon('lock',14)} <span>Powered by Adyen. In production, this is where the secure Adyen drop-in is embedded. Payment is simulated in this pilot.</span></div>
           </div>
 
-          <!-- 2. Terms & Confirmation Checklist -->
-          <div class="pay-section-card">
-            <div class="pay-card-head">
-              <span class="pay-step-badge">2</span>
-              <h2 class="pay-card-title">Agreement &amp; terms</h2>
-            </div>
-            <ul class="pay-terms-list">
+          <!-- 2. Terms stay available without taking over the payment decision. -->
+          <details class="pay-terms-disclosure pay-section-card">
+            <summary>
+              <div class="pay-terms-summary-left"><span class="pay-step-badge">2</span><span>Cancellation, pause &amp; terms</span></div>
+              <span class="pay-terms-chevron">${icon('chevronDown', 18)}</span>
+            </summary>
+            <div class="pay-terms-body"><ul class="pay-terms-list">
               <li>
                 ${icon('checkThin', 16)}
                 <div>
@@ -204,11 +204,11 @@ function paymentScreen() {
                   <span>By confirming, you agree to the <button class="linkish" data-go="terms">General Terms and Conditions</button> and <button class="linkish" data-go="privacy">Privacy Policy</button>.</span>
                 </div>
               </li>
-            </ul>
-          </div>
+            </ul></div>
+          </details>
 
           <!-- 3. Primary & Secondary Action Row -->
-          <div class="pay-actions">
+          <div class="btn-row pay-actions">
             <div class="desktop-cta">
               <button class="btn btn--primary btn--lg" type="submit" style="width:100%">
                 Confirm and start membership &mdash; ${price} &euro; / mo
@@ -298,10 +298,11 @@ function paymentScreen() {
               <span>Due today</span>
               <span>${price}.00 &euro;</span>
             </div>
-            <div class="pay-receipt-subtext">
-              Billed monthly. Auto-renews unless cancelled.
+          <div class="pay-receipt-subtext">
+              Billed monthly. ${esc(renewal)}
             </div>
           </div>
+          ${ulaNote('Review your membership details and start date before confirming.')}
         </div>
       </aside>
     </div>

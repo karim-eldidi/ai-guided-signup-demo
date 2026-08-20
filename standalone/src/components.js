@@ -430,7 +430,7 @@ function venueSheet() {
       <div class="sheet__panel sheet__panel--quickadd">
         <div class="sheet__handle" aria-hidden="true"></div>
         <button class="sheet__close" data-close-sheet aria-label="Close">&times;</button>
-        
+
         <div class="quickadd-card">
           <div class="quickadd-head">
             <div class="quickadd-thumb">${venueMedia(v)}</div>
@@ -714,7 +714,7 @@ function appSheet() {
     <div class="sheet__panel sheet__panel--app">
       <div class="sheet__handle" aria-hidden="true"></div>
       <button class="sheet__close" data-close-app-sheet aria-label="Close dialog">&times;</button>
-      
+
       <div class="app-popup">
         <div class="app-popup__head">
           <div class="app-popup__logo-box">${appLogo(a)}</div>

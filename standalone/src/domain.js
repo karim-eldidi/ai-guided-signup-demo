@@ -206,7 +206,7 @@ function weekPlan(groupIds = [], venues = [], planId = 'classic', frequency = 't
     const custom = (S.weekSwap||{})[day];
     const customVenue = custom && typeof custom === 'object' ? venues.find(v=>v.id===custom.venueId) : null;
     const customGroup = customVenue && custom.groupId ? groupById(custom.groupId) : null;
-    
+
     if (customVenue) {
       const group = customGroup || ACTIVITY_GROUPS.find(grp => venueInGroup(customVenue, grp)) || { id: 'other', label: 'Workout', icon: 'bolt' };
       const included = includedIn(customVenue, planId);
