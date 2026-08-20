@@ -32,6 +32,7 @@ let VENUESOPEN=false;
    memberships, which starts open because the complaint that made rule 64 was that comparing
    them was hidden. */
 let MOREOPEN=false, MOREPICK=null, ALTOPEN=null, PLANPLUS=null, PLANASK=false, PLAN_DRAWER_OPEN=false, ORDER_SUMMARY_OPEN=false;
+let PLANS_EXPANDED_ID=null;
 let WEEK_ADD_MODE=false, WEEK_ADD_DAY=null, WEEK_SWAP_DAY=null, WEEK_SWAP_GROUP=null, WEEK_SWAP_VENUE_ID=null, WEEK_SWAP_OPTION_ID=null, WEEK_SWAP_OPTION_TITLE=null, WEEK_SWAP_FILTER='nearby', WEEK_SWAP_PICKING_DAY=false, WEEK_SWAP_PICKING_ACT=false;
 /* Saving is an interruption, not a checkout step. Keep its state outside the route so
    the modal can open and close without moving the visitor or changing browser history. */
@@ -42,14 +43,21 @@ let SAVE_IDLE_TIMER = null;
    near you; the full search screen (rule 63) is the fallback when nothing here matches. */
 let VENUEQ='';
 /* The venue page. WHEREPICK is its location picker, SEEALL is whether the row of places
-   has been opened out into the full list. Neither is an answer, so neither lives in S. */
+   has been opened out into the full list. More filters drawer state and active sub-filters. */
 let WHEREPICK=false, SEEALL=false;
+let VENUE_MORE_FILTERS_OPEN=false;
+let VENUE_TIER_FILTERS=new Set();
+let VENUE_ACT_FILTERS=new Set();
+let VENUE_ACT_SEARCH_Q='';
 let RECO_VIEW='pillars'; /* 'pillars' (activities gallery) or 'week' (day-by-day schedule) */
 /* Read while the routine's places are filtered, but nothing adds to it any more — the
    "hide this venue" control is gone. An empty set filters nothing, which is what the
    screen already does; the declaration is here only so that read keeps working. */
-let EXCLUDED_VENUES=new Set();
-let ACTIVE_CATEGORY_FILTER='all';
+let EXCLUDED_VENUES = new Set();
+let ACTIVE_CATEGORY_FILTERS = new Set();
+let ACTIVE_CATEGORY_FILTER = 'all';
+let VENUE_VIEW_MODE = 'scroll'; /* 'scroll', 'grid', or 'map' */
+let MAP_PREVIEW_VENUE_ID = null;
 /* In production the neighbourhood comes from the browser or the IP. The pilot has no map
    service, so the page starts from one real Berlin area and says out loud that it guessed
    — the same contract the city chip already keeps (rules 6 and 26). It is never written

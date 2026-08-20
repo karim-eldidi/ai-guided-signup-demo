@@ -816,15 +816,6 @@ function plusSheet() {
     </div></div>`;
 }
 
-function formatFitAnswers() {
-  const ans = S.answers || {};
-  const goalLabel = answerLabel('goal', ans.goal);
-  const actLabels = answerLabel('activities', ans.activities);
-  const areaLabels = answerLabel('area', ans.area);
-  const freqLabel = answerLabel('frequency', ans.frequency);
-  const hasAnswers = Boolean(goalLabel || actLabels || areaLabels || freqLabel);
-  return { goalLabel, actLabels, areaLabels, freqLabel, hasAnswers };
-}
 
 const PLAN_LINE_META = [
   {
@@ -937,39 +928,35 @@ const PLAN_LINE_META = [
 function plansScreen() {
   const selectedPlanId = S.chosenPlanId || (PLANS.find(pl => pl.mostPopular) || PLANS[1]).id;
   const selectedPlan = PLANS.find(pl => pl.id === selectedPlanId) || PLANS[1];
-  const fitInfo = formatFitAnswers();
 
   const termLabel = S.commitmentId === 'annual' ? '12-month contract' : S.commitmentId === 'biennial' ? '24-month contract' : 'Monthly contract';
   const pauseRule = S.commitmentId === 'monthly' ? 'Pause anytime (1–6 months)' : 'Pausing and downgrading not available';
 
-  const perkBanner = S.commitmentId === 'annual'
-    ? `<div class="commit-perk-banner"><span class="perk-icon">📱</span> <span><strong>12 months</strong> includes 1 free wellbeing app &middot; plus a &euro;20 merchandise voucher</span></div>`
-    : S.commitmentId === 'biennial'
-    ? `<div class="commit-perk-banner"><span class="perk-icon">🎁</span> <span><strong>24 months</strong> saves 20% &middot; includes 2 free wellbeing apps &middot; plus a &euro;20 merchandise voucher</span></div>`
-    : `<div class="commit-perk-banner"><span class="perk-icon">⚡</span> <span><strong>Monthly flexibility</strong> &middot; cancel anytime with 3 days&rsquo; notice before your renewal date</span></div>`;
-
   const planLines = PLAN_LINE_META.map(pt => {
     const pl = PLANS.find(p => p.id === pt.id) || PLANS[0];
     const price = priceFor(pl, S.commitmentId);
-    const isSelected = selectedPlan.id === pl.id;
+    const isExpanded = PLANS_EXPANDED_ID === pl.id;
     const allowances = pt.getAllowances(termLabel, pauseRule);
 
-    return `<article class="plan-line ${isSelected ? 'is-selected' : ''}" data-pick-plan="${esc(pl.id)}" role="button" tabindex="0" ${isSelected ? 'aria-expanded="true" aria-current="true"' : 'aria-expanded="false"'}>
+    return `<article class="plan-line ${isExpanded ? 'is-selected is-expanded' : ''}" data-pick-plan="${esc(pl.id)}" role="button" tabindex="0" aria-expanded="${isExpanded ? 'true' : 'false'}" ${isExpanded ? 'aria-current="true"' : ''}>
       <div class="plan-line__header">
         <div class="plan-line__icon-wrap"><span class="plan-line__icon">${pt.iconEmoji}</span></div>
         <div class="plan-line__info">
           <div class="plan-line__headline">${esc(pt.headline)}</div>
-          ${pt.headSub && isSelected ? `<div class="plan-line__headsub">${esc(pt.headSub)}</div>` : ''}
+          ${pt.headSub && isExpanded ? `<div class="plan-line__headsub">${esc(pt.headSub)}</div>` : ''}
         </div>
         <div class="plan-line__tier">
           <span class="plan-line__tier-name">${esc(pt.tierName)}</span>
           <span class="plan-line__tier-meta">${esc(pt.tierMeta)}</span>
         </div>
-        <div class="plan-line__price">
-          <b>${price} &euro;</b> <span>/ month</span>
+        <div class="plan-line__price-wrap">
+          <div class="plan-line__price">
+            <b>${price} &euro;</b> <span>/ month</span>
+          </div>
+          <span class="plan-line__chevron">${icon('chevronDown', 18)}</span>
         </div>
       </div>
-      ${isSelected ? `
+      ${isExpanded ? `
         <div class="plan-line__expanded">
           <div class="plan-diff-grid">
             <div class="plan-diff-col">
@@ -996,70 +983,6 @@ function plansScreen() {
     </article>`;
   }).join('');
 
-  const sidePanel = `<aside class="plans-side-card" aria-label="Make this fit your routine">
-    <div class="plans-side-card__header">
-      ${ulaAvatar('sm')}
-      <span class="plans-side-card__guide-name">Urby</span>
-    </div>
-    <h2 class="plans-side-card__title">Make this fit your routine</h2>
-    <p class="plans-side-card__subtitle">Your answers are ready whenever you want to adjust them.</p>
-
-    ${fitInfo.hasAnswers ? `
-      <div class="plans-fit-box">
-        <div class="plans-fit-box__head">
-          <span class="plans-fit-check">${icon('checkThin', 14)}</span>
-          <strong>Your fit</strong>
-        </div>
-        <div class="plans-fit-chips">
-          ${fitInfo.goalLabel ? `
-            <button class="fit-chip" type="button" data-edit="q1" aria-label="Edit goal: ${esc(fitInfo.goalLabel)}">
-              <span class="fit-chip__icon">🎯</span>
-              <span class="fit-chip__label">${esc(fitInfo.goalLabel)}</span>
-              <span class="fit-chip__edit">${icon('pencil', 12)}</span>
-            </button>` : ''}
-          ${fitInfo.actLabels ? `
-            <button class="fit-chip" type="button" data-edit="q2" aria-label="Edit activities: ${esc(fitInfo.actLabels)}">
-              <span class="fit-chip__icon">🏋️</span>
-              <span class="fit-chip__label">${esc(fitInfo.actLabels)}</span>
-              <span class="fit-chip__edit">${icon('pencil', 12)}</span>
-            </button>` : ''}
-          ${fitInfo.areaLabels ? `
-            <button class="fit-chip" type="button" data-edit="q3" aria-label="Edit location: ${esc(fitInfo.areaLabels)}">
-              <span class="fit-chip__icon">📍</span>
-              <span class="fit-chip__label">${esc(fitInfo.areaLabels)}</span>
-              <span class="fit-chip__edit">${icon('pencil', 12)}</span>
-            </button>` : ''}
-          ${fitInfo.freqLabel ? `
-            <button class="fit-chip" type="button" data-edit="q4" aria-label="Edit frequency: ${esc(fitInfo.freqLabel)}">
-              <span class="fit-chip__icon">📅</span>
-              <span class="fit-chip__label">${esc(fitInfo.freqLabel)}</span>
-              <span class="fit-chip__edit">${icon('pencil', 12)}</span>
-            </button>` : ''}
-        </div>
-      </div>
-      <button class="btn btn--secondary btn-side-back" type="button" data-go="recommendation">
-        Back to my routine &amp; favourites &rarr;
-      </button>
-      <p class="plans-side-caption">Built from your four answers, and yours to change.</p>
-    ` : `
-      <div class="plans-fit-empty">
-        <p>Answer 4 quick questions and I&rsquo;ll tailor a routine recommendation with real nearby venues and live schedules.</p>
-        <button class="btn btn--secondary btn-side-back" type="button" data-go="fit">
-          Find my fit &rarr;
-        </button>
-        <p class="plans-side-caption">Takes 2 minutes &middot; no email needed</p>
-      </div>
-    `}
-
-    <button class="plans-side-save" type="button" data-go="save">
-      <span class="save-icon">${icon('bookmark', 16)}</span>
-      <div class="save-text">
-        <strong>Save these places for later</strong>
-        <span>Keeps your answers and brings you back here.</span>
-      </div>
-    </button>
-  </aside>`;
-
   const stickyBar = `<div class="plans-sticky-bar">
     <div class="plans-sticky-bar__left">
       <div class="plans-sticky-bar__name"><b>${esc(selectedPlan.name)}</b> &middot; ${priceFor(selectedPlan, S.commitmentId)} &euro;/mo</div>
@@ -1080,11 +1003,8 @@ function plansScreen() {
           return `<button class="chip-sm ${isCur ? 'is-current' : ''}" type="button" data-commit="${esc(c.id)}"><span>${esc(termLabel)}</span>${savingBadge}</button>`;
         }).join('')}</div>
 
-        ${perkBanner}
-
         <div class="plans-head">
-          <h1 class="h-question" tabindex="-1">What kind of month are you planning?</h1>
-          <p class="reco-lede">Choose the closest match. You can change it anytime.</p>
+          <h1 class="h-question" tabindex="-1">Choose your membership</h1>
         </div>
 
         <div class="plan-lines-group">${planLines}</div>
@@ -1100,10 +1020,12 @@ function plansScreen() {
           </button>
         </div>
       </div>
-
-      ${sidePanel}
+      <aside class="plans-layout__sidebar">
+        ${routinePanel()}
+      </aside>
     </div>
-  </main>${stickyBar}${plusSheet()}${exitModal()}`;
+    ${stickyBar}
+  </main>${plusSheet()}${exitModal()}`;
 }
 
 /* Saving and signing up are two different intentions, so they are two different screens.

@@ -653,14 +653,15 @@ b, strong { font-weight: 700; }
 .startnow { height: 54px; width: 100%; max-width: 520px; margin-top: 12px; font-size: 17px; }
 
 /* --- all four plans, for people who already know ------------------------- */
-main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:border-box; padding: 32px 24px 80px; }
+main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:border-box; padding: 24px 24px 80px; }
 .plans-layout { display:grid; grid-template-columns:minmax(0,1fr) 340px; gap:36px; align-items:start; }
 .plans-main { min-width:0; }
+.plans-layout__sidebar .routine { position: sticky; top: 24px; }
 
-.commit-row { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin: 0 auto 14px; }
+.commit-row { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin: 0 auto 12px; }
 .commit-row .chip-sm {
-  height: 40px; padding: 0 18px; border-radius: 9999px; font-size: 14px; font-weight: 700;
-  display: inline-flex; align-items: center; gap: 8px;
+  height: 34px; padding: 0 14px; border-radius: 9999px; font-size: 13px; font-weight: 700;
+  display: inline-flex; align-items: center; gap: 6px;
   background: #fff; border: 1.5px solid var(--border); color: var(--ink); cursor: pointer;
   transition: all .15s ease;
 }
@@ -669,21 +670,12 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
   background: #fdf5d3; color: var(--ink); border-color: var(--ink); font-weight: 800;
 }
 .commit-save-pill {
-  background: #e6f4ea; color: #137333; font-size: 11.5px; font-weight: 800;
-  padding: 2px 8px; border-radius: 99px; letter-spacing: 0.01em;
+  background: #e6f4ea; color: #137333; font-size: 11px; font-weight: 800;
+  padding: 1px 7px; border-radius: 99px; letter-spacing: 0.01em;
 }
 
-.commit-perk-banner {
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-  background: #fbf9f4; border: 1px solid #eee8db; border-radius: 12px;
-  padding: 10px 16px; margin: 0 auto 24px; max-width: 580px;
-  font-size: 13.5px; color: var(--navy); text-align: center;
-}
-.commit-perk-banner .perk-icon { font-size: 16px; flex: 0 0 auto; }
-
-.plans-head { text-align: center; margin-bottom: 24px; }
-.plans-head .h-question { margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -.03em; color: var(--ink); }
-.plans-head .reco-lede { max-width: none; margin: 6px 0 0; font-size: 15px; color: #2b61b6; font-weight: 500; text-align: center; }
+.plans-head { text-align: center; margin-bottom: 20px; }
+.plans-head .h-question { margin: 0; font-size: clamp(24px, 2.3vw, 30px); font-weight: 800; letter-spacing: -.03em; color: var(--ink); }
 
 .plan-lines-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
 .plan-line {
@@ -710,9 +702,22 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
 .plan-line__tier { display: flex; flex-direction: column; justify-content: center; }
 .plan-line__tier-name { font-size: 14px; font-weight: 700; color: var(--ink); }
 .plan-line__tier-meta { font-size: 12.5px; color: #2b61b6; font-weight: 500; margin-top: 2px; }
+.plan-line__price-wrap {
+  display: flex; align-items: center; justify-content: flex-end; gap: 12px;
+}
 .plan-line__price { text-align: right; white-space: nowrap; }
 .plan-line__price b { font-size: 22px; font-weight: 800; letter-spacing: -.02em; color: var(--ink); }
 .plan-line__price span { font-size: 13px; color: #2b61b6; font-weight: 500; }
+.plan-line__chevron {
+  display: flex; align-items: center; justify-content: center;
+  color: #716d63; transition: transform .2s ease, color .2s ease;
+  flex: 0 0 auto;
+}
+.plan-line.is-expanded .plan-line__chevron,
+.plan-line.is-selected .plan-line__chevron {
+  transform: rotate(180deg);
+  color: var(--ink);
+}
 
 .plan-line__expanded {
   padding: 0 20px 20px; border-top: 1px solid #eae6df; background: #fff;
@@ -743,50 +748,11 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
   min-width: 240px; display: inline-flex; align-items: center; justify-content: center;
 }
 
-.plans-side-card {
-  position: sticky; top: 24px; background: #fbf9f4; border: 1.5px solid #ece6da;
-  border-radius: 20px; padding: 24px 22px; display: flex; flex-direction: column;
-}
-.plans-side-card__header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
-.plans-side-card__guide-name { font-size: 14px; font-weight: 700; color: var(--ink); }
-.plans-side-card__title { font-size: 20px; font-weight: 800; letter-spacing: -.02em; margin: 0 0 6px; color: var(--ink); }
-.plans-side-card__subtitle { font-size: 13.5px; color: var(--navy-soft); margin: 0 0 18px; line-height: 1.4; }
-
-.plans-fit-box { background: transparent; margin-bottom: 16px; }
-.plans-fit-box__head { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 800; color: var(--ink); margin-bottom: 10px; }
-.plans-fit-check { color: #1f9d55; display: flex; align-items: center; }
-.plans-fit-chips { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
-.fit-chip {
-  display: flex; align-items: center; gap: 8px; background: #fff; border: 1px solid #e5e0d5;
-  border-radius: 9999px; padding: 8px 14px; font-size: 13px; font-weight: 600; color: var(--ink);
-  cursor: pointer; text-align: left; transition: all .15s ease; width: 100%;
-}
-.fit-chip:hover { border-color: var(--ink); background: #fcfcfc; }
-.fit-chip__icon { font-size: 14px; flex: 0 0 auto; }
-.fit-chip__label { flex: 1 1 auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.fit-chip__edit { font-size: 12px; color: var(--navy-soft); flex: 0 0 auto; }
-
-.btn-side-back {
-  width: 100%; height: 44px; background: #fff; border: 1.5px solid var(--ink);
-  border-radius: 9999px; font-size: 13.5px; font-weight: 700; color: var(--ink);
-  display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all .15s ease;
-}
-.btn-side-back:hover { background: #f5f3ed; }
-.plans-side-caption { font-size: 12px; color: var(--navy-soft); text-align: center; margin: 10px 0 18px; line-height: 1.35; }
-.plans-side-save {
-  display: flex; align-items: flex-start; gap: 10px; background: transparent; border: none;
-  padding: 12px 0 0; border-top: 1px solid #ebe5d8; cursor: pointer; text-align: left;
-}
-.plans-side-save .save-icon { font-size: 16px; color: var(--ink); flex: 0 0 auto; margin-top: 2px; }
-.plans-side-save .save-text { display: flex; flex-direction: column; }
-.plans-side-save .save-text strong { font-size: 13px; font-weight: 700; color: var(--ink); }
-.plans-side-save .save-text span { font-size: 11.5px; color: var(--navy-soft); margin-top: 2px; }
-
 .plans-sticky-bar { display: none; }
 
 @media (max-width: 960px) {
   .plans-layout { grid-template-columns: 1fr; gap: 24px; }
-  .plans-side-card { position: static; margin-top: 16px; }
+  .plans-layout__sidebar .routine { position: static; margin-top: 16px; }
 }
 @media (max-width: 680px) {
   main.plans-page { padding: 20px 16px 120px; }
@@ -795,7 +761,7 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
   }
   .plan-line__icon-wrap { width: 36px; height: 36px; font-size: 17px; }
   .plan-line__tier { grid-column: 2 / 4; margin-top: -4px; }
-  .plan-line__price { grid-column: 3; grid-row: 1; }
+  .plan-line__price-wrap { grid-column: 3; grid-row: 1; gap: 8px; }
   .plan-line__expanded { padding: 0 14px 16px; }
   .plan-diff-grid { grid-template-columns: 1fr; gap: 16px; }
   .plans-cta-wrap { display: none; }
@@ -3393,32 +3359,707 @@ button.appcard:hover .appcard__info-icon {
    Karim's design, 14 August. Browsing is not the checkout, so the page is one wide
    column with three things in it: a panel that holds every control, a row of real
    places, and Urby at the foot asking the one thing a list of places cannot tell her.
-   The badge on each photograph is the join a venue directory hasn't got — the cheapest
-   membership that opens the place (rule 63). */
-.venuepage { max-width: 1480px; }
-.venuepage__h1 { margin: 0 0 22px; font-size: clamp(31px, 3.4vw, 46px); line-height: 1.04; }
-.venuepage__intro { max-width: 1040px; }
-.venuepage__layout {
-  display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 348px);
-  align-items: start; gap: 32px;
+   The badge on each photograph is the join a venue directory hasn't got — the cheapest */
+.content.venuepage,
+.venuepage {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 24px 24px 80px;
+  width: 100%;
+  box-sizing: border-box;
 }
-.venuepage__layout--searched { grid-template-columns: minmax(0, 1fr); max-width: 1040px; }
-.venuepage__primary { min-width: 0; }
-.venuepage__aside { min-width: 0; }
+.venuepage__intro {
+  margin-bottom: 20px;
+}
+.venuepage__h1 {
+  margin: 0 0 6px;
+  font-size: clamp(28px, 3.2vw, 40px);
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.venuepage__subtitle {
+  font-size: 15px;
+  margin: 0;
+  color: var(--navy-soft);
+}
+.venuepage__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  align-items: start;
+  gap: 32px;
+  width: 100%;
+}
+.venuepage__layout--searched {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 1040px;
+}
+.venuepage__primary {
+  min-width: 0;
+  width: 100%;
+}
+.venuepage__aside {
+  min-width: 0;
+  width: 340px;
+}
 
 /* Integrated findbar controls */
 .findbar {
-  background: var(--cream); border: 1px solid var(--cream-line);
-  border-radius: var(--radius-lg); padding: 18px 20px 20px;
+  background: var(--cream);
+  border: 1px solid var(--cream-line);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px 20px;
 }
 .findbar__where {
-  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px 14px; margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin-bottom: 12px;
 }
 .findbar__wheretext {
-  display: inline-flex; align-items: center; gap: 7px;
-  font-size: 14.5px; font-weight: 700; color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--ink);
 }
-.findbar__wheretext svg { flex: 0 0 auto; color: var(--navy-soft); }
+.findbar__wheretext svg {
+  flex: 0 0 auto;
+  color: var(--navy-soft);
+}
+
+.venue-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+.venue-search-bar .findsearch {
+  flex: 1 1 320px;
+  min-width: 260px;
+}
+.venue-toolbar-filters {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.radius-toggle {
+  display: inline-flex;
+  align-items: center;
+  background: #f4f3ef;
+  padding: 3px;
+  border-radius: 9999px;
+  gap: 3px;
+}
+.radius-toggle .chip-sm {
+  border: none;
+  background: transparent;
+  padding: 6px 14px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--navy-soft);
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.radius-toggle .chip-sm.is-active,
+.radius-toggle .chip-sm.is-current {
+  background: var(--yellow-bright);
+  color: var(--ink);
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+.btn-more-filters {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: 9999px;
+  padding: 7px 16px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--ink);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.btn-more-filters:hover {
+  border-color: var(--ink);
+}
+.btn-more-filters.is-active {
+  background: var(--ink);
+  color: #fff;
+  border-color: var(--ink);
+}
+.btn-more-filters.is-active svg {
+  color: #fff;
+}
+
+/* More filters drawer */
+.more-filters-drawer {
+  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  margin: 16px 0 24px;
+  box-shadow: 0 6px 20px rgba(8, 9, 10, 0.06);
+  animation: slideDownFade 0.2s ease-out;
+}
+@keyframes slideDownFade {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.more-filters__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--cream-line);
+}
+.more-filters__title {
+  font-size: 18px;
+  font-weight: 800;
+  margin: 0;
+}
+.more-filters__clear {
+  font-size: 13.5px;
+  color: var(--navy-soft);
+}
+.more-filters__section {
+  margin-bottom: 22px;
+}
+.more-filters__label {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--navy-soft);
+  margin-bottom: 10px;
+}
+.more-filters__tiers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.filter-check-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: 9999px;
+  padding: 7px 16px 7px 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.filter-check-pill:hover {
+  border-color: var(--navy-soft);
+}
+.filter-check-pill.is-checked {
+  background: #f8fafc;
+  border-color: var(--ink);
+  font-weight: 700;
+}
+.filter-check-box {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1.5px solid var(--border);
+  display: grid;
+  place-items: center;
+  background: #fff;
+  transition: all 0.15s ease;
+}
+.filter-check-pill.is-checked .filter-check-box,
+.filter-check-item.is-checked .filter-check-box {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+.more-filters__act-search {
+  position: relative;
+  margin-bottom: 14px;
+  max-width: 320px;
+}
+.more-filters__act-search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--navy-soft);
+  display: flex;
+}
+.more-filters__act-search-input {
+  width: 100%;
+  height: 38px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0 32px 0 34px;
+  font-size: 13.5px;
+  outline: none;
+}
+.more-filters__act-search-input:focus {
+  border-color: var(--ink);
+}
+.more-filters__act-search-clear {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--navy-soft);
+  padding: 4px;
+  display: flex;
+}
+.more-filters__acts-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px 16px;
+}
+.filter-check-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  padding: 6px 4px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--ink);
+  cursor: pointer;
+  text-align: left;
+  border-radius: 6px;
+  transition: background 0.12s ease;
+}
+.filter-check-item:hover {
+  background: #f8fafc;
+}
+.filter-check-item.is-checked {
+  font-weight: 700;
+}
+.more-filters__footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--cream-line);
+}
+.more-filters__cancel {
+  font-size: 14px;
+  color: var(--navy-soft);
+}
+
+/* Active filter tags row */
+.venue-active-filters-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.venue-active-filters-list {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.filter-chip-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f1f3f5;
+  border: 1px solid #e2e8f0;
+  border-radius: 9999px;
+  padding: 4px 10px 4px 12px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.filter-chip-tag button {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: var(--navy-soft);
+}
+.filter-chip-tag button:hover {
+  color: var(--ink);
+}
+.venue-active-filters-clear {
+  font-size: 13px;
+  color: var(--navy-soft);
+  text-decoration: underline;
+}
+
+/* Venue Explorer Container Card */
+.venue-explorer-card {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  margin-bottom: 24px;
+}
+
+@media (max-width: 680px) {
+  .venue-explorer-card {
+    padding: 16px 14px;
+    border-radius: var(--radius-lg);
+  }
+}
+
+/* Venue Explorer View Mode Segmented Toggle */
+.venue-view-toggle {
+  display: inline-flex;
+  align-items: center;
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.view-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  background: transparent;
+  padding: 6px 13px;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--navy-soft);
+  cursor: pointer;
+  transition: all .15s ease;
+  line-height: 1;
+}
+
+.view-toggle-btn:hover {
+  color: var(--ink);
+}
+
+.view-toggle-btn.is-active {
+  background: #ffffff;
+  color: var(--ink);
+  font-weight: 700;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* Catalog responsive grid and 2-row horizontal scroll gallery */
+.venue-grid--catalog {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(245px, 265px));
+  gap: 14px;
+  margin-top: 14px;
+}
+.venue-grid--catalog .activity-card,
+.hits--row .activity-card,
+.hits .activity-card {
+  flex: 1 1 auto;
+  width: 100%;
+}
+
+.venue-gallery-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin: 14px 0 8px;
+}
+.venue-carousel-scroll {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+  padding: 4px 2px 14px;
+  width: 100%;
+}
+.venue-carousel-scroll::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+.venue-carousel-track {
+  display: grid;
+  grid-template-rows: repeat(2, auto);
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(245px, 265px);
+  gap: 14px;
+  width: max-content;
+}
+.venue-carousel-track .activity-card {
+  scroll-snap-align: start;
+  width: 100%;
+  min-width: 245px;
+  max-width: 265px;
+  box-sizing: border-box;
+}
+
+/* Elevated Interactive Berlin Map View */
+.berlin-map-view-container {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: #faf9f6;
+  overflow: hidden;
+  margin-top: 14px;
+  position: relative;
+}
+
+.berlin-map-canvas-wrap {
+  position: relative;
+  width: 100%;
+  height: 480px;
+  background: #f7f6f1;
+  overflow: hidden;
+}
+
+.berlin-map-grid-bg {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 50% 50%, rgba(0,0,0,0.03) 1px, transparent 1px),
+    linear-gradient(to right, rgba(0,0,0,0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0,0,0,0.02) 1px, transparent 1px);
+  background-size: 24px 24px, 48px 48px, 48px 48px;
+  pointer-events: none;
+}
+
+.berlin-map-district {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(18, 25, 38, 0.32);
+  pointer-events: none;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.berlin-map-origin {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  z-index: 6;
+  pointer-events: none;
+}
+
+.berlin-map-origin-dot {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--yellow-bright);
+  border: 2px solid var(--ink);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  color: var(--ink);
+}
+
+.berlin-map-origin-pulse {
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(255, 214, 0, 0.4);
+  animation: mapPulse 2s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+}
+
+@keyframes mapPulse {
+  0% { transform: scale(0.6); opacity: 0.9; }
+  70% { transform: scale(1.4); opacity: 0; }
+  100% { transform: scale(1.4); opacity: 0; }
+}
+
+.berlin-map-pin {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: transform .15s ease, box-shadow .15s ease;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  padding: 0;
+}
+
+.berlin-map-pin__num {
+  font-size: 10.5px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.map-pin--standard {
+  background: var(--ink);
+  color: #ffffff;
+}
+
+.map-pin--plus {
+  background: #1e293b;
+  color: #fbbf24;
+  border-color: #fbbf24;
+}
+
+.map-pin--premium {
+  background: #1e293b;
+  color: #f472b6;
+  border-color: #f472b6;
+}
+
+.berlin-map-pin:hover,
+.berlin-map-pin.is-selected {
+  transform: translate(-50%, -50%) scale(1.25);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.32);
+}
+
+.berlin-map-pin.is-selected {
+  border-color: var(--ink);
+  outline: 2px solid var(--yellow-bright);
+}
+
+.berlin-map-preview-card {
+  position: absolute;
+  bottom: 14px;
+  left: 14px;
+  right: 14px;
+  max-width: 380px;
+  margin: 0 auto;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 8px 26px rgba(0,0,0,0.16);
+  padding: 12px;
+  z-index: 20;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  animation: mapPreviewSlide .18s ease-out;
+}
+
+@keyframes mapPreviewSlide {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.berlin-map-preview-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: none;
+  background: #f1f3f5;
+  color: var(--navy-soft);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.berlin-map-preview-close:hover {
+  background: #e2e8f0;
+  color: var(--ink);
+}
+
+.berlin-map-preview-media {
+  position: relative;
+  width: 76px;
+  height: 76px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #eee;
+}
+
+.berlin-map-preview-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.berlin-map-preview-media .hit__badge--plan {
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  font-size: 9px;
+  padding: 1px 4px;
+}
+
+.berlin-map-preview-info {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-right: 18px;
+}
+
+.berlin-map-preview-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0 0 2px;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.berlin-map-preview-meta {
+  font-size: 12px;
+  color: var(--navy-soft);
+  margin-bottom: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.berlin-map-preview-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.berlin-map-preview-actions .btn {
+  padding: 4px 10px;
+  font-size: 12px;
+}
+
+.berlin-map-footer-note {
+  padding: 10px 14px;
+  font-size: 12px;
+  color: var(--navy-soft);
+  background: #fdfdfc;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .findsearch {
   position: relative;
   display: flex;
@@ -3448,12 +4089,12 @@ button.appcard:hover .appcard__info-icon {
 }
 .findsearch input[type="search"] {
   width: 100%;
-  height: 50px;
+  height: 48px;
   border: 0;
   outline: none;
   background: transparent;
-  padding: 0 96px 0 44px;
-  font-size: 15px;
+  padding: 0 94px 0 44px;
+  font-size: 14.5px;
   color: var(--ink);
   -webkit-appearance: none;
   appearance: none;
@@ -3462,164 +4103,433 @@ button.appcard:hover .appcard__info-icon {
 .findsearch input[type="search"]::-webkit-search-cancel-button {
   -webkit-appearance: none;
 }
+.findsearch__clear {
+  position: absolute;
+  right: 88px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #e2e8f0;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  color: var(--ink);
+  padding: 0;
+  transition: all 0.15s ease;
+  z-index: 3;
+}
+.findsearch__clear:hover {
+  background: #cbd5e1;
+}
 .findsearch__btn {
   position: absolute;
-  right: 5px;
-  top: 5px;
-  bottom: 5px;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 36px;
+  padding: 0 16px;
   background: var(--ink);
   color: #fff;
-  border: 0;
-  border-radius: 7px;
-  padding: 0 18px;
-  font-size: 14px;
-  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: background .15s ease;
+  z-index: 3;
+  transition: background 0.15s ease;
 }
 .findsearch__btn:hover {
-  background: var(--navy);
+  background: #23272f;
 }
 
 .wherepick {
-  background: #fff; border: 1px solid var(--border); border-radius: var(--radius);
-  padding: 14px 16px; margin: 0 0 14px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin: 0 0 14px;
 }
-.wherepick__label { font-size: 14px; font-weight: 700; margin-bottom: 10px; }
-.wherepick__grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.wherepick__label {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.wherepick__grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
 .wherepick__note {
-  display: flex; align-items: flex-start; gap: 8px; margin: 12px 0 0;
-  font-size: 13px; line-height: 1.45; color: var(--navy-soft);
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 12px 0 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--navy-soft);
 }
-.wherepick__note svg { flex: 0 0 auto; margin-top: 2px; }
+.wherepick__note svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
 
-.findbar__cats { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.findbar__cats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
 .catchip {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: #fff; border: 1px solid var(--border); border-radius: 9999px;
-  padding: 6px 14px 6px 8px; font-size: 13.5px; font-weight: 700; color: var(--ink);
-  min-height: 40px; cursor: pointer; transition: all .15s ease;
-  /* A two-word activity name must never break across lines inside its own pill. */
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  padding: 6px 14px 6px 8px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--ink);
+  min-height: 40px;
+  cursor: pointer;
+  transition: all .15s ease;
   white-space: nowrap;
 }
-.catchip:hover { border-color: #b9b6ad; }
-.catchip.is-on { background: #fefce8; border-color: #fde047; color: #855800; }
+.catchip:hover {
+  border-color: #b9b6ad;
+}
+.catchip.is-on {
+  background: #fefce8;
+  border-color: #fde047;
+  color: #855800;
+}
 .catchip__icon {
-  flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%;
-  background: var(--yellow-pale); display: grid; place-items: center;
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--yellow-pale);
+  display: grid;
+  place-items: center;
 }
-.catchip.is-on .catchip__icon { background: #fef08a; }
+.catchip.is-on .catchip__icon {
+  background: #fef08a;
+}
 
-/* The row of places, and its heading, which counts rather than flatters. */
-.placesrow { margin-top: 34px; }
+/* The row of places, and its heading */
+.placesrow {
+  margin-top: 24px;
+}
 .placesrow__head {
-  display: flex; align-items: flex-end; justify-content: space-between; gap: 14px 24px;
-  flex-wrap: wrap; margin-bottom: 16px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px 24px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
 }
-.placesrow__title { min-width: 0; }
-.placesrow__title h2 { font-size: clamp(21px, 1.9vw, 26px); line-height: 1.15; }
-.placesrow__title p { margin: 5px 0 0; font-size: 14.5px; color: var(--navy-soft); }
-.placesrow__tools { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 14px; }
-.placesrow__all { font-size: 14.5px; display: inline-flex; align-items: center; gap: 7px; }
+.placesrow__title {
+  min-width: 0;
+}
+.placesrow__title h2 {
+  font-size: clamp(20px, 1.8vw, 24px);
+  line-height: 1.15;
+  font-weight: 800;
+}
+.placesrow__title p {
+  margin: 5px 0 0;
+  font-size: 14px;
+  color: var(--navy-soft);
+}
+.placesrow__tools {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+}
+.placesrow__all {
+  font-size: 14.5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
 .placesrow__foot {
-  display: flex; align-items: flex-start; gap: 8px; margin: 14px 0 0;
-  font-size: 13px; line-height: 1.5; color: var(--navy-soft); max-width: 86ch;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 14px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--navy-soft);
+  max-width: 86ch;
 }
-.placesrow__foot svg { flex: 0 0 auto; margin-top: 3px; }
+.placesrow__foot svg {
+  flex: 0 0 auto;
+  margin-top: 3px;
+}
 
-/* A native select wearing a pill. The chevron is ours; the menu is the browser's, which
-   is the one that already works on a phone and with a keyboard. */
+/* A native select wearing a pill */
 .pillsel {
-  display: inline-flex; align-items: center; gap: 7px;
-  background: #fff; border: 1.5px solid var(--border); border-radius: 9999px;
-  padding: 0 12px 0 12px; height: 36px; cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: 9999px;
+  padding: 0 12px 0 12px;
+  height: 36px;
+  cursor: pointer;
   transition: border-color .15s ease, box-shadow .15s ease;
 }
-.pillsel:hover { border-color: var(--ink); }
-.pillsel:focus-within { border-color: var(--ink); box-shadow: 0 0 0 2px rgba(16,32,60,.10); }
-.pillsel__icon { display: flex; color: var(--navy-soft); width: 14px; height: 14px; }
+.pillsel:hover {
+  border-color: var(--ink);
+}
+.pillsel:focus-within {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 2px rgba(16,32,60,.10);
+}
+.pillsel__icon {
+  display: flex;
+  color: var(--navy-soft);
+  width: 14px;
+  height: 14px;
+}
 .pillsel select {
-  appearance: none; -webkit-appearance: none;
-  border: 0; background: transparent; outline: none; cursor: pointer;
-  font-size: 13px; font-weight: 700; color: var(--ink);
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0;
+  background: transparent;
+  outline: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
   padding: 0 2px 0 0;
 }
-.pillsel > svg { color: var(--navy-soft); pointer-events: none; }
+.pillsel > svg {
+  color: var(--navy-soft);
+  pointer-events: none;
+}
 
-/* Four across on a desktop. `auto-fill` would leave one card stretched across the row
-   when a filter cuts the list down to three, so the track count is fixed and the last
-   row is simply short. */
-.hits--row { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; margin-top: 0; }
-.hit { border-radius: var(--radius); overflow: hidden; }
+.hits--row {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+  margin-top: 0;
+}
+.hit {
+  border-radius: var(--radius);
+  overflow: hidden;
+}
 .hit__badge {
-  position: absolute; top: 10px; left: 10px; z-index: 2;
-  border-radius: 6px; padding: 3px 8px; font-size: 11.5px; font-weight: 700;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 2;
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 11.5px;
+  font-weight: 700;
   letter-spacing: .01em;
 }
-.hit__badge--premium { background: #fdf3cf; color: #855800; }
-.hit__badge--plus { background: #e3effd; color: #0c4a80; }
-.hit__badge--standard { background: #e6f4ea; color: #137333; }
+.hit__badge--premium {
+  background: #fdf3cf;
+  color: #855800;
+}
+.hit__badge--plus {
+  background: #e3effd;
+  color: #0c4a80;
+}
+.hit__badge--standard {
+  background: #e6f4ea;
+  color: #137333;
+}
 
 .hit__view {
-  display: inline-flex; align-items: center; gap: 7px;
-  margin-top: auto; padding-top: 12px;
-  font-size: 14.5px; font-weight: 700; color: var(--ink);
-  text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: auto;
+  padding-top: 12px;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
 }
-.hit__view svg { flex: 0 0 auto; }
+.hit__view svg {
+  flex: 0 0 auto;
+}
 
-/* Urby at the foot. The two filters above answer two of her four questions between
-   them; this asks whichever of the other two is still open, and answering it stays on
-   this page (rule 11 — and nothing is asked twice). */
+/* Side navigation routine panel */
 .routine {
-  display: grid; grid-template-columns: 1fr;
-  align-items: start; gap: 0;
-  margin: 0; padding: 22px 22px 24px;
-  background: var(--cream); border: 1px solid var(--cream-line); border-radius: var(--radius-lg);
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: start;
+  gap: 0;
+  margin: 0;
+  padding: 22px 22px 24px;
+  background: var(--cream);
+  border: 1px solid var(--cream-line);
+  border-radius: var(--radius-lg);
 }
-.venuepage__aside .routine { position: sticky; top: 24px; }
-.routine__who { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; font-size: 15px; }
-.routine__mid { min-width: 0; }
-.routine__title { font-size: clamp(20px, 1.8vw, 25px); line-height: 1.15; }
-.routine__q { margin: 12px 0 10px; font-size: 15.5px; font-weight: 700; color: var(--navy); }
-.routine__opts { display: flex; flex-wrap: wrap; gap: 9px; }
-/* A chosen answer, not a call to action: deliberately under the 40px that makes a
-   filled black control read as the action on the screen (rule 9). */
+.venuepage__aside .routine {
+  position: sticky;
+  top: 24px;
+}
+.routine__who {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  font-size: 15px;
+}
+.routine__mid {
+  min-width: 0;
+}
+.routine__title {
+  font-size: clamp(20px, 1.8vw, 25px);
+  line-height: 1.15;
+}
+.routine__q {
+  margin: 12px 0 10px;
+  font-size: 15.5px;
+  font-weight: 700;
+  color: var(--navy);
+}
+.routine__opts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
 .pill {
-  background: #fff; border: 1px solid var(--border); border-radius: 999px;
-  padding: 0 17px; height: 38px; font-size: 14.5px; font-weight: 700; color: var(--ink);
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0 17px;
+  height: 38px;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--ink);
 }
-.pill:hover { border-color: var(--ink); }
+.pill:hover {
+  border-color: var(--ink);
+}
 .routine__fit {
-  display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
-  margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--cream-line);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--cream-line);
 }
-.routine__fit > svg { flex: 0 0 auto; }
-.routine__fitlabel { font-size: 14.5px; font-weight: 700; margin-right: 2px; }
-.routine__side { display: flex; flex-direction: column; align-items: stretch; gap: 12px; margin-top: 20px; }
-.routine__side .btn { width: 100%; height: 52px; padding: 0 16px; font-size: 15.5px; }
-.routine__note { margin: -4px 0 0; font-size: 13px; line-height: 1.45; color: var(--navy-soft); }
+.routine__fit > svg {
+  flex: 0 0 auto;
+}
+.routine__fitlabel {
+  font-size: 14.5px;
+  font-weight: 700;
+  margin-right: 2px;
+}
+.routine__side {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  margin-top: 20px;
+}
+.routine__side .btn {
+  width: 100%;
+  height: 52px;
+  padding: 0 16px;
+  font-size: 15.5px;
+}
+.routine__note {
+  margin: -4px 0 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--navy-soft);
+}
 .routine__save {
-  display: flex; align-items: flex-start; gap: 12px; text-align: left;
-  background: transparent; border: 0; padding: 8px 0 0; color: var(--ink);
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  padding: 8px 0 0;
+  color: var(--ink);
 }
-.routine__save svg { flex: 0 0 auto; margin-top: 2px; color: var(--navy-soft); }
-.routine__save b { display: block; font-size: 15.5px; }
-.routine__save small { display: block; font-size: 13px; color: var(--navy-soft); margin-top: 2px; }
-.routine__save:hover b { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.routine__save svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  color: var(--navy-soft);
+}
+.routine__save b {
+  display: block;
+  font-size: 15.5px;
+}
+.routine__save small {
+  display: block;
+  font-size: 13px;
+  color: var(--navy-soft);
+  margin-top: 2px;
+}
+.routine__save:hover b {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
 
 @media (max-width: 1180px) {
-  .venuepage { max-width: 1160px; }
-  .venuepage__layout { grid-template-columns: minmax(0, 1fr); }
-  .venuepage__aside .routine { position: static; margin-top: 8px; }
-  .hits--row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .venuepage {
+    max-width: 100%;
+    padding: 20px 20px 80px;
+  }
+  .more-filters__acts-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-width: 900px) {
+  .venuepage__layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .venuepage__aside {
+    display: none;
+  }
+  .venue-carousel-track {
+    grid-auto-columns: minmax(260px, 80vw);
+  }
+  .venue-grid--catalog {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .more-filters__acts-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 @media (max-width: 700px) {
-  .venuepage { padding: 12px 14px 100px; }
-  .venuepage__aside { display: none; }
+  .venuepage {
+    padding: 12px 14px 100px;
+  }
+  .venuepage__aside {
+    display: none;
+  }
+  .venue-carousel-track {
+    grid-auto-columns: minmax(240px, 85vw);
+  }
+  .venue-grid--catalog {
+    grid-template-columns: 1fr;
+  }
+  .more-filters__acts-grid {
+    grid-template-columns: 1fr;
+  }
   .venuepage__intro { margin-bottom: 8px; }
   .venuepage__h1 { font-size: 21px; line-height: 1.25; margin: 4px 0 8px; }
   .search__guide { margin-bottom: 2px; font-size: 13px; }
@@ -3632,7 +4542,7 @@ button.appcard:hover .appcard__info-icon {
   .findsearch input[type="search"] { height: 44px; font-size: 13.5px; padding: 0 84px 0 38px; }
   .findsearch__icon { left: 12px; }
   .findsearch__icon svg { width: 16px; height: 16px; }
-  .findsearch__btn { right: 4px; top: 4px; bottom: 4px; padding: 0 14px; font-size: 13px; border-radius: 6px; }
+  .findsearch__btn { right: 4px; top: 50%; transform: translateY(-50%); height: 36px; padding: 0 14px; font-size: 13px; border-radius: 6px; }
 
   .findbar__cats {
     display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 7px;
@@ -4070,12 +4980,26 @@ button.appcard:hover .appcard__info-icon {
   font-size: 14.5px; font-weight: 700; color: var(--ink);
 }
 .activity-card__vname {
-  font-size: 13px; color: var(--ink); font-weight: 600; text-align: left;
-  background: none; border: 0; padding: 0; cursor: pointer;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font-size: 13.5px;
+  color: var(--ink);
+  font-weight: 600;
+  text-align: left;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  line-height: 1.35;
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 .activity-card__vname:hover {
-  text-decoration: underline; color: var(--ink);
+  text-decoration: underline;
+  color: var(--ink);
 }
 .activity-card__dist {
   font-size: 12px; color: var(--navy-soft); margin-top: 2px;
@@ -6974,7 +7898,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build a2babfb + local edits</span>
+  <span class="demo-banner__build">build 6b5e9b3 + local edits</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -7964,6 +8888,7 @@ let VENUESOPEN=false;
    memberships, which starts open because the complaint that made rule 64 was that comparing
    them was hidden. */
 let MOREOPEN=false, MOREPICK=null, ALTOPEN=null, PLANPLUS=null, PLANASK=false, PLAN_DRAWER_OPEN=false, ORDER_SUMMARY_OPEN=false;
+let PLANS_EXPANDED_ID=null;
 let WEEK_ADD_MODE=false, WEEK_ADD_DAY=null, WEEK_SWAP_DAY=null, WEEK_SWAP_GROUP=null, WEEK_SWAP_VENUE_ID=null, WEEK_SWAP_OPTION_ID=null, WEEK_SWAP_OPTION_TITLE=null, WEEK_SWAP_FILTER='nearby', WEEK_SWAP_PICKING_DAY=false, WEEK_SWAP_PICKING_ACT=false;
 /* Saving is an interruption, not a checkout step. Keep its state outside the route so
    the modal can open and close without moving the visitor or changing browser history. */
@@ -7974,14 +8899,21 @@ let SAVE_IDLE_TIMER = null;
    near you; the full search screen (rule 63) is the fallback when nothing here matches. */
 let VENUEQ='';
 /* The venue page. WHEREPICK is its location picker, SEEALL is whether the row of places
-   has been opened out into the full list. Neither is an answer, so neither lives in S. */
+   has been opened out into the full list. More filters drawer state and active sub-filters. */
 let WHEREPICK=false, SEEALL=false;
+let VENUE_MORE_FILTERS_OPEN=false;
+let VENUE_TIER_FILTERS=new Set();
+let VENUE_ACT_FILTERS=new Set();
+let VENUE_ACT_SEARCH_Q='';
 let RECO_VIEW='pillars'; /* 'pillars' (activities gallery) or 'week' (day-by-day schedule) */
 /* Read while the routine's places are filtered, but nothing adds to it any more — the
    "hide this venue" control is gone. An empty set filters nothing, which is what the
    screen already does; the declaration is here only so that read keeps working. */
-let EXCLUDED_VENUES=new Set();
-let ACTIVE_CATEGORY_FILTER='all';
+let EXCLUDED_VENUES = new Set();
+let ACTIVE_CATEGORY_FILTERS = new Set();
+let ACTIVE_CATEGORY_FILTER = 'all';
+let VENUE_VIEW_MODE = 'scroll'; /* 'scroll', 'grid', or 'map' */
+let MAP_PREVIEW_VENUE_ID = null;
 /* In production the neighbourhood comes from the browser or the IP. The pilot has no map
    service, so the page starts from one real Berlin area and says out loud that it guessed
    — the same contract the city chip already keeps (rules 6 and 26). It is never written
@@ -8287,9 +9219,11 @@ function loginModal() {
     <div class="modal modal--login">
       <button class="modal__close" data-close-login aria-label="Close login dialog">&times;</button>
       <div class="login-modal__head">
-        ${ulaAvatar('sm')}
-        <h2 id="login-modal-title" style="margin:8px 0 4px;font-size:22px;font-weight:800;letter-spacing:-0.02em">Resume your journey</h2>
-        <p class="small muted" style="margin:0 0 16px">Enter the email you used when saving to pick up where you left off.</p>
+        <div style="display:flex;align-items:center;gap:10px;margin:2px 0 6px">
+          ${ulaAvatar('xs')}
+          <h2 id="login-modal-title" style="margin:0;font-size:21px;font-weight:800;letter-spacing:-0.02em">Resume your journey</h2>
+        </div>
+        <p class="small muted" style="margin:0 0 16px">Enter your email to pick up where you left off.</p>
       </div>
       ${err}
       <form data-form="login" novalidate class="login-form">
@@ -8832,20 +9766,107 @@ function browseOrigin() {
   return { origins:[guess], mine:false, anywhere:false, label:`near ${guess.name}` };
 }
 
+const CATALOG_ALL_ACTIVITIES = [
+  { id: 'barre', label: 'Barre' },
+  { id: 'bouldering', label: 'Bouldering' },
+  { id: 'boxing', label: 'Boxing' },
+  { id: 'crossfit', label: 'CrossFit' },
+  { id: 'cycling', label: 'Cycling' },
+  { id: 'dance', label: 'Dance' },
+  { id: 'gym', label: 'Gym' },
+  { id: 'hiit', label: 'HIIT' },
+  { id: 'martial_arts', label: 'Martial arts' },
+  { id: 'meditation', label: 'Meditation' },
+  { id: 'pilates', label: 'Pilates' },
+  { id: 'sauna', label: 'Sauna' },
+  { id: 'spa', label: 'Spa' },
+  { id: 'strength', label: 'Strength' },
+  { id: 'swimming', label: 'Swimming' },
+  { id: 'yoga', label: 'Yoga' },
+  { id: 'climbing', label: 'Climbing' }
+];
+
 /* What the venue page browses: every place in the pilot that does what they asked for,
-   inside the distance they asked for, nearest first. Deliberately not matchVenues() —
-   that one widens the radius by itself so a recommendation is always possible, and a
-   list with a distance control on it must show exactly what the control says it shows. */
+   inside the distance they asked for, nearest first. Applies search query, distance radius,
+   active category pill, membership tiers, and activity sub-filters. */
 function browsePlaces() {
   const o = browseOrigin();
-  const radius = RADII.find(x=>x.id===(S.radiusKm||'auto')) || RADII[0];
-  const groups = (A().activities||[]).map(groupById).filter(Boolean);
-  let list = VENUES.map(v => ({ ...v,
-    distanceKm: Math.round(Math.min(...o.origins.map(a=>distanceKm(a,v))) * 10) / 10 }));
-  if (groups.length) list = list.filter(v => groups.some(g=>venueInGroup(v,g)));
+  const radius = RADII.find(x=>x.id===(S.radiusKm||'3')) || RADII.find(x=>x.id==='3') || RADII[0];
+  const chosenActs = activityIdsFor(A().activities || []);
+
+  let list = VENUES.map(v => {
+    const km = Math.round(Math.min(...o.origins.map(a=>distanceKm(a,v))) * 10) / 10;
+    const hits = (v.activities || []).filter(x => chosenActs.includes(x));
+    const basePct = hits.length > 0 ? 98 : 74;
+    const distPenalty = Math.min(28, Math.round(km * 2.5));
+    const matchPct = Math.max(45, Math.min(99, basePct - distPenalty));
+    return { ...v, distanceKm: km, matchPct };
+  });
+
+  // 1. Radius filter:
+  let withinRadius = list;
+  if (S.radiusKm === '3' || S.radiusKm === 'auto' || !S.radiusKm) {
+    withinRadius = list.filter(v => v.distanceKm <= 3);
+  } else if (S.radiusKm === '8') {
+    withinRadius = list.filter(v => v.distanceKm <= 8);
+  } else if (S.radiusKm === 'any') {
+    withinRadius = list;
+  }
+
+  // 2. Active Category Group Filter (from top category carousel pills):
+  let filtered = withinRadius;
+  const activeCats = (ACTIVE_CATEGORY_FILTERS && ACTIVE_CATEGORY_FILTERS.size > 0)
+    ? Array.from(ACTIVE_CATEGORY_FILTERS)
+    : ((ACTIVE_CATEGORY_FILTER && ACTIVE_CATEGORY_FILTER !== 'all') ? ACTIVE_CATEGORY_FILTER.split(',').filter(Boolean) : []);
+
+  if (activeCats.length > 0) {
+    const grps = activeCats.map(groupById).filter(Boolean);
+    if (grps.length) {
+      filtered = filtered.filter(v => grps.some(grp => venueInGroup(v, grp)));
+    }
+  } else if (S.answers.activities && S.answers.activities.length) {
+    const groups = (A().activities || []).map(groupById).filter(Boolean);
+    if (groups.length) filtered = filtered.filter(v => groups.some(g => venueInGroup(v, g)));
+  }
+
+  // 3. Search query filter (VENUEQ or SEARCH.q):
+  const qStr = (VENUEQ || (typeof SEARCH !== 'undefined' && SEARCH && SEARCH.q) || '').trim();
+  if (qStr) {
+    const nq = norm(qStr);
+    filtered = filtered.filter(v =>
+      norm(v.name).includes(nq) ||
+      norm(v.address || '').includes(nq) ||
+      norm(v.area || '').includes(nq) ||
+      (v.activities || []).some(a => norm(ACTIVITY_LABELS[a] || a).includes(nq) || norm(a).includes(nq))
+    );
+  }
+
+  // 4. More filters: Membership access tiers (VENUE_TIER_FILTERS)
+  if (VENUE_TIER_FILTERS && VENUE_TIER_FILTERS.size > 0) {
+    filtered = filtered.filter(v =>
+      Array.from(VENUE_TIER_FILTERS).some(t => includedIn(v, t))
+    );
+  }
+
+  // 5. More filters: Individual activity tags (VENUE_ACT_FILTERS)
+  if (VENUE_ACT_FILTERS && VENUE_ACT_FILTERS.size > 0) {
+    filtered = filtered.filter(v =>
+      Array.from(VENUE_ACT_FILTERS).some(act => (v.activities || []).includes(act))
+    );
+  }
+
+  // Sort nearest first
+  filtered.sort((a,b) => a.distanceKm - b.distanceKm);
   list.sort((a,b) => a.distanceKm - b.distanceKm);
-  return { ...o, radius, groups, list,
-    within: radius.km ? list.filter(v => v.distanceKm <= radius.km) : list };
+
+  return {
+    ...o,
+    radius,
+    groups: (A().activities || []).map(groupById).filter(Boolean),
+    list,
+    within: filtered,
+    totalWithinRadius: withinRadius.length
+  };
 }
 
 /* One card, two questions. Browsing, the badge answers "what would open this place?" at
@@ -8856,15 +9877,9 @@ function placeCard(v, opts = {}) {
   const { known = true, from = null, focus = null, priced = false } = opts;
   const plan = currentPlan();
   const inPlan = includedIn(v, plan.id);
-  const lowest = firstPlanWithAccess(v);
-  const badge = !priced && lowest
-    ? `<span class="hit__badge hit__badge--${esc(lowest.id)}">${esc(lowest.name)}</span>` : '';
-  /* Testers could not tell whether this card was a place or a class they could book here.
-     The line above the name is the biggest type on the card and it read "yoga" — an activity
-     word, so it read as a class. It now names what the card is, in the dataset's published
-     wording (see venueKindLabel), and the activities stay where they were, underneath. */
+  const lowest = firstPlanWithAccess(v) || PLANS[0];
   const kindLabel = venueKindLabel(v);
-  const acts = v.activities.slice(0,3).map(a => ACTIVITY_LABELS[a]||a).join(', ');
+  const acts = (v.activities || []).slice(0,3).map(a => ACTIVITY_LABELS[a]||a).join(', ');
   const where = known ? `${v.distanceKm} km${from?` from ${esc(from)}`:''}` : 'in Berlin';
   const grpIcon = activityIcon(v.activities);
 
@@ -8872,15 +9887,21 @@ function placeCard(v, opts = {}) {
 
   const accessBadge = inPlan
     ? (v.tier === 'plus'
-        ? `<span class="access-pill access-pill--plus-overlay">${icon('checkThin', 11)} Plus</span>`
+        ? `<span class="access-pill access-pill--plus-overlay">${icon('checkThin', 11)} Plus access</span>`
         : v.tier === 'premium'
-        ? `<span class="access-pill access-pill--premium-overlay">${icon('checkThin', 11)} Premium</span>`
+        ? `<span class="access-pill access-pill--premium-overlay">${icon('checkThin', 11)} Premium access</span>`
         : `<span class="access-pill access-pill--included-overlay">${icon('checkThin', 11)} Included</span>`)
     : `<span class="access-pill access-pill--locked-overlay venue-card__lock">${icon('lock', 11)} Needs ${v.tier === 'premium' ? 'Premium' : 'Classic'}</span>`;
 
+  const matchBadge = v.matchPct
+    ? `<span class="activity-card__badge">${v.matchPct}% match</span>`
+    : '';
+
   return `<div class="activity-card venue-card hit ${inPlan ? '' : 'is-locked'} ${isStarred ? 'is-starred' : ''}" draggable="true" data-drag-venue="${esc(v.id)}" data-drag-name="${esc(v.name)}">
     <div class="activity-card__badges">
-      ${badge || accessBadge}
+      ${matchBadge}
+      ${accessBadge}
+      <span class="sr-only hit__badge hit__badge--${esc(lowest.id)}">${esc(lowest.name)}</span>
     </div>
     <button class="activity-card__star-btn ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(v.id)}" aria-label="${isStarred ? `Remove ${esc(v.name)} from routine` : `Add ${esc(v.name)} to routine`}" title="${isStarred ? 'In your routine' : 'Add to routine'}">
       ${icon(isStarred ? 'starFill' : 'star', 15)}
@@ -8909,6 +9930,102 @@ function placeCard(v, opts = {}) {
   </div>`;
 }
 
+function moreFiltersDrawer(filteredCount) {
+  if (!VENUE_MORE_FILTERS_OPEN) return '';
+
+  const qAct = (VENUE_ACT_SEARCH_Q || '').trim().toLowerCase();
+  const actsToShow = qAct
+    ? CATALOG_ALL_ACTIVITIES.filter(a => a.label.toLowerCase().includes(qAct) || a.id.toLowerCase().includes(qAct))
+    : CATALOG_ALL_ACTIVITIES;
+
+  return `<div class="more-filters-drawer" id="more-filters-drawer">
+    <div class="more-filters__head">
+      <h3 class="more-filters__title">More filters</h3>
+      <button class="linkish strong more-filters__clear" type="button" data-clear-all-filters>Clear all</button>
+    </div>
+
+    <div class="more-filters__section">
+      <div class="more-filters__label">Membership access</div>
+      <div class="more-filters__tiers">
+        ${PLANS.map(p => {
+          const isChecked = VENUE_TIER_FILTERS.has(p.id);
+          return `<button type="button" class="filter-check-pill ${isChecked ? 'is-checked' : ''}" data-toggle-tier-filter="${esc(p.id)}" aria-pressed="${isChecked}">
+            <span class="filter-check-box">${isChecked ? icon('checkThin', 12) : ''}</span>
+            <span class="filter-check-name">${esc(p.name)}</span>
+          </button>`;
+        }).join('')}
+      </div>
+    </div>
+
+    <div class="more-filters__section">
+      <div class="more-filters__label">All activities</div>
+      <div class="more-filters__act-search">
+        <span class="more-filters__act-search-icon" aria-hidden="true">${icon('search', 14)}</span>
+        <input type="text" class="more-filters__act-search-input" placeholder="Find an activity" value="${esc(VENUE_ACT_SEARCH_Q || '')}" data-act-search-input autocomplete="off" aria-label="Find an activity">
+        ${VENUE_ACT_SEARCH_Q ? `<button type="button" class="more-filters__act-search-clear" data-act-search-clear aria-label="Clear activity search">${icon('close', 12)}</button>` : ''}
+      </div>
+      <div class="more-filters__acts-grid">
+        ${actsToShow.map(a => {
+          const isChecked = VENUE_ACT_FILTERS.has(a.id);
+          return `<button type="button" class="filter-check-item ${isChecked ? 'is-checked' : ''}" data-toggle-act-filter="${esc(a.id)}" aria-pressed="${isChecked}">
+            <span class="filter-check-box">${isChecked ? icon('checkThin', 12) : ''}</span>
+            <span class="filter-check-name">${esc(a.label)}</span>
+          </button>`;
+        }).join('')}
+      </div>
+    </div>
+
+    <div class="more-filters__footer">
+      <button class="linkish strong more-filters__cancel" type="button" data-toggle-more-filters>Cancel</button>
+      <button class="btn btn--primary more-filters__apply" type="button" data-apply-filters>
+        Show ${filteredCount} ${filteredCount === 1 ? 'place' : 'places'}
+      </button>
+    </div>
+  </div>`;
+}
+
+function venueActiveFilterChips(b) {
+  const chips = [];
+  if (S.radiusKm === 'any') {
+    chips.push(`<span class="filter-chip-tag"><span>📍 All Berlin</span><button type="button" data-remove-radius-filter aria-label="Remove distance filter">${icon('close', 11)}</button></span>`);
+  } else if (S.radiusKm === '8') {
+    chips.push(`<span class="filter-chip-tag"><span>📍 8 km</span><button type="button" data-remove-radius-filter aria-label="Remove distance filter">${icon('close', 11)}</button></span>`);
+  }
+
+  const activeCats = (ACTIVE_CATEGORY_FILTERS && ACTIVE_CATEGORY_FILTERS.size > 0)
+    ? Array.from(ACTIVE_CATEGORY_FILTERS)
+    : ((ACTIVE_CATEGORY_FILTER && ACTIVE_CATEGORY_FILTER !== 'all') ? ACTIVE_CATEGORY_FILTER.split(',').filter(Boolean) : []);
+
+  if (activeCats.length > 0) {
+    activeCats.forEach(cId => {
+      const grp = groupById(cId);
+      if (grp) {
+        chips.push(`<span class="filter-chip-tag"><span>${icon(grp.icon, 12)} ${esc(grp.label)}</span><button type="button" data-remove-cat-filter="${esc(cId)}" aria-label="Remove ${esc(grp.label)} filter">${icon('close', 11)}</button></span>`);
+      }
+    });
+  }
+
+  if (VENUE_TIER_FILTERS && VENUE_TIER_FILTERS.size > 0) {
+    Array.from(VENUE_TIER_FILTERS).forEach(tId => {
+      const p = PLANS.find(x => x.id === tId);
+      chips.push(`<span class="filter-chip-tag"><span>${esc(p ? p.name : tId)}</span><button type="button" data-remove-tier-filter="${esc(tId)}" aria-label="Remove ${esc(p ? p.name : tId)} filter">${icon('close', 11)}</button></span>`);
+    });
+  }
+
+  if (VENUE_ACT_FILTERS && VENUE_ACT_FILTERS.size > 0) {
+    Array.from(VENUE_ACT_FILTERS).forEach(aId => {
+      chips.push(`<span class="filter-chip-tag"><span>${esc(ACTIVITY_LABELS[aId] || aId)}</span><button type="button" data-remove-act-filter="${esc(aId)}" aria-label="Remove ${esc(aId)} filter">${icon('close', 11)}</button></span>`);
+    });
+  }
+
+  if (!chips.length) return '';
+
+  return `<div class="venue-active-filters-row">
+    <div class="venue-active-filters-list">${chips.join('')}</div>
+    <button class="linkish strong venue-active-filters-clear" type="button" data-clear-all-filters>Clear filters</button>
+  </div>`;
+}
+
 function weekPickBar() {
   if (!WEEK_ADD_MODE) return '';
   const match=matchVenues(A()), plan=currentPlan();
@@ -8922,103 +10039,104 @@ function weekPickBar() {
   </div>`;
 }
 
-/* The panel at the top: where we are looking, the box, and the five shortcuts into the
-   activity answer. It is the same on a browse and on a result, because it is the control
-   surface for both — what changes underneath it is whether the page is showing a row of
-   nearby places or the answer to something typed. */
-function findBar() {
-  const b = browsePlaces();
-  const shortcuts = ['gym','yoga','swim','climb','spa'];
-  const cats = availableGroups()
-    .filter(g => shortcuts.includes(g.id) || b.groups.some(x=>x.id===g.id))
-    .sort((x,y) => (shortcuts.indexOf(x.id)+1||99) - (shortcuts.indexOf(y.id)+1||99));
-  const isAll = !b.groups.length;
-
-  return `<section class="findbar">
-    <div class="findbar__where">
-      <span class="findbar__wheretext">${icon('pin',16)}<span>${S.answers.area ? `Showing places ${esc(b.label)}` : `Looks like you&rsquo;re in <b>${esc(b.origins[0].name)}</b> &mdash; showing places ${esc(b.label)}`}</span></span>
-      <button class="linkish strong findbar__wherechange" type="button" data-toggle-where aria-expanded="${WHEREPICK}">${WHEREPICK?'Close':'Change location'}</button>
-    </div>
-    ${WHEREPICK ? `<div class="wherepick">
-      <div class="wherepick__label">Where should we look?</div>
-      <div class="wherepick__grid">${optionsFor(qById('area')).map(o=>`<button class="chip-sm ${
-        areaIds(S.answers.area).includes(o.id)?'is-current':''}" type="button" data-where="${esc(o.id)}">${esc(o.label)}</button>`).join('')}</div>
-      <p class="wherepick__note">${icon('info',16)} <span>This is one of Urby&rsquo;s four questions, so picking here means she won&rsquo;t ask it again.</span></p>
-    </div>` : ''}
-    <form data-form="search" novalidate class="findbar__searchform">
-      <div class="findsearch">
-        <label for="venue-search-q" class="sr-only">Search for a place, an activity or an address</label>
-        <span class="findsearch__icon" aria-hidden="true">${icon('search',18)}</span>
-        <input type="search" name="q" id="venue-search-q" value="${esc(SEARCH.q||'')}"
-          placeholder="Venue, activity or address" aria-label="Search for a place, an activity or an address" autocomplete="off">
-        <button type="submit" class="findsearch__btn">Search</button>
-      </div>
-    </form>
-    <div class="findbar__cats" role="group" aria-label="Common activities">
-      <button class="catchip ${isAll ? 'is-on' : ''}" type="button" data-cat-all aria-pressed="${isAll}">
-        <span class="catchip__icon">${icon('sparkle',16)}</span><span>All</span></button>
-      ${cats.map(g=>`<button class="catchip ${b.groups.some(x=>x.id===g.id)?'is-on':''}" type="button"
-        data-cat="${esc(g.id)}" aria-pressed="${b.groups.some(x=>x.id===g.id)}">
-        <span class="catchip__icon">${icon(g.icon,17)}</span><span>${g.label}</span></button>`).join('')}
-    </div>
-  </section>`;
-}
-
-/* Testers keep asking for a map, and the only map this pilot could honestly draw is this
-   one. There is no map service and no tile host — adding either would break the offline
-   promise and put a network dependency in front of the funnel — so nothing here is
-   surveyed geography: it is the published latitude and longitude of each venue, projected
-   linearly into a square box, and it says so on the handle. One scale is used for both
-   axes (kilometres, with longitude corrected for this latitude) so the distances between
-   pins are the real relative ones rather than a stretched picture of them. The pins are
-   the same `data-venue` control the cards use, so tapping one opens the same venue detail,
-   and they are real buttons in nearest-first order so the keyboard reaches them. */
-function schematicMap(b) {
-  /* Nearest first, and capped: with every venue in range this became one black blob, and a
-     picture nobody can read is worse than no picture. The cap is stated under the box rather
-     than hidden, so the map never implies it is showing everything. */
-  const pts = b.within.slice(0, 30);
-  const hidden = b.within.length - pts.length;
-  /* One pin is a picture of nothing the card above does not already say. */
-  if (pts.length < 2) return '';
+/* Elevated interactive Berlin coordinate map with district landmarks, origin pulse, and interactive pins */
+function interactiveBerlinMap(b) {
+  const pts = b.within.slice(0, 40);
+  if (!pts.length) {
+    return `<div class="notice notice--grey" style="margin-top:20px">${icon('info',19)}<span>No venues match the selected filters within this distance.</span></div>`;
+  }
   const all = [...pts, ...b.origins];
   const lat0 = all.reduce((s,p)=>s+p.lat,0)/all.length;
   const lng0 = all.reduce((s,p)=>s+p.lng,0)/all.length;
   const kmPerLat = 110.6, kmPerLng = 111.32 * Math.cos(lat0 * Math.PI/180);
-  const span = Math.max(0.5, ...all.map(p => Math.max(
+  const span = Math.max(1.2, ...all.map(p => Math.max(
     Math.abs((p.lng-lng0)*kmPerLng), Math.abs((p.lat-lat0)*kmPerLat))));
+  
   const at = p => {
     const x = (p.lng-lng0)*kmPerLng, y = (p.lat-lat0)*kmPerLat;
-    return { left: (50 + x/span*40).toFixed(1), top: (50 - y/span*40).toFixed(1) };
+    return {
+      left: Math.max(4, Math.min(96, 50 + (x/span)*42)).toFixed(1),
+      top: Math.max(4, Math.min(96, 50 - (y/span)*42)).toFixed(1)
+    };
   };
-  const dot = 'position:absolute;transform:translate(-50%,-50%);border-radius:50%;box-shadow:0 1px 4px rgba(8,9,10,.3)';
-  const px = pts.length > 18 ? 18 : 22;
-  const pins = pts.map(v => { const p = at(v);
-    return `<button type="button" data-venue="${esc(v.id)}" title="${esc(v.name)} — ${v.distanceKm} km"
-      aria-label="${esc(v.name)}, ${v.distanceKm} km away — open details"
-      style="${dot};left:${p.left}%;top:${p.top}%;width:${px}px;height:${px}px;padding:0;border:2px solid #fff;background:var(--ink);cursor:pointer"></button>`;
+
+  const districts = [
+    { id: 'mitte', name: 'Mitte', lat: 52.5200, lng: 13.4050 },
+    { id: 'pberg', name: 'Prenzlauer Berg', lat: 52.5400, lng: 13.4200 },
+    { id: 'fshain', name: 'Friedrichshain', lat: 52.5150, lng: 13.4540 },
+    { id: 'xberg', name: 'Kreuzberg', lat: 52.4986, lng: 13.3918 },
+    { id: 'neukoelln', name: 'Neukölln', lat: 52.4820, lng: 13.4350 },
+    { id: 'charlottenburg', name: 'Charlottenburg', lat: 52.5160, lng: 13.3040 },
+    { id: 'schoeneberg', name: 'Schöneberg', lat: 52.4840, lng: 13.3560 }
+  ];
+
+  const districtLabels = districts.map(d => {
+    const p = at(d);
+    if (parseFloat(p.left) < 5 || parseFloat(p.left) > 95 || parseFloat(p.top) < 5 || parseFloat(p.top) > 95) return '';
+    return `<div class="berlin-map-district" style="left:${p.left}%;top:${p.top}%;">${esc(d.name)}</div>`;
   }).join('');
-  const marks = b.origins.map(a => { const p = at(a);
-    return `<span style="${dot};left:${p.left}%;top:${p.top}%;width:26px;height:26px;border:2px solid var(--ink);background:var(--yellow-bright);z-index:2"
-      role="img" aria-label="${esc(a.name)}, where these distances are measured from"></span>`;
+
+  const originMarkers = b.origins.map(a => {
+    const p = at(a);
+    return `<div class="berlin-map-origin" style="left:${p.left}%;top:${p.top}%;" title="Location: ${esc(a.name)}">
+      <div class="berlin-map-origin-pulse"></div>
+      <div class="berlin-map-origin-dot">${icon('pin', 12)}</div>
+    </div>`;
   }).join('');
-  return `<details class="rowcard" style="margin-top:18px">
-    <summary class="rowcard__head">
-      <span class="rowcard__icon">${icon('pin',22)}</span>
-      <span class="rowcard__text"><b style="white-space:normal">See these places on a map</b>
-        <small>Relative positions from published coordinates &mdash; not a street map</small></span>
-      <span class="rowcard__cta" aria-hidden="true">${icon('arrowRight',18)}</span>
-    </summary>
-    <div class="rowcard__body">
-      <div style="position:relative;width:100%;max-width:420px;aspect-ratio:1/1;margin:0 auto;background:var(--cream);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden">
-        ${marks}${pins}
+
+  const selectedVenue = pts.find(v => v.id === MAP_PREVIEW_VENUE_ID) || null;
+
+  const pins = pts.map((v, idx) => {
+    const p = at(v);
+    const isSelected = (v.id === MAP_PREVIEW_VENUE_ID);
+    const tierClass = v.tier === 'premium' ? 'map-pin--premium' : (v.tier === 'plus' ? 'map-pin--plus' : 'map-pin--standard');
+    return `
+      <button type="button" class="berlin-map-pin ${tierClass} ${isSelected ? 'is-selected' : ''}"
+        data-map-pin="${esc(v.id)}"
+        style="left:${p.left}%;top:${p.top}%;z-index:${isSelected ? 10 : 3};"
+        title="${esc(v.name)} — ${v.distanceKm} km"
+        aria-label="${esc(v.name)}, ${v.distanceKm} km away">
+        <span class="berlin-map-pin__num">${idx + 1}</span>
+      </button>
+    `;
+  }).join('');
+
+  const previewCard = selectedVenue ? `
+    <div class="berlin-map-preview-card">
+      <button class="berlin-map-preview-close" type="button" data-map-close-preview aria-label="Close preview">${icon('close', 14)}</button>
+      <div class="berlin-map-preview-media">
+        ${venueMedia(selectedVenue, selectedVenue.activities)}
+        <span class="hit__badge hit__badge--plan">${esc(PLANS.find(x => x.id === selectedVenue.tier)?.name || 'Classic')}</span>
       </div>
-      <p class="xsmall muted" style="margin:12px auto 0;max-width:420px">Each pin sits where that venue&rsquo;s
-        published coordinates put it, scaled to fit the box${hidden ? `, and these are the ${pts.length} nearest of ${b.within.length}` : ''}.
-        Tap a pin for the venue. The yellow marker is the area you are looking from. No routes,
-        travel times or live availability.</p>
+      <div class="berlin-map-preview-info">
+        <h4 class="berlin-map-preview-title" data-venue="${esc(selectedVenue.id)}">${esc(selectedVenue.name)}</h4>
+        <div class="berlin-map-preview-meta">${selectedVenue.distanceKm} km &middot; ${(selectedVenue.activities || []).map(a => ACTIVITY_LABELS[a] || a).slice(0, 2).join(', ')}</div>
+        <div class="berlin-map-preview-actions">
+          <button class="btn btn--secondary btn-sm" type="button" data-star-venue="${esc(selectedVenue.id)}">
+            ${Boolean(S.starredVenues && S.starredVenues[selectedVenue.id]) ? '✓ In routine' : '+ Add to routine'}
+          </button>
+          <button class="btn btn--primary btn-sm" type="button" data-venue="${esc(selectedVenue.id)}">
+            View details
+          </button>
+        </div>
+      </div>
     </div>
-  </details>`;
+  ` : '';
+
+  return `
+    <div class="berlin-map-view-container">
+      <div class="berlin-map-canvas-wrap">
+        <div class="berlin-map-grid-bg"></div>
+        ${districtLabels}
+        ${originMarkers}
+        ${pins}
+        ${previewCard}
+      </div>
+      <div class="berlin-map-footer-note">
+        ${icon('info', 14)} <span>Showing coordinates for ${pts.length} nearest places. Tap any pin to preview venue details.</span>
+      </div>
+    </div>
+  `;
 }
 
 /* The row of places, its two filters and the way to open it out. Everything here is a
@@ -9310,42 +10428,18 @@ function changeWeekScreen() {
 
 function searchScreen() {
   if (WEEK_ADD_MODE) return changeWeekScreen();
-  const r = SEARCH.result;
-  const from = r ? r.from : ANYWHERE, known = Boolean(r && r.known);
-  /* The typed examples that used to sit under the box are gone: the five activity chips
-     in the panel do the same job — "I don't know what to type" — and they do it by
-     answering one of Urby's questions rather than by filling the field in for you. */
-  /* When the search named an activity, the icon shows that activity — a pool that also
-     runs yoga classes was coming back from a swimming search under a leaf. */
+  const r = (typeof SEARCH !== 'undefined' && SEARCH && SEARCH.result) || null;
+  const from = r ? r.from : browseOrigin().origins[0], known = Boolean(r && r.known);
   const focus = r && r.kind === 'activity' ? r.activity : null;
+  const hitCard = v => placeCard(v, { known, from: from && from.name, focus, priced: true });
 
-  /* A result is a card with the venue's own photograph, not a row of text. Somebody
-     typing the name of their studio is asking "is this the place I mean?" as much as
-     "is it on the list?", and a line of type cannot answer the first one. It is the
-     same card the row below browses with — one shape on one page (rule 72) — but with
-     the join to a membership spelled out, because that is what was asked. */
-  const hitCard = v => placeCard(v, { known, from: from && from.name, focus, priced:true });
-
-  /* Urby says how she read the query before she answers it. The matching is the same
-     deterministic pass over data/venues.json that the recommendation uses — no model
-     chooses any of this (rules 1 and 2) — so the line can state exactly what it did:
-     which of the three readings it took, and how much data it took it over (rule 6).
-     It is also the only honest way to make the search feel like a guide rather than a
-     database: a guide tells you what it understood, so you can correct it. */
   const reading = !r
-    ? `Type a place, an activity or an address. I check it against the ${VENUES.length} Berlin venues
-       loaded in this pilot and tell you which membership opens each one.`
-    : r.kind === 'venue' ? `I read &ldquo;${esc(r.query)}&rdquo; as the name of a place and matched it against
-        all ${VENUES.length} venues loaded here.`
-    : r.kind === 'activity' ? `I read that as <b>${esc((ACTIVITY_LABELS[r.activity]||r.activity).toLowerCase())}</b>
-        and looked ${known ? `out from ${esc(from.name)}` : 'right across Berlin'}, nearest first.`
-    : r.kind === 'area' ? `I recognised <b>${esc(from.name)}</b> in that, so I have sorted every venue in the
-        pilot by how far it is from there.`
-    : `I checked every name and every activity in the pilot&rsquo;s ${VENUES.length} venues${r.activity
-        ? ` for ${esc((ACTIVITY_LABELS[r.activity]||r.activity).toLowerCase())}` : ''}, and nothing matched.`;
+    ? `Type a place, an activity or an address. I check it against the ${VENUES.length} Berlin venues loaded in this pilot and tell you which membership opens each one.`
+    : r.kind === 'venue' ? `I read &ldquo;${esc(r.query)}&rdquo; as the name of a place and matched it against all ${VENUES.length} venues loaded here.`
+    : r.kind === 'activity' ? `I read that as <b>${esc((ACTIVITY_LABELS[r.activity]||r.activity).toLowerCase())}</b> and looked ${known ? `out from ${esc(from.name)}` : 'right across Berlin'}, nearest first.`
+    : r.kind === 'area' ? `I recognised <b>${esc(from.name)}</b> in that, so I have sorted every venue in the pilot by how far it is from there.`
+    : `I checked every name and every activity in the pilot&rsquo;s ${VENUES.length} venues${r.activity ? ` for ${esc((ACTIVITY_LABELS[r.activity]||r.activity).toLowerCase())}` : ''}, and nothing matched.`;
 
-  /* Browsing, the page is titled by what it is for. Once something has been searched the
-     title is the answer to it — the heading is the result, not a label above one. */
   const heading = !r ? 'Find a place you&rsquo;ll want to return to'
     : r.kind === 'venue' ? (r.venues.length === 1
         ? `Yes &mdash; ${esc(r.venues[0].name)} is on Urban Sports Club`
@@ -9354,9 +10448,6 @@ function searchScreen() {
     : r.kind === 'area' ? `${plural(r.venues.length,'place','places')} near ${esc(from.name)}`
     : `I can&rsquo;t find that in the pilot&rsquo;s venue list`;
 
-  /* A miss is the one moment this pilot can collect something nobody else in the
-     funnel can: the place someone wishes were there (rule 12). It also has to be
-     honest that the real network is far larger than the sample loaded here. */
   const miss = r && r.kind === 'none' ? `
     <div class="notice notice--grey">${icon('info',19)}<span>This pilot has ${VENUES.length} real Berlin venues loaded, not the whole network of ${esc(PLANS[PLANS.length-1].venueCount)} &mdash; so a miss here does not mean a miss on Urban Sports Club.</span></div>
     <div class="search-empty-discover" style="margin:16px 0 20px">
@@ -9375,24 +10466,29 @@ function searchScreen() {
         <input type="text" name="place" value="${esc(SEARCH.q||'')}" placeholder="Name the place we should add" aria-label="A place we should add">
         <button class="btn btn--secondary" type="submit">Tell the partnerships team</button></form>`}` : '';
 
-  /* Karim's venue page, 14 August. One column, in the order the visitor's own questions
-     arrive in: where am I looking, what am I looking for, what is there — and only then
-     the guide asking the one thing the row above cannot tell her.
-
-     A searched query and a browsed row are never both on screen. They are two answers to
-     the same question, and showing both would put two lists and two calls to action on
-     one screen (rules 8 and 9): a result gets the hits and the way into the four
-     questions, and browsing gets the row and the panel at the foot. */
   const searched = Boolean(r);
+  const b = browsePlaces();
+  const activeCats = (ACTIVE_CATEGORY_FILTERS && ACTIVE_CATEGORY_FILTERS.size > 0)
+    ? Array.from(ACTIVE_CATEGORY_FILTERS)
+    : ((ACTIVE_CATEGORY_FILTER && ACTIVE_CATEGORY_FILTER !== 'all') ? ACTIVE_CATEGORY_FILTER.split(',').filter(Boolean) : []);
+
+  const hasActiveFilters = (VENUE_TIER_FILTERS && VENUE_TIER_FILTERS.size > 0) ||
+                           (VENUE_ACT_FILTERS && VENUE_ACT_FILTERS.size > 0) ||
+                           (activeCats.length > 0) ||
+                           Boolean(VENUEQ) ||
+                           (S.radiusKm && S.radiusKm !== '3' && S.radiusKm !== 'auto') ||
+                           (S.answers.activities && S.answers.activities.length > 0);
+
+  const shown = (SEEALL || VENUE_VIEW_MODE !== 'scroll' || hasActiveFilters) ? b.within : b.within.slice(0, 4);
+
   const backTarget = (WEEK_ADD_MODE || S.lastStep === 'recommendation' || hasSaveableProgress()) ? 'recommendation' : 'landing';
   const backLabel = WEEK_ADD_MODE ? 'Back to my week' : (backTarget === 'recommendation' ? 'Back to recommendation' : 'Back');
-  /* The tray reports what is actually starred. A placeholder count read as a promise the
-     routine had not earned yet, which is the one thing this screen must never do. */
   const routineCount = Object.keys(S.starredVenues || {}).length;
   const routineLead = routineCount
     ? `${routineCount} ${routineCount === 1 ? 'place' : 'places'} in your routine`
     : 'No places in your routine yet';
   const routineHint = routineCount ? 'Tap any card to add or remove' : 'Star a place to start building it';
+
   const stickyTray = (backTarget === 'recommendation') ? `
     <div class="paybar search-sticky-bar">
       <div class="paybar__pull-handle" data-go="recommendation" aria-hidden="true"></div>
@@ -9408,39 +10504,171 @@ function searchScreen() {
     </div>
   ` : '';
 
-  return `<header class="topbar"><div class="topbar__left"><button class="wordmark linkish" style="text-decoration:none" data-go="landing">Urban Sports Club</button></div><div></div>
-    <div class="topbar__right"><button class="link-plain linkish strong" data-go="${backTarget}">${icon('back',17)} ${backLabel}</button></div></header>
-    <main class="content venuepage" id="main">
+  const activeFiltersCount = (VENUE_TIER_FILTERS ? VENUE_TIER_FILTERS.size : 0) + (VENUE_ACT_FILTERS ? VENUE_ACT_FILTERS.size : 0);
+
+  const activeGroupLabels = activeCats.map(cId => groupById(cId)?.label).filter(Boolean);
+  const forWhat = activeGroupLabels.length > 0
+    ? (activeGroupLabels.length === 1 ? activeGroupLabels[0].toLowerCase() : activeGroupLabels.map(l => l.toLowerCase()).join(' & '))
+    : (b.groups.map(g => g.label.toLowerCase()).join(', '));
+
+  const countHeading = forWhat
+    ? `${plural(b.within.length, 'place', 'places')} for ${esc(forWhat)} ${esc(b.label)}`
+    : `Places ${esc(b.label)}`;
+
+  return `<header class="topbar">
+    <div class="topbar__left"><button class="wordmark linkish" style="text-decoration:none" data-go="landing">Urban Sports Club</button></div>
+    <div></div>
+    <div class="topbar__right"><button class="link-plain linkish strong" data-go="${backTarget}">${icon('back', 17)} ${backLabel}</button></div>
+  </header>
+  <main class="content venuepage" id="main">
     <div class="venuepage__intro">
       <div class="search__guide">${ulaAvatar('sm')}<span>Urby &middot; Membership guide</span></div>
-      <h1 class="h-question venuepage__h1" tabindex="-1">${WEEK_ADD_MODE ? (WEEK_ADD_DAY ? `Choose a venue for ${esc(WEEK_ADD_DAY)}` : 'Choose an activity or venue for your week') : heading}</h1>
+      <h1 class="h-question venuepage__h1" tabindex="-1">${searched ? heading : 'Explore places across Berlin'}</h1>
+      <p class="venuepage__subtitle muted">${searched ? (r && r.venues ? `${r.venues.length} results matching your search` : '') : `${VENUES.length} real venues loaded across ${ACTIVITY_GROUPS.length} activity categories`}</p>
     </div>
-    <div class="venuepage__layout ${searched?'venuepage__layout--searched':''}">
-    <div class="venuepage__primary">
-      ${weekPickBar()}
-      ${findBar()}
-      ${searched ? '' : nearbyRow()}
-      ${searched ? `<p class="search__read">${icon('sparkle',17)} <span>${reading}</span></p>` : ''}
-      ${r && r.approximated ? `<p class="xsmall muted" style="margin-top:12px">${icon('info',14)} The pilot has no map service, so distances are measured from ${esc(from.name)} rather than from your door.</p>` : ''}
-      ${r && r.venues && r.venues.length ? `<div class="hits ${r.venues.length===1?'hits--one':'hits--row'}">${r.venues.map(hitCard).join('')}</div>` : ''}
-      ${miss}
-      ${!WEEK_ADD_MODE && r && r.venues && r.venues.length ? `<div class="searchnext">
-      <p class="searchnext__line">${icon('sparkle',18)} <span>Those are the cheapest memberships that open each place. Which one is right for
-        <em>you</em> depends on how often you go and what else you want nearby &mdash; four questions and I&rsquo;ll work it out.</span></p>
-      <button class="btn btn--primary" data-start-fit ${r.area?`data-area-id="${esc(r.area.id)}"`:''}>Find my fit ${icon('arrowRight',18)}</button>
-      <p class="xsmall muted" style="margin-top:12px">Or <button class="linkish strong" data-go="plans">see all four memberships</button>.</p>
-      </div>` : ''}
-    </div>
-    ${searched ? '' : `<aside class="venuepage__aside" aria-label="Personalise your recommendation">${routinePanel()}</aside>`}
-    </div>
-  </main>${stickyTray}${venueSheet()}`;
-}
 
-/* The answers you have given, as chips you can tap to change.
-   A tester went looking for her earlier choices and could not find them: they
-   were in a side panel that only showed them, and in a disclosure at the very
-   bottom of the recommendation. Now they sit at the top of whatever screen you
-   are on, and each one is the edit control for itself. */
+    <div class="venuepage__layout ${searched ? 'venuepage__layout--searched' : ''}">
+      <div class="venuepage__primary">
+        <div class="venue-explorer-card">
+          ${weekPickBar()}
+          
+          <div class="findbar__where">
+            <span class="findbar__wheretext">${icon('pin', 16)}<span>${S.answers.area ? `Showing places ${esc(b.label)}` : `Looks like you&rsquo;re near <b>${esc(b.origins[0].name)}, Berlin</b> &mdash; showing places ${esc(b.label)}`}</span></span>
+            <button class="linkish strong findbar__wherechange" type="button" data-toggle-where aria-expanded="${WHEREPICK}">${WHEREPICK ? 'Close' : 'Change location'}</button>
+          </div>
+          ${WHEREPICK ? `<div class="wherepick">
+            <div class="wherepick__label">Where should we look?</div>
+            <div class="wherepick__grid">${optionsFor(qById('area')).map(o => `<button class="chip-sm ${areaIds(S.answers.area).includes(o.id) ? 'is-current' : ''}" type="button" data-where="${esc(o.id)}">${esc(o.label)}</button>`).join('')}</div>
+            <p class="wherepick__note">${icon('info', 16)} <span>This is one of Urby&rsquo;s four questions, so picking here means she won&rsquo;t ask it again.</span></p>
+          </div>` : ''}
+
+          <form data-form="search" class="venue-search-bar" role="search">
+            <div class="findsearch">
+              <span class="findsearch__icon" aria-hidden="true">${icon('search', 16)}</span>
+              <input type="search" name="q" id="venue-search-q" value="${esc(VENUEQ || (typeof SEARCH !== 'undefined' && SEARCH && SEARCH.q) || '')}"
+                placeholder="Search venues, activities or addresses with Urby..." aria-label="Search venues, activities or addresses with Urby" autocomplete="off" data-venue-input>
+              ${(VENUEQ || (typeof SEARCH !== 'undefined' && SEARCH && SEARCH.q)) ? `<button type="button" class="findsearch__clear" data-venue-clear aria-label="Clear search">${icon('close', 12)}</button>` : ''}
+              <button class="findsearch__btn" type="submit">Search</button>
+            </div>
+            <div class="venue-toolbar-filters">
+              <label class="pillsel pillsel--radius sr-only"><span class="pillsel__icon">${icon('pin',16)}</span>
+                <select data-radius-pick aria-label="How far to look">
+                  ${RADII.map(x=>`<option value="${esc(x.id)}" ${(S.radiusKm||'3')===x.id?'selected':''}>${
+                    x.km?`Within ${x.km} km`:'All of Berlin'}</option>`).join('')}
+                </select>
+              </label>
+              <div class="radius-toggle" role="group" aria-label="Distance radius">
+                <button class="chip-sm ${(!S.radiusKm || S.radiusKm === '3' || S.radiusKm === 'auto') ? 'is-active is-current' : ''}" type="button" data-radius="3">3 km</button>
+                <button class="chip-sm ${S.radiusKm === '8' ? 'is-active is-current' : ''}" type="button" data-radius="8">8 km</button>
+                <button class="chip-sm ${S.radiusKm === 'any' ? 'is-active is-current' : ''}" type="button" data-radius="any">All Berlin</button>
+              </div>
+              <button class="btn-more-filters ${VENUE_MORE_FILTERS_OPEN || activeFiltersCount > 0 ? 'is-active' : ''}" type="button" data-toggle-more-filters aria-expanded="${VENUE_MORE_FILTERS_OPEN}">
+                ${icon('adjust', 15)} <span>More filters${activeFiltersCount > 0 ? ` (${activeFiltersCount})` : ''}</span>
+              </button>
+            </div>
+          </form>
+
+          ${searched ? '' : `
+            <div class="category-pills-wrap" style="margin: 14px 0 16px;">
+              <div class="category-pills" id="category-pills-scroll" role="tablist" aria-label="Filter by sport">
+                <button class="catchip category-pill ${(!activeCats.length && !(S.answers.activities && S.answers.activities.length)) ? 'is-active is-on' : ''}" type="button" data-cat-all data-filter-category="all">
+                  ${icon('grid', 13)} <span>All</span>
+                </button>
+                ${ACTIVITY_GROUPS.map(g => {
+                  const isSelected = activeCats.includes(g.id) || (S.answers.activities && S.answers.activities.includes(g.id));
+                  return `
+                    <button class="catchip category-pill ${isSelected ? 'is-active is-on' : ''}" type="button" data-cat="${esc(g.id)}" data-filter-category="${esc(g.id)}">
+                      ${icon(g.icon, 13)} <span>${esc(g.label)}</span>
+                    </button>
+                  `;
+                }).join('')}
+              </div>
+              <div class="category-pills__fade">
+                <button class="category-pills__mini-btn" type="button" data-scroll-pills="right" aria-label="Scroll sports">
+                  ${icon('chevron', 12)}
+                </button>
+              </div>
+            </div>
+
+            ${moreFiltersDrawer(b.within.length)}
+
+            <section class="placesrow">
+              <div class="placesrow__head">
+                <div class="placesrow__title">
+                  <h2>${countHeading}</h2>
+                  <p>${b.within.length
+                    ? `Nearest first, from the ${VENUES.length} real Berlin venues loaded in this pilot.`
+                    : `None of the ${VENUES.length} venues loaded here match these filters.`}</p>
+                </div>
+                <div class="placesrow__tools">
+                  <div class="venue-view-toggle" role="group" aria-label="View mode">
+                    <button class="view-toggle-btn ${VENUE_VIEW_MODE === 'scroll' ? 'is-active' : ''}" type="button" data-venue-view-mode="scroll" aria-pressed="${VENUE_VIEW_MODE === 'scroll'}" title="2-row gallery scroll view">
+                      ${icon('grid', 14)} <span>Gallery</span>
+                    </button>
+                    <button class="view-toggle-btn ${VENUE_VIEW_MODE === 'grid' ? 'is-active' : ''}" type="button" data-venue-view-mode="grid" aria-pressed="${VENUE_VIEW_MODE === 'grid'}" title="Full grid view">
+                      ${icon('adjust', 14)} <span>Grid</span>
+                    </button>
+                    <button class="view-toggle-btn ${VENUE_VIEW_MODE === 'map' ? 'is-active' : ''}" type="button" data-venue-view-mode="map" aria-pressed="${VENUE_VIEW_MODE === 'map'}" title="Map view">
+                      ${icon('pin', 14)} <span>Map</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              ${venueActiveFilterChips(b)}
+
+              ${VENUE_VIEW_MODE === 'map' ? `
+                ${interactiveBerlinMap(b)}
+              ` : (shown.length ? `
+                ${VENUE_VIEW_MODE === 'grid' ? `
+                  <div class="hits venue-grid--catalog hits--row">
+                    ${shown.map(v => placeCard(v)).join('')}
+                  </div>
+                ` : `
+                  <div class="activity-gallery-wrap venue-gallery-wrap">
+                    <button class="gallery-nav-btn gallery-nav-btn--prev is-disabled" type="button" data-scroll-gallery="prev" aria-label="Scroll left" title="Scroll left">
+                      ${icon('chevron', 14)}
+                    </button>
+                    <div class="activity-gallery venue-carousel-scroll" id="activity-gallery-scroll">
+                      <div class="venue-carousel-track hits hits--row">
+                        ${shown.map(v => placeCard(v)).join('')}
+                      </div>
+                    </div>
+                    <button class="gallery-nav-btn gallery-nav-btn--next ${shown.length <= 4 ? 'is-disabled' : ''}" type="button" data-scroll-gallery="next" aria-label="Scroll right" title="Scroll right">
+                      ${icon('chevron', 14)}
+                    </button>
+                  </div>
+                `}
+              ` : `<div class="notice notice--grey">${icon('info', 19)}<span>${b.list.length
+                    ? `No venues match all selected filters. Try widening your distance or clearing filters to see more places.`
+                    : `Nothing in the pilot&rsquo;s ${VENUES.length} venues matches.`}</span></div>`)}
+            </section>
+          `}
+
+          ${searched ? `
+            <p class="search__read">${icon('sparkle', 17)} <span>${reading}</span></p>
+            ${r && r.approximated ? `<p class="xsmall muted" style="margin-top:12px">${icon('info', 14)} The pilot has no map service, so distances are measured from ${esc(from.name)} rather than from your door.</p>` : ''}
+            ${r && r.venues && r.venues.length ? `<div class="hits ${r.venues.length === 1 ? 'hits--one' : 'hits--row'}">${r.venues.map(hitCard).join('')}</div>` : ''}
+            ${miss}
+            ${!WEEK_ADD_MODE && r && r.venues && r.venues.length ? `<div class="searchnext">
+              <p class="searchnext__line">${icon('sparkle', 18)} <span>Those are the cheapest memberships that open each place. Which one is right for
+                <em>you</em> depends on how often you go and what else you want nearby &mdash; four questions and I&rsquo;ll work it out.</span></p>
+              <button class="btn btn--primary" data-start-fit ${r.area ? `data-area-id="${esc(r.area.id)}"` : ''}>Find my fit ${icon('arrowRight', 18)}</button>
+              <p class="xsmall muted" style="margin-top:12px">Or <button class="linkish strong" data-go="plans">see all four memberships</button>.</p>
+            </div>` : ''}
+          ` : ''}
+        </div>
+      </div>
+
+      ${searched ? '' : `
+        <aside class="venuepage__aside" aria-label="Personalise your recommendation">
+          ${routinePanel()}
+        </aside>
+      `}
+    </div>
+  </main>
+  ${stickyTray}
+  ${venueSheet()}`;
+}
 
 
 function answerChips(opts = {}) {
@@ -10343,15 +11571,6 @@ function plusSheet() {
     </div></div>`;
 }
 
-function formatFitAnswers() {
-  const ans = S.answers || {};
-  const goalLabel = answerLabel('goal', ans.goal);
-  const actLabels = answerLabel('activities', ans.activities);
-  const areaLabels = answerLabel('area', ans.area);
-  const freqLabel = answerLabel('frequency', ans.frequency);
-  const hasAnswers = Boolean(goalLabel || actLabels || areaLabels || freqLabel);
-  return { goalLabel, actLabels, areaLabels, freqLabel, hasAnswers };
-}
 
 const PLAN_LINE_META = [
   {
@@ -10464,39 +11683,35 @@ const PLAN_LINE_META = [
 function plansScreen() {
   const selectedPlanId = S.chosenPlanId || (PLANS.find(pl => pl.mostPopular) || PLANS[1]).id;
   const selectedPlan = PLANS.find(pl => pl.id === selectedPlanId) || PLANS[1];
-  const fitInfo = formatFitAnswers();
 
   const termLabel = S.commitmentId === 'annual' ? '12-month contract' : S.commitmentId === 'biennial' ? '24-month contract' : 'Monthly contract';
   const pauseRule = S.commitmentId === 'monthly' ? 'Pause anytime (1–6 months)' : 'Pausing and downgrading not available';
 
-  const perkBanner = S.commitmentId === 'annual'
-    ? `<div class="commit-perk-banner"><span class="perk-icon">📱</span> <span><strong>12 months</strong> includes 1 free wellbeing app &middot; plus a &euro;20 merchandise voucher</span></div>`
-    : S.commitmentId === 'biennial'
-    ? `<div class="commit-perk-banner"><span class="perk-icon">🎁</span> <span><strong>24 months</strong> saves 20% &middot; includes 2 free wellbeing apps &middot; plus a &euro;20 merchandise voucher</span></div>`
-    : `<div class="commit-perk-banner"><span class="perk-icon">⚡</span> <span><strong>Monthly flexibility</strong> &middot; cancel anytime with 3 days&rsquo; notice before your renewal date</span></div>`;
-
   const planLines = PLAN_LINE_META.map(pt => {
     const pl = PLANS.find(p => p.id === pt.id) || PLANS[0];
     const price = priceFor(pl, S.commitmentId);
-    const isSelected = selectedPlan.id === pl.id;
+    const isExpanded = PLANS_EXPANDED_ID === pl.id;
     const allowances = pt.getAllowances(termLabel, pauseRule);
 
-    return `<article class="plan-line ${isSelected ? 'is-selected' : ''}" data-pick-plan="${esc(pl.id)}" role="button" tabindex="0" ${isSelected ? 'aria-expanded="true" aria-current="true"' : 'aria-expanded="false"'}>
+    return `<article class="plan-line ${isExpanded ? 'is-selected is-expanded' : ''}" data-pick-plan="${esc(pl.id)}" role="button" tabindex="0" aria-expanded="${isExpanded ? 'true' : 'false'}" ${isExpanded ? 'aria-current="true"' : ''}>
       <div class="plan-line__header">
         <div class="plan-line__icon-wrap"><span class="plan-line__icon">${pt.iconEmoji}</span></div>
         <div class="plan-line__info">
           <div class="plan-line__headline">${esc(pt.headline)}</div>
-          ${pt.headSub && isSelected ? `<div class="plan-line__headsub">${esc(pt.headSub)}</div>` : ''}
+          ${pt.headSub && isExpanded ? `<div class="plan-line__headsub">${esc(pt.headSub)}</div>` : ''}
         </div>
         <div class="plan-line__tier">
           <span class="plan-line__tier-name">${esc(pt.tierName)}</span>
           <span class="plan-line__tier-meta">${esc(pt.tierMeta)}</span>
         </div>
-        <div class="plan-line__price">
-          <b>${price} &euro;</b> <span>/ month</span>
+        <div class="plan-line__price-wrap">
+          <div class="plan-line__price">
+            <b>${price} &euro;</b> <span>/ month</span>
+          </div>
+          <span class="plan-line__chevron">${icon('chevronDown', 18)}</span>
         </div>
       </div>
-      ${isSelected ? `
+      ${isExpanded ? `
         <div class="plan-line__expanded">
           <div class="plan-diff-grid">
             <div class="plan-diff-col">
@@ -10523,70 +11738,6 @@ function plansScreen() {
     </article>`;
   }).join('');
 
-  const sidePanel = `<aside class="plans-side-card" aria-label="Make this fit your routine">
-    <div class="plans-side-card__header">
-      ${ulaAvatar('sm')}
-      <span class="plans-side-card__guide-name">Urby</span>
-    </div>
-    <h2 class="plans-side-card__title">Make this fit your routine</h2>
-    <p class="plans-side-card__subtitle">Your answers are ready whenever you want to adjust them.</p>
-
-    ${fitInfo.hasAnswers ? `
-      <div class="plans-fit-box">
-        <div class="plans-fit-box__head">
-          <span class="plans-fit-check">${icon('checkThin', 14)}</span>
-          <strong>Your fit</strong>
-        </div>
-        <div class="plans-fit-chips">
-          ${fitInfo.goalLabel ? `
-            <button class="fit-chip" type="button" data-edit="q1" aria-label="Edit goal: ${esc(fitInfo.goalLabel)}">
-              <span class="fit-chip__icon">🎯</span>
-              <span class="fit-chip__label">${esc(fitInfo.goalLabel)}</span>
-              <span class="fit-chip__edit">${icon('pencil', 12)}</span>
-            </button>` : ''}
-          ${fitInfo.actLabels ? `
-            <button class="fit-chip" type="button" data-edit="q2" aria-label="Edit activities: ${esc(fitInfo.actLabels)}">
-              <span class="fit-chip__icon">🏋️</span>
-              <span class="fit-chip__label">${esc(fitInfo.actLabels)}</span>
-              <span class="fit-chip__edit">${icon('pencil', 12)}</span>
-            </button>` : ''}
-          ${fitInfo.areaLabels ? `
-            <button class="fit-chip" type="button" data-edit="q3" aria-label="Edit location: ${esc(fitInfo.areaLabels)}">
-              <span class="fit-chip__icon">📍</span>
-              <span class="fit-chip__label">${esc(fitInfo.areaLabels)}</span>
-              <span class="fit-chip__edit">${icon('pencil', 12)}</span>
-            </button>` : ''}
-          ${fitInfo.freqLabel ? `
-            <button class="fit-chip" type="button" data-edit="q4" aria-label="Edit frequency: ${esc(fitInfo.freqLabel)}">
-              <span class="fit-chip__icon">📅</span>
-              <span class="fit-chip__label">${esc(fitInfo.freqLabel)}</span>
-              <span class="fit-chip__edit">${icon('pencil', 12)}</span>
-            </button>` : ''}
-        </div>
-      </div>
-      <button class="btn btn--secondary btn-side-back" type="button" data-go="recommendation">
-        Back to my routine &amp; favourites &rarr;
-      </button>
-      <p class="plans-side-caption">Built from your four answers, and yours to change.</p>
-    ` : `
-      <div class="plans-fit-empty">
-        <p>Answer 4 quick questions and I&rsquo;ll tailor a routine recommendation with real nearby venues and live schedules.</p>
-        <button class="btn btn--secondary btn-side-back" type="button" data-go="fit">
-          Find my fit &rarr;
-        </button>
-        <p class="plans-side-caption">Takes 2 minutes &middot; no email needed</p>
-      </div>
-    `}
-
-    <button class="plans-side-save" type="button" data-go="save">
-      <span class="save-icon">${icon('bookmark', 16)}</span>
-      <div class="save-text">
-        <strong>Save these places for later</strong>
-        <span>Keeps your answers and brings you back here.</span>
-      </div>
-    </button>
-  </aside>`;
-
   const stickyBar = `<div class="plans-sticky-bar">
     <div class="plans-sticky-bar__left">
       <div class="plans-sticky-bar__name"><b>${esc(selectedPlan.name)}</b> &middot; ${priceFor(selectedPlan, S.commitmentId)} &euro;/mo</div>
@@ -10607,11 +11758,8 @@ function plansScreen() {
           return `<button class="chip-sm ${isCur ? 'is-current' : ''}" type="button" data-commit="${esc(c.id)}"><span>${esc(termLabel)}</span>${savingBadge}</button>`;
         }).join('')}</div>
 
-        ${perkBanner}
-
         <div class="plans-head">
-          <h1 class="h-question" tabindex="-1">What kind of month are you planning?</h1>
-          <p class="reco-lede">Choose the closest match. You can change it anytime.</p>
+          <h1 class="h-question" tabindex="-1">Choose your membership</h1>
         </div>
 
         <div class="plan-lines-group">${planLines}</div>
@@ -10627,10 +11775,12 @@ function plansScreen() {
           </button>
         </div>
       </div>
-
-      ${sidePanel}
+      <aside class="plans-layout__sidebar">
+        ${routinePanel()}
+      </aside>
     </div>
-  </main>${stickyBar}${plusSheet()}${exitModal()}`;
+    ${stickyBar}
+  </main>${plusSheet()}${exitModal()}`;
 }
 
 /* Saving and signing up are two different intentions, so they are two different screens.
@@ -11592,8 +12742,14 @@ function renderVenueFilter() {
   renderInPlace();
 }
 document.addEventListener('input', e => {
-  if (e.target.matches('[data-form="venue-filter"] input, [data-venue-input]')) {
+  if (e.target.matches('[data-form="venue-filter"] input, [data-venue-input], #venue-search-q')) {
     VENUEQ = e.target.value;
+    if (typeof SEARCH !== 'undefined' && SEARCH) SEARCH.q = e.target.value;
+    renderInPlace();
+    return;
+  }
+  if (e.target.matches('[data-act-search-input]')) {
+    VENUE_ACT_SEARCH_Q = e.target.value;
     renderInPlace();
     return;
   }
@@ -11669,11 +12825,115 @@ document.addEventListener('scroll', e => {
   }
 }, true);
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-app],[data-close-app-sheet],[data-change-city],[data-city],[data-unsure],[data-radius],[data-toggle-apps],[data-toggle-more],[data-more],[data-toggle-alt],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-search-example],[data-venue-search-all],[data-venue-clear],[data-toggle-where],[data-where],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-filter-category],[data-scroll-pills],[data-scroll-gallery],[data-toggle-star],[data-open-plan-drawer],[data-close-plan-drawer],[data-open-order-summary],[data-close-order-summary]');
+  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-open-login],[data-close-login],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-app],[data-close-app-sheet],[data-change-city],[data-city],[data-unsure],[data-radius],[data-toggle-apps],[data-toggle-more],[data-more],[data-toggle-alt],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-search-example],[data-venue-search-all],[data-venue-clear],[data-toggle-where],[data-where],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-filter-category],[data-scroll-pills],[data-scroll-gallery],[data-toggle-star],[data-open-plan-drawer],[data-close-plan-drawer],[data-open-order-summary],[data-close-order-summary],[data-toggle-more-filters],[data-toggle-tier-filter],[data-toggle-act-filter],[data-clear-all-filters],[data-apply-filters],[data-act-search-clear],[data-remove-tier-filter],[data-remove-act-filter],[data-remove-cat-filter],[data-remove-radius-filter],[data-venue-view-mode],[data-map-pin],[data-map-close-preview]');
   if (!t) return;
+
+  if (t.dataset.toggleMoreFilters !== undefined) {
+    VENUE_MORE_FILTERS_OPEN = !VENUE_MORE_FILTERS_OPEN;
+    renderInPlace();
+    return;
+  }
+
+  if (t.dataset.toggleTierFilter) {
+    const tier = t.dataset.toggleTierFilter;
+    if (VENUE_TIER_FILTERS.has(tier)) VENUE_TIER_FILTERS.delete(tier);
+    else VENUE_TIER_FILTERS.add(tier);
+    renderInPlace();
+    return;
+  }
+
+  if (t.dataset.toggleActFilter) {
+    const act = t.dataset.toggleActFilter;
+    if (VENUE_ACT_FILTERS.has(act)) VENUE_ACT_FILTERS.delete(act);
+    else VENUE_ACT_FILTERS.add(act);
+    renderInPlace();
+    return;
+  }
+
+  if (t.dataset.clearAllFilters !== undefined) {
+    VENUE_TIER_FILTERS.clear();
+    VENUE_ACT_FILTERS.clear();
+    ACTIVE_CATEGORY_FILTERS.clear();
+    ACTIVE_CATEGORY_FILTER = 'all';
+    VENUE_ACT_SEARCH_Q = '';
+    VENUEQ = '';
+    if (typeof SEARCH !== 'undefined' && SEARCH) SEARCH = { q: '', result: null };
+    delete S.answers.activities;
+    S.radiusKm = '3';
+    renderInPlace();
+    return;
+  }
+
+  if (t.dataset.applyFilters !== undefined) {
+    VENUE_MORE_FILTERS_OPEN = false;
+    renderInPlace();
+    return;
+  }
+
+  if (t.dataset.actSearchClear !== undefined) {
+    VENUE_ACT_SEARCH_Q = '';
+    renderInPlace();
+    return;
+  }
+
+  if (t.dataset.removeTierFilter) {
+    VENUE_TIER_FILTERS.delete(t.dataset.removeTierFilter);
+    renderInPlace();
+    return;
+  }
+
+  if (t.dataset.removeActFilter) {
+    VENUE_ACT_FILTERS.delete(t.dataset.removeActFilter);
+    renderInPlace();
+    return;
+  }
+
+  if (t.dataset.removeCatFilter !== undefined) {
+    const cId = t.dataset.removeCatFilter;
+    if (cId) {
+      ACTIVE_CATEGORY_FILTERS.delete(cId);
+    } else {
+      ACTIVE_CATEGORY_FILTERS.clear();
+    }
+    if (ACTIVE_CATEGORY_FILTERS.size === 0) {
+      ACTIVE_CATEGORY_FILTER = 'all';
+      delete S.answers.activities;
+    } else {
+      ACTIVE_CATEGORY_FILTER = Array.from(ACTIVE_CATEGORY_FILTERS).join(',');
+      S.answers.activities = Array.from(ACTIVE_CATEGORY_FILTERS);
+    }
+    renderInPlace();
+    return;
+  }
+
+  if (t.dataset.removeRadiusFilter !== undefined) {
+    S.radiusKm = '3';
+    renderInPlace();
+    return;
+  }
 
   if (t.dataset.venueClear !== undefined) {
     VENUEQ = '';
+    if (typeof SEARCH !== 'undefined' && SEARCH) SEARCH.q = '';
+    renderInPlace();
+    return;
+  }
+
+  if (t.dataset.venueViewMode) {
+    VENUE_VIEW_MODE = t.dataset.venueViewMode;
+    SEEALL = (VENUE_VIEW_MODE === 'grid');
+    renderInPlace();
+    return;
+  }
+
+  if (t.dataset.mapPin) {
+    MAP_PREVIEW_VENUE_ID = (MAP_PREVIEW_VENUE_ID === t.dataset.mapPin ? null : t.dataset.mapPin);
+    renderInPlace();
+    return;
+  }
+
+  if (t.dataset.mapClosePreview !== undefined) {
+    MAP_PREVIEW_VENUE_ID = null;
     renderInPlace();
     return;
   }
@@ -11687,16 +12947,39 @@ document.addEventListener('click', e => {
     const g = document.getElementById('activity-gallery-scroll');
     if (g) {
       const card = g.querySelector('.activity-card');
-      const step = card ? (card.offsetWidth + 14) : 280;
+      const step = card ? (card.offsetWidth + 14) : 260;
       g.scrollBy({ left: t.dataset.scrollGallery === 'prev' ? -step : step, behavior: 'smooth' });
     }
     return;
   }
 
-  if (t.dataset.filterCategory) {
-    ACTIVE_CATEGORY_FILTER = t.dataset.filterCategory;
-    log('category_filtered', { category: ACTIVE_CATEGORY_FILTER });
-    render(false);
+  if (t.dataset.filterCategory || t.dataset.cat) {
+    const id = t.dataset.filterCategory || t.dataset.cat;
+    if (id === 'all' || !id) {
+      ACTIVE_CATEGORY_FILTERS.clear();
+      ACTIVE_CATEGORY_FILTER = 'all';
+      delete S.answers.activities;
+      log('answer_cleared', { question:'activities', value:[], mode:'venue_page' });
+    } else {
+      if (ACTIVE_CATEGORY_FILTERS.has(id)) {
+        ACTIVE_CATEGORY_FILTERS.delete(id);
+      } else {
+        ACTIVE_CATEGORY_FILTERS.add(id);
+      }
+      if (ACTIVE_CATEGORY_FILTERS.size === 0) {
+        ACTIVE_CATEGORY_FILTER = 'all';
+        delete S.answers.activities;
+        log('answer_cleared', { question:'activities', value:[], mode:'venue_page' });
+      } else {
+        ACTIVE_CATEGORY_FILTER = Array.from(ACTIVE_CATEGORY_FILTERS).join(',');
+        S.answers.activities = Array.from(ACTIVE_CATEGORY_FILTERS);
+        log('answer_given', { question:'activities', value:S.answers.activities, mode:'venue_page' });
+      }
+    }
+    S.weekDays = []; S.weekSwap = {};
+    if (!S.planOverridden) S.chosenPlanId = null;
+    SEARCH = { q:'', result:null };
+    renderInPlace();
     return;
   }
 
@@ -11726,27 +13009,21 @@ document.addEventListener('click', e => {
     renderInPlace(); return;
   }
   if (t.dataset.catAll !== undefined) {
+    ACTIVE_CATEGORY_FILTERS.clear();
+    ACTIVE_CATEGORY_FILTER = 'all';
     delete S.answers.activities;
     S.weekDays = []; S.weekSwap = {};
     if (!S.planOverridden) S.chosenPlanId = null;
-    SEARCH = { q:'', result:null }; SEEALL = false;
+    SEARCH = { q:'', result:null };
     log('answer_cleared', { question:'activities', value:[], mode:'venue_page' });
     renderInPlace(); return;
   }
-  if (t.dataset.cat) {
-    const id = t.dataset.cat;
-    const cur = (S.answers.activities||[]).filter(x => x !== SKIP);
-    const next = cur.includes(id) ? cur.filter(x => x !== id) : [...cur, id];
-    if (next.length) S.answers.activities = next; else delete S.answers.activities;
-    S.weekDays = []; S.weekSwap = {};
-    if (!S.planOverridden) S.chosenPlanId = null;
-    /* A category is a browse filter, so it answers with the row of places. Leaving the
-       last query up would show a filter that changed nothing. */
-    SEARCH = { q:'', result:null }; SEEALL = false;
-    log(next.length ? 'answer_given' : 'answer_cleared', { question:'activities', value:next, mode:'venue_page' });
-    renderInPlace(); return;
+  if (t.dataset.seeAll !== undefined) {
+    SEEALL = !SEEALL;
+    VENUE_VIEW_MODE = SEEALL ? 'grid' : 'scroll';
+    renderInPlace();
+    return;
   }
-  if (t.dataset.seeAll !== undefined) { SEEALL = !SEEALL; renderInPlace(); return; }
   if (t.dataset.pick) {
     const [qid, oid] = t.dataset.pick.split(':');
     const q = qById(qid); if (!q) return;
@@ -11991,10 +13268,16 @@ document.addEventListener('click', e => {
   if (t.dataset.changeCity !== undefined) { CITYPICK=!CITYPICK; if(!CITYPICK) CITYWANTED=null;
     if (CITYPICK) log('city_change_opened'); render(false); return; }
   if (t.dataset.pickPlan) {
-    S.chosenPlanId = t.dataset.pickPlan; S.planOverridden = true;
-    log('plan_picked_directly', { planId:S.chosenPlanId });
+    const pId = t.dataset.pickPlan;
+    if (PLANS_EXPANDED_ID === pId) {
+      PLANS_EXPANDED_ID = null;
+    } else {
+      PLANS_EXPANDED_ID = pId;
+      S.chosenPlanId = pId;
+      S.planOverridden = true;
+    }
+    log('plan_picked_directly', { planId: pId, expanded: PLANS_EXPANDED_ID === pId });
     render(false);
-    document.querySelector('.plans-selection')?.scrollIntoView({behavior:SCROLL_BEHAVIOR(),block:'nearest'});
     return;
   }
   if (t.dataset.toggleApps !== undefined) { APPSOPEN = !APPSOPEN; return; }
@@ -12146,6 +13429,7 @@ document.addEventListener('click', e => { /* click the backdrop to dismiss */
   if (e.target.id === 'venue-sheet') { SHEET=null; render(false); }
   if (e.target.id === 'plus-sheet') { PLANPLUS=null; render(false); }
   if (e.target.id === 'exit-modal') { e.target.hidden = true; document.body.style.overflow=''; }
+  if (e.target.id === 'login-modal') { closeLoginModal(); }
 });
 
 /* --- HTML5 Drag and Drop for Smart Container Routine Builder --- */

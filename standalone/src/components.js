@@ -177,9 +177,11 @@ function loginModal() {
     <div class="modal modal--login">
       <button class="modal__close" data-close-login aria-label="Close login dialog">&times;</button>
       <div class="login-modal__head">
-        ${ulaAvatar('sm')}
-        <h2 id="login-modal-title" style="margin:8px 0 4px;font-size:22px;font-weight:800;letter-spacing:-0.02em">Resume your journey</h2>
-        <p class="small muted" style="margin:0 0 16px">Enter the email you used when saving to pick up where you left off.</p>
+        <div style="display:flex;align-items:center;gap:10px;margin:2px 0 6px">
+          ${ulaAvatar('xs')}
+          <h2 id="login-modal-title" style="margin:0;font-size:21px;font-weight:800;letter-spacing:-0.02em">Resume your journey</h2>
+        </div>
+        <p class="small muted" style="margin:0 0 16px">Enter your email to pick up where you left off.</p>
       </div>
       ${err}
       <form data-form="login" novalidate class="login-form">

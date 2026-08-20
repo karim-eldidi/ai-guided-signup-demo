@@ -147,8 +147,14 @@ function renderVenueFilter() {
   renderInPlace();
 }
 document.addEventListener('input', e => {
-  if (e.target.matches('[data-form="venue-filter"] input, [data-venue-input]')) {
+  if (e.target.matches('[data-form="venue-filter"] input, [data-venue-input], #venue-search-q')) {
     VENUEQ = e.target.value;
+    if (typeof SEARCH !== 'undefined' && SEARCH) SEARCH.q = e.target.value;
+    renderInPlace();
+    return;
+  }
+  if (e.target.matches('[data-act-search-input]')) {
+    VENUE_ACT_SEARCH_Q = e.target.value;
     renderInPlace();
     return;
   }
@@ -224,11 +230,115 @@ document.addEventListener('scroll', e => {
   }
 }, true);
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-app],[data-close-app-sheet],[data-change-city],[data-city],[data-unsure],[data-radius],[data-toggle-apps],[data-toggle-more],[data-more],[data-toggle-alt],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-search-example],[data-venue-search-all],[data-venue-clear],[data-toggle-where],[data-where],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-filter-category],[data-scroll-pills],[data-scroll-gallery],[data-toggle-star],[data-open-plan-drawer],[data-close-plan-drawer],[data-open-order-summary],[data-close-order-summary]');
+  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-open-login],[data-close-login],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-app],[data-close-app-sheet],[data-change-city],[data-city],[data-unsure],[data-radius],[data-toggle-apps],[data-toggle-more],[data-more],[data-toggle-alt],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-search-example],[data-venue-search-all],[data-venue-clear],[data-toggle-where],[data-where],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-filter-category],[data-scroll-pills],[data-scroll-gallery],[data-toggle-star],[data-open-plan-drawer],[data-close-plan-drawer],[data-open-order-summary],[data-close-order-summary],[data-toggle-more-filters],[data-toggle-tier-filter],[data-toggle-act-filter],[data-clear-all-filters],[data-apply-filters],[data-act-search-clear],[data-remove-tier-filter],[data-remove-act-filter],[data-remove-cat-filter],[data-remove-radius-filter],[data-venue-view-mode],[data-map-pin],[data-map-close-preview]');
   if (!t) return;
+
+  if (t.dataset.toggleMoreFilters !== undefined) {
+    VENUE_MORE_FILTERS_OPEN = !VENUE_MORE_FILTERS_OPEN;
+    renderInPlace();
+    return;
+  }
+
+  if (t.dataset.toggleTierFilter) {
+    const tier = t.dataset.toggleTierFilter;
+    if (VENUE_TIER_FILTERS.has(tier)) VENUE_TIER_FILTERS.delete(tier);
+    else VENUE_TIER_FILTERS.add(tier);
+    renderInPlace();
+    return;
+  }
+
+  if (t.dataset.toggleActFilter) {
+    const act = t.dataset.toggleActFilter;
+    if (VENUE_ACT_FILTERS.has(act)) VENUE_ACT_FILTERS.delete(act);
+    else VENUE_ACT_FILTERS.add(act);
+    renderInPlace();
+    return;
+  }
+
+  if (t.dataset.clearAllFilters !== undefined) {
+    VENUE_TIER_FILTERS.clear();
+    VENUE_ACT_FILTERS.clear();
+    ACTIVE_CATEGORY_FILTERS.clear();
+    ACTIVE_CATEGORY_FILTER = 'all';
+    VENUE_ACT_SEARCH_Q = '';
+    VENUEQ = '';
+    if (typeof SEARCH !== 'undefined' && SEARCH) SEARCH = { q: '', result: null };
+    delete S.answers.activities;
+    S.radiusKm = '3';
+    renderInPlace();
+    return;
+  }
+
+  if (t.dataset.applyFilters !== undefined) {
+    VENUE_MORE_FILTERS_OPEN = false;
+    renderInPlace();
+    return;
+  }
+
+  if (t.dataset.actSearchClear !== undefined) {
+    VENUE_ACT_SEARCH_Q = '';
+    renderInPlace();
+    return;
+  }
+
+  if (t.dataset.removeTierFilter) {
+    VENUE_TIER_FILTERS.delete(t.dataset.removeTierFilter);
+    renderInPlace();
+    return;
+  }
+
+  if (t.dataset.removeActFilter) {
+    VENUE_ACT_FILTERS.delete(t.dataset.removeActFilter);
+    renderInPlace();
+    return;
+  }
+
+  if (t.dataset.removeCatFilter !== undefined) {
+    const cId = t.dataset.removeCatFilter;
+    if (cId) {
+      ACTIVE_CATEGORY_FILTERS.delete(cId);
+    } else {
+      ACTIVE_CATEGORY_FILTERS.clear();
+    }
+    if (ACTIVE_CATEGORY_FILTERS.size === 0) {
+      ACTIVE_CATEGORY_FILTER = 'all';
+      delete S.answers.activities;
+    } else {
+      ACTIVE_CATEGORY_FILTER = Array.from(ACTIVE_CATEGORY_FILTERS).join(',');
+      S.answers.activities = Array.from(ACTIVE_CATEGORY_FILTERS);
+    }
+    renderInPlace();
+    return;
+  }
+
+  if (t.dataset.removeRadiusFilter !== undefined) {
+    S.radiusKm = '3';
+    renderInPlace();
+    return;
+  }
 
   if (t.dataset.venueClear !== undefined) {
     VENUEQ = '';
+    if (typeof SEARCH !== 'undefined' && SEARCH) SEARCH.q = '';
+    renderInPlace();
+    return;
+  }
+
+  if (t.dataset.venueViewMode) {
+    VENUE_VIEW_MODE = t.dataset.venueViewMode;
+    SEEALL = (VENUE_VIEW_MODE === 'grid');
+    renderInPlace();
+    return;
+  }
+
+  if (t.dataset.mapPin) {
+    MAP_PREVIEW_VENUE_ID = (MAP_PREVIEW_VENUE_ID === t.dataset.mapPin ? null : t.dataset.mapPin);
+    renderInPlace();
+    return;
+  }
+
+  if (t.dataset.mapClosePreview !== undefined) {
+    MAP_PREVIEW_VENUE_ID = null;
     renderInPlace();
     return;
   }
@@ -242,16 +352,39 @@ document.addEventListener('click', e => {
     const g = document.getElementById('activity-gallery-scroll');
     if (g) {
       const card = g.querySelector('.activity-card');
-      const step = card ? (card.offsetWidth + 14) : 280;
+      const step = card ? (card.offsetWidth + 14) : 260;
       g.scrollBy({ left: t.dataset.scrollGallery === 'prev' ? -step : step, behavior: 'smooth' });
     }
     return;
   }
 
-  if (t.dataset.filterCategory) {
-    ACTIVE_CATEGORY_FILTER = t.dataset.filterCategory;
-    log('category_filtered', { category: ACTIVE_CATEGORY_FILTER });
-    render(false);
+  if (t.dataset.filterCategory || t.dataset.cat) {
+    const id = t.dataset.filterCategory || t.dataset.cat;
+    if (id === 'all' || !id) {
+      ACTIVE_CATEGORY_FILTERS.clear();
+      ACTIVE_CATEGORY_FILTER = 'all';
+      delete S.answers.activities;
+      log('answer_cleared', { question:'activities', value:[], mode:'venue_page' });
+    } else {
+      if (ACTIVE_CATEGORY_FILTERS.has(id)) {
+        ACTIVE_CATEGORY_FILTERS.delete(id);
+      } else {
+        ACTIVE_CATEGORY_FILTERS.add(id);
+      }
+      if (ACTIVE_CATEGORY_FILTERS.size === 0) {
+        ACTIVE_CATEGORY_FILTER = 'all';
+        delete S.answers.activities;
+        log('answer_cleared', { question:'activities', value:[], mode:'venue_page' });
+      } else {
+        ACTIVE_CATEGORY_FILTER = Array.from(ACTIVE_CATEGORY_FILTERS).join(',');
+        S.answers.activities = Array.from(ACTIVE_CATEGORY_FILTERS);
+        log('answer_given', { question:'activities', value:S.answers.activities, mode:'venue_page' });
+      }
+    }
+    S.weekDays = []; S.weekSwap = {};
+    if (!S.planOverridden) S.chosenPlanId = null;
+    SEARCH = { q:'', result:null };
+    renderInPlace();
     return;
   }
 
@@ -281,27 +414,21 @@ document.addEventListener('click', e => {
     renderInPlace(); return;
   }
   if (t.dataset.catAll !== undefined) {
+    ACTIVE_CATEGORY_FILTERS.clear();
+    ACTIVE_CATEGORY_FILTER = 'all';
     delete S.answers.activities;
     S.weekDays = []; S.weekSwap = {};
     if (!S.planOverridden) S.chosenPlanId = null;
-    SEARCH = { q:'', result:null }; SEEALL = false;
+    SEARCH = { q:'', result:null };
     log('answer_cleared', { question:'activities', value:[], mode:'venue_page' });
     renderInPlace(); return;
   }
-  if (t.dataset.cat) {
-    const id = t.dataset.cat;
-    const cur = (S.answers.activities||[]).filter(x => x !== SKIP);
-    const next = cur.includes(id) ? cur.filter(x => x !== id) : [...cur, id];
-    if (next.length) S.answers.activities = next; else delete S.answers.activities;
-    S.weekDays = []; S.weekSwap = {};
-    if (!S.planOverridden) S.chosenPlanId = null;
-    /* A category is a browse filter, so it answers with the row of places. Leaving the
-       last query up would show a filter that changed nothing. */
-    SEARCH = { q:'', result:null }; SEEALL = false;
-    log(next.length ? 'answer_given' : 'answer_cleared', { question:'activities', value:next, mode:'venue_page' });
-    renderInPlace(); return;
+  if (t.dataset.seeAll !== undefined) {
+    SEEALL = !SEEALL;
+    VENUE_VIEW_MODE = SEEALL ? 'grid' : 'scroll';
+    renderInPlace();
+    return;
   }
-  if (t.dataset.seeAll !== undefined) { SEEALL = !SEEALL; renderInPlace(); return; }
   if (t.dataset.pick) {
     const [qid, oid] = t.dataset.pick.split(':');
     const q = qById(qid); if (!q) return;
@@ -546,10 +673,16 @@ document.addEventListener('click', e => {
   if (t.dataset.changeCity !== undefined) { CITYPICK=!CITYPICK; if(!CITYPICK) CITYWANTED=null;
     if (CITYPICK) log('city_change_opened'); render(false); return; }
   if (t.dataset.pickPlan) {
-    S.chosenPlanId = t.dataset.pickPlan; S.planOverridden = true;
-    log('plan_picked_directly', { planId:S.chosenPlanId });
+    const pId = t.dataset.pickPlan;
+    if (PLANS_EXPANDED_ID === pId) {
+      PLANS_EXPANDED_ID = null;
+    } else {
+      PLANS_EXPANDED_ID = pId;
+      S.chosenPlanId = pId;
+      S.planOverridden = true;
+    }
+    log('plan_picked_directly', { planId: pId, expanded: PLANS_EXPANDED_ID === pId });
     render(false);
-    document.querySelector('.plans-selection')?.scrollIntoView({behavior:SCROLL_BEHAVIOR(),block:'nearest'});
     return;
   }
   if (t.dataset.toggleApps !== undefined) { APPSOPEN = !APPSOPEN; return; }
@@ -701,6 +834,7 @@ document.addEventListener('click', e => { /* click the backdrop to dismiss */
   if (e.target.id === 'venue-sheet') { SHEET=null; render(false); }
   if (e.target.id === 'plus-sheet') { PLANPLUS=null; render(false); }
   if (e.target.id === 'exit-modal') { e.target.hidden = true; document.body.style.overflow=''; }
+  if (e.target.id === 'login-modal') { closeLoginModal(); }
 });
 
 /* --- HTML5 Drag and Drop for Smart Container Routine Builder --- */

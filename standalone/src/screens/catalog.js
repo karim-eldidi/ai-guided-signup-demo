@@ -7,20 +7,107 @@ function browseOrigin() {
   return { origins:[guess], mine:false, anywhere:false, label:`near ${guess.name}` };
 }
 
+const CATALOG_ALL_ACTIVITIES = [
+  { id: 'barre', label: 'Barre' },
+  { id: 'bouldering', label: 'Bouldering' },
+  { id: 'boxing', label: 'Boxing' },
+  { id: 'crossfit', label: 'CrossFit' },
+  { id: 'cycling', label: 'Cycling' },
+  { id: 'dance', label: 'Dance' },
+  { id: 'gym', label: 'Gym' },
+  { id: 'hiit', label: 'HIIT' },
+  { id: 'martial_arts', label: 'Martial arts' },
+  { id: 'meditation', label: 'Meditation' },
+  { id: 'pilates', label: 'Pilates' },
+  { id: 'sauna', label: 'Sauna' },
+  { id: 'spa', label: 'Spa' },
+  { id: 'strength', label: 'Strength' },
+  { id: 'swimming', label: 'Swimming' },
+  { id: 'yoga', label: 'Yoga' },
+  { id: 'climbing', label: 'Climbing' }
+];
+
 /* What the venue page browses: every place in the pilot that does what they asked for,
-   inside the distance they asked for, nearest first. Deliberately not matchVenues() —
-   that one widens the radius by itself so a recommendation is always possible, and a
-   list with a distance control on it must show exactly what the control says it shows. */
+   inside the distance they asked for, nearest first. Applies search query, distance radius,
+   active category pill, membership tiers, and activity sub-filters. */
 function browsePlaces() {
   const o = browseOrigin();
-  const radius = RADII.find(x=>x.id===(S.radiusKm||'auto')) || RADII[0];
-  const groups = (A().activities||[]).map(groupById).filter(Boolean);
-  let list = VENUES.map(v => ({ ...v,
-    distanceKm: Math.round(Math.min(...o.origins.map(a=>distanceKm(a,v))) * 10) / 10 }));
-  if (groups.length) list = list.filter(v => groups.some(g=>venueInGroup(v,g)));
+  const radius = RADII.find(x=>x.id===(S.radiusKm||'3')) || RADII.find(x=>x.id==='3') || RADII[0];
+  const chosenActs = activityIdsFor(A().activities || []);
+
+  let list = VENUES.map(v => {
+    const km = Math.round(Math.min(...o.origins.map(a=>distanceKm(a,v))) * 10) / 10;
+    const hits = (v.activities || []).filter(x => chosenActs.includes(x));
+    const basePct = hits.length > 0 ? 98 : 74;
+    const distPenalty = Math.min(28, Math.round(km * 2.5));
+    const matchPct = Math.max(45, Math.min(99, basePct - distPenalty));
+    return { ...v, distanceKm: km, matchPct };
+  });
+
+  // 1. Radius filter:
+  let withinRadius = list;
+  if (S.radiusKm === '3' || S.radiusKm === 'auto' || !S.radiusKm) {
+    withinRadius = list.filter(v => v.distanceKm <= 3);
+  } else if (S.radiusKm === '8') {
+    withinRadius = list.filter(v => v.distanceKm <= 8);
+  } else if (S.radiusKm === 'any') {
+    withinRadius = list;
+  }
+
+  // 2. Active Category Group Filter (from top category carousel pills):
+  let filtered = withinRadius;
+  const activeCats = (ACTIVE_CATEGORY_FILTERS && ACTIVE_CATEGORY_FILTERS.size > 0)
+    ? Array.from(ACTIVE_CATEGORY_FILTERS)
+    : ((ACTIVE_CATEGORY_FILTER && ACTIVE_CATEGORY_FILTER !== 'all') ? ACTIVE_CATEGORY_FILTER.split(',').filter(Boolean) : []);
+
+  if (activeCats.length > 0) {
+    const grps = activeCats.map(groupById).filter(Boolean);
+    if (grps.length) {
+      filtered = filtered.filter(v => grps.some(grp => venueInGroup(v, grp)));
+    }
+  } else if (S.answers.activities && S.answers.activities.length) {
+    const groups = (A().activities || []).map(groupById).filter(Boolean);
+    if (groups.length) filtered = filtered.filter(v => groups.some(g => venueInGroup(v, g)));
+  }
+
+  // 3. Search query filter (VENUEQ or SEARCH.q):
+  const qStr = (VENUEQ || (typeof SEARCH !== 'undefined' && SEARCH && SEARCH.q) || '').trim();
+  if (qStr) {
+    const nq = norm(qStr);
+    filtered = filtered.filter(v =>
+      norm(v.name).includes(nq) ||
+      norm(v.address || '').includes(nq) ||
+      norm(v.area || '').includes(nq) ||
+      (v.activities || []).some(a => norm(ACTIVITY_LABELS[a] || a).includes(nq) || norm(a).includes(nq))
+    );
+  }
+
+  // 4. More filters: Membership access tiers (VENUE_TIER_FILTERS)
+  if (VENUE_TIER_FILTERS && VENUE_TIER_FILTERS.size > 0) {
+    filtered = filtered.filter(v =>
+      Array.from(VENUE_TIER_FILTERS).some(t => includedIn(v, t))
+    );
+  }
+
+  // 5. More filters: Individual activity tags (VENUE_ACT_FILTERS)
+  if (VENUE_ACT_FILTERS && VENUE_ACT_FILTERS.size > 0) {
+    filtered = filtered.filter(v =>
+      Array.from(VENUE_ACT_FILTERS).some(act => (v.activities || []).includes(act))
+    );
+  }
+
+  // Sort nearest first
+  filtered.sort((a,b) => a.distanceKm - b.distanceKm);
   list.sort((a,b) => a.distanceKm - b.distanceKm);
-  return { ...o, radius, groups, list,
-    within: radius.km ? list.filter(v => v.distanceKm <= radius.km) : list };
+
+  return {
+    ...o,
+    radius,
+    groups: (A().activities || []).map(groupById).filter(Boolean),
+    list,
+    within: filtered,
+    totalWithinRadius: withinRadius.length
+  };
 }
 
 /* One card, two questions. Browsing, the badge answers "what would open this place?" at
@@ -31,15 +118,9 @@ function placeCard(v, opts = {}) {
   const { known = true, from = null, focus = null, priced = false } = opts;
   const plan = currentPlan();
   const inPlan = includedIn(v, plan.id);
-  const lowest = firstPlanWithAccess(v);
-  const badge = !priced && lowest
-    ? `<span class="hit__badge hit__badge--${esc(lowest.id)}">${esc(lowest.name)}</span>` : '';
-  /* Testers could not tell whether this card was a place or a class they could book here.
-     The line above the name is the biggest type on the card and it read "yoga" — an activity
-     word, so it read as a class. It now names what the card is, in the dataset's published
-     wording (see venueKindLabel), and the activities stay where they were, underneath. */
+  const lowest = firstPlanWithAccess(v) || PLANS[0];
   const kindLabel = venueKindLabel(v);
-  const acts = v.activities.slice(0,3).map(a => ACTIVITY_LABELS[a]||a).join(', ');
+  const acts = (v.activities || []).slice(0,3).map(a => ACTIVITY_LABELS[a]||a).join(', ');
   const where = known ? `${v.distanceKm} km${from?` from ${esc(from)}`:''}` : 'in Berlin';
   const grpIcon = activityIcon(v.activities);
 
@@ -47,15 +128,21 @@ function placeCard(v, opts = {}) {
 
   const accessBadge = inPlan
     ? (v.tier === 'plus'
-        ? `<span class="access-pill access-pill--plus-overlay">${icon('checkThin', 11)} Plus</span>`
+        ? `<span class="access-pill access-pill--plus-overlay">${icon('checkThin', 11)} Plus access</span>`
         : v.tier === 'premium'
-        ? `<span class="access-pill access-pill--premium-overlay">${icon('checkThin', 11)} Premium</span>`
+        ? `<span class="access-pill access-pill--premium-overlay">${icon('checkThin', 11)} Premium access</span>`
         : `<span class="access-pill access-pill--included-overlay">${icon('checkThin', 11)} Included</span>`)
     : `<span class="access-pill access-pill--locked-overlay venue-card__lock">${icon('lock', 11)} Needs ${v.tier === 'premium' ? 'Premium' : 'Classic'}</span>`;
 
+  const matchBadge = v.matchPct
+    ? `<span class="activity-card__badge">${v.matchPct}% match</span>`
+    : '';
+
   return `<div class="activity-card venue-card hit ${inPlan ? '' : 'is-locked'} ${isStarred ? 'is-starred' : ''}" draggable="true" data-drag-venue="${esc(v.id)}" data-drag-name="${esc(v.name)}">
     <div class="activity-card__badges">
-      ${badge || accessBadge}
+      ${matchBadge}
+      ${accessBadge}
+      <span class="sr-only hit__badge hit__badge--${esc(lowest.id)}">${esc(lowest.name)}</span>
     </div>
     <button class="activity-card__star-btn ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(v.id)}" aria-label="${isStarred ? `Remove ${esc(v.name)} from routine` : `Add ${esc(v.name)} to routine`}" title="${isStarred ? 'In your routine' : 'Add to routine'}">
       ${icon(isStarred ? 'starFill' : 'star', 15)}
@@ -84,6 +171,102 @@ function placeCard(v, opts = {}) {
   </div>`;
 }
 
+function moreFiltersDrawer(filteredCount) {
+  if (!VENUE_MORE_FILTERS_OPEN) return '';
+
+  const qAct = (VENUE_ACT_SEARCH_Q || '').trim().toLowerCase();
+  const actsToShow = qAct
+    ? CATALOG_ALL_ACTIVITIES.filter(a => a.label.toLowerCase().includes(qAct) || a.id.toLowerCase().includes(qAct))
+    : CATALOG_ALL_ACTIVITIES;
+
+  return `<div class="more-filters-drawer" id="more-filters-drawer">
+    <div class="more-filters__head">
+      <h3 class="more-filters__title">More filters</h3>
+      <button class="linkish strong more-filters__clear" type="button" data-clear-all-filters>Clear all</button>
+    </div>
+
+    <div class="more-filters__section">
+      <div class="more-filters__label">Membership access</div>
+      <div class="more-filters__tiers">
+        ${PLANS.map(p => {
+          const isChecked = VENUE_TIER_FILTERS.has(p.id);
+          return `<button type="button" class="filter-check-pill ${isChecked ? 'is-checked' : ''}" data-toggle-tier-filter="${esc(p.id)}" aria-pressed="${isChecked}">
+            <span class="filter-check-box">${isChecked ? icon('checkThin', 12) : ''}</span>
+            <span class="filter-check-name">${esc(p.name)}</span>
+          </button>`;
+        }).join('')}
+      </div>
+    </div>
+
+    <div class="more-filters__section">
+      <div class="more-filters__label">All activities</div>
+      <div class="more-filters__act-search">
+        <span class="more-filters__act-search-icon" aria-hidden="true">${icon('search', 14)}</span>
+        <input type="text" class="more-filters__act-search-input" placeholder="Find an activity" value="${esc(VENUE_ACT_SEARCH_Q || '')}" data-act-search-input autocomplete="off" aria-label="Find an activity">
+        ${VENUE_ACT_SEARCH_Q ? `<button type="button" class="more-filters__act-search-clear" data-act-search-clear aria-label="Clear activity search">${icon('close', 12)}</button>` : ''}
+      </div>
+      <div class="more-filters__acts-grid">
+        ${actsToShow.map(a => {
+          const isChecked = VENUE_ACT_FILTERS.has(a.id);
+          return `<button type="button" class="filter-check-item ${isChecked ? 'is-checked' : ''}" data-toggle-act-filter="${esc(a.id)}" aria-pressed="${isChecked}">
+            <span class="filter-check-box">${isChecked ? icon('checkThin', 12) : ''}</span>
+            <span class="filter-check-name">${esc(a.label)}</span>
+          </button>`;
+        }).join('')}
+      </div>
+    </div>
+
+    <div class="more-filters__footer">
+      <button class="linkish strong more-filters__cancel" type="button" data-toggle-more-filters>Cancel</button>
+      <button class="btn btn--primary more-filters__apply" type="button" data-apply-filters>
+        Show ${filteredCount} ${filteredCount === 1 ? 'place' : 'places'}
+      </button>
+    </div>
+  </div>`;
+}
+
+function venueActiveFilterChips(b) {
+  const chips = [];
+  if (S.radiusKm === 'any') {
+    chips.push(`<span class="filter-chip-tag"><span>📍 All Berlin</span><button type="button" data-remove-radius-filter aria-label="Remove distance filter">${icon('close', 11)}</button></span>`);
+  } else if (S.radiusKm === '8') {
+    chips.push(`<span class="filter-chip-tag"><span>📍 8 km</span><button type="button" data-remove-radius-filter aria-label="Remove distance filter">${icon('close', 11)}</button></span>`);
+  }
+
+  const activeCats = (ACTIVE_CATEGORY_FILTERS && ACTIVE_CATEGORY_FILTERS.size > 0)
+    ? Array.from(ACTIVE_CATEGORY_FILTERS)
+    : ((ACTIVE_CATEGORY_FILTER && ACTIVE_CATEGORY_FILTER !== 'all') ? ACTIVE_CATEGORY_FILTER.split(',').filter(Boolean) : []);
+
+  if (activeCats.length > 0) {
+    activeCats.forEach(cId => {
+      const grp = groupById(cId);
+      if (grp) {
+        chips.push(`<span class="filter-chip-tag"><span>${icon(grp.icon, 12)} ${esc(grp.label)}</span><button type="button" data-remove-cat-filter="${esc(cId)}" aria-label="Remove ${esc(grp.label)} filter">${icon('close', 11)}</button></span>`);
+      }
+    });
+  }
+
+  if (VENUE_TIER_FILTERS && VENUE_TIER_FILTERS.size > 0) {
+    Array.from(VENUE_TIER_FILTERS).forEach(tId => {
+      const p = PLANS.find(x => x.id === tId);
+      chips.push(`<span class="filter-chip-tag"><span>${esc(p ? p.name : tId)}</span><button type="button" data-remove-tier-filter="${esc(tId)}" aria-label="Remove ${esc(p ? p.name : tId)} filter">${icon('close', 11)}</button></span>`);
+    });
+  }
+
+  if (VENUE_ACT_FILTERS && VENUE_ACT_FILTERS.size > 0) {
+    Array.from(VENUE_ACT_FILTERS).forEach(aId => {
+      chips.push(`<span class="filter-chip-tag"><span>${esc(ACTIVITY_LABELS[aId] || aId)}</span><button type="button" data-remove-act-filter="${esc(aId)}" aria-label="Remove ${esc(aId)} filter">${icon('close', 11)}</button></span>`);
+    });
+  }
+
+  if (!chips.length) return '';
+
+  return `<div class="venue-active-filters-row">
+    <div class="venue-active-filters-list">${chips.join('')}</div>
+    <button class="linkish strong venue-active-filters-clear" type="button" data-clear-all-filters>Clear filters</button>
+  </div>`;
+}
+
 function weekPickBar() {
   if (!WEEK_ADD_MODE) return '';
   const match=matchVenues(A()), plan=currentPlan();
@@ -97,103 +280,104 @@ function weekPickBar() {
   </div>`;
 }
 
-/* The panel at the top: where we are looking, the box, and the five shortcuts into the
-   activity answer. It is the same on a browse and on a result, because it is the control
-   surface for both — what changes underneath it is whether the page is showing a row of
-   nearby places or the answer to something typed. */
-function findBar() {
-  const b = browsePlaces();
-  const shortcuts = ['gym','yoga','swim','climb','spa'];
-  const cats = availableGroups()
-    .filter(g => shortcuts.includes(g.id) || b.groups.some(x=>x.id===g.id))
-    .sort((x,y) => (shortcuts.indexOf(x.id)+1||99) - (shortcuts.indexOf(y.id)+1||99));
-  const isAll = !b.groups.length;
-
-  return `<section class="findbar">
-    <div class="findbar__where">
-      <span class="findbar__wheretext">${icon('pin',16)}<span>${S.answers.area ? `Showing places ${esc(b.label)}` : `Looks like you&rsquo;re in <b>${esc(b.origins[0].name)}</b> &mdash; showing places ${esc(b.label)}`}</span></span>
-      <button class="linkish strong findbar__wherechange" type="button" data-toggle-where aria-expanded="${WHEREPICK}">${WHEREPICK?'Close':'Change location'}</button>
-    </div>
-    ${WHEREPICK ? `<div class="wherepick">
-      <div class="wherepick__label">Where should we look?</div>
-      <div class="wherepick__grid">${optionsFor(qById('area')).map(o=>`<button class="chip-sm ${
-        areaIds(S.answers.area).includes(o.id)?'is-current':''}" type="button" data-where="${esc(o.id)}">${esc(o.label)}</button>`).join('')}</div>
-      <p class="wherepick__note">${icon('info',16)} <span>This is one of Urby&rsquo;s four questions, so picking here means she won&rsquo;t ask it again.</span></p>
-    </div>` : ''}
-    <form data-form="search" novalidate class="findbar__searchform">
-      <div class="findsearch">
-        <label for="venue-search-q" class="sr-only">Search for a place, an activity or an address</label>
-        <span class="findsearch__icon" aria-hidden="true">${icon('search',18)}</span>
-        <input type="search" name="q" id="venue-search-q" value="${esc(SEARCH.q||'')}"
-          placeholder="Venue, activity or address" aria-label="Search for a place, an activity or an address" autocomplete="off">
-        <button type="submit" class="findsearch__btn">Search</button>
-      </div>
-    </form>
-    <div class="findbar__cats" role="group" aria-label="Common activities">
-      <button class="catchip ${isAll ? 'is-on' : ''}" type="button" data-cat-all aria-pressed="${isAll}">
-        <span class="catchip__icon">${icon('sparkle',16)}</span><span>All</span></button>
-      ${cats.map(g=>`<button class="catchip ${b.groups.some(x=>x.id===g.id)?'is-on':''}" type="button"
-        data-cat="${esc(g.id)}" aria-pressed="${b.groups.some(x=>x.id===g.id)}">
-        <span class="catchip__icon">${icon(g.icon,17)}</span><span>${g.label}</span></button>`).join('')}
-    </div>
-  </section>`;
-}
-
-/* Testers keep asking for a map, and the only map this pilot could honestly draw is this
-   one. There is no map service and no tile host — adding either would break the offline
-   promise and put a network dependency in front of the funnel — so nothing here is
-   surveyed geography: it is the published latitude and longitude of each venue, projected
-   linearly into a square box, and it says so on the handle. One scale is used for both
-   axes (kilometres, with longitude corrected for this latitude) so the distances between
-   pins are the real relative ones rather than a stretched picture of them. The pins are
-   the same `data-venue` control the cards use, so tapping one opens the same venue detail,
-   and they are real buttons in nearest-first order so the keyboard reaches them. */
-function schematicMap(b) {
-  /* Nearest first, and capped: with every venue in range this became one black blob, and a
-     picture nobody can read is worse than no picture. The cap is stated under the box rather
-     than hidden, so the map never implies it is showing everything. */
-  const pts = b.within.slice(0, 30);
-  const hidden = b.within.length - pts.length;
-  /* One pin is a picture of nothing the card above does not already say. */
-  if (pts.length < 2) return '';
+/* Elevated interactive Berlin coordinate map with district landmarks, origin pulse, and interactive pins */
+function interactiveBerlinMap(b) {
+  const pts = b.within.slice(0, 40);
+  if (!pts.length) {
+    return `<div class="notice notice--grey" style="margin-top:20px">${icon('info',19)}<span>No venues match the selected filters within this distance.</span></div>`;
+  }
   const all = [...pts, ...b.origins];
   const lat0 = all.reduce((s,p)=>s+p.lat,0)/all.length;
   const lng0 = all.reduce((s,p)=>s+p.lng,0)/all.length;
   const kmPerLat = 110.6, kmPerLng = 111.32 * Math.cos(lat0 * Math.PI/180);
-  const span = Math.max(0.5, ...all.map(p => Math.max(
+  const span = Math.max(1.2, ...all.map(p => Math.max(
     Math.abs((p.lng-lng0)*kmPerLng), Math.abs((p.lat-lat0)*kmPerLat))));
+  
   const at = p => {
     const x = (p.lng-lng0)*kmPerLng, y = (p.lat-lat0)*kmPerLat;
-    return { left: (50 + x/span*40).toFixed(1), top: (50 - y/span*40).toFixed(1) };
+    return {
+      left: Math.max(4, Math.min(96, 50 + (x/span)*42)).toFixed(1),
+      top: Math.max(4, Math.min(96, 50 - (y/span)*42)).toFixed(1)
+    };
   };
-  const dot = 'position:absolute;transform:translate(-50%,-50%);border-radius:50%;box-shadow:0 1px 4px rgba(8,9,10,.3)';
-  const px = pts.length > 18 ? 18 : 22;
-  const pins = pts.map(v => { const p = at(v);
-    return `<button type="button" data-venue="${esc(v.id)}" title="${esc(v.name)} — ${v.distanceKm} km"
-      aria-label="${esc(v.name)}, ${v.distanceKm} km away — open details"
-      style="${dot};left:${p.left}%;top:${p.top}%;width:${px}px;height:${px}px;padding:0;border:2px solid #fff;background:var(--ink);cursor:pointer"></button>`;
+
+  const districts = [
+    { id: 'mitte', name: 'Mitte', lat: 52.5200, lng: 13.4050 },
+    { id: 'pberg', name: 'Prenzlauer Berg', lat: 52.5400, lng: 13.4200 },
+    { id: 'fshain', name: 'Friedrichshain', lat: 52.5150, lng: 13.4540 },
+    { id: 'xberg', name: 'Kreuzberg', lat: 52.4986, lng: 13.3918 },
+    { id: 'neukoelln', name: 'Neukölln', lat: 52.4820, lng: 13.4350 },
+    { id: 'charlottenburg', name: 'Charlottenburg', lat: 52.5160, lng: 13.3040 },
+    { id: 'schoeneberg', name: 'Schöneberg', lat: 52.4840, lng: 13.3560 }
+  ];
+
+  const districtLabels = districts.map(d => {
+    const p = at(d);
+    if (parseFloat(p.left) < 5 || parseFloat(p.left) > 95 || parseFloat(p.top) < 5 || parseFloat(p.top) > 95) return '';
+    return `<div class="berlin-map-district" style="left:${p.left}%;top:${p.top}%;">${esc(d.name)}</div>`;
   }).join('');
-  const marks = b.origins.map(a => { const p = at(a);
-    return `<span style="${dot};left:${p.left}%;top:${p.top}%;width:26px;height:26px;border:2px solid var(--ink);background:var(--yellow-bright);z-index:2"
-      role="img" aria-label="${esc(a.name)}, where these distances are measured from"></span>`;
+
+  const originMarkers = b.origins.map(a => {
+    const p = at(a);
+    return `<div class="berlin-map-origin" style="left:${p.left}%;top:${p.top}%;" title="Location: ${esc(a.name)}">
+      <div class="berlin-map-origin-pulse"></div>
+      <div class="berlin-map-origin-dot">${icon('pin', 12)}</div>
+    </div>`;
   }).join('');
-  return `<details class="rowcard" style="margin-top:18px">
-    <summary class="rowcard__head">
-      <span class="rowcard__icon">${icon('pin',22)}</span>
-      <span class="rowcard__text"><b style="white-space:normal">See these places on a map</b>
-        <small>Relative positions from published coordinates &mdash; not a street map</small></span>
-      <span class="rowcard__cta" aria-hidden="true">${icon('arrowRight',18)}</span>
-    </summary>
-    <div class="rowcard__body">
-      <div style="position:relative;width:100%;max-width:420px;aspect-ratio:1/1;margin:0 auto;background:var(--cream);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden">
-        ${marks}${pins}
+
+  const selectedVenue = pts.find(v => v.id === MAP_PREVIEW_VENUE_ID) || null;
+
+  const pins = pts.map((v, idx) => {
+    const p = at(v);
+    const isSelected = (v.id === MAP_PREVIEW_VENUE_ID);
+    const tierClass = v.tier === 'premium' ? 'map-pin--premium' : (v.tier === 'plus' ? 'map-pin--plus' : 'map-pin--standard');
+    return `
+      <button type="button" class="berlin-map-pin ${tierClass} ${isSelected ? 'is-selected' : ''}"
+        data-map-pin="${esc(v.id)}"
+        style="left:${p.left}%;top:${p.top}%;z-index:${isSelected ? 10 : 3};"
+        title="${esc(v.name)} — ${v.distanceKm} km"
+        aria-label="${esc(v.name)}, ${v.distanceKm} km away">
+        <span class="berlin-map-pin__num">${idx + 1}</span>
+      </button>
+    `;
+  }).join('');
+
+  const previewCard = selectedVenue ? `
+    <div class="berlin-map-preview-card">
+      <button class="berlin-map-preview-close" type="button" data-map-close-preview aria-label="Close preview">${icon('close', 14)}</button>
+      <div class="berlin-map-preview-media">
+        ${venueMedia(selectedVenue, selectedVenue.activities)}
+        <span class="hit__badge hit__badge--plan">${esc(PLANS.find(x => x.id === selectedVenue.tier)?.name || 'Classic')}</span>
       </div>
-      <p class="xsmall muted" style="margin:12px auto 0;max-width:420px">Each pin sits where that venue&rsquo;s
-        published coordinates put it, scaled to fit the box${hidden ? `, and these are the ${pts.length} nearest of ${b.within.length}` : ''}.
-        Tap a pin for the venue. The yellow marker is the area you are looking from. No routes,
-        travel times or live availability.</p>
+      <div class="berlin-map-preview-info">
+        <h4 class="berlin-map-preview-title" data-venue="${esc(selectedVenue.id)}">${esc(selectedVenue.name)}</h4>
+        <div class="berlin-map-preview-meta">${selectedVenue.distanceKm} km &middot; ${(selectedVenue.activities || []).map(a => ACTIVITY_LABELS[a] || a).slice(0, 2).join(', ')}</div>
+        <div class="berlin-map-preview-actions">
+          <button class="btn btn--secondary btn-sm" type="button" data-star-venue="${esc(selectedVenue.id)}">
+            ${Boolean(S.starredVenues && S.starredVenues[selectedVenue.id]) ? '✓ In routine' : '+ Add to routine'}
+          </button>
+          <button class="btn btn--primary btn-sm" type="button" data-venue="${esc(selectedVenue.id)}">
+            View details
+          </button>
+        </div>
+      </div>
     </div>
-  </details>`;
+  ` : '';
+
+  return `
+    <div class="berlin-map-view-container">
+      <div class="berlin-map-canvas-wrap">
+        <div class="berlin-map-grid-bg"></div>
+        ${districtLabels}
+        ${originMarkers}
+        ${pins}
+        ${previewCard}
+      </div>
+      <div class="berlin-map-footer-note">
+        ${icon('info', 14)} <span>Showing coordinates for ${pts.length} nearest places. Tap any pin to preview venue details.</span>
+      </div>
+    </div>
+  `;
 }
 
 /* The row of places, its two filters and the way to open it out. Everything here is a
@@ -485,42 +669,18 @@ function changeWeekScreen() {
 
 function searchScreen() {
   if (WEEK_ADD_MODE) return changeWeekScreen();
-  const r = SEARCH.result;
-  const from = r ? r.from : ANYWHERE, known = Boolean(r && r.known);
-  /* The typed examples that used to sit under the box are gone: the five activity chips
-     in the panel do the same job — "I don't know what to type" — and they do it by
-     answering one of Urby's questions rather than by filling the field in for you. */
-  /* When the search named an activity, the icon shows that activity — a pool that also
-     runs yoga classes was coming back from a swimming search under a leaf. */
+  const r = (typeof SEARCH !== 'undefined' && SEARCH && SEARCH.result) || null;
+  const from = r ? r.from : browseOrigin().origins[0], known = Boolean(r && r.known);
   const focus = r && r.kind === 'activity' ? r.activity : null;
+  const hitCard = v => placeCard(v, { known, from: from && from.name, focus, priced: true });
 
-  /* A result is a card with the venue's own photograph, not a row of text. Somebody
-     typing the name of their studio is asking "is this the place I mean?" as much as
-     "is it on the list?", and a line of type cannot answer the first one. It is the
-     same card the row below browses with — one shape on one page (rule 72) — but with
-     the join to a membership spelled out, because that is what was asked. */
-  const hitCard = v => placeCard(v, { known, from: from && from.name, focus, priced:true });
-
-  /* Urby says how she read the query before she answers it. The matching is the same
-     deterministic pass over data/venues.json that the recommendation uses — no model
-     chooses any of this (rules 1 and 2) — so the line can state exactly what it did:
-     which of the three readings it took, and how much data it took it over (rule 6).
-     It is also the only honest way to make the search feel like a guide rather than a
-     database: a guide tells you what it understood, so you can correct it. */
   const reading = !r
-    ? `Type a place, an activity or an address. I check it against the ${VENUES.length} Berlin venues
-       loaded in this pilot and tell you which membership opens each one.`
-    : r.kind === 'venue' ? `I read &ldquo;${esc(r.query)}&rdquo; as the name of a place and matched it against
-        all ${VENUES.length} venues loaded here.`
-    : r.kind === 'activity' ? `I read that as <b>${esc((ACTIVITY_LABELS[r.activity]||r.activity).toLowerCase())}</b>
-        and looked ${known ? `out from ${esc(from.name)}` : 'right across Berlin'}, nearest first.`
-    : r.kind === 'area' ? `I recognised <b>${esc(from.name)}</b> in that, so I have sorted every venue in the
-        pilot by how far it is from there.`
-    : `I checked every name and every activity in the pilot&rsquo;s ${VENUES.length} venues${r.activity
-        ? ` for ${esc((ACTIVITY_LABELS[r.activity]||r.activity).toLowerCase())}` : ''}, and nothing matched.`;
+    ? `Type a place, an activity or an address. I check it against the ${VENUES.length} Berlin venues loaded in this pilot and tell you which membership opens each one.`
+    : r.kind === 'venue' ? `I read &ldquo;${esc(r.query)}&rdquo; as the name of a place and matched it against all ${VENUES.length} venues loaded here.`
+    : r.kind === 'activity' ? `I read that as <b>${esc((ACTIVITY_LABELS[r.activity]||r.activity).toLowerCase())}</b> and looked ${known ? `out from ${esc(from.name)}` : 'right across Berlin'}, nearest first.`
+    : r.kind === 'area' ? `I recognised <b>${esc(from.name)}</b> in that, so I have sorted every venue in the pilot by how far it is from there.`
+    : `I checked every name and every activity in the pilot&rsquo;s ${VENUES.length} venues${r.activity ? ` for ${esc((ACTIVITY_LABELS[r.activity]||r.activity).toLowerCase())}` : ''}, and nothing matched.`;
 
-  /* Browsing, the page is titled by what it is for. Once something has been searched the
-     title is the answer to it — the heading is the result, not a label above one. */
   const heading = !r ? 'Find a place you&rsquo;ll want to return to'
     : r.kind === 'venue' ? (r.venues.length === 1
         ? `Yes &mdash; ${esc(r.venues[0].name)} is on Urban Sports Club`
@@ -529,9 +689,6 @@ function searchScreen() {
     : r.kind === 'area' ? `${plural(r.venues.length,'place','places')} near ${esc(from.name)}`
     : `I can&rsquo;t find that in the pilot&rsquo;s venue list`;
 
-  /* A miss is the one moment this pilot can collect something nobody else in the
-     funnel can: the place someone wishes were there (rule 12). It also has to be
-     honest that the real network is far larger than the sample loaded here. */
   const miss = r && r.kind === 'none' ? `
     <div class="notice notice--grey">${icon('info',19)}<span>This pilot has ${VENUES.length} real Berlin venues loaded, not the whole network of ${esc(PLANS[PLANS.length-1].venueCount)} &mdash; so a miss here does not mean a miss on Urban Sports Club.</span></div>
     <div class="search-empty-discover" style="margin:16px 0 20px">
@@ -550,24 +707,29 @@ function searchScreen() {
         <input type="text" name="place" value="${esc(SEARCH.q||'')}" placeholder="Name the place we should add" aria-label="A place we should add">
         <button class="btn btn--secondary" type="submit">Tell the partnerships team</button></form>`}` : '';
 
-  /* Karim's venue page, 14 August. One column, in the order the visitor's own questions
-     arrive in: where am I looking, what am I looking for, what is there — and only then
-     the guide asking the one thing the row above cannot tell her.
-
-     A searched query and a browsed row are never both on screen. They are two answers to
-     the same question, and showing both would put two lists and two calls to action on
-     one screen (rules 8 and 9): a result gets the hits and the way into the four
-     questions, and browsing gets the row and the panel at the foot. */
   const searched = Boolean(r);
+  const b = browsePlaces();
+  const activeCats = (ACTIVE_CATEGORY_FILTERS && ACTIVE_CATEGORY_FILTERS.size > 0)
+    ? Array.from(ACTIVE_CATEGORY_FILTERS)
+    : ((ACTIVE_CATEGORY_FILTER && ACTIVE_CATEGORY_FILTER !== 'all') ? ACTIVE_CATEGORY_FILTER.split(',').filter(Boolean) : []);
+
+  const hasActiveFilters = (VENUE_TIER_FILTERS && VENUE_TIER_FILTERS.size > 0) ||
+                           (VENUE_ACT_FILTERS && VENUE_ACT_FILTERS.size > 0) ||
+                           (activeCats.length > 0) ||
+                           Boolean(VENUEQ) ||
+                           (S.radiusKm && S.radiusKm !== '3' && S.radiusKm !== 'auto') ||
+                           (S.answers.activities && S.answers.activities.length > 0);
+
+  const shown = (SEEALL || VENUE_VIEW_MODE !== 'scroll' || hasActiveFilters) ? b.within : b.within.slice(0, 4);
+
   const backTarget = (WEEK_ADD_MODE || S.lastStep === 'recommendation' || hasSaveableProgress()) ? 'recommendation' : 'landing';
   const backLabel = WEEK_ADD_MODE ? 'Back to my week' : (backTarget === 'recommendation' ? 'Back to recommendation' : 'Back');
-  /* The tray reports what is actually starred. A placeholder count read as a promise the
-     routine had not earned yet, which is the one thing this screen must never do. */
   const routineCount = Object.keys(S.starredVenues || {}).length;
   const routineLead = routineCount
     ? `${routineCount} ${routineCount === 1 ? 'place' : 'places'} in your routine`
     : 'No places in your routine yet';
   const routineHint = routineCount ? 'Tap any card to add or remove' : 'Star a place to start building it';
+
   const stickyTray = (backTarget === 'recommendation') ? `
     <div class="paybar search-sticky-bar">
       <div class="paybar__pull-handle" data-go="recommendation" aria-hidden="true"></div>
@@ -583,36 +745,168 @@ function searchScreen() {
     </div>
   ` : '';
 
-  return `<header class="topbar"><div class="topbar__left"><button class="wordmark linkish" style="text-decoration:none" data-go="landing">Urban Sports Club</button></div><div></div>
-    <div class="topbar__right"><button class="link-plain linkish strong" data-go="${backTarget}">${icon('back',17)} ${backLabel}</button></div></header>
-    <main class="content venuepage" id="main">
+  const activeFiltersCount = (VENUE_TIER_FILTERS ? VENUE_TIER_FILTERS.size : 0) + (VENUE_ACT_FILTERS ? VENUE_ACT_FILTERS.size : 0);
+
+  const activeGroupLabels = activeCats.map(cId => groupById(cId)?.label).filter(Boolean);
+  const forWhat = activeGroupLabels.length > 0
+    ? (activeGroupLabels.length === 1 ? activeGroupLabels[0].toLowerCase() : activeGroupLabels.map(l => l.toLowerCase()).join(' & '))
+    : (b.groups.map(g => g.label.toLowerCase()).join(', '));
+
+  const countHeading = forWhat
+    ? `${plural(b.within.length, 'place', 'places')} for ${esc(forWhat)} ${esc(b.label)}`
+    : `Places ${esc(b.label)}`;
+
+  return `<header class="topbar">
+    <div class="topbar__left"><button class="wordmark linkish" style="text-decoration:none" data-go="landing">Urban Sports Club</button></div>
+    <div></div>
+    <div class="topbar__right"><button class="link-plain linkish strong" data-go="${backTarget}">${icon('back', 17)} ${backLabel}</button></div>
+  </header>
+  <main class="content venuepage" id="main">
     <div class="venuepage__intro">
       <div class="search__guide">${ulaAvatar('sm')}<span>Urby &middot; Membership guide</span></div>
-      <h1 class="h-question venuepage__h1" tabindex="-1">${WEEK_ADD_MODE ? (WEEK_ADD_DAY ? `Choose a venue for ${esc(WEEK_ADD_DAY)}` : 'Choose an activity or venue for your week') : heading}</h1>
+      <h1 class="h-question venuepage__h1" tabindex="-1">${searched ? heading : 'Explore places across Berlin'}</h1>
+      <p class="venuepage__subtitle muted">${searched ? (r && r.venues ? `${r.venues.length} results matching your search` : '') : `${VENUES.length} real venues loaded across ${ACTIVITY_GROUPS.length} activity categories`}</p>
     </div>
-    <div class="venuepage__layout ${searched?'venuepage__layout--searched':''}">
-    <div class="venuepage__primary">
-      ${weekPickBar()}
-      ${findBar()}
-      ${searched ? '' : nearbyRow()}
-      ${searched ? `<p class="search__read">${icon('sparkle',17)} <span>${reading}</span></p>` : ''}
-      ${r && r.approximated ? `<p class="xsmall muted" style="margin-top:12px">${icon('info',14)} The pilot has no map service, so distances are measured from ${esc(from.name)} rather than from your door.</p>` : ''}
-      ${r && r.venues && r.venues.length ? `<div class="hits ${r.venues.length===1?'hits--one':'hits--row'}">${r.venues.map(hitCard).join('')}</div>` : ''}
-      ${miss}
-      ${!WEEK_ADD_MODE && r && r.venues && r.venues.length ? `<div class="searchnext">
-      <p class="searchnext__line">${icon('sparkle',18)} <span>Those are the cheapest memberships that open each place. Which one is right for
-        <em>you</em> depends on how often you go and what else you want nearby &mdash; four questions and I&rsquo;ll work it out.</span></p>
-      <button class="btn btn--primary" data-start-fit ${r.area?`data-area-id="${esc(r.area.id)}"`:''}>Find my fit ${icon('arrowRight',18)}</button>
-      <p class="xsmall muted" style="margin-top:12px">Or <button class="linkish strong" data-go="plans">see all four memberships</button>.</p>
-      </div>` : ''}
-    </div>
-    ${searched ? '' : `<aside class="venuepage__aside" aria-label="Personalise your recommendation">${routinePanel()}</aside>`}
-    </div>
-  </main>${stickyTray}${venueSheet()}`;
-}
 
-/* The answers you have given, as chips you can tap to change.
-   A tester went looking for her earlier choices and could not find them: they
-   were in a side panel that only showed them, and in a disclosure at the very
-   bottom of the recommendation. Now they sit at the top of whatever screen you
-   are on, and each one is the edit control for itself. */
+    <div class="venuepage__layout ${searched ? 'venuepage__layout--searched' : ''}">
+      <div class="venuepage__primary">
+        <div class="venue-explorer-card">
+          ${weekPickBar()}
+          
+          <div class="findbar__where">
+            <span class="findbar__wheretext">${icon('pin', 16)}<span>${S.answers.area ? `Showing places ${esc(b.label)}` : `Looks like you&rsquo;re near <b>${esc(b.origins[0].name)}, Berlin</b> &mdash; showing places ${esc(b.label)}`}</span></span>
+            <button class="linkish strong findbar__wherechange" type="button" data-toggle-where aria-expanded="${WHEREPICK}">${WHEREPICK ? 'Close' : 'Change location'}</button>
+          </div>
+          ${WHEREPICK ? `<div class="wherepick">
+            <div class="wherepick__label">Where should we look?</div>
+            <div class="wherepick__grid">${optionsFor(qById('area')).map(o => `<button class="chip-sm ${areaIds(S.answers.area).includes(o.id) ? 'is-current' : ''}" type="button" data-where="${esc(o.id)}">${esc(o.label)}</button>`).join('')}</div>
+            <p class="wherepick__note">${icon('info', 16)} <span>This is one of Urby&rsquo;s four questions, so picking here means she won&rsquo;t ask it again.</span></p>
+          </div>` : ''}
+
+          <form data-form="search" class="venue-search-bar" role="search">
+            <div class="findsearch">
+              <span class="findsearch__icon" aria-hidden="true">${icon('search', 16)}</span>
+              <input type="search" name="q" id="venue-search-q" value="${esc(VENUEQ || (typeof SEARCH !== 'undefined' && SEARCH && SEARCH.q) || '')}"
+                placeholder="Search venues, activities or addresses with Urby..." aria-label="Search venues, activities or addresses with Urby" autocomplete="off" data-venue-input>
+              ${(VENUEQ || (typeof SEARCH !== 'undefined' && SEARCH && SEARCH.q)) ? `<button type="button" class="findsearch__clear" data-venue-clear aria-label="Clear search">${icon('close', 12)}</button>` : ''}
+              <button class="findsearch__btn" type="submit">Search</button>
+            </div>
+            <div class="venue-toolbar-filters">
+              <label class="pillsel pillsel--radius sr-only"><span class="pillsel__icon">${icon('pin',16)}</span>
+                <select data-radius-pick aria-label="How far to look">
+                  ${RADII.map(x=>`<option value="${esc(x.id)}" ${(S.radiusKm||'3')===x.id?'selected':''}>${
+                    x.km?`Within ${x.km} km`:'All of Berlin'}</option>`).join('')}
+                </select>
+              </label>
+              <div class="radius-toggle" role="group" aria-label="Distance radius">
+                <button class="chip-sm ${(!S.radiusKm || S.radiusKm === '3' || S.radiusKm === 'auto') ? 'is-active is-current' : ''}" type="button" data-radius="3">3 km</button>
+                <button class="chip-sm ${S.radiusKm === '8' ? 'is-active is-current' : ''}" type="button" data-radius="8">8 km</button>
+                <button class="chip-sm ${S.radiusKm === 'any' ? 'is-active is-current' : ''}" type="button" data-radius="any">All Berlin</button>
+              </div>
+              <button class="btn-more-filters ${VENUE_MORE_FILTERS_OPEN || activeFiltersCount > 0 ? 'is-active' : ''}" type="button" data-toggle-more-filters aria-expanded="${VENUE_MORE_FILTERS_OPEN}">
+                ${icon('adjust', 15)} <span>More filters${activeFiltersCount > 0 ? ` (${activeFiltersCount})` : ''}</span>
+              </button>
+            </div>
+          </form>
+
+          ${searched ? '' : `
+            <div class="category-pills-wrap" style="margin: 14px 0 16px;">
+              <div class="category-pills" id="category-pills-scroll" role="tablist" aria-label="Filter by sport">
+                <button class="catchip category-pill ${(!activeCats.length && !(S.answers.activities && S.answers.activities.length)) ? 'is-active is-on' : ''}" type="button" data-cat-all data-filter-category="all">
+                  ${icon('grid', 13)} <span>All</span>
+                </button>
+                ${ACTIVITY_GROUPS.map(g => {
+                  const isSelected = activeCats.includes(g.id) || (S.answers.activities && S.answers.activities.includes(g.id));
+                  return `
+                    <button class="catchip category-pill ${isSelected ? 'is-active is-on' : ''}" type="button" data-cat="${esc(g.id)}" data-filter-category="${esc(g.id)}">
+                      ${icon(g.icon, 13)} <span>${esc(g.label)}</span>
+                    </button>
+                  `;
+                }).join('')}
+              </div>
+              <div class="category-pills__fade">
+                <button class="category-pills__mini-btn" type="button" data-scroll-pills="right" aria-label="Scroll sports">
+                  ${icon('chevron', 12)}
+                </button>
+              </div>
+            </div>
+
+            ${moreFiltersDrawer(b.within.length)}
+
+            <section class="placesrow">
+              <div class="placesrow__head">
+                <div class="placesrow__title">
+                  <h2>${countHeading}</h2>
+                  <p>${b.within.length
+                    ? `Nearest first, from the ${VENUES.length} real Berlin venues loaded in this pilot.`
+                    : `None of the ${VENUES.length} venues loaded here match these filters.`}</p>
+                </div>
+                <div class="placesrow__tools">
+                  <div class="venue-view-toggle" role="group" aria-label="View mode">
+                    <button class="view-toggle-btn ${VENUE_VIEW_MODE === 'scroll' ? 'is-active' : ''}" type="button" data-venue-view-mode="scroll" aria-pressed="${VENUE_VIEW_MODE === 'scroll'}" title="2-row gallery scroll view">
+                      ${icon('grid', 14)} <span>Gallery</span>
+                    </button>
+                    <button class="view-toggle-btn ${VENUE_VIEW_MODE === 'grid' ? 'is-active' : ''}" type="button" data-venue-view-mode="grid" aria-pressed="${VENUE_VIEW_MODE === 'grid'}" title="Full grid view">
+                      ${icon('adjust', 14)} <span>Grid</span>
+                    </button>
+                    <button class="view-toggle-btn ${VENUE_VIEW_MODE === 'map' ? 'is-active' : ''}" type="button" data-venue-view-mode="map" aria-pressed="${VENUE_VIEW_MODE === 'map'}" title="Map view">
+                      ${icon('pin', 14)} <span>Map</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              ${venueActiveFilterChips(b)}
+
+              ${VENUE_VIEW_MODE === 'map' ? `
+                ${interactiveBerlinMap(b)}
+              ` : (shown.length ? `
+                ${VENUE_VIEW_MODE === 'grid' ? `
+                  <div class="hits venue-grid--catalog hits--row">
+                    ${shown.map(v => placeCard(v)).join('')}
+                  </div>
+                ` : `
+                  <div class="activity-gallery-wrap venue-gallery-wrap">
+                    <button class="gallery-nav-btn gallery-nav-btn--prev is-disabled" type="button" data-scroll-gallery="prev" aria-label="Scroll left" title="Scroll left">
+                      ${icon('chevron', 14)}
+                    </button>
+                    <div class="activity-gallery venue-carousel-scroll" id="activity-gallery-scroll">
+                      <div class="venue-carousel-track hits hits--row">
+                        ${shown.map(v => placeCard(v)).join('')}
+                      </div>
+                    </div>
+                    <button class="gallery-nav-btn gallery-nav-btn--next ${shown.length <= 4 ? 'is-disabled' : ''}" type="button" data-scroll-gallery="next" aria-label="Scroll right" title="Scroll right">
+                      ${icon('chevron', 14)}
+                    </button>
+                  </div>
+                `}
+              ` : `<div class="notice notice--grey">${icon('info', 19)}<span>${b.list.length
+                    ? `No venues match all selected filters. Try widening your distance or clearing filters to see more places.`
+                    : `Nothing in the pilot&rsquo;s ${VENUES.length} venues matches.`}</span></div>`)}
+            </section>
+          `}
+
+          ${searched ? `
+            <p class="search__read">${icon('sparkle', 17)} <span>${reading}</span></p>
+            ${r && r.approximated ? `<p class="xsmall muted" style="margin-top:12px">${icon('info', 14)} The pilot has no map service, so distances are measured from ${esc(from.name)} rather than from your door.</p>` : ''}
+            ${r && r.venues && r.venues.length ? `<div class="hits ${r.venues.length === 1 ? 'hits--one' : 'hits--row'}">${r.venues.map(hitCard).join('')}</div>` : ''}
+            ${miss}
+            ${!WEEK_ADD_MODE && r && r.venues && r.venues.length ? `<div class="searchnext">
+              <p class="searchnext__line">${icon('sparkle', 18)} <span>Those are the cheapest memberships that open each place. Which one is right for
+                <em>you</em> depends on how often you go and what else you want nearby &mdash; four questions and I&rsquo;ll work it out.</span></p>
+              <button class="btn btn--primary" data-start-fit ${r.area ? `data-area-id="${esc(r.area.id)}"` : ''}>Find my fit ${icon('arrowRight', 18)}</button>
+              <p class="xsmall muted" style="margin-top:12px">Or <button class="linkish strong" data-go="plans">see all four memberships</button>.</p>
+            </div>` : ''}
+          ` : ''}
+        </div>
+      </div>
+
+      ${searched ? '' : `
+        <aside class="venuepage__aside" aria-label="Personalise your recommendation">
+          ${routinePanel()}
+        </aside>
+      `}
+    </div>
+  </main>
+  ${stickyTray}
+  ${venueSheet()}`;
+}
