@@ -684,7 +684,11 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
   padding: 1px 7px; border-radius: 99px; letter-spacing: 0.01em;
 }
 
-.plan-lines-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+.plans-options-card {
+  padding: 16px; background: #fff; border: 1.5px solid var(--border); border-radius: 20px;
+  box-shadow: 0 8px 28px rgba(16, 24, 40, .04);
+}
+.plan-lines-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
 .plan-line {
   background: #fff; border: 1.5px solid var(--border); border-radius: 16px;
   overflow: hidden; cursor: pointer; transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
@@ -749,11 +753,12 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
 }
 .always-sparkle { font-size: 16px; color: #d4a300; flex: 0 0 auto; }
 
-.plans-cta-wrap { display: flex; justify-content: center; margin-bottom: 24px; }
+.plans-cta-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; justify-content: center; padding: 4px 0 2px; }
 .btn-continue-plan {
   height: 50px; padding: 0 36px; border-radius: 9999px; font-size: 16px; font-weight: 700;
-  min-width: 240px; display: inline-flex; align-items: center; justify-content: center;
+  min-width: 300px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
 }
+.plans-venues-link { font-size: 14px; font-weight: 700; }
 
 .plans-sticky-bar { display: none; }
 
@@ -763,6 +768,7 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
 }
 @media (max-width: 680px) {
   main.plans-page { padding: 20px 16px 120px; }
+  .plans-options-card { padding: 10px; border-radius: 16px; }
   .plan-line__header {
     grid-template-columns: 36px 1fr auto; gap: 10px 12px; padding: 14px 14px;
   }
@@ -9639,7 +9645,6 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   }
 }
 
-
 /* ============================================================
    standalone-only additions
    ============================================================ */
@@ -9788,7 +9793,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build e2f5946 + local edits</span>
+  <span class="demo-banner__build">build d91caf8 + local edits</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -14072,7 +14077,7 @@ function plansScreen() {
       <div class="plans-sticky-bar__sub">${S.commitmentId === 'annual' ? '12-month commitment' : S.commitmentId === 'biennial' ? '24-month commitment' : 'Monthly &middot; Cancel anytime'}</div>
     </div>
     <button class="btn btn--primary plans-sticky-bar__cta" type="button" data-go="details">
-      Continue with ${esc(selectedPlan.name)} ${icon('arrowRight', 16)}
+      Choose ${esc(selectedPlan.name)} and continue ${icon('arrowRight', 16)}
     </button>
   </div>`;
 
@@ -14090,18 +14095,23 @@ function plansScreen() {
           return `<button class="chip-sm ${isCur ? 'is-current' : ''}" type="button" data-commit="${esc(c.id)}"><span>${esc(termLabel)}</span>${savingBadge}</button>`;
         }).join('')}</div>
 
-        <div class="plan-lines-group">${planLines}</div>
+        <section class="plans-options-card" aria-label="Membership options">
+          <div class="plan-lines-group">${planLines}</div>
 
-        <div class="plans-always-banner">
-          <span class="always-sparkle">✦</span>
-          <span><strong>Always included:</strong> on-site activities &middot; online classes &middot; video on demand</span>
-        </div>
+          <div class="plans-always-banner">
+            <span class="always-sparkle">✦</span>
+            <span><strong>Always included:</strong> on-site activities &middot; online classes &middot; video on demand</span>
+          </div>
 
-        <div class="plans-cta-wrap">
-          <button class="btn btn--primary btn-continue-plan" type="button" data-go="details">
-            Continue with ${esc(selectedPlan.name)}
-          </button>
-        </div>
+          <div class="plans-cta-wrap">
+            <button class="btn btn--primary btn-continue-plan" type="button" data-go="details">
+              Choose ${esc(selectedPlan.name)} and continue ${icon('arrowRight', 16)}
+            </button>
+            <button class="linkish plans-venues-link" type="button" data-go="catalog">
+              Explore venues before choosing
+            </button>
+          </div>
+        </section>
       </div>
       <aside class="plans-layout__sidebar">
         ${routinePanel()}

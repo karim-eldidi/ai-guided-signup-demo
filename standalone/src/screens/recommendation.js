@@ -1007,7 +1007,7 @@ function plansScreen() {
       <div class="plans-sticky-bar__sub">${S.commitmentId === 'annual' ? '12-month commitment' : S.commitmentId === 'biennial' ? '24-month commitment' : 'Monthly &middot; Cancel anytime'}</div>
     </div>
     <button class="btn btn--primary plans-sticky-bar__cta" type="button" data-go="details">
-      Continue with ${esc(selectedPlan.name)} ${icon('arrowRight', 16)}
+      Choose ${esc(selectedPlan.name)} and continue ${icon('arrowRight', 16)}
     </button>
   </div>`;
 
@@ -1025,18 +1025,23 @@ function plansScreen() {
           return `<button class="chip-sm ${isCur ? 'is-current' : ''}" type="button" data-commit="${esc(c.id)}"><span>${esc(termLabel)}</span>${savingBadge}</button>`;
         }).join('')}</div>
 
-        <div class="plan-lines-group">${planLines}</div>
+        <section class="plans-options-card" aria-label="Membership options">
+          <div class="plan-lines-group">${planLines}</div>
 
-        <div class="plans-always-banner">
-          <span class="always-sparkle">✦</span>
-          <span><strong>Always included:</strong> on-site activities &middot; online classes &middot; video on demand</span>
-        </div>
+          <div class="plans-always-banner">
+            <span class="always-sparkle">✦</span>
+            <span><strong>Always included:</strong> on-site activities &middot; online classes &middot; video on demand</span>
+          </div>
 
-        <div class="plans-cta-wrap">
-          <button class="btn btn--primary btn-continue-plan" type="button" data-go="details">
-            Continue with ${esc(selectedPlan.name)}
-          </button>
-        </div>
+          <div class="plans-cta-wrap">
+            <button class="btn btn--primary btn-continue-plan" type="button" data-go="details">
+              Choose ${esc(selectedPlan.name)} and continue ${icon('arrowRight', 16)}
+            </button>
+            <button class="linkish plans-venues-link" type="button" data-go="catalog">
+              Explore venues before choosing
+            </button>
+          </div>
+        </section>
       </div>
       <aside class="plans-layout__sidebar">
         ${routinePanel()}
