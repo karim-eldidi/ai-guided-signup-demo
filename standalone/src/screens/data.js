@@ -1,24 +1,3 @@
-    <div class="btn-row"><button class="btn btn--primary" data-go="landing">Start the journey</button></div></div></div>`;
-  return `<div class="email-page">
-    <div style="max-width:620px;margin:0 auto 18px"><p class="small muted" style="margin:0 0 6px">Preview of the follow-up email · nothing is actually sent</p>
-      <p class="xsmall muted" style="margin:0">Marketing consent: <strong>${S.marketing?'given':'not given'}</strong>. ${S.marketing?'Offers and inspiration may be included.':'Only the transactional message would be sent — no offers.'}</p></div>
-    <div class="email-card">
-      <div class="email-hero"><div class="email-hero__photo"><img src="${IMG['/images/email-header.jpg']}" alt=""></div>
-        <div class="email-hero__inner"><span class="wordmark">Urban Sports Club</span><h1>Your next move is waiting</h1></div></div>
-      <div class="email-body">
-        <p>Hi ${esc(cap(first))},</p>
-        <p>${goal&&goal!=='Not sure yet'?`Thanks for telling us you want to ${esc(goal.toLowerCase())}.`:'Thanks for starting to look around.'} Urby has saved your answers${area?` and found options ${area==='Anywhere in Berlin'?'across Berlin':'close to '+esc(area)}`:''}.</p>
-        ${acts&&acts!=='Not sure yet'?`<p>You said you&rsquo;d do <strong>${esc(acts.toLowerCase())}</strong> — that is exactly what we counted places for.</p>`:''}
-        <p>${S.paid?'Your membership is set up — this is what the reminder would have looked like if you had left before finishing.':'Pick up where you left off. There&rsquo;s just a step or two left.'}</p>
-        <div class="email-facts"><h3>Your fit so far</h3>
-          ${rows.map(r=>`<div class="email-facts__row">${icon(r.i,20)}<span><strong>${esc(r.l)}</strong> · ${esc(r.v)}</span></div>`).join('')}</div>
-        <button class="btn btn--primary btn--block" data-go="${S.paid?'confirmation':'recommendation'}">Continue where you left off</button>
-        <p class="small muted" style="margin-top:16px">Your answers are saved. You&rsquo;ll return exactly where you left off.</p></div>
-      <div class="email-footer">Urban Sports Club · Privacy · Help
-        ${S.marketing?'<div style="margin-top:8px">You receive this because you asked us to email you.</div>':''}</div></div>
-    <div style="max-width:620px;margin:26px auto 0"><button class="btn btn--secondary btn--block" data-go="data">Journey data</button></div></div>`;
-}
-
 function dataScreen() {
   const order=['landing','fit','recommendation','save','details','payment','converted'];
   const reached = S.paid?'converted':S.lastStep;
