@@ -15,14 +15,6 @@ const KEYWORDS = {
   frequency:{ once:['once','1x','one time','one session','weekly'], twice:['twice','2x','two times','two sessions','couple'],
               often:['three','3x','four','4x','few times','several'], daily:['five','5x','six','seven','daily','every day','each day'] }
 };
-const POSTCODES = { '12043':'neukoelln','12045':'neukoelln','12047':'neukoelln','12049':'neukoelln','12053':'neukoelln',
-  '10997':'kreuzberg','10999':'kreuzberg','10961':'kreuzberg','10965':'kreuzberg','10967':'kreuzberg',
-  '10117':'mitte','10178':'mitte','10179':'mitte','10115':'mitte','10119':'mitte',
-  '10435':'prenzlauer-berg','10437':'prenzlauer-berg','10439':'prenzlauer-berg','10405':'prenzlauer-berg',
-  '10243':'friedrichshain','10245':'friedrichshain','10247':'friedrichshain','10249':'friedrichshain',
-  '10707':'charlottenburg','10711':'charlottenburg','10719':'charlottenburg','10585':'charlottenburg',
-  '10777':'schoeneberg','10779':'schoeneberg','10827':'schoeneberg','10829':'schoeneberg',
-  '13347':'wedding','13353':'wedding','13355':'wedding','13357':'wedding' };
 function interpret(qid, text) {
   const lower=(text||'').toLowerCase();
   /* Multi-select too, now: "I live in Kreuzberg but work in Mitte" is two answers,

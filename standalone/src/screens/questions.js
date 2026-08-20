@@ -92,7 +92,52 @@ function fitScreen() {
         : `<form data-form="answer" data-qid="${esc(q.id)}">
         <h1 class="h-question" tabindex="-1">${esc(q.prompt)}</h1>
         ${q.id === 'area' ? cityChip() : (q.hint ? `<p class="qhint">${q.hint}</p>` : '')}
-        <div class="options ${opts.length > 6 ? 'options--compact' : opts.length > 4 ? 'options--chips' : 'options--tiles'}${q.id === 'frequency' ? ' options--stack-mobile' : ''}"${q.maxPick ? ` data-maxpick="${q.maxPick}"` : ''}>${cards}</div>
+        ${q.id === 'area' ? `
+          <div class="area-search-wrap" data-area-search-wrap>
+            <div class="area-search-field">
+              <span class="area-search-icon" aria-hidden="true">${icon('search', 16)}</span>
+              <input type="text"
+                     class="area-search-input"
+                     id="area-search-input"
+                     placeholder="Search neighbourhood, postcode (e.g. 10115), or address..."
+                     aria-label="Search neighbourhood, postcode, or address"
+                     autocomplete="off"
+                     data-area-search-input>
+              <button type="button" class="area-search-clear" data-area-search-clear aria-label="Clear location search" hidden>${icon('close', 12)}</button>
+            </div>
+            <div class="area-suggestions" id="area-suggestions" role="listbox" aria-label="Location suggestions" hidden></div>
+          </div>
+
+          <div class="area-section">
+            <div class="area-section__header">
+              <span class="area-section__title">Popular neighbourhoods</span>
+              <span class="area-section__hint">Tap to select</span>
+            </div>
+            <div class="options options--compact area-shortcuts-grid">
+              ${AREAS.map(a => {
+                const isSel = picked.includes(a.id);
+                const venueCount = VENUES.filter(v => v.area === a.id).length;
+                return `<label class="option-card ${isSel ? 'is-selected' : ''}" data-card>
+                  <input class="option-card__input" type="${q.multi ? 'checkbox' : 'radio'}" name="choice" value="${esc(a.id)}" ${isSel ? 'checked' : ''}>
+                  <span class="option-card__icon">${icon('pin', 20)}<span class="option-card__check">${icon('checkThin', 17)}</span></span>
+                  <span class="option-card__label">${esc(a.name)}<span class="option-card__sub">${plural(venueCount, 'venue', 'venues')} · ~3 km</span></span>
+                </label>`;
+              }).join('')}
+            </div>
+          </div>
+
+          <div class="area-section area-section--anywhere">
+            <div class="options options--anywhere">
+              <label class="option-card option-card--anywhere ${picked.includes('anywhere') ? 'is-selected' : ''}" data-card>
+                <input class="option-card__input" type="${q.multi ? 'checkbox' : 'radio'}" name="choice" value="anywhere" ${picked.includes('anywhere') ? 'checked' : ''}>
+                <span class="option-card__icon">${icon('city', 20)}<span class="option-card__check">${icon('checkThin', 17)}</span></span>
+                <span class="option-card__label">Anywhere in Berlin<span class="option-card__sub">All ${VENUES.length} venues across the city · No radius limit</span></span>
+              </label>
+            </div>
+          </div>
+        ` : `
+          <div class="options ${opts.length > 6 ? 'options--compact' : opts.length > 4 ? 'options--chips' : 'options--tiles'}${q.id === 'frequency' ? ' options--stack-mobile' : ''}"${q.maxPick ? ` data-maxpick="${q.maxPick}"` : ''}>${cards}</div>
+        `}
         ${NOCHOICE ? `<p class="field-error" role="alert">${q.multi ? 'Pick at least one, or tell Urby in your own words.' : 'Pick one of the options, or tell Urby in your own words.'}</p>` : ''}
         
         <div class="btn-row desktop-cta">

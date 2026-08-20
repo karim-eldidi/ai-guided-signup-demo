@@ -789,7 +789,28 @@ function searchScreen() {
             </div>
             ${WHEREPICK ? `<div class="wherepick">
               <div class="wherepick__label">Where should we look?</div>
-              <div class="wherepick__grid">${optionsFor(qById('area')).map(o => `<button class="chip-sm ${areaIds(S.answers.area).includes(o.id) ? 'is-current' : ''}" type="button" data-where="${esc(o.id)}">${esc(o.label)}</button>`).join('')}</div>
+              <div class="area-search-wrap wherepick-search-wrap" data-where-search-wrap>
+                <div class="area-search-field">
+                  <span class="area-search-icon" aria-hidden="true">${icon('search', 15)}</span>
+                  <input type="text"
+                         class="area-search-input"
+                         placeholder="Search neighbourhood, postcode, or address..."
+                         aria-label="Search location in Berlin"
+                         autocomplete="off"
+                         data-where-search-input>
+                  <button type="button" class="area-search-clear" data-where-search-clear aria-label="Clear location search" hidden>${icon('close', 12)}</button>
+                </div>
+                <div class="area-suggestions wherepick-suggestions" data-where-suggestions role="listbox" hidden></div>
+              </div>
+              <div class="wherepick__shortcuts">
+                <span class="wherepick__subheading">Shortcuts</span>
+                <div class="wherepick__grid">${AREAS.map(o => `<button class="chip-sm ${areaIds(S.answers.area).includes(o.id) ? 'is-current' : ''}" type="button" data-where="${esc(o.id)}">${esc(o.name)}</button>`).join('')}</div>
+              </div>
+              <div class="wherepick__anywhere-wrap">
+                <button class="chip-sm chip-sm--anywhere ${areaIds(S.answers.area).includes('anywhere') ? 'is-current' : ''}" type="button" data-where="anywhere">
+                  ${icon('city', 14)} Anywhere in Berlin
+                </button>
+              </div>
               <p class="wherepick__note">${icon('info', 16)} <span>This is one of Urby&rsquo;s four questions, so picking here means she won&rsquo;t ask it again.</span></p>
             </div>` : ''}
 
@@ -847,26 +868,21 @@ function searchScreen() {
 
           ${searched ? '' : `
           <section class="placesrow">
-            <div class="placesrow__head">
-              <div class="placesrow__title">
-                <h2>${countHeading}</h2>
-                <p>${b.within.length
-                  ? `Nearest first, from the ${VENUES.length} real Berlin venues loaded in this pilot.`
-                  : `None of the ${VENUES.length} venues loaded here match these filters.`}</p>
-              </div>
-              <div class="placesrow__tools">
+            <div class="venue-results-header placesrow__title">
+              <h2 class="venue-results-header__title" id="results-count">${searched ? 'Search results' : countHeading}</h2>
+              ${searched ? '' : `
                 <div class="venue-view-toggle" role="group" aria-label="View mode">
-                  <button class="view-toggle-btn view-toggle-btn--gallery ${VENUE_VIEW_MODE === 'scroll' ? 'is-active' : ''}" type="button" data-venue-view-mode="scroll" aria-pressed="${VENUE_VIEW_MODE === 'scroll'}" title="2-row gallery scroll view">
+                  <button class="venue-view-toggle__btn ${VENUE_VIEW_MODE === 'scroll' ? 'is-active' : ''}" type="button" data-venue-view-mode="scroll" aria-label="Carousel gallery view" title="Carousel view">
                     ${icon('grid', 14)} <span>Gallery</span>
                   </button>
-                  <button class="view-toggle-btn view-toggle-btn--grid ${VENUE_VIEW_MODE === 'grid' ? 'is-active' : ''}" type="button" data-venue-view-mode="grid" aria-pressed="${VENUE_VIEW_MODE === 'grid'}" title="Full grid view">
-                    ${icon('adjust', 14)} <span>Grid</span>
+                  <button class="venue-view-toggle__btn ${VENUE_VIEW_MODE === 'grid' ? 'is-active' : ''}" type="button" data-venue-view-mode="grid" aria-label="Grid layout view" title="Grid view">
+                    ${icon('checkThin', 14)} <span>Grid</span>
                   </button>
-                  <button class="view-toggle-btn view-toggle-btn--map ${VENUE_VIEW_MODE === 'map' ? 'is-active' : ''}" type="button" data-venue-view-mode="map" aria-pressed="${VENUE_VIEW_MODE === 'map'}" title="Map view">
-                    ${icon('pin', 14)} <span>Map</span>
+                  <button class="venue-view-toggle__btn ${VENUE_VIEW_MODE === 'map' ? 'is-active' : ''}" type="button" data-venue-view-mode="map" aria-label="Interactive map view" title="Map view">
+                    ${icon('city', 14)} <span>Map</span>
                   </button>
                 </div>
-              </div>
+              `}
             </div>
             ${venueActiveFilterChips(b)}
 
@@ -874,22 +890,22 @@ function searchScreen() {
               ${interactiveBerlinMap(b)}
             ` : (shown.length ? `
               ${VENUE_VIEW_MODE === 'grid' ? `
-                <div class="hits venue-grid--catalog hits--row">
+                <div class="hits venue-grid--catalog ${shown.length === 1 ? 'hits--one' : shown.length === 2 ? 'hits--two' : 'hits--row'}">
                   ${shown.map(v => placeCard(v)).join('')}
                 </div>
               ` : `
                 <div class="activity-gallery-wrap venue-gallery-wrap">
-                  <button class="gallery-nav-btn gallery-nav-btn--prev is-disabled" type="button" data-scroll-gallery="prev" aria-label="Scroll left" title="Scroll left">
+                  ${shown.length > 2 ? `<button class="gallery-nav-btn gallery-nav-btn--prev is-disabled" type="button" data-scroll-gallery="prev" aria-label="Scroll left" title="Scroll left">
                     ${icon('chevron', 14)}
-                  </button>
-                  <div class="activity-gallery venue-carousel-scroll" id="activity-gallery-scroll">
-                    <div class="venue-carousel-track hits hits--row">
+                  </button>` : ''}
+                  <div class="activity-gallery venue-carousel-scroll ${shown.length <= 2 ? 'venue-carousel-scroll--few' : ''}" id="activity-gallery-scroll">
+                    <div class="venue-carousel-track hits hits--row ${shown.length <= 2 ? 'venue-carousel-track--few' : ''}">
                       ${shown.map(v => placeCard(v)).join('')}
                     </div>
                   </div>
-                  <button class="gallery-nav-btn gallery-nav-btn--next ${shown.length <= 4 ? 'is-disabled' : ''}" type="button" data-scroll-gallery="next" aria-label="Scroll right" title="Scroll right">
+                  ${shown.length > 2 ? `<button class="gallery-nav-btn gallery-nav-btn--next ${shown.length <= 4 ? 'is-disabled' : ''}" type="button" data-scroll-gallery="next" aria-label="Scroll right" title="Scroll right">
                     ${icon('chevron', 14)}
-                  </button>
+                  </button>` : ''}
                 </div>
               `}
             ` : `<div class="notice notice--grey">${icon('info', 19)}<span>${b.list.length
@@ -901,7 +917,7 @@ function searchScreen() {
           ${searched ? `
             <p class="search__read">${icon('sparkle', 17)} <span>${reading}</span></p>
             ${r && r.approximated ? `<p class="xsmall muted" style="margin-top:12px">${icon('info', 14)} The pilot has no map service, so distances are measured from ${esc(from.name)} rather than from your door.</p>` : ''}
-            ${r && r.venues && r.venues.length ? `<div class="hits ${r.venues.length === 1 ? 'hits--one' : 'hits--row'}">${r.venues.map(hitCard).join('')}</div>` : ''}
+            ${r && r.venues && r.venues.length ? `<div class="hits ${r.venues.length === 1 ? 'hits--one' : r.venues.length === 2 ? 'hits--two' : 'hits--row'}">${r.venues.map(hitCard).join('')}</div>` : ''}
             ${miss}
             ${!WEEK_ADD_MODE && r && r.venues && r.venues.length ? `<div class="searchnext">
               <p class="searchnext__line">${icon('sparkle', 18)} <span>Those are the cheapest memberships that open each place. Which one is right for
