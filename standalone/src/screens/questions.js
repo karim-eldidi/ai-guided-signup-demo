@@ -16,29 +16,32 @@ function answerChips(opts = {}) {
 
 function craftingScreen() {
   const city = S.answers.city || S.detectedCity || 'Berlin';
+  const area = answerLabel('area', S.answers.area) || city;
+  const activities = answerLabel('activities', S.answers.activities) || 'your activities';
+  const frequency = answerLabel('frequency', S.answers.frequency) || 'your preferred frequency';
   return `${topbar(1, { stepper: false })}
   <div class="one-col one-col--fit">
     <main class="one-col__main crafting-main" id="main">
-      <div class="crafting-card">
-        <div class="crafting-avatar-pulse">
+      <div class="crafting-card" role="status" aria-live="polite" aria-atomic="true" aria-busy="true">
+        <div class="crafting-avatar-pulse" aria-hidden="true">
           ${ulaAvatar('lg')}
         </div>
-        <h1 class="h-question crafting-title" tabindex="-1">Finding your perfect fit...</h1>
-        <p class="crafting-sub">Urby is tailoring your membership and routine.</p>
-        <div class="crafting-steps">
-          <div class="crafting-step crafting-step--1">
+        <h1 class="h-question crafting-title" tabindex="-1">Putting your routine together&hellip;</h1>
+        <p class="crafting-sub">Urby is using your answers to build a recommendation you can check.</p>
+        <ol class="crafting-steps">
+          <li class="crafting-step crafting-step--1">
             <span class="crafting-step__check">${icon('checkThin', 14)}</span>
-            <span>Scanning venues across ${esc(city)}</span>
-          </div>
-          <div class="crafting-step crafting-step--2">
+            <span>Checking ${esc(activities)} near ${esc(area)}</span>
+          </li>
+          <li class="crafting-step crafting-step--2">
             <span class="crafting-step__check">${icon('checkThin', 14)}</span>
-            <span>Customising your weekly routine</span>
-          </div>
-          <div class="crafting-step crafting-step--3">
+            <span>Building a routine for ${esc(frequency).toLowerCase()}</span>
+          </li>
+          <li class="crafting-step crafting-step--3">
             <span class="crafting-step__check">${icon('checkThin', 14)}</span>
-            <span>Matching the best plan for you</span>
-          </div>
-        </div>
+            <span>Checking the published plan allowances</span>
+          </li>
+        </ol>
       </div>
     </main>
   </div>`;

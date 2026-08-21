@@ -189,9 +189,9 @@ document.addEventListener('change', e => {
   }
   /* Deferring the start changes nothing else on the page — no plan, no week, no coverage —
      so it returns early rather than falling through the rebuild below. */
-  const startSel = e.target.closest('select[data-start-date]');
-  if (startSel) {
-    S.startDate = startSel.value;
+  const startInput = e.target.closest('input[data-start-date], select[data-start-date]');
+  if (startInput) {
+    S.startDate = startInput.value;
     log('start_date_changed', { startDate: S.startDate });
     renderInPlace();
     return;

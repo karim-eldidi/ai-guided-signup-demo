@@ -7902,50 +7902,27 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   margin-top: 2px;
   color: var(--ink);
 }
-.pay-actions {
-  display: flex;
-  flex-direction: column;
+.pay-left-actions {
+  margin-top: 16px;
+}
+.pay-left-actions .pay-btn-back {
+  display: inline-flex;
+  align-items: center;
   gap: 8px;
-  margin-top: 8px;
-}
-.pay-actions__row {
-  display: flex;
-  align-items: stretch;
-  gap: 12px;
-}
-.pay-btn-back {
-  flex: 0 0 auto;
-  white-space: nowrap;
-  padding: 0 18px;
-  height: 52px;
-  font-size: 15px;
+  height: 48px;
+  padding: 0 20px;
+  font-size: 14.5px;
   font-weight: 600;
   border-radius: var(--radius-lg);
   background: #ffffff;
   border: 1px solid var(--border);
   color: var(--ink);
   cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
   transition: all 0.15s ease;
 }
-.pay-btn-back:hover {
+.pay-left-actions .pay-btn-back:hover {
   background: #f8fafc;
   border-color: #94a3b8;
-}
-.pay-btn-confirm {
-  flex: 1 1 auto;
-  height: 52px;
-  font-size: 15.5px;
-  font-weight: 700;
-  border-radius: var(--radius-lg);
-}
-.pay-actions__footer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 4px;
 }
 
 /* Sidebar Order Summary */
@@ -8022,9 +7999,6 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   align-items: baseline;
   font-size: 13.5px;
 }
-.pay-detail-row--editable {
-  align-items: flex-start;
-}
 .pay-detail-label {
   color: var(--navy-soft);
 }
@@ -8032,37 +8006,123 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   color: var(--ink);
   text-align: right;
 }
-.pay-detail-val--select {
+
+/* Start Date Card Selector */
+.pay-startdate-block {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+.pay-startdate-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.pay-startdate-icon {
+  color: var(--ink);
+  margin-top: 1px;
+  flex-shrink: 0;
+}
+.pay-startdate-headcopy {
+  min-width: 0;
+}
+.pay-startdate-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -.01em;
+}
+.pay-startdate-sub {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--navy-soft);
+}
+.pay-startdate-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+}
+.date-card {
+  position: relative;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 10px 6px 10px;
+  background: #ffffff;
+  cursor: pointer;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
+  align-items: flex-start;
+  transition: border-color .15s ease, background-color .15s ease, box-shadow .15s ease;
+  user-select: none;
+  text-align: center;
 }
-.pay-select {
-  font: inherit;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--ink);
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 4px 10px;
-  cursor: pointer;
-  text-align: right;
-  transition: border-color .15s ease, box-shadow .15s ease;
+.date-card:hover {
+  border-color: #94a3b8;
+  background: #fafaf9;
 }
-.pay-select:hover {
+.date-card.is-selected {
+  border: 2px solid var(--ink);
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, .06);
+  padding: 9.5px 5.5px 9.5px;
+}
+.date-card__radio {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1.5px solid #cbd5e1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 6px;
+}
+.date-card.is-selected .date-card__radio {
   border-color: var(--ink);
+  background: var(--ink);
 }
-.pay-select:focus-visible {
-  outline: 2px solid var(--ink);
-  outline-offset: 1px;
+.date-card__radio-dot {
+  display: none;
 }
-.pay-detail-subtext {
+.date-card.is-selected .date-card__radio-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #ffffff;
+  display: block;
+}
+.date-card__body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+.date-card__date {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.25;
+  white-space: nowrap;
+}
+.date-card__year {
   font-size: 11.5px;
+  font-weight: 500;
   color: var(--navy-soft);
-  line-height: 1.3;
+  margin-top: 2px;
 }
+.date-card__badge {
+  display: inline-block;
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1.5px 6px;
+  border-radius: 9999px;
+  margin-top: 5px;
+  letter-spacing: 0.01em;
+}
+
 .pay-receipt {
   display: flex;
   flex-direction: column;
@@ -8105,6 +8165,25 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   line-height: 1.4;
 }
 
+/* Sidebar Actions */
+.pay-sidebar-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 14px;
+}
+.pay-sidebar-actions .pay-btn-confirm {
+  width: 100%;
+  height: 52px;
+  font-size: 15.5px;
+  font-weight: 700;
+  border-radius: var(--radius-lg);
+}
+.pay-sidebar-save {
+  text-align: center;
+  margin-top: 4px;
+}
+
 @media (max-width: 900px) {
   .pay-layout {
     grid-template-columns: 1fr;
@@ -8114,13 +8193,8 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
     position: static;
     order: -1;
   }
-  .pay-actions .desktop-cta {
-    display: none;
-  }
-  .pay-actions__secondary {
-    justify-content: center;
-    gap: 16px;
-    margin-top: 8px;
+  .desktop-cta {
+    display: none !important;
   }
   .pay-page {
     padding: 16px 14px calc(120px + env(safe-area-inset-bottom)) !important;
@@ -10811,7 +10885,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 1229d09 + local edits</span>
+  <span class="demo-banner__build">build 21dd901 + local edits</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -14010,8 +14084,8 @@ function searchScreen() {
           ${searched ? '' : `
           <section class="placesrow">
             <div class="venue-results-bar">
-              <div class="venue-results-bar__left">
-                <h2 class="venue-results-bar__title" id="results-count">Places for you</h2>
+              <div class="venue-results-bar__left placesrow__title">
+                <h2 class="venue-results-bar__title" id="results-count">Places ${b.label ? `near ${esc(b.label)}` : 'near you'}${b.groups.length === 1 ? ` for ${esc(b.groups[0].label).toLowerCase()}` : ''}</h2>
                 <span class="venue-results-bar__count">${searched ? 'Search results' : `${plural(b.within.length, 'place', 'places')} found${b.label ? ` &middot; ${esc(b.label)}` : ''}`}</span>
               </div>
               ${searched ? '' : `
@@ -14903,7 +14977,7 @@ function recommendationScreen() {
      extra spa week and they are short — so "at the cap" is the honest moment to mention the
      bigger allowance. `plusWanted > 0` matters: without it a plan that publishes no Plus
      allowance at all (Classic, 0) would satisfy 0 >= 0 and upsell on nothing. */
-  const plusShort = Boolean(topPlan.plusCheckIns > plan.plusCheckIns
+  const plusShort = Boolean(topPlan.plusCheckIns > plan.plusCheckIns && plusWanted > 0 && plusWanted >= plan.plusCheckIns);
   /* Always display all 4 plans in the Compare memberships card */
   const gridPlans = PLANS.slice().sort((x, y) => x.rank - y.rank);
   const COUNTWORDS = { 1:'one', 2:'two', 3:'three', 4:'four', 5:'five', 6:'six' };
@@ -15643,6 +15717,23 @@ function orderSummaryDrawer(aside) {
   </div>`;
 }
 
+function parseDateCard(iso) {
+  if (!iso) return { dayMonth: '—', year: '' };
+  if (typeof iso === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(iso)) {
+    const [y, m, d] = iso.split('-').map(Number);
+    const dt = new Date(y, m - 1, d);
+    const dayMonth = dt.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
+    const year = String(dt.getFullYear());
+    return { dayMonth, year };
+  }
+  const d = new Date(iso);
+  if (isNaN(d)) return { dayMonth: String(iso), year: '' };
+  return {
+    dayMonth: d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' }),
+    year: String(d.getFullYear())
+  };
+}
+
 function paymentScreen() {
   const plan = currentPlan(), commitment = commitmentById(S.commitmentId), price = priceFor(plan,S.commitmentId);
   const each = perSession(price, S.answers.frequency, plan);
@@ -15650,7 +15741,9 @@ function paymentScreen() {
   const method = FIELDS.method||'card';
   const match = matchVenues(A());
   const where = whereName(match);
-  const memberName = ((S.details.firstName||'')+' '+(S.details.lastName||'')).trim()||'New Member';
+  const memberName = ((S.details.firstName||'')+' '+(S.details.lastName||'')).trim()||'Karim Eldidi';
+  const memberEmail = S.details.email || S.email || 'team.carexco@gmail.com';
+  const currentStart = S.startDate || startDateChoices()[0];
 
   return `${topbar(3)}<main class="content pay-page" id="main">
     <div class="pay-head">
@@ -15659,9 +15752,9 @@ function paymentScreen() {
     </div>
 
     <div class="pay-layout">
-      <!-- LEFT COLUMN: Main Form & Actions -->
+      <!-- LEFT COLUMN: Payment Options & Terms -->
       <div class="pay-main">
-        <form data-form="payment">
+        <form id="pay-form" data-form="payment">
           <!-- 1. Payment Method Section -->
           <div class="pay-section-card">
             <div class="pay-card-head">
@@ -15687,7 +15780,7 @@ function paymentScreen() {
                 <span class="option-card__label"><strong>Apple Pay &amp; Google Pay</strong><span class="xsmall muted" style="display:block;font-weight:400;margin-top:2px">1-tap device checkout</span></span>
               </label>
             </div>
-            <div class="pay-mock-notice">${icon('lock',14)} <span>Powered by Adyen. In production, this is where the secure Adyen drop-in is embedded. Payment is simulated in this pilot.</span></div>
+            <div class="pay-mock-notice notice--simulated">${icon('lock',14)} <span>Powered by Adyen. In production, this is where the secure Adyen drop-in is embedded. Payment is simulated in this pilot.</span></div>
           </div>
 
           <!-- 2. Terms stay available without taking over the payment decision. -->
@@ -15721,21 +15814,18 @@ function paymentScreen() {
             </ul></div>
           </details>
 
-          <!-- 3. Primary & Secondary Action Row -->
-          <div class="pay-actions">
-            <div class="pay-actions__row desktop-cta">
-              <button class="btn btn--secondary pay-btn-back" type="button" data-go="details">${icon('back',16)} Back to details</button>
-              <button class="btn btn--primary pay-btn-confirm" type="submit">
-                Confirm and start membership &mdash; ${price} &euro; / mo
-              </button>
-            </div>
-            <div class="pay-actions__footer">
-              <button class="linkish xsmall muted" type="button" data-go="save">Save progress for later</button>
-            </div>
+          <!-- Back button on bottom of payment options column -->
+          <div class="pay-left-actions desktop-cta">
+            <button class="btn btn--secondary pay-btn-back" type="button" data-go="details">
+              ${icon('back',16)} Back to details
+            </button>
           </div>
 
           <!-- Mobile Sticky Paybar -->
           <div class="paybar">
+            <button class="btn btn--secondary paybar__back-btn" type="button" data-go="details" aria-label="Back to details">
+              ${icon('back',16)}
+            </button>
             <div class="paybar__info">
               <b>${esc(plan.name)}</b>
               <span>${price} &euro; / month${each?` &middot; &approx; ${each} &euro; / session`:''}</span>
@@ -15760,7 +15850,7 @@ function paymentScreen() {
 
           <div class="pay-summary-divider"></div>
 
-          <!-- Highlights of what's included -->
+          <!-- Member Details -->
           <div class="pay-summary-details">
             <div class="pay-detail-row">
               <span class="pay-detail-label">Member</span>
@@ -15768,17 +15858,42 @@ function paymentScreen() {
             </div>
             <div class="pay-detail-row">
               <span class="pay-detail-label">Email</span>
-              <span class="pay-detail-val">${esc(S.email || '—')}</span>
+              <span class="pay-detail-val">${esc(memberEmail)}</span>
             </div>
-            <div class="pay-detail-row pay-detail-row--editable">
-              <span class="pay-detail-label"><label for="start-date">Start date</label></span>
-              <div class="pay-detail-val pay-detail-val--select">
-                <select id="start-date" class="pay-select" data-start-date>
-                  ${startDateChoices().map(d => `<option value="${esc(d)}"${d === S.startDate ? ' selected' : ''}>${esc(fmtDate(d))}</option>`).join('')}
-                </select>
-                <span class="pay-detail-subtext">Memberships start on the 1st</span>
+          </div>
+
+          <!-- Start date card selector -->
+          <div class="pay-startdate-block">
+            <div class="pay-startdate-header">
+              <span class="pay-startdate-icon">${icon('calendar', 18)}</span>
+              <div class="pay-startdate-headcopy">
+                <h4 class="pay-startdate-title">When should your membership start?</h4>
+                <p class="pay-startdate-sub">Memberships start on the 1st of the month.</p>
               </div>
             </div>
+            <div class="pay-startdate-grid">
+              ${startDateChoices().map((d, idx) => {
+                const isSel = d === currentStart;
+                const { dayMonth, year } = parseDateCard(d);
+                return `
+                  <label class="date-card ${isSel ? 'is-selected' : ''}" data-start-date-card>
+                    <input type="radio" name="start_date_choice" value="${esc(d)}" class="sr-only" ${isSel ? 'checked' : ''} data-start-date>
+                    <div class="date-card__radio">
+                      <span class="date-card__radio-dot"></span>
+                    </div>
+                    <div class="date-card__body">
+                      <span class="date-card__date">${esc(dayMonth)}</span>
+                      <span class="date-card__year">${esc(year)}</span>
+                      ${idx === 0 ? `<span class="date-card__badge">Earliest</span>` : ''}
+                    </div>
+                  </label>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <!-- Highlights of what's included -->
+          <div class="pay-summary-details" style="margin-top:14px">
             <div class="pay-detail-row">
               <span class="pay-detail-label">Monthly visits</span>
               <span class="pay-detail-val font-semibold">${monthlyAllowance(plan)} visits / month</span>
@@ -15806,9 +15921,19 @@ function paymentScreen() {
               <span>Due today</span>
               <span>${price}.00 &euro;</span>
             </div>
-          <div class="pay-receipt-subtext">
+            <div class="pay-receipt-subtext">
               Billed monthly. ${esc(renewal)}
             </div>
+          </div>
+        </div>
+
+        <!-- Primary CTA and Save Progress under Summary -->
+        <div class="pay-sidebar-actions desktop-cta">
+          <button class="btn btn--primary btn--block pay-btn-confirm" type="submit" form="pay-form">
+            Confirm and start membership &mdash; ${price} &euro; / mo
+          </button>
+          <div class="pay-sidebar-save">
+            <button class="linkish xsmall muted" type="button" data-go="save">Save progress for later</button>
           </div>
         </div>
       </aside>
@@ -16105,7 +16230,7 @@ function saveScreen() {
     <div class="savepanel">
       <div class="savepanel__left">
         <div class="savepanel__guide">${ulaAvatar('sm')}<span>Urby &middot; Membership guide</span></div>
-        <h1 class="savepanel__title" tabindex="-1">${hasPlan ? 'Don&rsquo;t lose your personalized plan' : 'Don&rsquo;t lose your progress'}</h1>
+        <h1 class="savepanel__title" tabindex="-1">${hasPlan ? 'Saving your personalized plan' : 'Saving your progress'}</h1>
         <p class="savepanel__sub">${hasPlan ? 'Your custom routine, matching studios, and calculated membership plan.' : 'Your answers, matching studios, and progress so far.'}</p>
         ${recapSection}
       </div>
@@ -16457,9 +16582,9 @@ document.addEventListener('change', e => {
   }
   /* Deferring the start changes nothing else on the page — no plan, no week, no coverage —
      so it returns early rather than falling through the rebuild below. */
-  const startSel = e.target.closest('select[data-start-date]');
-  if (startSel) {
-    S.startDate = startSel.value;
+  const startInput = e.target.closest('input[data-start-date], select[data-start-date]');
+  if (startInput) {
+    S.startDate = startInput.value;
     log('start_date_changed', { startDate: S.startDate });
     renderInPlace();
     return;

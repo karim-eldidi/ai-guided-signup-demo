@@ -626,7 +626,7 @@ function recommendationScreen() {
      extra spa week and they are short — so "at the cap" is the honest moment to mention the
      bigger allowance. `plusWanted > 0` matters: without it a plan that publishes no Plus
      allowance at all (Classic, 0) would satisfy 0 >= 0 and upsell on nothing. */
-  const plusShort = Boolean(topPlan.plusCheckIns > plan.plusCheckIns
+  const plusShort = Boolean(topPlan.plusCheckIns > plan.plusCheckIns && plusWanted > 0 && plusWanted >= plan.plusCheckIns);
   /* Always display all 4 plans in the Compare memberships card */
   const gridPlans = PLANS.slice().sort((x, y) => x.rank - y.rank);
   const COUNTWORDS = { 1:'one', 2:'two', 3:'three', 4:'four', 5:'five', 6:'six' };

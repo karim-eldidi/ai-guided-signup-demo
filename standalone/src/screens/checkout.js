@@ -129,6 +129,23 @@ function orderSummaryDrawer(aside) {
   </div>`;
 }
 
+function parseDateCard(iso) {
+  if (!iso) return { dayMonth: '—', year: '' };
+  if (typeof iso === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(iso)) {
+    const [y, m, d] = iso.split('-').map(Number);
+    const dt = new Date(y, m - 1, d);
+    const dayMonth = dt.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
+    const year = String(dt.getFullYear());
+    return { dayMonth, year };
+  }
+  const d = new Date(iso);
+  if (isNaN(d)) return { dayMonth: String(iso), year: '' };
+  return {
+    dayMonth: d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' }),
+    year: String(d.getFullYear())
+  };
+}
+
 function paymentScreen() {
   const plan = currentPlan(), commitment = commitmentById(S.commitmentId), price = priceFor(plan,S.commitmentId);
   const each = perSession(price, S.answers.frequency, plan);
@@ -136,7 +153,9 @@ function paymentScreen() {
   const method = FIELDS.method||'card';
   const match = matchVenues(A());
   const where = whereName(match);
-  const memberName = ((S.details.firstName||'')+' '+(S.details.lastName||'')).trim()||'New Member';
+  const memberName = ((S.details.firstName||'')+' '+(S.details.lastName||'')).trim()||'Karim Eldidi';
+  const memberEmail = S.details.email || S.email || 'team.carexco@gmail.com';
+  const currentStart = S.startDate || startDateChoices()[0];
 
   return `${topbar(3)}<main class="content pay-page" id="main">
     <div class="pay-head">
@@ -145,9 +164,9 @@ function paymentScreen() {
     </div>
 
     <div class="pay-layout">
-      <!-- LEFT COLUMN: Main Form & Actions -->
+      <!-- LEFT COLUMN: Payment Options & Terms -->
       <div class="pay-main">
-        <form data-form="payment">
+        <form id="pay-form" data-form="payment">
           <!-- 1. Payment Method Section -->
           <div class="pay-section-card">
             <div class="pay-card-head">
@@ -173,7 +192,7 @@ function paymentScreen() {
                 <span class="option-card__label"><strong>Apple Pay &amp; Google Pay</strong><span class="xsmall muted" style="display:block;font-weight:400;margin-top:2px">1-tap device checkout</span></span>
               </label>
             </div>
-            <div class="pay-mock-notice">${icon('lock',14)} <span>Powered by Adyen. In production, this is where the secure Adyen drop-in is embedded. Payment is simulated in this pilot.</span></div>
+            <div class="pay-mock-notice notice--simulated">${icon('lock',14)} <span>Powered by Adyen. In production, this is where the secure Adyen drop-in is embedded. Payment is simulated in this pilot.</span></div>
           </div>
 
           <!-- 2. Terms stay available without taking over the payment decision. -->
@@ -207,21 +226,18 @@ function paymentScreen() {
             </ul></div>
           </details>
 
-          <!-- 3. Primary & Secondary Action Row -->
-          <div class="pay-actions">
-            <div class="pay-actions__row desktop-cta">
-              <button class="btn btn--secondary pay-btn-back" type="button" data-go="details">${icon('back',16)} Back to details</button>
-              <button class="btn btn--primary pay-btn-confirm" type="submit">
-                Confirm and start membership &mdash; ${price} &euro; / mo
-              </button>
-            </div>
-            <div class="pay-actions__footer">
-              <button class="linkish xsmall muted" type="button" data-go="save">Save progress for later</button>
-            </div>
+          <!-- Back button on bottom of payment options column -->
+          <div class="pay-left-actions desktop-cta">
+            <button class="btn btn--secondary pay-btn-back" type="button" data-go="details">
+              ${icon('back',16)} Back to details
+            </button>
           </div>
 
           <!-- Mobile Sticky Paybar -->
           <div class="paybar">
+            <button class="btn btn--secondary paybar__back-btn" type="button" data-go="details" aria-label="Back to details">
+              ${icon('back',16)}
+            </button>
             <div class="paybar__info">
               <b>${esc(plan.name)}</b>
               <span>${price} &euro; / month${each?` &middot; &approx; ${each} &euro; / session`:''}</span>
@@ -246,7 +262,7 @@ function paymentScreen() {
 
           <div class="pay-summary-divider"></div>
 
-          <!-- Highlights of what's included -->
+          <!-- Member Details -->
           <div class="pay-summary-details">
             <div class="pay-detail-row">
               <span class="pay-detail-label">Member</span>
@@ -254,17 +270,42 @@ function paymentScreen() {
             </div>
             <div class="pay-detail-row">
               <span class="pay-detail-label">Email</span>
-              <span class="pay-detail-val">${esc(S.email || '—')}</span>
+              <span class="pay-detail-val">${esc(memberEmail)}</span>
             </div>
-            <div class="pay-detail-row pay-detail-row--editable">
-              <span class="pay-detail-label"><label for="start-date">Start date</label></span>
-              <div class="pay-detail-val pay-detail-val--select">
-                <select id="start-date" class="pay-select" data-start-date>
-                  ${startDateChoices().map(d => `<option value="${esc(d)}"${d === S.startDate ? ' selected' : ''}>${esc(fmtDate(d))}</option>`).join('')}
-                </select>
-                <span class="pay-detail-subtext">Memberships start on the 1st</span>
+          </div>
+
+          <!-- Start date card selector -->
+          <div class="pay-startdate-block">
+            <div class="pay-startdate-header">
+              <span class="pay-startdate-icon">${icon('calendar', 18)}</span>
+              <div class="pay-startdate-headcopy">
+                <h4 class="pay-startdate-title">When should your membership start?</h4>
+                <p class="pay-startdate-sub">Memberships start on the 1st of the month.</p>
               </div>
             </div>
+            <div class="pay-startdate-grid">
+              ${startDateChoices().map((d, idx) => {
+                const isSel = d === currentStart;
+                const { dayMonth, year } = parseDateCard(d);
+                return `
+                  <label class="date-card ${isSel ? 'is-selected' : ''}" data-start-date-card>
+                    <input type="radio" name="start_date_choice" value="${esc(d)}" class="sr-only" ${isSel ? 'checked' : ''} data-start-date>
+                    <div class="date-card__radio">
+                      <span class="date-card__radio-dot"></span>
+                    </div>
+                    <div class="date-card__body">
+                      <span class="date-card__date">${esc(dayMonth)}</span>
+                      <span class="date-card__year">${esc(year)}</span>
+                      ${idx === 0 ? `<span class="date-card__badge">Earliest</span>` : ''}
+                    </div>
+                  </label>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <!-- Highlights of what's included -->
+          <div class="pay-summary-details" style="margin-top:14px">
             <div class="pay-detail-row">
               <span class="pay-detail-label">Monthly visits</span>
               <span class="pay-detail-val font-semibold">${monthlyAllowance(plan)} visits / month</span>
@@ -292,9 +333,19 @@ function paymentScreen() {
               <span>Due today</span>
               <span>${price}.00 &euro;</span>
             </div>
-          <div class="pay-receipt-subtext">
+            <div class="pay-receipt-subtext">
               Billed monthly. ${esc(renewal)}
             </div>
+          </div>
+        </div>
+
+        <!-- Primary CTA and Save Progress under Summary -->
+        <div class="pay-sidebar-actions desktop-cta">
+          <button class="btn btn--primary btn--block pay-btn-confirm" type="submit" form="pay-form">
+            Confirm and start membership &mdash; ${price} &euro; / mo
+          </button>
+          <div class="pay-sidebar-save">
+            <button class="linkish xsmall muted" type="button" data-go="save">Save progress for later</button>
           </div>
         </div>
       </aside>

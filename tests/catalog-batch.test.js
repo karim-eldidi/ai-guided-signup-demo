@@ -60,12 +60,13 @@ test('standalone demo HTML contains accessible mobile close button and intention
 
   // (9) Venue results bar and grid completion footer
   assert.ok(html.includes('venue-results-bar'), 'Venue catalog has structured results bar');
-  assert.ok(html.includes('Places for you'), 'Venue catalog has stable clean title');
+  assert.ok(html.includes('venue-results-bar__title'), 'Venue catalog has structured results title');
   assert.ok(html.includes('venue-grid-end-summary'), 'Venue grid has completion summary footer');
 
-  // (10) Refined payment screen layout & side-by-side actions
+  // (10) Refined payment screen layout with 3-card start date selector & sidebar CTA
   assert.ok(html.includes('pay-card-head'), 'Payment method has structured card head with inline step badge');
-  assert.ok(html.includes('pay-actions__row'), 'Payment actions are aligned side-by-side in desktop row');
+  assert.ok(html.includes('pay-startdate-block'), 'Payment screen has 3-card start date selector');
+  assert.ok(html.includes('pay-sidebar-actions'), 'Primary CTA is positioned under Order Summary in sidebar');
   assert.ok(html.includes('pay-btn-back'), 'Back to details button has dedicated styling');
   assert.ok(html.includes('pay-btn-confirm'), 'Confirm button expands to fill primary action slot');
   assert.ok(!html.includes('Review your membership details and start date before confirming.'), 'Redundant yellow review note is removed');

@@ -87,7 +87,7 @@ function saveScreen() {
     <div class="savepanel">
       <div class="savepanel__left">
         <div class="savepanel__guide">${ulaAvatar('sm')}<span>Urby &middot; Membership guide</span></div>
-        <h1 class="savepanel__title" tabindex="-1">${hasPlan ? 'Don&rsquo;t lose your personalized plan' : 'Don&rsquo;t lose your progress'}</h1>
+        <h1 class="savepanel__title" tabindex="-1">${hasPlan ? 'Saving your personalized plan' : 'Saving your progress'}</h1>
         <p class="savepanel__sub">${hasPlan ? 'Your custom routine, matching studios, and calculated membership plan.' : 'Your answers, matching studios, and progress so far.'}</p>
         ${recapSection}
       </div>
