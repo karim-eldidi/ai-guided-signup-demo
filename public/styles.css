@@ -819,13 +819,13 @@ b, strong { font-weight: 700; }
 .startnow { height: 54px; width: 100%; max-width: 520px; margin-top: 12px; font-size: 17px; }
 
 /* --- all four plans, for people who already know ------------------------- */
-main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:border-box; padding: 24px 24px 80px; }
-.plans-layout { display:grid; grid-template-columns:minmax(0,1fr) 340px; gap:36px; align-items:start; }
+main.plans-page { width:100%; max-width:1080px; margin: 0 auto; box-sizing:border-box; padding: 24px 24px 80px; }
+.plans-page-header { text-align: center; margin-bottom: 24px; }
+.plans-page-header .h-question { margin: 0 0 14px; font-size: clamp(24px, 2.3vw, 30px); font-weight: 800; letter-spacing: -.03em; color: var(--ink); }
+
+.plans-layout { display:grid; grid-template-columns:minmax(0,1fr) 340px; gap:32px; align-items:start; }
 .plans-main { min-width:0; }
 .plans-layout__sidebar .routine { position: sticky; top: 24px; }
-
-.plans-main-header { text-align: center; margin-bottom: 20px; }
-.plans-main-header .h-question { margin: 0 0 14px; font-size: clamp(24px, 2.3vw, 30px); font-weight: 800; letter-spacing: -.03em; color: var(--ink); }
 
 .commit-row {
   display: inline-flex; align-items: center; justify-content: center;
@@ -862,7 +862,7 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
 }
 .plan-line:hover { border-color: #a8a49c; }
 .plan-line.is-selected {
-  border: 2px solid var(--ink); background: #fff; box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  border: 2px solid var(--ink); background: #fdfaf0; box-shadow: 0 4px 16px rgba(0,0,0,0.06);
 }
 
 .plan-line__header {
@@ -870,8 +870,12 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
   align-items: center; gap: 16px; padding: 16px 20px;
 }
 .plan-line__icon-wrap {
-  width: 40px; height: 40px; border-radius: 10px; background: #fdf5d3;
+  width: 40px; height: 40px; border-radius: 10px; background: #f5f3ec;
   display: flex; align-items: center; justify-content: center; font-size: 20px; flex: 0 0 auto;
+  transition: background-color .15s ease;
+}
+.plan-line.is-selected .plan-line__icon-wrap {
+  background: #fae69e;
 }
 .plan-line__info { display: flex; flex-direction: column; justify-content: center; }
 .plan-line__headline { font-size: 18px; font-weight: 800; letter-spacing: -.02em; color: var(--ink); }
@@ -943,13 +947,13 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
 }
 
 .routine .btn--secondary {
-  height: 44px; font-size: 14px; font-weight: 700; border-radius: var(--radius);
+  height: 46px; font-size: 14.5px; font-weight: 700; border-radius: var(--radius);
   width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  background: #fff; border: 1.5px solid var(--border); color: var(--ink); cursor: pointer;
+  background: #ede8df; border: 1.5px solid #dcd5c7; color: var(--ink); cursor: pointer;
   transition: all .15s ease;
 }
 .routine .btn--secondary:hover {
-  border-color: var(--ink); background: #fdf5d3;
+  background: #e2dbcd; border-color: var(--ink);
 }
 
 .plans-sticky-bar { display: none; }
@@ -9920,6 +9924,8 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   border-radius: 16px;
   padding: 18px 20px;
   border: 1px solid #f0f0ee;
+  list-style: none;
+  margin: 0;
 }
 
 .crafting-step {
