@@ -627,14 +627,9 @@ function recommendationScreen() {
      bigger allowance. `plusWanted > 0` matters: without it a plan that publishes no Plus
      allowance at all (Classic, 0) would satisfy 0 >= 0 and upsell on nothing. */
   const plusShort = Boolean(topPlan.plusCheckIns > plan.plusCheckIns
-    && plusWanted > 0 && plusWanted >= plan.plusCheckIns);
-  /* It is also listed whenever it is genuinely on the table: the visitor switched to it, or
-     the rules chose it. Hiding the plan somebody is looking at would be the worse lie. */
-  const showTop = plusShort || plan.id === topPlan.id || rec.planId === topPlan.id;
-  const gridPlans = (showTop ? PLANS.slice() : PLANS.filter(pl => pl.id !== topPlan.id))
-    .sort((x, y) => x.rank - y.rank);
+  /* Always display all 4 plans in the Compare memberships card */
+  const gridPlans = PLANS.slice().sort((x, y) => x.rank - y.rank);
   const COUNTWORDS = { 1:'one', 2:'two', 3:'three', 4:'four', 5:'five', 6:'six' };
-  /* Counted from what is rendered, so the heading can never claim a row that is not there. */
   const gridCount = COUNTWORDS[gridPlans.length] || String(gridPlans.length);
 
   const COMPARE_META = {
@@ -698,7 +693,7 @@ function recommendationScreen() {
     }
   };
 
-  const totalNearby = hereT && hereT.nearby ? hereT.nearby : (pool.length || 25);
+  const totalNearby = hereT && hereT.nearby ? hereT.nearby : (pool.length || 28);
   const visitsNeeded = visitsWanted(a.frequency);
 
   const allPlans = `<details class="allplans" ${ALTOPEN ? 'open' : ''}>
@@ -725,14 +720,17 @@ function recommendationScreen() {
           <div class="allplans__icon-box">
             <span>${meta.emoji}</span>
           </div>
-          <div class="allplans__main">
-            <div class="allplans__row-head">
-              <span class="allplans__headline">${esc(meta.headline)}</span>
-            </div>
-            <div class="allplans__tier-row">
+          <div class="allplans__headline-wrap">
+            <span class="allplans__headline">${esc(meta.headline)}</span>
+            <div class="allplans__tier-line">
               <span class="allplans__tier-name">${esc(meta.tierName)}</span>
               ${isRecTier ? `<span class="allplans__tag--gold">Recommended</span>` : ''}
             </div>
+          </div>
+          <div class="allplans__price-col">
+            <b>${p} &euro;</b> <small>/ month</small>
+          </div>
+          <div class="allplans__meta-wrap">
             <div class="allplans__meta-line">
               <span>${visitsFor(pl)} visits &middot; ${esc(info.opensText)}</span>
             </div>
@@ -742,14 +740,6 @@ function recommendationScreen() {
                 <span>${esc(info.statusText)}</span>
               </div>
             ` : ''}
-          </div>
-          <div class="allplans__right">
-            <div class="allplans__price">
-              <b>${p} &euro;</b> <small>/ month</small>
-            </div>
-            <div class="allplans__row-chev">
-              ${icon('chevronDown', 16)}
-            </div>
           </div>
         </div>`;
       }).join('')}
