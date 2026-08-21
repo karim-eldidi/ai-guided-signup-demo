@@ -2388,6 +2388,97 @@ main.plans-page { width:100%; max-width:1080px; margin: 0 auto; box-sizing:borde
 .asidevenue__name { font-size: 14px; font-weight: 700; line-height: 1.25; }
 .asidevenue__meta { font-size: 12.5px; color: var(--navy-soft); margin-top: 2px; font-variant-numeric: tabular-nums; }
 
+.ordercard__upsell {
+  margin: 14px 0 16px;
+  padding: 14px;
+  background: #fff9db;
+  border: 1px solid #fce588;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ordercard__upsell-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.3;
+}
+.ordercard__upsell-venues {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(240, 200, 50, 0.45);
+}
+.asidevenue--locked .asidevenue__name {
+  font-size: 13.5px;
+  font-weight: 700;
+}
+.asidevenue__meta--locked {
+  font-size: 12px;
+  color: #a05a00;
+  font-weight: 500;
+}
+.ordercard__upsell-benefit {
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--navy);
+  margin: 0;
+}
+.ordercard__upsell-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 13.5px;
+  color: var(--ink);
+}
+.ordercard__upsell-price b {
+  font-size: 15px;
+  font-weight: 800;
+}
+.ordercard__upsell-price small {
+  font-size: 12px;
+  color: var(--navy-soft);
+}
+.ordercard__upsell-delta {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a56db;
+}
+.ordercard__upsell-btn {
+  width: 100%;
+  height: 38px;
+  background: #ffffff;
+  border: 1.5px solid var(--ink);
+  color: var(--ink);
+  font-size: 13.5px;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background .15s ease, transform .1s ease;
+}
+.ordercard__upsell-btn:hover {
+  background: var(--yellow-pale);
+}
+.ordercard__upsell-keep {
+  align-self: center;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--navy-soft);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px 6px;
+}
+.ordercard__upsell-keep:hover {
+  color: var(--ink);
+}
+
 .pill {
   display: inline-flex; align-items: center; gap: 7px;
   background: var(--cream); border: 1px solid var(--cream-line);

@@ -6,7 +6,7 @@
    things and the interface must not conflate them. */
 const BLANK = { email:null, authMethod:null, saveOptIn:false, marketing:false, marketingAsked:false, answers:{}, freeText:{}, radiusKm:'auto',
                 weekDays:[], weekSwap:{}, starredVenues:{}, routineCustomized:false,
-                chosenPlanId:null, planOverridden:false, commitmentId:'monthly', details:{}, startDate:null,
+                chosenPlanId:null, planOverridden:false, dismissedUpsell:false, commitmentId:'monthly', details:{}, startDate:null,
                 paid:false, lastStep:'landing', returns:0, events:[], source:null, campaign:null, variant:VARIANT };
 let S = JSON.parse(JSON.stringify(BLANK));
 let ASK={q:'',result:null};

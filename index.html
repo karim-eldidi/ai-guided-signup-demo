@@ -2401,6 +2401,97 @@ main.plans-page { width:100%; max-width:1080px; margin: 0 auto; box-sizing:borde
 .asidevenue__name { font-size: 14px; font-weight: 700; line-height: 1.25; }
 .asidevenue__meta { font-size: 12.5px; color: var(--navy-soft); margin-top: 2px; font-variant-numeric: tabular-nums; }
 
+.ordercard__upsell {
+  margin: 14px 0 16px;
+  padding: 14px;
+  background: #fff9db;
+  border: 1px solid #fce588;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ordercard__upsell-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.3;
+}
+.ordercard__upsell-venues {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(240, 200, 50, 0.45);
+}
+.asidevenue--locked .asidevenue__name {
+  font-size: 13.5px;
+  font-weight: 700;
+}
+.asidevenue__meta--locked {
+  font-size: 12px;
+  color: #a05a00;
+  font-weight: 500;
+}
+.ordercard__upsell-benefit {
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--navy);
+  margin: 0;
+}
+.ordercard__upsell-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 13.5px;
+  color: var(--ink);
+}
+.ordercard__upsell-price b {
+  font-size: 15px;
+  font-weight: 800;
+}
+.ordercard__upsell-price small {
+  font-size: 12px;
+  color: var(--navy-soft);
+}
+.ordercard__upsell-delta {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a56db;
+}
+.ordercard__upsell-btn {
+  width: 100%;
+  height: 38px;
+  background: #ffffff;
+  border: 1.5px solid var(--ink);
+  color: var(--ink);
+  font-size: 13.5px;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background .15s ease, transform .1s ease;
+}
+.ordercard__upsell-btn:hover {
+  background: var(--yellow-pale);
+}
+.ordercard__upsell-keep {
+  align-self: center;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--navy-soft);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px 6px;
+}
+.ordercard__upsell-keep:hover {
+  color: var(--ink);
+}
+
 .pill {
   display: inline-flex; align-items: center; gap: 7px;
   background: var(--cream); border: 1px solid var(--cream-line);
@@ -10946,7 +11037,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 68f7c90 + local edits</span>
+  <span class="demo-banner__build">build 4e5a1a6 + local edits</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -12030,7 +12121,7 @@ function searchPlaces(query) {
    things and the interface must not conflate them. */
 const BLANK = { email:null, authMethod:null, saveOptIn:false, marketing:false, marketingAsked:false, answers:{}, freeText:{}, radiusKm:'auto',
                 weekDays:[], weekSwap:{}, starredVenues:{}, routineCustomized:false,
-                chosenPlanId:null, planOverridden:false, commitmentId:'monthly', details:{}, startDate:null,
+                chosenPlanId:null, planOverridden:false, dismissedUpsell:false, commitmentId:'monthly', details:{}, startDate:null,
                 paid:false, lastStep:'landing', returns:0, events:[], source:null, campaign:null, variant:VARIANT };
 let S = JSON.parse(JSON.stringify(BLANK));
 let ASK={q:'',result:null};
@@ -15674,6 +15765,72 @@ function detailsScreen() {
     ${o.why?`<div class="field__why">${icon('info',14)} <span>${esc(o.why)}</span></div>`:''}</div>`;
   const each = perSession(F.price, S.answers.frequency, plan);
   const shown = F.included.slice(0,3), more = Math.max(0, F.included.length - shown.length);
+
+  const starredKeys = Object.keys(S.starredVenues || {});
+  const match = matchVenues(A());
+  const pool = match.pool || [];
+  const from = (match.areas && match.areas.length) ? match.areas : [match.area || ANYWHERE];
+
+  let routineVenues = [];
+  if (starredKeys.length) {
+    routineVenues = starredKeys.map(id => {
+      const p = pool.find(x => x.id === id);
+      if (p) return p;
+      const raw = VENUES.find(x => x.id === id);
+      if (!raw) return null;
+      const km = Math.round(Math.min(...from.map(x => distanceKm(x, raw))) * 10) / 10;
+      return { ...raw, distanceKm: km };
+    }).filter(Boolean);
+  } else {
+    const groups = (A().activities || []).filter(x => x !== SKIP);
+    const cov = groups.length && pool.length ? coverage(groups, pool, plan.id) : null;
+    if (cov) {
+      routineVenues = [...new Map(cov.rows.flatMap(r => r.nearby).map(v => [v.id, v])).values()]
+        .sort((a, b) => (a.distanceKm || 0) - (b.distanceKm || 0));
+    }
+  }
+
+  const lockedVenues = routineVenues.filter(v => !includedIn(v, plan.id));
+  let upsellBlock = '';
+  if (lockedVenues.length > 0 && !S.dismissedUpsell) {
+    const unlockPlans = lockedVenues.map(v => firstPlanWithAccess(v)).filter(Boolean);
+    const maxRank = Math.max(...unlockPlans.map(p => p.rank), plan.rank + 1);
+    const upPlan = PLANS.slice().sort((a, b) => a.rank - b.rank).find(p => p.rank >= maxRank && p.rank > plan.rank) || null;
+    if (upPlan) {
+      const upPrice = priceFor(upPlan, S.commitmentId);
+      const delta = upPrice - F.price;
+      const placesCount = lockedVenues.length;
+      const placesLabel = placesCount === 1 ? '1 of your saved places needs' : `${placesCount} of your saved places need`;
+      const benefitText = `${esc(upPlan.name)} opens ${placesCount === 1 ? 'this venue' : 'both'}, plus ${upPlan.plusCheckIns || 4} Plus visits a month including ${upPlan.id === 'max' ? '2 massages' : '1 massage'}.`;
+
+      upsellBlock = `<div class="ordercard__upsell">
+        <div class="ordercard__upsell-title">${placesLabel} ${esc(upPlan.name)}</div>
+        <div class="ordercard__upsell-venues">
+          ${lockedVenues.slice(0, 2).map(v => `
+            <div class="asidevenue asidevenue--locked">
+              <div class="asidevenue__media">${venueMedia(v)}</div>
+              <div>
+                <div class="asidevenue__name">${esc(v.name)}</div>
+                <div class="asidevenue__meta asidevenue__meta--locked">Not included with ${esc(plan.name)}</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+        <p class="ordercard__upsell-benefit">${benefitText}</p>
+        <div class="ordercard__upsell-price-row">
+          <span class="ordercard__upsell-price"><b>${esc(upPlan.name)} ${upPrice} €</b><small>/month</small></span>
+          <span class="ordercard__upsell-delta">+${delta} €</span>
+        </div>
+        <button class="btn btn--secondary btn--block ordercard__upsell-btn" type="button" data-upgrade-plan="${esc(upPlan.id)}">
+          Upgrade to ${esc(upPlan.name)}
+        </button>
+        <button class="linkish ordercard__upsell-keep" type="button" data-dismiss-upsell>
+          Keep ${esc(plan.name)}
+        </button>
+      </div>`;
+    }
+  }
+
   const aside = `<div class="ordercard">
     <div class="fitpanel__label">Order summary</div>
     <div class="ordercard__idrow">
@@ -15695,6 +15852,8 @@ function detailsScreen() {
       <div class="ordercard__item">${icon('checkThin',16)}<span>${plan.dailyCheckIn?'Daily check-ins (up to 1 visit/day)':'4 check-ins each month'}</span></div>
       ${plan.plusCheckIns?`<div class="ordercard__item">${icon('checkThin',16)}<span>${plan.plusCheckIns} Plus check-ins / month (${plan.id==='max'?'2 massages':'1 massage'})</span></div>`:''}
     </div>`}
+
+    ${upsellBlock}
 
     <div class="ordercard__trust">
       ${icon('lock',15)} <span>Secure checkout &middot; Simulated pilot</span>
@@ -16716,8 +16875,21 @@ document.addEventListener('click', e => {
     if (ws) ws.hidden = true;
   }
 
-  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-open-login],[data-close-login],[data-open-review-answers],[data-close-review-answers],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-app],[data-close-app-sheet],[data-change-city],[data-city],[data-unsure],[data-radius],[data-toggle-apps],[data-toggle-more],[data-more],[data-toggle-alt],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-search-example],[data-venue-search-all],[data-venue-clear],[data-toggle-where],[data-where],[data-select-area],[data-area-search-clear],[data-where-search-clear],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-filter-category],[data-scroll-pills],[data-scroll-gallery],[data-toggle-star],[data-open-plan-drawer],[data-close-plan-drawer],[data-open-order-summary],[data-close-order-summary],[data-toggle-more-filters],[data-toggle-tier-filter],[data-toggle-act-filter],[data-clear-all-filters],[data-apply-filters],[data-act-search-clear],[data-remove-tier-filter],[data-remove-act-filter],[data-remove-cat-filter],[data-remove-radius-filter],[data-venue-view-mode],[data-map-pin],[data-map-close-preview]');
+  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-open-login],[data-close-login],[data-open-review-answers],[data-close-review-answers],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-app],[data-close-app-sheet],[data-change-city],[data-city],[data-unsure],[data-radius],[data-toggle-apps],[data-toggle-more],[data-more],[data-toggle-alt],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-search-example],[data-venue-search-all],[data-venue-clear],[data-toggle-where],[data-where],[data-select-area],[data-area-search-clear],[data-where-search-clear],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-filter-category],[data-scroll-pills],[data-scroll-gallery],[data-toggle-star],[data-open-plan-drawer],[data-close-plan-drawer],[data-open-order-summary],[data-close-order-summary],[data-toggle-more-filters],[data-toggle-tier-filter],[data-toggle-act-filter],[data-clear-all-filters],[data-apply-filters],[data-act-search-clear],[data-remove-tier-filter],[data-remove-act-filter],[data-remove-cat-filter],[data-remove-radius-filter],[data-venue-view-mode],[data-map-pin],[data-map-close-preview],[data-upgrade-plan],[data-dismiss-upsell]');
   if (!t) return;
+
+  if (t.dataset.upgradePlan) {
+    S.chosenPlanId = t.dataset.upgradePlan;
+    S.planOverridden = true;
+    render(false);
+    return;
+  }
+
+  if (t.dataset.dismissUpsell !== undefined) {
+    S.dismissedUpsell = true;
+    render(false);
+    return;
+  }
 
   if (t.dataset.openReviewAnswers !== undefined) {
     REVIEW_ANSWERS_OPEN = true;
