@@ -67,8 +67,8 @@ const ICONS = {
 };
 const icon = (n, s = 22) => svg(ICONS[n] || ICONS.info, s);
 const ulaAvatar = (size='md') => {
-  const cls = size==='sm'?'ula-avatar ula-avatar--sm':size==='lg'?'ula-avatar ula-avatar--lg':'ula-avatar';
-  const px = size==='sm'?17:size==='lg'?30:22;
+  const cls = size==='xs'?'ula-avatar ula-avatar--xs':size==='sm'?'ula-avatar ula-avatar--sm':size==='lg'?'ula-avatar ula-avatar--lg':'ula-avatar';
+  const px = size==='xs'?13:size==='sm'?17:size==='lg'?30:22;
   return `<span class="${cls}" aria-hidden="true"><svg width="${px}" height="${px}" viewBox="0 0 24 24" fill="#f6d64a"><path d="M9 2.6l1.5 4 4 1.5-4 1.5-1.5 4-1.5-4-4-1.5 4-1.5Z"/><path d="M16.8 12.4l1 2.7 2.7 1-2.7 1-1 2.7-1-2.7-2.7-1 2.7-1Z"/></svg></span>`;
 };
 const GOOGLE = '<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.6 12.2c0-.8-.1-1.4-.2-2H12v3.9h6c-.1 1-.8 2.5-2.2 3.5l3.4 2.6c2-1.9 3.4-4.6 3.4-8Z"/><path fill="#34A853" d="M12 23c2.9 0 5.3-1 7.1-2.6l-3.4-2.6c-.9.6-2.1 1-3.7 1-2.8 0-5.2-1.9-6.1-4.5l-3.5 2.7C4.2 20.5 7.8 23 12 23Z"/><path fill="#FBBC05" d="M5.9 14.3a6.7 6.7 0 0 1 0-4.5L2.4 7.1a11 11 0 0 0 0 9.9Z"/><path fill="#EA4335" d="M12 4.7c1.6 0 3 .6 4.1 1.6l3-3C17.3 1.6 14.9.6 12 .6 7.8.6 4.2 3.1 2.4 6.8l3.5 2.7C6.8 6.9 9.2 4.7 12 4.7Z"/></svg>';

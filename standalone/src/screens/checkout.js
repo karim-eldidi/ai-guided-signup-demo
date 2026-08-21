@@ -159,8 +159,9 @@ function paymentScreen() {
 
   return `${topbar(3)}<main class="content pay-page" id="main">
     <div class="pay-head">
-      <div class="ula-note" style="margin-bottom:14px">
-        <p>${ulaAvatar('sm')} <span><strong>Urby</strong> &middot; Final step before your routine begins. Everything you agree to is transparently listed below.</span></p>
+      <div class="pay-urby-note">
+        ${ulaAvatar('xs')}
+        <span><strong>Urby</strong> &middot; Final step &mdash; everything is transparently listed below.</span>
       </div>
       <h1 class="h-question" style="margin-top:0" tabindex="-1">Review and confirm</h1>
       <p class="pay-sub">Payment is simulated in this pilot. No card will be charged.</p>
@@ -347,7 +348,7 @@ function paymentScreen() {
         </div>
 
         <!-- Primary CTA and Save Progress under Summary -->
-        <div class="pay-sidebar-actions desktop-cta">
+        <div class="pay-sidebar-actions desktop-cta btn-row">
           <button class="btn btn--primary btn--block pay-btn-confirm" type="submit" form="pay-form">
             Confirm and start membership &mdash; ${price} &euro; / mo
           </button>
