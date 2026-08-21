@@ -837,23 +837,30 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
 .plans-main { min-width:0; }
 .plans-layout__sidebar .routine { position: sticky; top: 24px; }
 
-.plans-head { text-align: center; margin-bottom: 14px; }
-.plans-head .h-question { margin: 0; font-size: clamp(24px, 2.3vw, 30px); font-weight: 800; letter-spacing: -.03em; color: var(--ink); }
+.plans-main-header { text-align: center; margin-bottom: 20px; }
+.plans-main-header .h-question { margin: 0 0 14px; font-size: clamp(24px, 2.3vw, 30px); font-weight: 800; letter-spacing: -.03em; color: var(--ink); }
 
-.commit-row { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin: 0 auto 24px; }
+.commit-row {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: #edebe4; padding: 4px; border-radius: 12px; gap: 4px; margin: 0 auto;
+}
+.commit-row .commit-tab,
 .commit-row .chip-sm {
-  height: 34px; padding: 0 14px; border-radius: 9999px; font-size: 13px; font-weight: 700;
+  height: 38px; padding: 0 16px; border-radius: 8px; font-size: 13.5px; font-weight: 600;
   display: inline-flex; align-items: center; gap: 6px;
-  background: #fff; border: 1.5px solid var(--border); color: var(--ink); cursor: pointer;
+  background: transparent; border: none; color: var(--navy); cursor: pointer;
   transition: all .15s ease;
 }
-.commit-row .chip-sm:hover { border-color: var(--ink); }
+.commit-row .commit-tab:hover,
+.commit-row .chip-sm:hover { color: var(--ink); }
+.commit-row .commit-tab.is-current,
 .commit-row .chip-sm.is-current {
-  background: #fdf5d3; color: var(--ink); border-color: var(--ink); font-weight: 800;
+  background: #ffffff; color: var(--ink); font-weight: 700;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
 .commit-save-pill {
-  background: #e6f4ea; color: #137333; font-size: 11px; font-weight: 800;
-  padding: 1px 7px; border-radius: 99px; letter-spacing: 0.01em;
+  background: #e6f4ea; color: #137333; font-size: 11px; font-weight: 700;
+  padding: 2px 7px; border-radius: 6px; letter-spacing: 0.01em;
 }
 
 .plans-options-card {
@@ -925,25 +932,37 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
 }
 .always-sparkle { font-size: 16px; color: #d4a300; flex: 0 0 auto; }
 
-.plans-cta-wrap {
-  display: flex; flex-direction: column; align-items: center; gap: 12px; justify-content: center;
+.plans-nav-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
   margin-top: 24px;
 }
+.btn-back-plan {
+  height: 48px; padding: 0 20px; font-size: 15px; font-weight: 600;
+  border-radius: var(--radius); background: #fff; border: 1.5px solid var(--border);
+  color: var(--ink); display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
+  transition: all .15s ease;
+}
+.btn-back-plan:hover {
+  border-color: var(--ink); background: var(--cream);
+}
 .btn-continue-plan {
-  height: 52px; padding: 0 36px; border-radius: 9999px; font-size: 16px; font-weight: 700;
-  min-width: 320px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 48px; padding: 0 28px; border-radius: var(--radius); font-size: 15.5px; font-weight: 700;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   background: var(--ink); color: #fff; border: none; cursor: pointer;
   transition: transform .15s ease, box-shadow .15s ease, background-color .15s ease;
 }
 .btn-continue-plan:hover {
   background: #1e293b; transform: translateY(-1px);
 }
-.plans-venues-link {
-  font-size: 14px; font-weight: 600; color: var(--ink);
-  text-decoration: underline; text-underline-offset: 4px; cursor: pointer;
+
+.routine .btn--secondary {
+  height: 44px; font-size: 14px; font-weight: 700; border-radius: var(--radius);
+  width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  background: #fff; border: 1.5px solid var(--border); color: var(--ink); cursor: pointer;
+  transition: all .15s ease;
 }
-.plans-venues-link:hover {
-  color: var(--navy);
+.routine .btn--secondary:hover {
+  border-color: var(--ink); background: #fdf5d3;
 }
 
 .plans-sticky-bar { display: none; }
@@ -963,7 +982,7 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
   .plan-line__price-wrap { grid-column: 3; grid-row: 1; gap: 8px; }
   .plan-line__expanded { padding: 0 14px 16px; }
   .plan-diff-grid { grid-template-columns: 1fr; gap: 16px; }
-  .plans-cta-wrap { display: none; }
+  .plans-nav-row { display: none; }
   .plans-sticky-bar {
     display: flex; position: fixed; bottom: 0; left: 0; right: 0;
     background: #fff; border-top: 1px solid var(--border);
@@ -10425,7 +10444,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 7edc596 + local edits</span>
+  <span class="demo-banner__build">build 5b37fcb + local edits</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -13187,10 +13206,11 @@ function nearbyRow() {
    above answer two of Urby's four questions between them, so this panel puts whichever
    of the other two is still open — and never one that has been answered (rule 11).
    Answering here stays here: the way on is the button, not a redirect. */
-function routinePanel() {
+function routinePanel(opts = {}) {
   const q = ['frequency','goal'].map(qById).find(x => !isAnswered(S.answers[x.id])) || null;
   const left = QUESTIONS.filter(x => !isAnswered(S.answers[x.id])).length;
   const given = QUESTIONS.filter(x => isAnswered(S.answers[x.id]));
+  const btnClass = opts.isSecondaryAction ? 'btn btn--secondary' : 'btn btn--primary';
   return `<section class="routine">
     <div class="routine__who">${ulaAvatar()}<b>Urby</b></div>
     <div class="routine__mid">
@@ -13205,9 +13225,9 @@ function routinePanel() {
           esc(compactAnswerLabel(x.id,S.answers[x.id]))}</span><span class="answer-chip__edit-icon">${icon('pencil',11)}</span></button>`).join('')}</div>` : ''}
     </div>
     <div class="routine__side">
-      ${left ? `<button class="btn btn--primary" data-go="fit">See my recommendation ${icon('arrowRight',18)}</button>
+      ${left ? `<button class="${btnClass}" data-go="fit">See my recommendation ${icon('arrowRight',18)}</button>
         <p class="routine__note">${plural(left,'question','questions')} left &mdash; then one membership, with its reasons.</p>`
-        : `<button class="btn btn--primary" data-go="recommendation">See my recommendation ${icon('arrowRight',18)}</button>
+        : `<button class="${btnClass}" data-go="recommendation">View personalized routine ${icon('arrowRight',18)}</button>
         <p class="routine__note">Built from your four answers, and yours to change.</p>`}
       <button class="routine__save" type="button" data-go="save">${icon('bookmark',20)}
         <span><b>Save these places for later</b><small>Keeps your answers and brings you back here.</small></span></button>
@@ -14900,19 +14920,18 @@ function plansScreen() {
   </div>`;
 
   return `${topbar(1, { stepper: false, savedNote: Boolean(S.email && S.saveOptIn) })}<main class="content plans-page" id="main">
-    <div class="plans-head">
-      <h1 class="h-question" tabindex="-1">Choose your membership</h1>
-    </div>
-
-    <div class="commit-row">${COMMITMENTS.map(c => {
-      const isCur = c.id === S.commitmentId;
-      const termLabel = c.minimumTermMonths === 1 ? 'Monthly' : `${c.minimumTermMonths} months`;
-      const savingBadge = c.id === 'annual' ? '<span class="commit-save-pill">Save 15%</span>' : c.id === 'biennial' ? '<span class="commit-save-pill">Save 20%</span>' : '';
-      return `<button class="chip-sm ${isCur ? 'is-current' : ''}" type="button" data-commit="${esc(c.id)}"><span>${esc(termLabel)}</span>${savingBadge}</button>`;
-    }).join('')}</div>
-
     <div class="plans-layout">
       <div class="plans-main">
+        <div class="plans-main-header">
+          <h1 class="h-question" tabindex="-1">Choose your membership</h1>
+          <div class="commit-row" role="group" aria-label="Membership commitment duration">${COMMITMENTS.map(c => {
+            const isCur = c.id === S.commitmentId;
+            const termLabel = c.minimumTermMonths === 1 ? 'Monthly' : `${c.minimumTermMonths} months`;
+            const savingBadge = c.id === 'annual' ? '<span class="commit-save-pill">Save 15%</span>' : c.id === 'biennial' ? '<span class="commit-save-pill">Save 20%</span>' : '';
+            return `<button class="commit-tab ${isCur ? 'is-current' : ''}" type="button" data-commit="${esc(c.id)}" aria-pressed="${isCur}"><span>${esc(termLabel)}</span>${savingBadge}</button>`;
+          }).join('')}</div>
+        </div>
+
         <section class="plans-options-card" aria-label="Membership options">
           <div class="plan-lines-group">${planLines}</div>
 
@@ -14922,17 +14941,17 @@ function plansScreen() {
           </div>
         </section>
 
-        <div class="plans-cta-wrap">
+        <div class="plans-nav-row">
+          <button class="btn btn--secondary btn-back-plan" type="button" data-go="recommendation">
+            ${icon('arrowLeft', 16)} Back
+          </button>
           <button class="btn btn--primary btn-continue-plan" type="button" data-go="details">
             Choose ${esc(selectedPlan.name)} and continue ${icon('arrowRight', 16)}
-          </button>
-          <button class="linkish plans-venues-link" type="button" data-go="catalog">
-            Explore venues before choosing
           </button>
         </div>
       </div>
       <aside class="plans-layout__sidebar">
-        ${routinePanel()}
+        ${routinePanel({ isSecondaryAction: true })}
       </aside>
     </div>
     ${stickyBar}

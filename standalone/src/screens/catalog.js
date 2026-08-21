@@ -456,10 +456,11 @@ function nearbyRow() {
    above answer two of Urby's four questions between them, so this panel puts whichever
    of the other two is still open — and never one that has been answered (rule 11).
    Answering here stays here: the way on is the button, not a redirect. */
-function routinePanel() {
+function routinePanel(opts = {}) {
   const q = ['frequency','goal'].map(qById).find(x => !isAnswered(S.answers[x.id])) || null;
   const left = QUESTIONS.filter(x => !isAnswered(S.answers[x.id])).length;
   const given = QUESTIONS.filter(x => isAnswered(S.answers[x.id]));
+  const btnClass = opts.isSecondaryAction ? 'btn btn--secondary' : 'btn btn--primary';
   return `<section class="routine">
     <div class="routine__who">${ulaAvatar()}<b>Urby</b></div>
     <div class="routine__mid">
@@ -474,9 +475,9 @@ function routinePanel() {
           esc(compactAnswerLabel(x.id,S.answers[x.id]))}</span><span class="answer-chip__edit-icon">${icon('pencil',11)}</span></button>`).join('')}</div>` : ''}
     </div>
     <div class="routine__side">
-      ${left ? `<button class="btn btn--primary" data-go="fit">See my recommendation ${icon('arrowRight',18)}</button>
+      ${left ? `<button class="${btnClass}" data-go="fit">See my recommendation ${icon('arrowRight',18)}</button>
         <p class="routine__note">${plural(left,'question','questions')} left &mdash; then one membership, with its reasons.</p>`
-        : `<button class="btn btn--primary" data-go="recommendation">See my recommendation ${icon('arrowRight',18)}</button>
+        : `<button class="${btnClass}" data-go="recommendation">View personalized routine ${icon('arrowRight',18)}</button>
         <p class="routine__note">Built from your four answers, and yours to change.</p>`}
       <button class="routine__save" type="button" data-go="save">${icon('bookmark',20)}
         <span><b>Save these places for later</b><small>Keeps your answers and brings you back here.</small></span></button>

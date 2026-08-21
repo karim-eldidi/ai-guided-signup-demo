@@ -1013,19 +1013,18 @@ function plansScreen() {
   </div>`;
 
   return `${topbar(1, { stepper: false, savedNote: Boolean(S.email && S.saveOptIn) })}<main class="content plans-page" id="main">
-    <div class="plans-head">
-      <h1 class="h-question" tabindex="-1">Choose your membership</h1>
-    </div>
-
-    <div class="commit-row">${COMMITMENTS.map(c => {
-      const isCur = c.id === S.commitmentId;
-      const termLabel = c.minimumTermMonths === 1 ? 'Monthly' : `${c.minimumTermMonths} months`;
-      const savingBadge = c.id === 'annual' ? '<span class="commit-save-pill">Save 15%</span>' : c.id === 'biennial' ? '<span class="commit-save-pill">Save 20%</span>' : '';
-      return `<button class="chip-sm ${isCur ? 'is-current' : ''}" type="button" data-commit="${esc(c.id)}"><span>${esc(termLabel)}</span>${savingBadge}</button>`;
-    }).join('')}</div>
-
     <div class="plans-layout">
       <div class="plans-main">
+        <div class="plans-main-header">
+          <h1 class="h-question" tabindex="-1">Choose your membership</h1>
+          <div class="commit-row" role="group" aria-label="Membership commitment duration">${COMMITMENTS.map(c => {
+            const isCur = c.id === S.commitmentId;
+            const termLabel = c.minimumTermMonths === 1 ? 'Monthly' : `${c.minimumTermMonths} months`;
+            const savingBadge = c.id === 'annual' ? '<span class="commit-save-pill">Save 15%</span>' : c.id === 'biennial' ? '<span class="commit-save-pill">Save 20%</span>' : '';
+            return `<button class="commit-tab ${isCur ? 'is-current' : ''}" type="button" data-commit="${esc(c.id)}" aria-pressed="${isCur}"><span>${esc(termLabel)}</span>${savingBadge}</button>`;
+          }).join('')}</div>
+        </div>
+
         <section class="plans-options-card" aria-label="Membership options">
           <div class="plan-lines-group">${planLines}</div>
 
@@ -1035,17 +1034,17 @@ function plansScreen() {
           </div>
         </section>
 
-        <div class="plans-cta-wrap">
+        <div class="plans-nav-row">
+          <button class="btn btn--secondary btn-back-plan" type="button" data-go="recommendation">
+            ${icon('arrowLeft', 16)} Back
+          </button>
           <button class="btn btn--primary btn-continue-plan" type="button" data-go="details">
             Choose ${esc(selectedPlan.name)} and continue ${icon('arrowRight', 16)}
-          </button>
-          <button class="linkish plans-venues-link" type="button" data-go="catalog">
-            Explore venues before choosing
           </button>
         </div>
       </div>
       <aside class="plans-layout__sidebar">
-        ${routinePanel()}
+        ${routinePanel({ isSecondaryAction: true })}
       </aside>
     </div>
     ${stickyBar}
