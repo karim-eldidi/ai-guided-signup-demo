@@ -1117,7 +1117,7 @@ function plansScreen() {
       <div class="plans-sticky-bar__name"><b>${esc(selectedPlan.name)}</b> &middot; ${selectedPrice} &euro;/mo</div>
       <div class="plans-sticky-bar__sub">${stickySub}</div>
     </div>
-    <button class="btn btn--primary plans-sticky-bar__cta" type="button" data-go="details">
+    <button class="btn btn--primary plans-sticky-bar__cta" type="button" data-confirm-plan="${esc(selectedPlan.id)}" data-go="details">
       Continue with ${esc(selectedPlan.name)}
     </button>
   </div>`;
@@ -1138,7 +1138,9 @@ function plansScreen() {
     <div class="plans-layout">
       <div class="plans-main">
         <section class="plans-options-card" aria-label="Membership options">
-          <div class="plan-lines-group">${planLines}</div>
+          <div class="plans-options-list" role="region" aria-label="Membership tiers">
+            ${planLines}
+          </div>
 
           <div class="plans-always-banner">
             <span class="always-sparkle">✦</span>
@@ -1146,7 +1148,7 @@ function plansScreen() {
           </div>
         </section>
 
-        <div class="plans-nav-row">
+        <div class="plans-back-row">
           <button class="btn btn--secondary btn-back-plan" type="button" data-go="recommendation">
             ${icon('arrowLeft', 16)} Back
           </button>
@@ -1171,7 +1173,7 @@ function plansScreen() {
             ${rec && rec.planId === selectedPlan.id ? esc(selectedMeta.headSub || 'Fits your weekly routine and covers your target venues.') : esc(selectedMeta.headSub || 'All-inclusive access to fitness, sports, and wellness.')}
           </p>
 
-          <button class="btn btn--primary plan-summary-card__cta" type="button" data-go="details">
+          <button class="btn btn--primary plan-summary-card__cta" type="button" data-confirm-plan="${esc(selectedPlan.id)}" data-go="details">
             Choose ${esc(selectedPlan.name)} and continue ${icon('arrowRight', 16)}
           </button>
 
@@ -1217,7 +1219,7 @@ function fitSummary() {
   const totals = cov ? cov.totals : null;
 
   // Resolve routine venues first if user starred places!
-  const starredKeys = Object.keys(S.starredVenues || {});
+  const starredKeys = Object.keys(S.starredVenues || {}).filter(k => S.starredVenues[k]);
   let included = [];
   if (starredKeys.length) {
     included = starredKeys.map(id => {
@@ -1227,7 +1229,7 @@ function fitSummary() {
       if (!raw) return null;
       const km = Math.round(Math.min(...from.map(x => distanceKm(x, raw))) * 10) / 10;
       return { ...raw, distanceKm: km };
-    }).filter(Boolean);
+    }).filter(Boolean).filter(v => includedIn(v, plan.id));
   } else {
     included = cov
       ? [...new Map(cov.rows.flatMap(r=>r.included).map(v=>[v.id,v])).values()].sort((a,b)=>(a.distanceKm||0)-(b.distanceKm||0))

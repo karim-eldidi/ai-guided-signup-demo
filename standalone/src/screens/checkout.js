@@ -26,33 +26,25 @@ function detailsScreen() {
     ${ERRORS[name]?`<div class="field-error">${esc(ERRORS[name])}</div>`:''}
     ${o.why?`<div class="field__why">${icon('info',14)} <span>${esc(o.why)}</span></div>`:''}</div>`;
   const each = perSession(F.price, S.answers.frequency, plan);
-  const shown = F.included.slice(0,3), more = Math.max(0, F.included.length - shown.length);
+  const shown = F.included.slice(0, 2), more = Math.max(0, F.included.length - shown.length);
 
-  const starredKeys = Object.keys(S.starredVenues || {});
+  const starredKeys = Object.keys(S.starredVenues || {}).filter(k => S.starredVenues[k]);
   const match = matchVenues(A());
   const pool = match.pool || [];
   const from = (match.areas && match.areas.length) ? match.areas : [match.area || ANYWHERE];
 
-  let routineVenues = [];
-  if (starredKeys.length) {
-    routineVenues = starredKeys.map(id => {
+  let lockedVenues = [];
+  if (starredKeys.length > 0) {
+    lockedVenues = starredKeys.map(id => {
       const p = pool.find(x => x.id === id);
       if (p) return p;
       const raw = VENUES.find(x => x.id === id);
       if (!raw) return null;
       const km = Math.round(Math.min(...from.map(x => distanceKm(x, raw))) * 10) / 10;
       return { ...raw, distanceKm: km };
-    }).filter(Boolean);
-  } else {
-    const groups = (A().activities || []).filter(x => x !== SKIP);
-    const cov = groups.length && pool.length ? coverage(groups, pool, plan.id) : null;
-    if (cov) {
-      routineVenues = [...new Map(cov.rows.flatMap(r => r.nearby).map(v => [v.id, v])).values()]
-        .sort((a, b) => (a.distanceKm || 0) - (b.distanceKm || 0));
-    }
+    }).filter(Boolean).filter(v => !includedIn(v, plan.id));
   }
 
-  const lockedVenues = routineVenues.filter(v => !includedIn(v, plan.id));
   let upsellBlock = '';
   if (lockedVenues.length > 0 && !S.dismissedUpsell) {
     const unlockPlans = lockedVenues.map(v => firstPlanWithAccess(v)).filter(Boolean);
@@ -62,29 +54,26 @@ function detailsScreen() {
       const upPrice = priceFor(upPlan, S.commitmentId);
       const delta = upPrice - F.price;
       const placesCount = lockedVenues.length;
-      const placesLabel = placesCount === 1 ? '1 of your saved places needs' : `${placesCount} of your saved places need`;
-      const benefitText = `${esc(upPlan.name)} opens ${placesCount === 1 ? 'this venue' : 'both'}, plus ${upPlan.plusCheckIns || 4} Plus visits a month including ${upPlan.id === 'max' ? '2 massages' : '1 massage'}.`;
+      const placesLabel = placesCount === 1 ? '1 saved place needs' : `${placesCount} saved places need`;
 
       upsellBlock = `<div class="ordercard__upsell">
-        <div class="ordercard__upsell-title">${placesLabel} ${esc(upPlan.name)}</div>
+        <div class="ordercard__upsell-head">
+          <div class="ordercard__upsell-title">${placesLabel} ${esc(upPlan.name)}</div>
+          <span class="ordercard__upsell-delta">+${delta} &euro;/mo</span>
+        </div>
         <div class="ordercard__upsell-venues">
           ${lockedVenues.slice(0, 2).map(v => `
             <div class="asidevenue asidevenue--locked">
               <div class="asidevenue__media">${venueMedia(v)}</div>
               <div>
                 <div class="asidevenue__name">${esc(v.name)}</div>
-                <div class="asidevenue__meta asidevenue__meta--locked">Not included with ${esc(plan.name)}</div>
+                <div class="asidevenue__meta asidevenue__meta--locked">Needs ${esc(upPlan.name)}</div>
               </div>
             </div>
           `).join('')}
         </div>
-        <p class="ordercard__upsell-benefit">${benefitText}</p>
-        <div class="ordercard__upsell-price-row">
-          <span class="ordercard__upsell-price"><b>${esc(upPlan.name)} ${upPrice} €</b><small>/month</small></span>
-          <span class="ordercard__upsell-delta">+${delta} €</span>
-        </div>
         <button class="btn btn--secondary btn--block ordercard__upsell-btn" type="button" data-upgrade-plan="${esc(upPlan.id)}">
-          Upgrade to ${esc(upPlan.name)}
+          Upgrade to ${esc(upPlan.name)} (${upPrice} &euro;/mo)
         </button>
         <button class="linkish ordercard__upsell-keep" type="button" data-dismiss-upsell>
           Keep ${esc(plan.name)}

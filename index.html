@@ -2342,141 +2342,125 @@ main.plans-page { width:100%; max-width:1080px; margin: 0 auto; box-sizing:borde
 }
 .ordercard {
   background: var(--cream); border: 1px solid var(--cream-line);
-  border-radius: var(--radius-lg); padding: 22px 20px;
+  border-radius: var(--radius-lg); padding: 18px 18px;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
 }
 .ordercard__idrow { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; }
-.ordercard__name { font-size: 22px; font-weight: 800; letter-spacing: -.4px; }
+.ordercard__name { font-size: 20px; font-weight: 800; letter-spacing: -.4px; }
 .ordercard__price { font-variant-numeric: tabular-nums; white-space: nowrap; }
-.ordercard__price b { font-size: 22px; font-weight: 800; }
-.ordercard__price span { font-size: 13px; color: var(--navy-soft); margin-left: 3px; }
-.ordercard__term { font-size: 13px; color: var(--navy-soft); margin-top: 2px; }
+.ordercard__price b { font-size: 20px; font-weight: 800; }
+.ordercard__price span { font-size: 12.5px; color: var(--navy-soft); margin-left: 3px; }
+.ordercard__term { font-size: 12px; color: var(--navy-soft); margin-top: 2px; }
 .ordercard__venues {
-  margin: 14px 0 16px;
-  padding: 12px 0 14px;
+  margin: 12px 0 14px;
+  padding: 10px 0 12px;
   border-top: 1px solid var(--cream-line);
   border-bottom: 1px solid var(--cream-line);
 }
 .ordercard__venues-title {
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: .05em;
   color: var(--navy-soft);
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 .ordercard__venues-more {
-  font-size: 12px;
+  font-size: 11.5px;
   color: var(--navy-soft);
-  margin-top: 10px;
+  margin-top: 8px;
   font-weight: 600;
 }
 .ordercard__highlights {
-  display: flex; flex-direction: column; gap: 10px;
-  margin: 14px 0 16px; padding: 12px 0 14px;
+  display: flex; flex-direction: column; gap: 8px;
+  margin: 12px 0 14px; padding: 10px 0 12px;
   border-top: 1px solid var(--cream-line); border-bottom: 1px solid var(--cream-line);
 }
 .ordercard__item {
-  display: flex; align-items: flex-start; gap: 9px;
-  font-size: 13px; line-height: 1.35; color: var(--navy);
+  display: flex; align-items: flex-start; gap: 8px;
+  font-size: 12.5px; line-height: 1.35; color: var(--navy);
 }
 .ordercard__item svg { flex: 0 0 auto; margin-top: 2px; color: var(--ink); }
 .ordercard__trust {
   display: flex; align-items: center; gap: 7px;
-  font-size: 12px; color: var(--navy-soft);
+  font-size: 11.5px; color: var(--navy-soft);
   margin-top: 2px;
 }
 .ordercard__trust svg { color: var(--navy-soft); }
 .ordercard__links {
-  display: flex; flex-direction: column; align-items: flex-start; gap: 12px;
-  margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--cream-line);
+  display: flex; flex-direction: column; align-items: flex-start; gap: 10px;
+  margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--cream-line);
 }
-.ordercard__links .linkish { display: flex; align-items: center; gap: 9px; font-size: 14px; }
+.ordercard__links .linkish { display: flex; align-items: center; gap: 8px; font-size: 13px; }
 .ordercard__links svg { color: var(--navy-soft); }
-.asidevenues { display: flex; flex-direction: column; gap: 12px; }
-.asidevenue { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.asidevenues { display: flex; flex-direction: column; gap: 9px; }
+.asidevenue { display: flex; align-items: center; gap: 10px; min-width: 0; }
 .asidevenue__media {
-  position: relative; flex: 0 0 auto; width: 56px; height: 44px;
-  border-radius: 8px; overflow: hidden; background: var(--yellow-pale);
+  position: relative; flex: 0 0 auto; width: 44px; height: 36px;
+  border-radius: 6px; overflow: hidden; background: var(--yellow-pale);
   display: grid; place-items: center;
 }
 .asidevenue__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.asidevenue__media .venue-card__glyph svg { width: 20px; height: 20px; }
+.asidevenue__media .venue-card__glyph svg { width: 18px; height: 18px; }
 /* A row in a list of rows, not a call to action — full button height here made the
    least important thing in the column the tallest. */
-.ordercard__more { height: 42px; font-size: 14.5px; margin-top: 12px; }
-.asidevenue__name { font-size: 14px; font-weight: 700; line-height: 1.25; }
-.asidevenue__meta { font-size: 12.5px; color: var(--navy-soft); margin-top: 2px; font-variant-numeric: tabular-nums; }
+.ordercard__more { height: 38px; font-size: 13.5px; margin-top: 10px; }
+.asidevenue__name { font-size: 13px; font-weight: 700; line-height: 1.25; }
+.asidevenue__meta { font-size: 11.5px; color: var(--navy-soft); margin-top: 2px; font-variant-numeric: tabular-nums; }
 
 .ordercard__upsell {
-  margin: 14px 0 16px;
-  padding: 14px;
+  margin: 12px 0 14px;
+  padding: 12px 14px;
   background: #fff9db;
   border: 1px solid #fce588;
-  border-radius: 12px;
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
+}
+.ordercard__upsell-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
 }
 .ordercard__upsell-title {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--ink);
   line-height: 1.3;
 }
+.ordercard__upsell-delta {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1a56db;
+  flex: 0 0 auto;
+}
 .ordercard__upsell-venues {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgba(240, 200, 50, 0.45);
+  gap: 6px;
 }
 .asidevenue--locked .asidevenue__name {
-  font-size: 13.5px;
+  font-size: 12.5px;
   font-weight: 700;
 }
 .asidevenue__meta--locked {
-  font-size: 12px;
+  font-size: 11.5px;
   color: #a05a00;
   font-weight: 500;
 }
-.ordercard__upsell-benefit {
-  font-size: 12.5px;
-  line-height: 1.4;
-  color: var(--navy);
-  margin: 0;
-}
-.ordercard__upsell-price-row {
-  display: flex;
-  align-items: baseline;
-  gap: 6px;
-  font-size: 13.5px;
-  color: var(--ink);
-}
-.ordercard__upsell-price b {
-  font-size: 15px;
-  font-weight: 800;
-}
-.ordercard__upsell-price small {
-  font-size: 12px;
-  color: var(--navy-soft);
-}
-.ordercard__upsell-delta {
-  font-size: 13px;
-  font-weight: 700;
-  color: #1a56db;
-}
 .ordercard__upsell-btn {
   width: 100%;
-  height: 38px;
+  height: 34px;
   background: #ffffff;
   border: 1.5px solid var(--ink);
   color: var(--ink);
-  font-size: 13.5px;
+  font-size: 12.5px;
   font-weight: 700;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
   display: grid;
   place-items: center;
@@ -2487,7 +2471,7 @@ main.plans-page { width:100%; max-width:1080px; margin: 0 auto; box-sizing:borde
 }
 .ordercard__upsell-keep {
   align-self: center;
-  font-size: 12.5px;
+  font-size: 11.5px;
   font-weight: 600;
   color: var(--navy-soft);
   text-decoration: underline;
@@ -2495,7 +2479,7 @@ main.plans-page { width:100%; max-width:1080px; margin: 0 auto; box-sizing:borde
   background: none;
   border: none;
   cursor: pointer;
-  padding: 2px 6px;
+  padding: 0;
 }
 .ordercard__upsell-keep:hover {
   color: var(--ink);
@@ -11046,7 +11030,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build d326331 + local edits</span>
+  <span class="demo-banner__build">build de7ad60 + local edits</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -15632,7 +15616,7 @@ function plansScreen() {
       <div class="plans-sticky-bar__name"><b>${esc(selectedPlan.name)}</b> &middot; ${selectedPrice} &euro;/mo</div>
       <div class="plans-sticky-bar__sub">${stickySub}</div>
     </div>
-    <button class="btn btn--primary plans-sticky-bar__cta" type="button" data-go="details">
+    <button class="btn btn--primary plans-sticky-bar__cta" type="button" data-confirm-plan="${esc(selectedPlan.id)}" data-go="details">
       Continue with ${esc(selectedPlan.name)}
     </button>
   </div>`;
@@ -15653,7 +15637,9 @@ function plansScreen() {
     <div class="plans-layout">
       <div class="plans-main">
         <section class="plans-options-card" aria-label="Membership options">
-          <div class="plan-lines-group">${planLines}</div>
+          <div class="plans-options-list" role="region" aria-label="Membership tiers">
+            ${planLines}
+          </div>
 
           <div class="plans-always-banner">
             <span class="always-sparkle">✦</span>
@@ -15661,7 +15647,7 @@ function plansScreen() {
           </div>
         </section>
 
-        <div class="plans-nav-row">
+        <div class="plans-back-row">
           <button class="btn btn--secondary btn-back-plan" type="button" data-go="recommendation">
             ${icon('arrowLeft', 16)} Back
           </button>
@@ -15686,7 +15672,7 @@ function plansScreen() {
             ${rec && rec.planId === selectedPlan.id ? esc(selectedMeta.headSub || 'Fits your weekly routine and covers your target venues.') : esc(selectedMeta.headSub || 'All-inclusive access to fitness, sports, and wellness.')}
           </p>
 
-          <button class="btn btn--primary plan-summary-card__cta" type="button" data-go="details">
+          <button class="btn btn--primary plan-summary-card__cta" type="button" data-confirm-plan="${esc(selectedPlan.id)}" data-go="details">
             Choose ${esc(selectedPlan.name)} and continue ${icon('arrowRight', 16)}
           </button>
 
@@ -15732,7 +15718,7 @@ function fitSummary() {
   const totals = cov ? cov.totals : null;
 
   // Resolve routine venues first if user starred places!
-  const starredKeys = Object.keys(S.starredVenues || {});
+  const starredKeys = Object.keys(S.starredVenues || {}).filter(k => S.starredVenues[k]);
   let included = [];
   if (starredKeys.length) {
     included = starredKeys.map(id => {
@@ -15742,7 +15728,7 @@ function fitSummary() {
       if (!raw) return null;
       const km = Math.round(Math.min(...from.map(x => distanceKm(x, raw))) * 10) / 10;
       return { ...raw, distanceKm: km };
-    }).filter(Boolean);
+    }).filter(Boolean).filter(v => includedIn(v, plan.id));
   } else {
     included = cov
       ? [...new Map(cov.rows.flatMap(r=>r.included).map(v=>[v.id,v])).values()].sort((a,b)=>(a.distanceKm||0)-(b.distanceKm||0))
@@ -15783,33 +15769,25 @@ function detailsScreen() {
     ${ERRORS[name]?`<div class="field-error">${esc(ERRORS[name])}</div>`:''}
     ${o.why?`<div class="field__why">${icon('info',14)} <span>${esc(o.why)}</span></div>`:''}</div>`;
   const each = perSession(F.price, S.answers.frequency, plan);
-  const shown = F.included.slice(0,3), more = Math.max(0, F.included.length - shown.length);
+  const shown = F.included.slice(0, 2), more = Math.max(0, F.included.length - shown.length);
 
-  const starredKeys = Object.keys(S.starredVenues || {});
+  const starredKeys = Object.keys(S.starredVenues || {}).filter(k => S.starredVenues[k]);
   const match = matchVenues(A());
   const pool = match.pool || [];
   const from = (match.areas && match.areas.length) ? match.areas : [match.area || ANYWHERE];
 
-  let routineVenues = [];
-  if (starredKeys.length) {
-    routineVenues = starredKeys.map(id => {
+  let lockedVenues = [];
+  if (starredKeys.length > 0) {
+    lockedVenues = starredKeys.map(id => {
       const p = pool.find(x => x.id === id);
       if (p) return p;
       const raw = VENUES.find(x => x.id === id);
       if (!raw) return null;
       const km = Math.round(Math.min(...from.map(x => distanceKm(x, raw))) * 10) / 10;
       return { ...raw, distanceKm: km };
-    }).filter(Boolean);
-  } else {
-    const groups = (A().activities || []).filter(x => x !== SKIP);
-    const cov = groups.length && pool.length ? coverage(groups, pool, plan.id) : null;
-    if (cov) {
-      routineVenues = [...new Map(cov.rows.flatMap(r => r.nearby).map(v => [v.id, v])).values()]
-        .sort((a, b) => (a.distanceKm || 0) - (b.distanceKm || 0));
-    }
+    }).filter(Boolean).filter(v => !includedIn(v, plan.id));
   }
 
-  const lockedVenues = routineVenues.filter(v => !includedIn(v, plan.id));
   let upsellBlock = '';
   if (lockedVenues.length > 0 && !S.dismissedUpsell) {
     const unlockPlans = lockedVenues.map(v => firstPlanWithAccess(v)).filter(Boolean);
@@ -15819,29 +15797,26 @@ function detailsScreen() {
       const upPrice = priceFor(upPlan, S.commitmentId);
       const delta = upPrice - F.price;
       const placesCount = lockedVenues.length;
-      const placesLabel = placesCount === 1 ? '1 of your saved places needs' : `${placesCount} of your saved places need`;
-      const benefitText = `${esc(upPlan.name)} opens ${placesCount === 1 ? 'this venue' : 'both'}, plus ${upPlan.plusCheckIns || 4} Plus visits a month including ${upPlan.id === 'max' ? '2 massages' : '1 massage'}.`;
+      const placesLabel = placesCount === 1 ? '1 saved place needs' : `${placesCount} saved places need`;
 
       upsellBlock = `<div class="ordercard__upsell">
-        <div class="ordercard__upsell-title">${placesLabel} ${esc(upPlan.name)}</div>
+        <div class="ordercard__upsell-head">
+          <div class="ordercard__upsell-title">${placesLabel} ${esc(upPlan.name)}</div>
+          <span class="ordercard__upsell-delta">+${delta} &euro;/mo</span>
+        </div>
         <div class="ordercard__upsell-venues">
           ${lockedVenues.slice(0, 2).map(v => `
             <div class="asidevenue asidevenue--locked">
               <div class="asidevenue__media">${venueMedia(v)}</div>
               <div>
                 <div class="asidevenue__name">${esc(v.name)}</div>
-                <div class="asidevenue__meta asidevenue__meta--locked">Not included with ${esc(plan.name)}</div>
+                <div class="asidevenue__meta asidevenue__meta--locked">Needs ${esc(upPlan.name)}</div>
               </div>
             </div>
           `).join('')}
         </div>
-        <p class="ordercard__upsell-benefit">${benefitText}</p>
-        <div class="ordercard__upsell-price-row">
-          <span class="ordercard__upsell-price"><b>${esc(upPlan.name)} ${upPrice} €</b><small>/month</small></span>
-          <span class="ordercard__upsell-delta">+${delta} €</span>
-        </div>
         <button class="btn btn--secondary btn--block ordercard__upsell-btn" type="button" data-upgrade-plan="${esc(upPlan.id)}">
-          Upgrade to ${esc(upPlan.name)}
+          Upgrade to ${esc(upPlan.name)} (${upPrice} &euro;/mo)
         </button>
         <button class="linkish ordercard__upsell-keep" type="button" data-dismiss-upsell>
           Keep ${esc(plan.name)}
@@ -16674,7 +16649,7 @@ function go(route, opts={}) {
      two silently redirected back to question two and looked broken (rule 71). A way out
      that refuses to open is not a way out. Only the screens that need a chosen plan are
      guarded; the save screen shows whatever is true at the point they left. */
-  if (['details','payment'].includes(route) && !fitComplete(S.answers) && !S.planOverridden) route = 'fit';
+  if (['details','payment'].includes(route) && !fitComplete(S.answers) && !S.planOverridden && !S.chosenPlanId) route = 'fit';
   /* There used to be a redirect here sending anyone without an email to the save screen
      first. That is a toll gate (rule 25) wearing a different hat: the address was optional
      on the landing page and then compulsory two screens later. Signing up collects an
@@ -16894,8 +16869,13 @@ document.addEventListener('click', e => {
     if (ws) ws.hidden = true;
   }
 
-  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-open-login],[data-close-login],[data-open-review-answers],[data-close-review-answers],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-app],[data-close-app-sheet],[data-change-city],[data-city],[data-unsure],[data-radius],[data-toggle-apps],[data-toggle-more],[data-more],[data-toggle-alt],[data-add-day],[data-add-venue],[data-pick-plan],[data-skip-save],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-search-example],[data-venue-search-all],[data-venue-clear],[data-toggle-where],[data-where],[data-select-area],[data-area-search-clear],[data-where-search-clear],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-filter-category],[data-scroll-pills],[data-scroll-gallery],[data-toggle-star],[data-open-plan-drawer],[data-close-plan-drawer],[data-open-order-summary],[data-close-order-summary],[data-toggle-more-filters],[data-toggle-tier-filter],[data-toggle-act-filter],[data-clear-all-filters],[data-apply-filters],[data-act-search-clear],[data-remove-tier-filter],[data-remove-act-filter],[data-remove-cat-filter],[data-remove-radius-filter],[data-venue-view-mode],[data-map-pin],[data-map-close-preview],[data-upgrade-plan],[data-dismiss-upsell]');
+  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-open-login],[data-close-login],[data-open-review-answers],[data-close-review-answers],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-app],[data-close-app-sheet],[data-change-city],[data-city],[data-unsure],[data-radius],[data-toggle-apps],[data-toggle-more],[data-more],[data-toggle-alt],[data-add-day],[data-add-venue],[data-pick-plan],[data-confirm-plan],[data-skip-save],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-search-example],[data-venue-search-all],[data-venue-clear],[data-toggle-where],[data-where],[data-select-area],[data-area-search-clear],[data-where-search-clear],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-filter-category],[data-scroll-pills],[data-scroll-gallery],[data-toggle-star],[data-open-plan-drawer],[data-close-plan-drawer],[data-open-order-summary],[data-close-order-summary],[data-toggle-more-filters],[data-toggle-tier-filter],[data-toggle-act-filter],[data-clear-all-filters],[data-apply-filters],[data-act-search-clear],[data-remove-tier-filter],[data-remove-act-filter],[data-remove-cat-filter],[data-remove-radius-filter],[data-venue-view-mode],[data-map-pin],[data-map-close-preview],[data-upgrade-plan],[data-dismiss-upsell]');
   if (!t) return;
+
+  if (t.dataset.confirmPlan) {
+    S.chosenPlanId = t.dataset.confirmPlan;
+    S.planOverridden = true;
+  }
 
   if (t.dataset.upgradePlan) {
     S.chosenPlanId = t.dataset.upgradePlan;
