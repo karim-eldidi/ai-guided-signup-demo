@@ -1107,7 +1107,7 @@ function plansScreen() {
     <div class="plans-fit-bar__left">
       <div class="plans-fit-bar__brand">${ulaAvatar()} <b>Urby</b></div>
       <div class="plans-fit-bar__prompt">
-        <span><strong>Not sure which one to choose?</strong> Let Urby recommend your perfect membership based on your routine.</span>
+        <span><strong>Not sure which to choose?</strong> Find the best membership for your routine.</span>
       </div>
     </div>
     <div class="plans-fit-bar__right">

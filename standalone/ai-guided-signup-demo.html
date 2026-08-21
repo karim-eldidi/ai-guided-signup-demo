@@ -57,11 +57,22 @@
   --page:       #fdfefe;
   --page-grey:  #f6f6f6;
 
-  --radius-sm: 4px;
-  --radius:    8px;
-  --radius-md: 10px;
-  --radius-lg: 12px;
-  --radius-xl: 20px;
+  /* --- Unified Design System Tokens --- */
+  --radius-xs:   4px;
+  --radius-sm:   8px;
+  --radius-md:   10px;
+  --radius-lg:   12px;
+  --radius-xl:   16px;
+  --radius-2xl:  20px;
+  --radius-pill: 9999px;
+  --radius:      var(--radius-lg);
+
+  --btn-height:     52px;
+  --btn-height-sm:  38px;
+  --btn-radius:     var(--radius-lg);
+  --input-radius:   var(--radius-md);
+  --card-radius:    var(--radius-lg);
+  --modal-radius:   var(--radius-2xl);
 
   --shell: 1440px;
   --font: "Figtree", "Inter Tight", Inter, "Helvetica Neue", Helvetica, FreeSans, Arial, sans-serif;
@@ -215,7 +226,7 @@ b, strong { font-weight: 700; }
 .signup-row {
   display: flex;
   border: 1.5px solid var(--ink);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-lg);
   background: #fff;
   max-width: 560px;
   overflow: hidden;
@@ -226,8 +237,8 @@ b, strong { font-weight: 700; }
   border: 0;
   outline: none;
   padding: 0 20px;
-  height: 60px;
-  font-size: 17px;
+  height: 54px;
+  font-size: 16px;
   background: #fff;
   min-width: 0;
 }
@@ -243,9 +254,9 @@ b, strong { font-weight: 700; }
   background: var(--ink);
   color: #fff;
   font-weight: 700;
-  font-size: 17px;
-  padding: 0 34px;
-  height: 60px;
+  font-size: 16px;
+  padding: 0 30px;
+  height: 54px;
 }
 
 .or-divider {
@@ -452,15 +463,17 @@ b, strong { font-weight: 700; }
 
 /* Questions with many equivalent choices (e.g. which part of the city) become a
    compact two-column grid, so the screen still reads as one decision. */
-.options--compact { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
-.options--compact .option-card { min-height: 54px; padding: 10px 16px; font-size: 16.5px; }
-.options--compact .option-card.is-selected { padding: 9px 15px; }
-.options--compact .option-card__icon { width: 30px; height: 30px; }
+/* Questions with many equivalent choices (e.g. which part of the city) become a
+   compact two-column grid, so the screen still reads as one decision. */
+.options--compact { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.options--compact .option-card { min-height: 56px; padding: 11px 15px; font-size: 15px; }
+.options--compact .option-card.is-selected { padding: 10.5px 14.5px; }
+.options--compact .option-card__icon { width: 32px; height: 32px; }
 
 /* Area / Neighbourhood Search & Autocomplete Suggestions */
 .area-search-wrap {
   position: relative;
-  margin-top: 14px;
+  margin-top: 12px;
   margin-bottom: 8px;
   width: 100%;
 }
@@ -472,7 +485,7 @@ b, strong { font-weight: 700; }
 }
 .area-search-icon {
   position: absolute;
-  left: 12px;
+  left: 14px;
   color: var(--navy-soft);
   pointer-events: none;
   display: flex;
@@ -480,12 +493,14 @@ b, strong { font-weight: 700; }
 }
 .area-search-input {
   width: 100%;
-  height: 42px;
-  padding: 0 36px 0 38px;
+  height: 44px;
+  padding: 0 36px 0 40px;
   border: 1.5px solid var(--border);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   background: #fff;
+  font-family: var(--font);
   font-size: 14.5px;
+  font-weight: 400;
   color: var(--ink);
   transition: border-color .15s ease, box-shadow .15s ease;
   box-sizing: border-box;
@@ -493,7 +508,7 @@ b, strong { font-weight: 700; }
 .area-search-input:focus {
   outline: none;
   border-color: var(--ink);
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 0 0 3px rgba(8, 9, 10, 0.05);
 }
 .area-search-clear {
   position: absolute;
@@ -506,7 +521,7 @@ b, strong { font-weight: 700; }
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
+  border-radius: var(--radius-pill);
 }
 .area-search-clear:hover {
   color: var(--ink);
@@ -518,12 +533,12 @@ b, strong { font-weight: 700; }
   right: 0;
   background: #ffffff;
   border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
   z-index: 50;
   max-height: 260px;
   overflow-y: auto;
-  padding: 4px;
+  padding: 6px;
 }
 .area-suggestion-item {
   display: flex;
@@ -532,7 +547,7 @@ b, strong { font-weight: 700; }
   width: 100%;
   padding: 8px 12px;
   border: 0;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: transparent;
   text-align: left;
   cursor: pointer;
@@ -560,7 +575,7 @@ b, strong { font-weight: 700; }
 }
 .area-suggestion-title {
   font-size: 13.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--ink);
   line-height: 1.3;
 }
@@ -582,7 +597,7 @@ b, strong { font-weight: 700; }
 }
 .area-section__title {
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--navy-soft);
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -597,7 +612,7 @@ b, strong { font-weight: 700; }
   border-top: 1px dashed var(--border);
 }
 .options--anywhere .option-card {
-  min-height: 48px;
+  min-height: 50px;
   padding: 10px 14px;
 }
 
@@ -611,7 +626,7 @@ b, strong { font-weight: 700; }
 .wherepick__subheading {
   display: block;
   font-size: 11.5px;
-  font-weight: 700;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--navy-soft);
@@ -626,7 +641,7 @@ b, strong { font-weight: 700; }
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 /* The input is the real control: off-screen but focusable, full-size to the
@@ -642,32 +657,52 @@ b, strong { font-weight: 700; }
      full-page black circle over the payment screen. A card is always the containing
      block for anything inside it. */
   position: relative;
-  display: flex; align-items: center; gap: 17px;
+  display: flex; align-items: center; gap: 14px;
   width: 100%;
   text-align: left;
   background: #fff;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 13px 20px;
-  font-size: 17.5px;
-  font-weight: 700;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 12px 16px;
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: 600;
   color: var(--ink);
-  min-height: 62px;
-  transition: border-color .12s ease, box-shadow .12s ease;
+  min-height: 56px;
+  cursor: pointer;
+  transition: border-color .15s ease, background-color .15s ease, box-shadow .15s ease;
+  box-sizing: border-box;
 }
-.option-card:hover { border-color: #b9b6ad; }
-.option-card.is-selected { border: 2px solid var(--ink); padding: 12px 19px; }
+.option-card:hover {
+  border-color: #b9b6ad;
+  background: #fafaf9;
+}
+.option-card.is-selected {
+  border: 2px solid var(--ink);
+  background: #faf8f5;
+  padding: 11.5px 15.5px;
+}
 .option-card__icon {
   position: relative;
-  flex: 0 0 auto; width: 36px; height: 36px; border-radius: 50%;
+  flex: 0 0 auto; width: 34px; height: 34px; border-radius: 50%;
   background: var(--yellow-pale); display: grid; place-items: center;
+  color: var(--ink);
 }
-.option-card__label { flex: 1 1 auto; }
-/* The tick lives ON the icon, not beside the label. As a sibling it took 36px of
-   width off the label the moment you selected the card, so "Five times a week or
-   more" broke onto a second line and the row jumped — selecting an answer must not
-   reflow it. Over the icon it costs nothing, and the state reads where the eye
-   already is. */
+.option-card__label {
+  flex: 1 1 auto;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--ink);
+}
+.option-card__sub {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--navy-soft);
+  line-height: 1.3;
+}
+/* The tick lives ON the icon, not beside the label. Over the icon it costs
+   nothing, and the state reads where the eye already is. */
 .option-card__check {
   position: absolute; inset: 0; border-radius: 50%;
   background: var(--ink); color: #fff; display: none; place-items: center;
@@ -678,38 +713,56 @@ b, strong { font-weight: 700; }
 
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-  height: 62px; padding: 0 30px;
-  border-radius: 6px; border: 1.5px solid transparent;
-  font-size: 18px; font-weight: 700; text-decoration: none;
+  height: 52px; padding: 0 24px;
+  border-radius: var(--radius-lg); border: 1.5px solid transparent;
+  font-family: var(--font);
+  font-size: 16px; font-weight: 700; text-decoration: none;
+  cursor: pointer;
+  transition: background-color .15s ease, border-color .15s ease, transform .1s ease;
 }
-.btn--primary { background: var(--ink); color: #fff; }
-.btn--primary:hover { background: #1d2026; }
-.btn--secondary { background: #fff; color: var(--ink); border-color: var(--ink); }
+.btn--primary {
+  background: var(--ink);
+  color: #fff;
+  border-color: var(--ink);
+}
+.btn--primary:hover {
+  background: #1d2026;
+  border-color: #1d2026;
+}
+.btn--secondary {
+  background: #fff;
+  color: var(--ink);
+  border-color: var(--border);
+}
+.btn--secondary:hover {
+  background: #fafaf9;
+  border-color: var(--ink);
+}
 .btn--block { width: 100%; }
 .btn:disabled { opacity: .45; cursor: not-allowed; }
 .btn--sm {
   height: 38px;
   padding: 0 16px;
   font-size: 13.5px;
-  border-radius: 9999px;
+  border-radius: var(--radius-pill);
   gap: 6px;
 }
 
-.btn-row { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 22px; }
+.btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
 
 .freetext {
   /* Collapsed behind a link on every viewport: the options are the fast path,
      and an always-open text box invites people to write an essay instead. */
   display: none; align-items: center; gap: 14px;
   margin-top: 14px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 0 20px;
-  height: 62px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 0 18px;
+  height: 52px;
   background: #fff;
 }
-.freetext input { flex: 1 1 auto; border: 0; outline: none; height: 100%; background: transparent; }
-.freetext button { border: 0; background: none; font-weight: 700; font-size: 16px; padding: 0; }
+.freetext input { flex: 1 1 auto; border: 0; outline: none; height: 100%; background: transparent; font-family: var(--font); font-size: 15px; }
+.freetext button { border: 0; background: none; font-weight: 700; font-size: 15px; padding: 0; cursor: pointer; }
 
 .freetext.is-open { display: flex; }
 
@@ -718,21 +771,21 @@ b, strong { font-weight: 700; }
    than a stack of rows, and shorter, so the question and its CTA stay on one
    screen. */
 .options--tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.options--tiles .option-card { min-height: 58px; padding: 11px 16px; font-size: 16.5px; gap: 13px; }
-.options--tiles .option-card.is-selected { padding: 10px 15px; }
+.options--tiles .option-card { min-height: 56px; padding: 12px 16px; font-size: 15px; gap: 12px; }
+.options--tiles .option-card.is-selected { padding: 11.5px 15.5px; }
 .options--tiles .option-card__icon { width: 34px; height: 34px; }
 
 /* --- choices as full-width rows ------------------------------------------- */
-.options--rows { display: flex; flex-direction: column; gap: 11px; }
+.options--rows { display: flex; flex-direction: column; gap: 10px; }
 .options--rows .option-card {
-  min-height: 56px; padding: 13px 20px; font-size: 17px; gap: 16px;
-  border: 1px solid var(--border); background: #fff;
+  min-height: 56px; padding: 12px 18px; font-size: 15px; gap: 14px;
+  border: 1.5px solid var(--border); background: #fff;
 }
 .options--rows .option-card:hover { border-color: #b9b6ad; }
 .options--rows .option-card.is-selected {
-  border: 2px solid var(--ink); padding: 12px 19px;
+  border: 2px solid var(--ink); padding: 11.5px 17.5px;
 }
-.options--rows .option-card__icon { width: 36px; height: 36px; }
+.options--rows .option-card__icon { width: 34px; height: 34px; }
 
 .ownwords { margin-top: 14px; }
 .ownwords__label {
@@ -842,21 +895,21 @@ main.plans-page { width:100%; max-width:1080px; margin: 0 auto; box-sizing:borde
 
 .commit-row {
   display: inline-flex; align-items: center; justify-content: center;
-  background: var(--yellow); border: 1.5px solid var(--yellow-border); padding: 4px; border-radius: 14px; gap: 4px; margin: 0 auto;
+  background: #ede9df; border: 1.5px solid #d8d2c4; padding: 4px; border-radius: 14px; gap: 4px; margin: 0 auto;
 }
 .commit-row .commit-tab,
 .commit-row .chip-sm {
   height: 38px; padding: 0 16px; border-radius: 10px; font-size: 13.5px; font-weight: 600;
   display: inline-flex; align-items: center; gap: 6px;
-  background: transparent; border: none; color: var(--navy); cursor: pointer;
+  background: transparent; border: none; color: #475569; cursor: pointer;
   transition: all .15s ease;
 }
 .commit-row .commit-tab:hover,
-.commit-row .chip-sm:hover { color: var(--ink); background: rgba(255,255,255,0.45); }
+.commit-row .chip-sm:hover { color: var(--ink); background: rgba(255,255,255,0.6); }
 .commit-row .commit-tab.is-current,
 .commit-row .chip-sm.is-current {
   background: #ffffff; color: var(--ink); font-weight: 800;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 }
 .commit-save-pill {
   background: #e6f4ea; color: #137333; font-size: 11px; font-weight: 700;
@@ -867,7 +920,7 @@ main.plans-page { width:100%; max-width:1080px; margin: 0 auto; box-sizing:borde
 .plans-fit-bar {
   background: #fdfaf0; border: 1.5px solid #f2e4b8; border-radius: 16px;
   padding: 14px 20px; margin-bottom: 24px;
-  display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
 }
 .plans-fit-bar__left {
   display: flex; align-items: center; gap: 14px; min-width: 0; flex: 1 1 auto;
@@ -1037,7 +1090,39 @@ main.plans-page { width:100%; max-width:1080px; margin: 0 auto; box-sizing:borde
 .plan-summary-card__routine-link:hover { color: var(--ink); }
 
 .plan-summary__save {
-  margin-top: 14px; padding: 8px 4px;
+  display: flex !important;
+  align-items: flex-start;
+  gap: 12px;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  margin-top: 16px;
+  padding: 6px 2px;
+  cursor: pointer;
+  color: var(--ink);
+}
+.plan-summary__save svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  color: var(--navy-soft);
+}
+.plan-summary__save b {
+  display: block;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.plan-summary__save small {
+  display: block;
+  font-size: 13px;
+  color: var(--navy-soft);
+  margin-top: 2px;
+  line-height: 1.35;
+}
+.plan-summary__save:hover b {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
 }
 
 .plans-sticky-bar { display: none; }
@@ -1045,11 +1130,36 @@ main.plans-page { width:100%; max-width:1080px; margin: 0 auto; box-sizing:borde
 @media (max-width: 960px) {
   .plans-layout { grid-template-columns: 1fr; gap: 24px; align-items: start; }
   .plans-layout__sidebar { position: static; margin-top: 16px; }
-  .plans-fit-bar { flex-direction: column; align-items: flex-start; gap: 12px; }
-  .plans-fit-bar__right { align-self: flex-start; }
 }
 @media (max-width: 680px) {
   main.plans-page { padding: 20px 16px 120px; }
+  .plans-fit-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 14px 16px;
+  }
+  .plans-fit-bar__left {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .plans-fit-bar__brand {
+    margin-top: 1px;
+  }
+  .plans-fit-bar__prompt {
+    font-size: 13.5px;
+    line-height: 1.35;
+  }
+  .plans-fit-bar__right {
+    width: 100%;
+  }
+  .plans-fit-bar__cta {
+    width: 100%;
+    justify-content: center;
+    height: 42px;
+    font-size: 14px;
+  }
   .plans-options-card { padding: 10px; border-radius: 16px; }
   .plan-line__header {
     grid-template-columns: 36px 1fr auto; gap: 10px 12px; padding: 14px 14px;
@@ -1456,8 +1566,8 @@ main.plans-page { width:100%; max-width:1080px; margin: 0 auto; box-sizing:borde
 
 /* 5-6 options: chips rather than tall tiles, so the question still fits a screen */
 .options--chips { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.options--chips .option-card { min-height: 58px; padding: 11px 15px; font-size: 16.5px; gap: 12px; }
-.options--chips .option-card.is-selected { padding: 10px 14px; }
+.options--chips .option-card { min-height: 56px; padding: 11px 15px; font-size: 15px; gap: 12px; }
+.options--chips .option-card.is-selected { padding: 10.5px 14.5px; }
 .options--chips .option-card__icon { width: 34px; height: 34px; }
 
 /* --- what Urby heard ------------------------------------------------------ */
@@ -1545,11 +1655,16 @@ main.plans-page { width:100%; max-width:1080px; margin: 0 auto; box-sizing:borde
   flex-direction: column;
   align-items: flex-start;
   gap: 2px;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--ink);
 }
 .option-card__sub {
   font-size: 12.5px;
   font-weight: 500;
   color: var(--navy-soft);
+  line-height: 1.3;
 }
 .citypick {
   margin-top: 12px; background: var(--cream); border: 1px solid var(--cream-line);
@@ -7196,7 +7311,6 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 }
 .plan-summary__fact svg { flex: 0 0 auto; margin-top: 2px; color: #2d8a4e; }
 .plan-summary__link { display: block; margin-top: 14px; font-size: 15.5px; }
-.plan-summary__save { display: block; margin-top: 10px; font-size: 13.5px; color: var(--navy-soft); }
 
 .allplans__row[data-plan] { cursor: pointer; }
 .allplans__row[data-plan]:hover { background: #fff; }
@@ -9880,9 +9994,9 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 .question-card-container {
   background: #ffffff;
   border: 1px solid #e7e5e4;
-  border-radius: 20px;
-  padding: 32px 36px 30px;
-  margin: 12px auto 20px;
+  border-radius: var(--radius-2xl);
+  padding: 26px 32px 24px;
+  margin: 8px auto 16px;
   max-width: 680px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
 }
@@ -9998,14 +10112,22 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 .mobile-progress__fill { background: #f6d64a !important; }
 
 /* Options Tiles Spacing & Typography */
-.options--tiles .option-card {
+.options--tiles .option-card,
+.options--chips .option-card,
+.options--compact .option-card,
+.options--rows .option-card,
+.area-shortcuts-grid .option-card {
   min-height: 56px;
   padding: 12px 16px;
-  font-size: 15.5px;
+  font-size: 15px;
   gap: 12px;
 }
 
-.options--tiles .option-card__label {
+.options--tiles .option-card__label,
+.options--chips .option-card__label,
+.options--compact .option-card__label,
+.options--rows .option-card__label,
+.area-shortcuts-grid .option-card__label {
   font-size: 15px;
   line-height: 1.35;
   font-weight: 600;
@@ -10670,7 +10792,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 1623932 + local edits</span>
+  <span class="demo-banner__build">build 16c91ca + local edits</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -15243,7 +15365,7 @@ function plansScreen() {
     <div class="plans-fit-bar__left">
       <div class="plans-fit-bar__brand">${ulaAvatar()} <b>Urby</b></div>
       <div class="plans-fit-bar__prompt">
-        <span><strong>Not sure which one to choose?</strong> Let Urby recommend your perfect membership based on your routine.</span>
+        <span><strong>Not sure which to choose?</strong> Find the best membership for your routine.</span>
       </div>
     </div>
     <div class="plans-fit-bar__right">
