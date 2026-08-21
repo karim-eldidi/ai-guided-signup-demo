@@ -171,6 +171,20 @@ function placeCard(v, opts = {}) {
   </div>`;
 }
 
+function venueEndCard(b, shown, activeCats = []) {
+  const totalCount = shown.length;
+  return `<div class="venue-end-card">
+    <div class="venue-end-card__badge">${icon('checkThin', 13)} <span>All places shown</span></div>
+    <div class="venue-end-card__title">${totalCount} of ${totalCount} ${totalCount === 1 ? 'place' : 'places'} loaded</div>
+    <p class="venue-end-card__desc">Want to see more venues across Berlin?</p>
+    <div class="venue-end-card__actions">
+      ${(S.radiusKm !== '8' && S.radiusKm !== 'any') ? `<button class="chip-sm" type="button" data-radius="8">${icon('pin', 12)} Expand to 8 km</button>` : ''}
+      ${(S.radiusKm !== 'any') ? `<button class="chip-sm" type="button" data-radius="any">${icon('city', 12)} Search all Berlin</button>` : ''}
+      ${(activeCats && activeCats.length) ? `<button class="chip-sm" type="button" data-cat-all data-filter-category="all">${icon('grid', 12)} View all sports</button>` : ''}
+    </div>
+  </div>`;
+}
+
 function moreFiltersDrawer(filteredCount) {
   if (!VENUE_MORE_FILTERS_OPEN) return '';
 
@@ -368,13 +382,22 @@ function interactiveBerlinMap(b) {
     <div class="berlin-map-view-container">
       <div class="berlin-map-canvas-wrap">
         <div class="berlin-map-grid-bg"></div>
+        <svg class="berlin-map-topography" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <!-- Parks -->
+          <path d="M36,43 Q44,40 47,46 Q42,51 35,48 Z" fill="#e2ecd8" opacity="0.85" />
+          <path d="M48,68 Q58,66 57,76 Q46,78 48,68 Z" fill="#e2ecd8" opacity="0.85" />
+          <!-- Spree River -->
+          <path d="M 100,56 C 82,60 72,53 62,48 C 54,43 47,45 40,43 C 34,41 26,45 16,43 C 7,42 0,44 0,44" fill="none" stroke="#d2e4f0" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
+          <!-- Landwehrkanal -->
+          <path d="M 72,56 C 64,61 55,59 45,56 C 39,54 36,47 36,47" fill="none" stroke="#d2e4f0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
         ${districtLabels}
         ${originMarkers}
         ${pins}
         ${previewCard}
       </div>
       <div class="berlin-map-footer-note">
-        ${icon('info', 14)} <span>Showing coordinates for ${pts.length} nearest places. Tap any pin to preview venue details.</span>
+        ${icon('info', 14)} <span>Showing ${pts.length} nearest places on interactive map. Tap any pin to preview venue details.</span>
       </div>
     </div>
   `;
@@ -868,19 +891,24 @@ function searchScreen() {
 
           ${searched ? '' : `
           <section class="placesrow">
-            <div class="venue-results-header placesrow__title">
-              <h2 class="venue-results-header__title" id="results-count">${searched ? 'Search results' : countHeading}</h2>
+            <div class="venue-results-bar">
+              <div class="venue-results-bar__left">
+                <h2 class="venue-results-bar__title" id="results-count">Places for you</h2>
+                <span class="venue-results-bar__count">${searched ? 'Search results' : `${plural(b.within.length, 'place', 'places')} found${b.label ? ` &middot; ${esc(b.label)}` : ''}`}</span>
+              </div>
               ${searched ? '' : `
-                <div class="venue-view-toggle" role="group" aria-label="View mode">
-                  <button class="view-toggle-btn view-toggle-btn--gallery ${VENUE_VIEW_MODE === 'scroll' ? 'is-active' : ''}" type="button" data-venue-view-mode="scroll" aria-label="Carousel gallery view" aria-pressed="${VENUE_VIEW_MODE === 'scroll'}" title="Carousel view">
-                    ${icon('grid', 14)} <span>Gallery</span>
-                  </button>
-                  <button class="view-toggle-btn ${VENUE_VIEW_MODE === 'grid' ? 'is-active' : ''}" type="button" data-venue-view-mode="grid" aria-label="Grid layout view" aria-pressed="${VENUE_VIEW_MODE === 'grid'}" title="Grid view">
-                    ${icon('checkThin', 14)} <span>Grid</span>
-                  </button>
-                  <button class="view-toggle-btn ${VENUE_VIEW_MODE === 'map' ? 'is-active' : ''}" type="button" data-venue-view-mode="map" aria-label="Interactive map view" aria-pressed="${VENUE_VIEW_MODE === 'map'}" title="Map view">
-                    ${icon('city', 14)} <span>Map</span>
-                  </button>
+                <div class="venue-results-bar__right">
+                  <div class="venue-view-toggle" role="group" aria-label="View mode">
+                    <button class="view-toggle-btn view-toggle-btn--gallery ${VENUE_VIEW_MODE === 'scroll' ? 'is-active' : ''}" type="button" data-venue-view-mode="scroll" aria-label="Carousel gallery view" aria-pressed="${VENUE_VIEW_MODE === 'scroll'}" title="Carousel view">
+                      ${icon('grid', 14)} <span>Gallery</span>
+                    </button>
+                    <button class="view-toggle-btn ${VENUE_VIEW_MODE === 'grid' ? 'is-active' : ''}" type="button" data-venue-view-mode="grid" aria-label="Grid layout view" aria-pressed="${VENUE_VIEW_MODE === 'grid'}" title="Grid view">
+                      ${icon('checkThin', 14)} <span>Grid</span>
+                    </button>
+                    <button class="view-toggle-btn ${VENUE_VIEW_MODE === 'map' ? 'is-active' : ''}" type="button" data-venue-view-mode="map" aria-label="Interactive map view" aria-pressed="${VENUE_VIEW_MODE === 'map'}" title="Map view">
+                      ${icon('city', 14)} <span>Map</span>
+                    </button>
+                  </div>
                 </div>
               `}
             </div>
@@ -893,6 +921,12 @@ function searchScreen() {
                 <div class="hits venue-grid--catalog ${shown.length === 1 ? 'hits--one' : shown.length === 2 ? 'hits--two' : 'hits--row'}">
                   ${shown.map(v => placeCard(v)).join('')}
                 </div>
+                <div class="venue-grid-end-summary">
+                  <span class="venue-grid-end-summary__badge">${icon('checkThin', 13)} All ${shown.length} places shown</span>
+                  ${(S.radiusKm !== '8' && S.radiusKm !== 'any') ? `<button class="chip-sm" type="button" data-radius="8">${icon('pin', 12)} Expand to 8 km</button>` : ''}
+                  ${(S.radiusKm !== 'any') ? `<button class="chip-sm" type="button" data-radius="any">${icon('city', 12)} Search all Berlin</button>` : ''}
+                  ${(activeCats && activeCats.length) ? `<button class="chip-sm" type="button" data-cat-all data-filter-category="all">${icon('grid', 12)} View all sports</button>` : ''}
+                </div>
               ` : `
                 <div class="activity-gallery-wrap venue-gallery-wrap">
                   ${shown.length > 2 ? `<button class="gallery-nav-btn gallery-nav-btn--prev is-disabled" type="button" data-scroll-gallery="prev" aria-label="Scroll left" title="Scroll left">
@@ -901,6 +935,7 @@ function searchScreen() {
                   <div class="activity-gallery venue-carousel-scroll ${shown.length <= 2 ? 'venue-carousel-scroll--few' : ''}" id="activity-gallery-scroll">
                     <div class="venue-carousel-track hits hits--row ${shown.length <= 2 ? 'venue-carousel-track--few' : ''}">
                       ${shown.map(v => placeCard(v)).join('')}
+                      ${venueEndCard(b, shown, activeCats)}
                     </div>
                   </div>
                   ${shown.length > 2 ? `<button class="gallery-nav-btn gallery-nav-btn--next ${shown.length <= 4 ? 'is-disabled' : ''}" type="button" data-scroll-gallery="next" aria-label="Scroll right" title="Scroll right">

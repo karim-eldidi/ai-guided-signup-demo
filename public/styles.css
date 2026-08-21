@@ -447,7 +447,8 @@ b, strong { font-weight: 700; }
 /* Area / Neighbourhood Search & Autocomplete Suggestions */
 .area-search-wrap {
   position: relative;
-  margin-bottom: 12px;
+  margin-top: 14px;
+  margin-bottom: 8px;
   width: 100%;
 }
 .area-search-field {
@@ -907,22 +908,36 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
 .plans-always-banner {
   display: flex; align-items: center; gap: 10px; padding: 12px 18px;
   background: #fbf9f4; border: 1px solid #ede7db; border-radius: 12px;
-  font-size: 13px; color: var(--ink); margin-bottom: 20px;
+  font-size: 13px; color: var(--ink); margin-bottom: 0;
 }
 .always-sparkle { font-size: 16px; color: #d4a300; flex: 0 0 auto; }
 
-.plans-cta-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; justify-content: center; padding: 4px 0 2px; }
-.btn-continue-plan {
-  height: 50px; padding: 0 36px; border-radius: 9999px; font-size: 16px; font-weight: 700;
-  min-width: 300px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+.plans-cta-wrap {
+  display: flex; flex-direction: column; align-items: center; gap: 12px; justify-content: center;
+  margin-top: 24px;
 }
-.plans-venues-link { font-size: 14px; font-weight: 700; }
+.btn-continue-plan {
+  height: 52px; padding: 0 36px; border-radius: 9999px; font-size: 16px; font-weight: 700;
+  min-width: 320px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  background: var(--ink); color: #fff; border: none; cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+.btn-continue-plan:hover {
+  background: #1e293b; transform: translateY(-1px);
+}
+.plans-venues-link {
+  font-size: 14px; font-weight: 600; color: var(--ink);
+  text-decoration: underline; text-underline-offset: 4px; cursor: pointer;
+}
+.plans-venues-link:hover {
+  color: var(--navy);
+}
 
 .plans-sticky-bar { display: none; }
 
 @media (max-width: 960px) {
-  .plans-layout { grid-template-columns: 1fr; gap: 24px; }
-  .plans-layout__sidebar .routine { position: static; margin-top: 16px; }
+  .plans-layout { grid-template-columns: 1fr; gap: 24px; align-items: start; }
+  .plans-layout__sidebar .routine { position: static; margin-top: 16px; height: auto; }
 }
 @media (max-width: 680px) {
   main.plans-page { padding: 20px 16px 120px; }
@@ -1545,29 +1560,30 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
   background: transparent; border: 0; padding: 0;
 }
 .savepanel__left {
-  background: var(--cream); padding: 32px 28px 28px;
+  background: var(--cream); padding: 30px 26px 26px;
   border-right: 1px solid var(--cream-line);
 }
 .savepanel__right {
-  background: #fff; padding: 32px 28px 28px;
+  background: #fff; padding: 26px 24px 22px;
+  display: flex; flex-direction: column;
 }
 .savepanel__guide {
-  display: flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 700; color: var(--navy); margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 8px;
 }
 .savepanel__guide .ula-avatar {
-  width: 28px; height: 28px; margin: 0;
+  width: 26px; height: 26px; margin: 0;
 }
 .savepanel__title {
-  font-size: 24px; font-weight: 800; letter-spacing: -.02em; margin: 0 0 6px; color: var(--ink);
+  font-size: 22px; font-weight: 800; letter-spacing: -.02em; margin: 0 0 4px; color: var(--ink); line-height: 1.2;
 }
 .savepanel__sub {
-  font-size: 14px; color: var(--navy-soft); line-height: 1.4; margin: 0 0 16px;
+  font-size: 13.5px; color: var(--navy-soft); line-height: 1.35; margin: 0 0 14px;
 }
 .savepanel__asktitle {
-  font-size: 22px; font-weight: 800; letter-spacing: -.02em; margin: 0 0 6px; color: var(--ink);
+  display: none;
 }
 .savepanel__asksub {
-  font-size: 14px; color: var(--navy-soft); line-height: 1.4; margin: 0 0 16px;
+  display: none;
 }
 
 /* Visual recap cards */
@@ -1651,25 +1667,120 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
   font-size: 12px; color: var(--navy-soft); font-weight: 600; margin-top: 6px; text-align: right;
 }
 
+.savefield__wrap {
+  margin-bottom: 10px;
+}
 .savefield__label {
-  display: block; font-size: 13.5px; font-weight: 700; color: var(--ink); margin-bottom: 6px;
+  display: block; font-size: 12.5px; font-weight: 700; color: var(--ink); margin-bottom: 5px;
 }
 .savefield {
-  width: 100%; height: 48px; padding: 0 14px; border: 1.5px solid var(--border);
-  border-radius: var(--radius); font-size: 15px; margin-bottom: 12px;
+  width: 100%; height: 44px; padding: 0 13px; border: 1.5px solid var(--border);
+  border-radius: var(--radius); font-size: 14px; margin-bottom: 0;
 }
 .savefield:focus { border-color: var(--ink); }
 .savepanel .btn--primary {
-  height: 50px; font-size: 16px; font-weight: 700; border-radius: var(--radius);
+  height: 46px; font-size: 15px; font-weight: 700; border-radius: var(--radius);
 }
 .savepanel .orline {
-  display: flex; align-items: center; gap: 12px; margin: 14px 0 12px;
-  color: var(--navy-soft); font-size: 12.5px;
+  display: flex; align-items: center; gap: 10px; margin: 10px 0 8px;
+  color: var(--navy-soft); font-size: 11.5px;
 }
 .savepanel .orline::before, .savepanel .orline::after {
   content: ""; flex: 1; height: 1px; background: var(--border);
 }
-.save-out { text-align: center; margin-top: 14px; font-size: 14px; }
+.save-perk-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fefce8;
+  border: 1px solid #fef08a;
+  border-radius: var(--radius-sm, 8px);
+  padding: 7px 11px;
+  margin-bottom: 12px;
+  color: #854d0e;
+  font-size: 12px;
+  line-height: 1.3;
+}
+.save-perk-banner svg {
+  color: #ca8a04;
+  flex-shrink: 0;
+}
+.save-trust-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 11.5px;
+  color: var(--navy-soft);
+  margin-top: 7px;
+  text-align: center;
+}
+.save-trust-line svg {
+  color: #0f766e;
+  flex-shrink: 0;
+}
+.savepanel .sso-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.savepanel .sso-btn {
+  height: 36px;
+  font-size: 12px;
+  padding: 0 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.savepanel .consent-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0 4px;
+}
+.savepanel .consent-label {
+  font-size: 11.5px;
+  color: var(--navy-soft);
+  line-height: 1.3;
+}
+.savepanel .terms-line {
+  font-size: 11px;
+  color: var(--navy-soft);
+  margin: 4px 0 0;
+  text-align: center;
+  line-height: 1.3;
+}
+.savepanel .terms-line .linkish {
+  font-size: 11px;
+  text-decoration: underline;
+}
+.save-out {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 12.5px;
+}
+.save-out .linkish {
+  font-size: 12.5px;
+}
+.save-bookmark {
+  text-align: center;
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--navy-soft);
+  border-top: 1px solid var(--cream-line);
+  padding-top: 8px;
+}
+.save-bookmark .linkish {
+  font-size: 11.5px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+  color: var(--navy);
+}
 .modal--saved { max-width: 540px; text-align: left; padding: 32px 28px 28px; }
 .modal--saved .ula-avatar { margin: 0 0 16px; }
 .modal--saved h2 { margin: 0 0 8px; font-size: 24px; }
@@ -4065,6 +4176,40 @@ button.appcard:hover .appcard__info-icon {
   }
 }
 
+/* Venue Results Bar with Title, Subtitle, and View Toggles */
+.venue-results-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+  margin-bottom: 12px;
+}
+.venue-results-bar__left {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.venue-results-bar__title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  margin: 0;
+  line-height: 1.2;
+}
+.venue-results-bar__count {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--navy-soft);
+}
+.venue-results-bar__right {
+  display: flex;
+  align-items: center;
+}
+
 /* Venue Explorer View Mode Segmented Toggle */
 .venue-view-toggle {
   display: inline-flex;
@@ -4157,22 +4302,144 @@ button.appcard:hover .appcard__info-icon {
 
 /* Two or fewer results: intentional horizontal compact cards without huge blank space */
 .venue-carousel-scroll--few {
-  overflow-x: visible;
+  overflow-x: auto;
 }
 .venue-carousel-track--few {
-  display: grid;
-  grid-template-rows: none;
-  grid-auto-flow: row;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 340px));
-  gap: 16px;
-  width: 100%;
-  max-width: 720px;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  align-items: stretch !important;
+  gap: 16px !important;
+  width: 100% !important;
+  max-width: 100% !important;
 }
 .venue-carousel-track--few .activity-card {
   scroll-snap-align: none;
-  min-width: 0;
-  max-width: 340px;
+  min-width: 260px !important;
+  max-width: 320px !important;
+  width: 100% !important;
+  flex: 0 1 300px !important;
+}
+.venue-carousel-track--few .venue-end-card {
+  flex: 0 1 260px !important;
+  min-width: 240px !important;
+  max-width: 280px !important;
+}
+
+/* End-of-results indicator card for catalog gallery and grid */
+.venue-end-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: #f8fafc;
+  border: 1.5px dashed #cbd5e1;
+  border-radius: 16px;
+  padding: 24px 18px;
+  min-width: 245px;
+  max-width: 265px;
+  box-sizing: border-box;
+  grid-row: 1 / span 2;
+  align-self: stretch;
+  scroll-snap-align: start;
+}
+.venue-end-card__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #0f766e;
+  background: #ccfbf1;
+  padding: 4px 10px;
+  border-radius: 999px;
+  margin-bottom: 12px;
+  letter-spacing: 0.03em;
+}
+.venue-end-card__badge svg {
+  color: #0f766e;
+}
+.venue-end-card__title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0 0 6px;
+  line-height: 1.25;
+}
+.venue-end-card__desc {
+  font-size: 13px;
+  color: var(--navy-soft);
+  margin: 0 0 14px;
+  line-height: 1.35;
+}
+.venue-end-card__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   width: 100%;
+}
+.venue-end-card__actions .chip-sm {
+  width: 100%;
+  justify-content: center;
+  padding: 7px 12px;
+  font-size: 12px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  color: var(--ink);
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+.venue-end-card__actions .chip-sm:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+/* Completion summary row below Grid view */
+.venue-grid-end-summary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+  padding: 16px 20px;
+  background: #f8fafc;
+  border: 1.5px dashed #cbd5e1;
+  border-radius: 14px;
+  font-size: 13.5px;
+  color: var(--navy-soft);
+}
+.venue-grid-end-summary__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  color: #0f766e;
+  font-size: 13px;
+}
+.venue-grid-end-summary .chip-sm {
+  padding: 6px 12px;
+  font-size: 12px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  color: var(--ink);
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+.venue-grid-end-summary .chip-sm:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
 }
 
 /* Elevated Interactive Berlin Map View */
@@ -4184,6 +4451,14 @@ button.appcard:hover .appcard__info-icon {
   overflow: hidden;
   margin-top: 14px;
   position: relative;
+}
+
+.berlin-map-topography {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
 }
 
 .berlin-map-canvas-wrap {
@@ -7103,6 +7378,24 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   padding: 24px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.02);
 }
+.pay-card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.pay-card-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -.01em;
+}
+.pay-card-sub {
+  margin: 0 0 16px;
+  font-size: 14px;
+  color: var(--navy-soft);
+}
 .pay-section-title {
   display: flex;
   align-items: center;
@@ -7123,6 +7416,7 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   color: #fff;
   font-size: 12px;
   font-weight: 700;
+  flex-shrink: 0;
 }
 .pay-mock-notice {
   display: flex;
@@ -7222,42 +7516,56 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 .pay-actions {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
   margin-top: 8px;
 }
-.pay-actions .btn--lg {
-  height: 54px;
-  font-size: 16px;
+.pay-actions__row {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+}
+.pay-btn-back {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  padding: 0 18px;
+  height: 52px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: var(--radius-lg);
+  background: #ffffff;
+  border: 1px solid var(--border);
+  color: var(--ink);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.15s ease;
+}
+.pay-btn-back:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+}
+.pay-btn-confirm {
+  flex: 1 1 auto;
+  height: 52px;
+  font-size: 15.5px;
   font-weight: 700;
   border-radius: var(--radius-lg);
 }
-.pay-actions__secondary {
+.pay-actions__footer {
   display: flex;
+  justify-content: center;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 4px;
-}
-.notice--simulated {
-  background: #fef9c3;
-  border: 1px solid #fde047;
-  color: #854d0e;
-  border-radius: var(--radius-lg);
-  padding: 12px 16px;
-  font-size: 13px;
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  margin-top: 12px;
-}
-.notice--simulated svg {
-  flex: 0 0 auto;
-  margin-top: 1px;
+  margin-top: 4px;
 }
 
 /* Sidebar Order Summary */
 .pay-sidebar {
   position: sticky;
   top: 84px;
+  margin: 0;
+  padding: 0;
+  align-self: start;
 }
 .pay-summary-card {
   background: #fff;
@@ -7265,6 +7573,7 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   border-radius: var(--radius-xl);
   padding: 24px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  margin: 0;
 }
 .pay-summary-head {
   display: flex;
@@ -8329,24 +8638,7 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 }
 
 .venue-profile-header__close {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: var(--cream);
-  border: 1px solid var(--border);
-  font-size: 20px;
-  line-height: 1;
-  color: var(--ink);
-  cursor: pointer;
-  padding: 0;
-  transition: background 0.15s ease, transform 0.15s ease;
-}
-.venue-profile-header__close:hover {
-  background: #e2e8f0;
-  transform: scale(1.05);
+  display: none;
 }
 
 .venue-profile-header__mobile-star {
@@ -9044,11 +9336,15 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
     border-radius: 50% !important;
     background: #f1f5f9 !important;
     border: 1px solid #e2e8f0 !important;
-    font-size: 22px !important;
-    line-height: 1 !important;
     color: var(--ink) !important;
     cursor: pointer !important;
     padding: 0 !important;
+    margin: 0 !important;
+    flex: 0 0 36px !important;
+  }
+
+  .venue-profile-header__close svg {
+    display: block !important;
     margin: 0 !important;
   }
 
@@ -9071,8 +9367,15 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 
   .venue-hero-media {
     order: 1;
-    height: 190px;
+    width: 100% !important;
+    height: 200px !important;
+    min-height: 200px !important;
+    flex: 0 0 200px !important;
+    align-self: stretch !important;
     margin-bottom: 0;
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
   }
 
   .venue-profile-head {

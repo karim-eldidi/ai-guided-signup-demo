@@ -93,21 +93,6 @@ function fitScreen() {
         <h1 class="h-question" tabindex="-1">${esc(q.prompt)}</h1>
         ${q.id === 'area' ? cityChip() : (q.hint ? `<p class="qhint">${q.hint}</p>` : '')}
         ${q.id === 'area' ? `
-          <div class="area-search-wrap" data-area-search-wrap>
-            <div class="area-search-field">
-              <span class="area-search-icon" aria-hidden="true">${icon('search', 16)}</span>
-              <input type="text"
-                     class="area-search-input"
-                     id="area-search-input"
-                     placeholder="Search neighbourhood, postcode (e.g. 10115), or address..."
-                     aria-label="Search neighbourhood, postcode, or address"
-                     autocomplete="off"
-                     data-area-search-input>
-              <button type="button" class="area-search-clear" data-area-search-clear aria-label="Clear location search" hidden>${icon('close', 12)}</button>
-            </div>
-            <div class="area-suggestions" id="area-suggestions" role="listbox" aria-label="Location suggestions" hidden></div>
-          </div>
-
           <div class="area-section">
             <div class="area-section__header">
               <span class="area-section__title">Popular neighbourhoods</span>
@@ -124,6 +109,21 @@ function fitScreen() {
                 </label>`;
               }).join('')}
             </div>
+          </div>
+
+          <div class="area-search-wrap" data-area-search-wrap>
+            <div class="area-search-field">
+              <span class="area-search-icon" aria-hidden="true">${icon('search', 16)}</span>
+              <input type="text"
+                     class="area-search-input"
+                     id="area-search-input"
+                     placeholder="Search neighbourhood, postcode (e.g. 10115), or address..."
+                     aria-label="Search neighbourhood, postcode, or address"
+                     autocomplete="off"
+                     data-area-search-input>
+              <button type="button" class="area-search-clear" data-area-search-clear aria-label="Clear location search" hidden>${icon('close', 12)}</button>
+            </div>
+            <div class="area-suggestions" id="area-suggestions" role="listbox" aria-label="Location suggestions" hidden></div>
           </div>
 
           <div class="area-section area-section--anywhere">

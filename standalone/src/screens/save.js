@@ -16,6 +16,10 @@ function saveScreen() {
   const hasPlan = fitComplete(S.answers) || S.planOverridden;
   const F = hasPlan ? fitSummary() : null;
   const answered = QUESTIONS.filter(q => isAnswered(S.answers[q.id])).length;
+  const currentQNum = Math.min(answered + 1, QUESTIONS.length);
+  const backActionLabel = hasPlan
+    ? 'Back to recommendation'
+    : `Continue with question ${currentQNum}`;
 
   const starredKeys = Object.keys(S.starredVenues || {});
   const allStarredRoutine = F ? (starredKeys.length
@@ -65,11 +69,12 @@ function saveScreen() {
   ` : `
     <div class="saverecap">
       <div class="saverecap__head">
-        <span class="saverecap__tag">Your progress so far</span>
-        <div class="saverecap__plan savepanel__where"><b>question ${Math.min(answered + 1, QUESTIONS.length)} of ${QUESTIONS.length}</b></div>
-        <div class="saverecap__meta">We'll save every answer you've given so far.</div>
+        <span class="saverecap__tag">Your fit draft</span>
+        <div class="saverecap__plan savepanel__where"><b>Question ${currentQNum} of ${QUESTIONS.length}</b></div>
+        <div class="saverecap__meta">Urby has saved your draft and is matching 190+ Berlin studios.</div>
       </div>
       <div class="saverecap__chips">
+        <div class="saverecap__label">Your selections so far (tap to edit)</div>
         ${answerChips({ label:'', compact:true })}
       </div>
     </div>
@@ -82,33 +87,41 @@ function saveScreen() {
     <div class="savepanel">
       <div class="savepanel__left">
         <div class="savepanel__guide">${ulaAvatar('sm')}<span>Urby &middot; Membership guide</span></div>
-        <h1 class="savepanel__title" tabindex="-1">Here&rsquo;s what you&rsquo;re saving</h1>
-        <p class="savepanel__sub">${hasPlan ? 'Your custom routine, matching studios, and membership plan.' : 'Your answers and progress so far.'}</p>
+        <h1 class="savepanel__title" tabindex="-1">${hasPlan ? 'Don&rsquo;t lose your personalized plan' : 'Don&rsquo;t lose your progress'}</h1>
+        <p class="savepanel__sub">${hasPlan ? 'Your custom routine, matching studios, and calculated membership plan.' : 'Your answers, matching studios, and progress so far.'}</p>
         ${recapSection}
       </div>
 
       <div class="savepanel__right">
-        <h2 class="savepanel__asktitle">Keep your progress</h2>
-        <p class="savepanel__asksub">Email yourself a secure link to pick up right where you left off.</p>
+        <div class="save-perk-banner">
+          ${icon('sparkle',14)} <span><strong>10% off voucher included</strong> &middot; applied when you return</span>
+        </div>
 
         <form data-form="save" novalidate class="saveform">
-          <label class="savefield__label" for="save-email">Email address</label>
-          <input id="save-email" class="savefield" type="email" name="email" placeholder="Your email address" value="${esc(FIELDS.email||'')}">
-          ${ERRORS.email?`<p class="field-error" role="alert">${esc(ERRORS.email)}</p>`:''}
-          <button class="btn btn--primary btn--block" type="submit">Save my progress</button>
-          <div class="save-perk-badge" style="display:flex;align-items:center;justify-content:center;gap:6px;margin:8px 0 2px;font-size:12px;color:#854d0e;background:#fefce8;border:1px solid #fef08a;padding:5px 10px;border-radius:6px;font-weight:600">
-            ${icon('sparkle',13)} <span>Save progress &amp; get <strong>10% off</strong> first month</span>
+          <div class="savefield__wrap">
+            <label class="savefield__label" for="save-email">Email address</label>
+            <input id="save-email" class="savefield" type="email" name="email" placeholder="Your email address" value="${esc(FIELDS.email||'')}">
+            ${ERRORS.email?`<p class="field-error" role="alert">${esc(ERRORS.email)}</p>`:''}
           </div>
+          <button class="btn btn--primary btn--block" type="submit">Email me my return link</button>
+          
+          <div class="save-trust-line">
+            ${icon('lock',13)} <span>No spam &middot; Instant 1-click return link &middot; No card needed</span>
+          </div>
+
           <div class="orline"><span>or continue with</span></div>
           <div class="sso-row" style="max-width:none">
             <button class="sso-btn" type="submit" name="provider" value="google" aria-label="Save with Google">${GOOGLE} Google <small class="muted">(simulated)</small></button>
-            <button class="sso-btn" type="submit" name="provider" value="apple" aria-label="Save with Apple">${APPLE} Apple <small class="muted">(simulated)</small></button></div>
-          <div class="consent-row" style="max-width:none;margin:16px 0 12px"><label class="checkbox"><input type="checkbox" name="marketing" id="marketing" ${S.marketing?'checked':''}><span></span></label>
-            <label class="consent-label" for="marketing">Email me occasional offers &amp; updates <span class="muted">(optional)</span></label></div>
-          <div class="notice notice--soft">${icon('lock',18)}<span><b>No payment will be taken.</b> Private return link.</span></div>
-          <p class="terms-line" style="margin-top:12px">By continuing, you agree to our <button class="linkish" data-go="terms">Terms</button> and <button class="linkish" data-go="privacy">Privacy Policy</button>.</p>
+            <button class="sso-btn" type="submit" name="provider" value="apple" aria-label="Save with Apple">${APPLE} Apple <small class="muted">(simulated)</small></button>
+          </div>
+          <div class="consent-row" style="max-width:none">
+            <label class="checkbox"><input type="checkbox" name="marketing" id="marketing" ${S.marketing?'checked':''}><span></span></label>
+            <label class="consent-label" for="marketing">Email me occasional offers &amp; updates <span class="muted">(optional)</span></label>
+          </div>
+          <p class="terms-line">By continuing, you agree to our <button class="linkish" data-go="terms">Terms</button> and <button class="linkish" data-go="privacy">Privacy Policy</button>.</p>
         </form>
-        <p class="save-out"><button class="linkish strong" data-skip-save>Continue without saving</button></p>
+        <p class="save-out"><button class="linkish strong" data-skip-save>&larr; ${esc(backActionLabel)}</button></p>
+        <div class="save-bookmark"><span>Prefer not to use email?</span> <button class="linkish" type="button" data-copy-resume>${icon('bookmark',12)} Copy private bookmark link</button></div>
       </div>
     </div>
     <p class="savefoot"><button class="linkish" data-go="terms">Terms</button>

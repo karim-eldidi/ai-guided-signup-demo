@@ -118,12 +118,7 @@ function savePanelHtml() {
   template.innerHTML = saveScreen();
   const panel = template.content.querySelector('.savepanel');
   if (!panel) return '';
-  const out = panel.outerHTML;
-  return out.replace(
-    '<p class="save-out"><button class="linkish strong" data-skip-save>Continue without saving</button></p>',
-    `<div class="save-bookmark"><span>Prefer not to use email?</span><br>
-      <button class="linkish" type="button" data-copy-resume>${icon('bookmark',16)} Copy a private link to bookmark</button></div>`
-  );
+  return panel.outerHTML;
 }
 
 function exitModal() {
@@ -509,7 +504,7 @@ function venueSheet() {
           <button class="activity-card__star-btn venue-profile-header__mobile-star ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(v.id)}" aria-label="${isStarred ? 'Remove from routine' : 'Add to routine'}" title="${isStarred ? 'In your routine' : 'Add to routine'}">
             ${icon(isStarred ? 'starFill' : 'star', 18)}
           </button>
-          <button class="sheet__close venue-profile-header__close" type="button" data-close-sheet aria-label="Close venue details">&times;</button>
+          <button class="venue-profile-header__close" type="button" data-close-sheet aria-label="Close venue details">${icon('close', 16)}</button>
         </div>
       </header>
 

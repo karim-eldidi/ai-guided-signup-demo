@@ -460,7 +460,8 @@ b, strong { font-weight: 700; }
 /* Area / Neighbourhood Search & Autocomplete Suggestions */
 .area-search-wrap {
   position: relative;
-  margin-bottom: 12px;
+  margin-top: 14px;
+  margin-bottom: 8px;
   width: 100%;
 }
 .area-search-field {
@@ -920,22 +921,36 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
 .plans-always-banner {
   display: flex; align-items: center; gap: 10px; padding: 12px 18px;
   background: #fbf9f4; border: 1px solid #ede7db; border-radius: 12px;
-  font-size: 13px; color: var(--ink); margin-bottom: 20px;
+  font-size: 13px; color: var(--ink); margin-bottom: 0;
 }
 .always-sparkle { font-size: 16px; color: #d4a300; flex: 0 0 auto; }
 
-.plans-cta-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; justify-content: center; padding: 4px 0 2px; }
-.btn-continue-plan {
-  height: 50px; padding: 0 36px; border-radius: 9999px; font-size: 16px; font-weight: 700;
-  min-width: 300px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+.plans-cta-wrap {
+  display: flex; flex-direction: column; align-items: center; gap: 12px; justify-content: center;
+  margin-top: 24px;
 }
-.plans-venues-link { font-size: 14px; font-weight: 700; }
+.btn-continue-plan {
+  height: 52px; padding: 0 36px; border-radius: 9999px; font-size: 16px; font-weight: 700;
+  min-width: 320px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  background: var(--ink); color: #fff; border: none; cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+.btn-continue-plan:hover {
+  background: #1e293b; transform: translateY(-1px);
+}
+.plans-venues-link {
+  font-size: 14px; font-weight: 600; color: var(--ink);
+  text-decoration: underline; text-underline-offset: 4px; cursor: pointer;
+}
+.plans-venues-link:hover {
+  color: var(--navy);
+}
 
 .plans-sticky-bar { display: none; }
 
 @media (max-width: 960px) {
-  .plans-layout { grid-template-columns: 1fr; gap: 24px; }
-  .plans-layout__sidebar .routine { position: static; margin-top: 16px; }
+  .plans-layout { grid-template-columns: 1fr; gap: 24px; align-items: start; }
+  .plans-layout__sidebar .routine { position: static; margin-top: 16px; height: auto; }
 }
 @media (max-width: 680px) {
   main.plans-page { padding: 20px 16px 120px; }
@@ -1558,29 +1573,30 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
   background: transparent; border: 0; padding: 0;
 }
 .savepanel__left {
-  background: var(--cream); padding: 32px 28px 28px;
+  background: var(--cream); padding: 30px 26px 26px;
   border-right: 1px solid var(--cream-line);
 }
 .savepanel__right {
-  background: #fff; padding: 32px 28px 28px;
+  background: #fff; padding: 26px 24px 22px;
+  display: flex; flex-direction: column;
 }
 .savepanel__guide {
-  display: flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 700; color: var(--navy); margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 8px;
 }
 .savepanel__guide .ula-avatar {
-  width: 28px; height: 28px; margin: 0;
+  width: 26px; height: 26px; margin: 0;
 }
 .savepanel__title {
-  font-size: 24px; font-weight: 800; letter-spacing: -.02em; margin: 0 0 6px; color: var(--ink);
+  font-size: 22px; font-weight: 800; letter-spacing: -.02em; margin: 0 0 4px; color: var(--ink); line-height: 1.2;
 }
 .savepanel__sub {
-  font-size: 14px; color: var(--navy-soft); line-height: 1.4; margin: 0 0 16px;
+  font-size: 13.5px; color: var(--navy-soft); line-height: 1.35; margin: 0 0 14px;
 }
 .savepanel__asktitle {
-  font-size: 22px; font-weight: 800; letter-spacing: -.02em; margin: 0 0 6px; color: var(--ink);
+  display: none;
 }
 .savepanel__asksub {
-  font-size: 14px; color: var(--navy-soft); line-height: 1.4; margin: 0 0 16px;
+  display: none;
 }
 
 /* Visual recap cards */
@@ -1664,25 +1680,120 @@ main.plans-page { width:100%; max-width:1240px; margin: 0 auto; box-sizing:borde
   font-size: 12px; color: var(--navy-soft); font-weight: 600; margin-top: 6px; text-align: right;
 }
 
+.savefield__wrap {
+  margin-bottom: 10px;
+}
 .savefield__label {
-  display: block; font-size: 13.5px; font-weight: 700; color: var(--ink); margin-bottom: 6px;
+  display: block; font-size: 12.5px; font-weight: 700; color: var(--ink); margin-bottom: 5px;
 }
 .savefield {
-  width: 100%; height: 48px; padding: 0 14px; border: 1.5px solid var(--border);
-  border-radius: var(--radius); font-size: 15px; margin-bottom: 12px;
+  width: 100%; height: 44px; padding: 0 13px; border: 1.5px solid var(--border);
+  border-radius: var(--radius); font-size: 14px; margin-bottom: 0;
 }
 .savefield:focus { border-color: var(--ink); }
 .savepanel .btn--primary {
-  height: 50px; font-size: 16px; font-weight: 700; border-radius: var(--radius);
+  height: 46px; font-size: 15px; font-weight: 700; border-radius: var(--radius);
 }
 .savepanel .orline {
-  display: flex; align-items: center; gap: 12px; margin: 14px 0 12px;
-  color: var(--navy-soft); font-size: 12.5px;
+  display: flex; align-items: center; gap: 10px; margin: 10px 0 8px;
+  color: var(--navy-soft); font-size: 11.5px;
 }
 .savepanel .orline::before, .savepanel .orline::after {
   content: ""; flex: 1; height: 1px; background: var(--border);
 }
-.save-out { text-align: center; margin-top: 14px; font-size: 14px; }
+.save-perk-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fefce8;
+  border: 1px solid #fef08a;
+  border-radius: var(--radius-sm, 8px);
+  padding: 7px 11px;
+  margin-bottom: 12px;
+  color: #854d0e;
+  font-size: 12px;
+  line-height: 1.3;
+}
+.save-perk-banner svg {
+  color: #ca8a04;
+  flex-shrink: 0;
+}
+.save-trust-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 11.5px;
+  color: var(--navy-soft);
+  margin-top: 7px;
+  text-align: center;
+}
+.save-trust-line svg {
+  color: #0f766e;
+  flex-shrink: 0;
+}
+.savepanel .sso-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.savepanel .sso-btn {
+  height: 36px;
+  font-size: 12px;
+  padding: 0 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.savepanel .consent-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0 4px;
+}
+.savepanel .consent-label {
+  font-size: 11.5px;
+  color: var(--navy-soft);
+  line-height: 1.3;
+}
+.savepanel .terms-line {
+  font-size: 11px;
+  color: var(--navy-soft);
+  margin: 4px 0 0;
+  text-align: center;
+  line-height: 1.3;
+}
+.savepanel .terms-line .linkish {
+  font-size: 11px;
+  text-decoration: underline;
+}
+.save-out {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 12.5px;
+}
+.save-out .linkish {
+  font-size: 12.5px;
+}
+.save-bookmark {
+  text-align: center;
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--navy-soft);
+  border-top: 1px solid var(--cream-line);
+  padding-top: 8px;
+}
+.save-bookmark .linkish {
+  font-size: 11.5px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+  color: var(--navy);
+}
 .modal--saved { max-width: 540px; text-align: left; padding: 32px 28px 28px; }
 .modal--saved .ula-avatar { margin: 0 0 16px; }
 .modal--saved h2 { margin: 0 0 8px; font-size: 24px; }
@@ -4078,6 +4189,40 @@ button.appcard:hover .appcard__info-icon {
   }
 }
 
+/* Venue Results Bar with Title, Subtitle, and View Toggles */
+.venue-results-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+  margin-bottom: 12px;
+}
+.venue-results-bar__left {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.venue-results-bar__title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  margin: 0;
+  line-height: 1.2;
+}
+.venue-results-bar__count {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--navy-soft);
+}
+.venue-results-bar__right {
+  display: flex;
+  align-items: center;
+}
+
 /* Venue Explorer View Mode Segmented Toggle */
 .venue-view-toggle {
   display: inline-flex;
@@ -4170,22 +4315,144 @@ button.appcard:hover .appcard__info-icon {
 
 /* Two or fewer results: intentional horizontal compact cards without huge blank space */
 .venue-carousel-scroll--few {
-  overflow-x: visible;
+  overflow-x: auto;
 }
 .venue-carousel-track--few {
-  display: grid;
-  grid-template-rows: none;
-  grid-auto-flow: row;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 340px));
-  gap: 16px;
-  width: 100%;
-  max-width: 720px;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  align-items: stretch !important;
+  gap: 16px !important;
+  width: 100% !important;
+  max-width: 100% !important;
 }
 .venue-carousel-track--few .activity-card {
   scroll-snap-align: none;
-  min-width: 0;
-  max-width: 340px;
+  min-width: 260px !important;
+  max-width: 320px !important;
+  width: 100% !important;
+  flex: 0 1 300px !important;
+}
+.venue-carousel-track--few .venue-end-card {
+  flex: 0 1 260px !important;
+  min-width: 240px !important;
+  max-width: 280px !important;
+}
+
+/* End-of-results indicator card for catalog gallery and grid */
+.venue-end-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: #f8fafc;
+  border: 1.5px dashed #cbd5e1;
+  border-radius: 16px;
+  padding: 24px 18px;
+  min-width: 245px;
+  max-width: 265px;
+  box-sizing: border-box;
+  grid-row: 1 / span 2;
+  align-self: stretch;
+  scroll-snap-align: start;
+}
+.venue-end-card__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #0f766e;
+  background: #ccfbf1;
+  padding: 4px 10px;
+  border-radius: 999px;
+  margin-bottom: 12px;
+  letter-spacing: 0.03em;
+}
+.venue-end-card__badge svg {
+  color: #0f766e;
+}
+.venue-end-card__title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0 0 6px;
+  line-height: 1.25;
+}
+.venue-end-card__desc {
+  font-size: 13px;
+  color: var(--navy-soft);
+  margin: 0 0 14px;
+  line-height: 1.35;
+}
+.venue-end-card__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   width: 100%;
+}
+.venue-end-card__actions .chip-sm {
+  width: 100%;
+  justify-content: center;
+  padding: 7px 12px;
+  font-size: 12px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  color: var(--ink);
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+.venue-end-card__actions .chip-sm:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+/* Completion summary row below Grid view */
+.venue-grid-end-summary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+  padding: 16px 20px;
+  background: #f8fafc;
+  border: 1.5px dashed #cbd5e1;
+  border-radius: 14px;
+  font-size: 13.5px;
+  color: var(--navy-soft);
+}
+.venue-grid-end-summary__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  color: #0f766e;
+  font-size: 13px;
+}
+.venue-grid-end-summary .chip-sm {
+  padding: 6px 12px;
+  font-size: 12px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  color: var(--ink);
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+.venue-grid-end-summary .chip-sm:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
 }
 
 /* Elevated Interactive Berlin Map View */
@@ -4197,6 +4464,14 @@ button.appcard:hover .appcard__info-icon {
   overflow: hidden;
   margin-top: 14px;
   position: relative;
+}
+
+.berlin-map-topography {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
 }
 
 .berlin-map-canvas-wrap {
@@ -7116,6 +7391,24 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   padding: 24px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.02);
 }
+.pay-card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.pay-card-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -.01em;
+}
+.pay-card-sub {
+  margin: 0 0 16px;
+  font-size: 14px;
+  color: var(--navy-soft);
+}
 .pay-section-title {
   display: flex;
   align-items: center;
@@ -7136,6 +7429,7 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   color: #fff;
   font-size: 12px;
   font-weight: 700;
+  flex-shrink: 0;
 }
 .pay-mock-notice {
   display: flex;
@@ -7235,42 +7529,56 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 .pay-actions {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
   margin-top: 8px;
 }
-.pay-actions .btn--lg {
-  height: 54px;
-  font-size: 16px;
+.pay-actions__row {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+}
+.pay-btn-back {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  padding: 0 18px;
+  height: 52px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: var(--radius-lg);
+  background: #ffffff;
+  border: 1px solid var(--border);
+  color: var(--ink);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.15s ease;
+}
+.pay-btn-back:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+}
+.pay-btn-confirm {
+  flex: 1 1 auto;
+  height: 52px;
+  font-size: 15.5px;
   font-weight: 700;
   border-radius: var(--radius-lg);
 }
-.pay-actions__secondary {
+.pay-actions__footer {
   display: flex;
+  justify-content: center;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 4px;
-}
-.notice--simulated {
-  background: #fef9c3;
-  border: 1px solid #fde047;
-  color: #854d0e;
-  border-radius: var(--radius-lg);
-  padding: 12px 16px;
-  font-size: 13px;
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  margin-top: 12px;
-}
-.notice--simulated svg {
-  flex: 0 0 auto;
-  margin-top: 1px;
+  margin-top: 4px;
 }
 
 /* Sidebar Order Summary */
 .pay-sidebar {
   position: sticky;
   top: 84px;
+  margin: 0;
+  padding: 0;
+  align-self: start;
 }
 .pay-summary-card {
   background: #fff;
@@ -7278,6 +7586,7 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   border-radius: var(--radius-xl);
   padding: 24px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  margin: 0;
 }
 .pay-summary-head {
   display: flex;
@@ -8342,24 +8651,7 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 }
 
 .venue-profile-header__close {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: var(--cream);
-  border: 1px solid var(--border);
-  font-size: 20px;
-  line-height: 1;
-  color: var(--ink);
-  cursor: pointer;
-  padding: 0;
-  transition: background 0.15s ease, transform 0.15s ease;
-}
-.venue-profile-header__close:hover {
-  background: #e2e8f0;
-  transform: scale(1.05);
+  display: none;
 }
 
 .venue-profile-header__mobile-star {
@@ -9057,11 +9349,15 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
     border-radius: 50% !important;
     background: #f1f5f9 !important;
     border: 1px solid #e2e8f0 !important;
-    font-size: 22px !important;
-    line-height: 1 !important;
     color: var(--ink) !important;
     cursor: pointer !important;
     padding: 0 !important;
+    margin: 0 !important;
+    flex: 0 0 36px !important;
+  }
+
+  .venue-profile-header__close svg {
+    display: block !important;
     margin: 0 !important;
   }
 
@@ -9084,8 +9380,15 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 
   .venue-hero-media {
     order: 1;
-    height: 190px;
+    width: 100% !important;
+    height: 200px !important;
+    min-height: 200px !important;
+    flex: 0 0 200px !important;
+    align-self: stretch !important;
     margin-bottom: 0;
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
   }
 
   .venue-profile-head {
@@ -10122,7 +10425,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 7f54a65 + local edits</span>
+  <span class="demo-banner__build">build 7edc596 + local edits</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -11505,12 +11808,7 @@ function savePanelHtml() {
   template.innerHTML = saveScreen();
   const panel = template.content.querySelector('.savepanel');
   if (!panel) return '';
-  const out = panel.outerHTML;
-  return out.replace(
-    '<p class="save-out"><button class="linkish strong" data-skip-save>Continue without saving</button></p>',
-    `<div class="save-bookmark"><span>Prefer not to use email?</span><br>
-      <button class="linkish" type="button" data-copy-resume>${icon('bookmark',16)} Copy a private link to bookmark</button></div>`
-  );
+  return panel.outerHTML;
 }
 
 function exitModal() {
@@ -11896,7 +12194,7 @@ function venueSheet() {
           <button class="activity-card__star-btn venue-profile-header__mobile-star ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(v.id)}" aria-label="${isStarred ? 'Remove from routine' : 'Add to routine'}" title="${isStarred ? 'In your routine' : 'Add to routine'}">
             ${icon(isStarred ? 'starFill' : 'star', 18)}
           </button>
-          <button class="sheet__close venue-profile-header__close" type="button" data-close-sheet aria-label="Close venue details">&times;</button>
+          <button class="venue-profile-header__close" type="button" data-close-sheet aria-label="Close venue details">${icon('close', 16)}</button>
         </div>
       </header>
 
@@ -12604,6 +12902,20 @@ function placeCard(v, opts = {}) {
   </div>`;
 }
 
+function venueEndCard(b, shown, activeCats = []) {
+  const totalCount = shown.length;
+  return `<div class="venue-end-card">
+    <div class="venue-end-card__badge">${icon('checkThin', 13)} <span>All places shown</span></div>
+    <div class="venue-end-card__title">${totalCount} of ${totalCount} ${totalCount === 1 ? 'place' : 'places'} loaded</div>
+    <p class="venue-end-card__desc">Want to see more venues across Berlin?</p>
+    <div class="venue-end-card__actions">
+      ${(S.radiusKm !== '8' && S.radiusKm !== 'any') ? `<button class="chip-sm" type="button" data-radius="8">${icon('pin', 12)} Expand to 8 km</button>` : ''}
+      ${(S.radiusKm !== 'any') ? `<button class="chip-sm" type="button" data-radius="any">${icon('city', 12)} Search all Berlin</button>` : ''}
+      ${(activeCats && activeCats.length) ? `<button class="chip-sm" type="button" data-cat-all data-filter-category="all">${icon('grid', 12)} View all sports</button>` : ''}
+    </div>
+  </div>`;
+}
+
 function moreFiltersDrawer(filteredCount) {
   if (!VENUE_MORE_FILTERS_OPEN) return '';
 
@@ -12725,7 +13037,7 @@ function interactiveBerlinMap(b) {
   const kmPerLat = 110.6, kmPerLng = 111.32 * Math.cos(lat0 * Math.PI/180);
   const span = Math.max(1.2, ...all.map(p => Math.max(
     Math.abs((p.lng-lng0)*kmPerLng), Math.abs((p.lat-lat0)*kmPerLat))));
-
+  
   const at = p => {
     const x = (p.lng-lng0)*kmPerLng, y = (p.lat-lat0)*kmPerLat;
     return {
@@ -12801,13 +13113,22 @@ function interactiveBerlinMap(b) {
     <div class="berlin-map-view-container">
       <div class="berlin-map-canvas-wrap">
         <div class="berlin-map-grid-bg"></div>
+        <svg class="berlin-map-topography" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <!-- Parks -->
+          <path d="M36,43 Q44,40 47,46 Q42,51 35,48 Z" fill="#e2ecd8" opacity="0.85" />
+          <path d="M48,68 Q58,66 57,76 Q46,78 48,68 Z" fill="#e2ecd8" opacity="0.85" />
+          <!-- Spree River -->
+          <path d="M 100,56 C 82,60 72,53 62,48 C 54,43 47,45 40,43 C 34,41 26,45 16,43 C 7,42 0,44 0,44" fill="none" stroke="#d2e4f0" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
+          <!-- Landwehrkanal -->
+          <path d="M 72,56 C 64,61 55,59 45,56 C 39,54 36,47 36,47" fill="none" stroke="#d2e4f0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
         ${districtLabels}
         ${originMarkers}
         ${pins}
         ${previewCard}
       </div>
       <div class="berlin-map-footer-note">
-        ${icon('info', 14)} <span>Showing coordinates for ${pts.length} nearest places. Tap any pin to preview venue details.</span>
+        ${icon('info', 14)} <span>Showing ${pts.length} nearest places on interactive map. Tap any pin to preview venue details.</span>
       </div>
     </div>
   `;
@@ -13214,7 +13535,7 @@ function searchScreen() {
       <div class="venuepage__primary">
         <div class="venue-explorer-card">
           ${weekPickBar()}
-
+          
           <div class="venue-filter-container">
             <div class="findbar__where">
               <span class="findbar__wheretext">${icon('pin', 16)}<span>${S.answers.area ? `Showing places ${esc(b.label)}` : `Looks like you&rsquo;re near <b>${esc(b.origins[0].name)}, Berlin</b> &mdash; showing places ${esc(b.label)}`}</span></span>
@@ -13301,19 +13622,24 @@ function searchScreen() {
 
           ${searched ? '' : `
           <section class="placesrow">
-            <div class="venue-results-header placesrow__title">
-              <h2 class="venue-results-header__title" id="results-count">${searched ? 'Search results' : countHeading}</h2>
+            <div class="venue-results-bar">
+              <div class="venue-results-bar__left">
+                <h2 class="venue-results-bar__title" id="results-count">Places for you</h2>
+                <span class="venue-results-bar__count">${searched ? 'Search results' : `${plural(b.within.length, 'place', 'places')} found${b.label ? ` &middot; ${esc(b.label)}` : ''}`}</span>
+              </div>
               ${searched ? '' : `
-                <div class="venue-view-toggle" role="group" aria-label="View mode">
-                  <button class="view-toggle-btn view-toggle-btn--gallery ${VENUE_VIEW_MODE === 'scroll' ? 'is-active' : ''}" type="button" data-venue-view-mode="scroll" aria-label="Carousel gallery view" aria-pressed="${VENUE_VIEW_MODE === 'scroll'}" title="Carousel view">
-                    ${icon('grid', 14)} <span>Gallery</span>
-                  </button>
-                  <button class="view-toggle-btn ${VENUE_VIEW_MODE === 'grid' ? 'is-active' : ''}" type="button" data-venue-view-mode="grid" aria-label="Grid layout view" aria-pressed="${VENUE_VIEW_MODE === 'grid'}" title="Grid view">
-                    ${icon('checkThin', 14)} <span>Grid</span>
-                  </button>
-                  <button class="view-toggle-btn ${VENUE_VIEW_MODE === 'map' ? 'is-active' : ''}" type="button" data-venue-view-mode="map" aria-label="Interactive map view" aria-pressed="${VENUE_VIEW_MODE === 'map'}" title="Map view">
-                    ${icon('city', 14)} <span>Map</span>
-                  </button>
+                <div class="venue-results-bar__right">
+                  <div class="venue-view-toggle" role="group" aria-label="View mode">
+                    <button class="view-toggle-btn view-toggle-btn--gallery ${VENUE_VIEW_MODE === 'scroll' ? 'is-active' : ''}" type="button" data-venue-view-mode="scroll" aria-label="Carousel gallery view" aria-pressed="${VENUE_VIEW_MODE === 'scroll'}" title="Carousel view">
+                      ${icon('grid', 14)} <span>Gallery</span>
+                    </button>
+                    <button class="view-toggle-btn ${VENUE_VIEW_MODE === 'grid' ? 'is-active' : ''}" type="button" data-venue-view-mode="grid" aria-label="Grid layout view" aria-pressed="${VENUE_VIEW_MODE === 'grid'}" title="Grid view">
+                      ${icon('checkThin', 14)} <span>Grid</span>
+                    </button>
+                    <button class="view-toggle-btn ${VENUE_VIEW_MODE === 'map' ? 'is-active' : ''}" type="button" data-venue-view-mode="map" aria-label="Interactive map view" aria-pressed="${VENUE_VIEW_MODE === 'map'}" title="Map view">
+                      ${icon('city', 14)} <span>Map</span>
+                    </button>
+                  </div>
                 </div>
               `}
             </div>
@@ -13326,6 +13652,12 @@ function searchScreen() {
                 <div class="hits venue-grid--catalog ${shown.length === 1 ? 'hits--one' : shown.length === 2 ? 'hits--two' : 'hits--row'}">
                   ${shown.map(v => placeCard(v)).join('')}
                 </div>
+                <div class="venue-grid-end-summary">
+                  <span class="venue-grid-end-summary__badge">${icon('checkThin', 13)} All ${shown.length} places shown</span>
+                  ${(S.radiusKm !== '8' && S.radiusKm !== 'any') ? `<button class="chip-sm" type="button" data-radius="8">${icon('pin', 12)} Expand to 8 km</button>` : ''}
+                  ${(S.radiusKm !== 'any') ? `<button class="chip-sm" type="button" data-radius="any">${icon('city', 12)} Search all Berlin</button>` : ''}
+                  ${(activeCats && activeCats.length) ? `<button class="chip-sm" type="button" data-cat-all data-filter-category="all">${icon('grid', 12)} View all sports</button>` : ''}
+                </div>
               ` : `
                 <div class="activity-gallery-wrap venue-gallery-wrap">
                   ${shown.length > 2 ? `<button class="gallery-nav-btn gallery-nav-btn--prev is-disabled" type="button" data-scroll-gallery="prev" aria-label="Scroll left" title="Scroll left">
@@ -13334,6 +13666,7 @@ function searchScreen() {
                   <div class="activity-gallery venue-carousel-scroll ${shown.length <= 2 ? 'venue-carousel-scroll--few' : ''}" id="activity-gallery-scroll">
                     <div class="venue-carousel-track hits hits--row ${shown.length <= 2 ? 'venue-carousel-track--few' : ''}">
                       ${shown.map(v => placeCard(v)).join('')}
+                      ${venueEndCard(b, shown, activeCats)}
                     </div>
                   </div>
                   ${shown.length > 2 ? `<button class="gallery-nav-btn gallery-nav-btn--next ${shown.length <= 4 ? 'is-disabled' : ''}" type="button" data-scroll-gallery="next" aria-label="Scroll right" title="Scroll right">
@@ -13469,21 +13802,6 @@ function fitScreen() {
         <h1 class="h-question" tabindex="-1">${esc(q.prompt)}</h1>
         ${q.id === 'area' ? cityChip() : (q.hint ? `<p class="qhint">${q.hint}</p>` : '')}
         ${q.id === 'area' ? `
-          <div class="area-search-wrap" data-area-search-wrap>
-            <div class="area-search-field">
-              <span class="area-search-icon" aria-hidden="true">${icon('search', 16)}</span>
-              <input type="text"
-                     class="area-search-input"
-                     id="area-search-input"
-                     placeholder="Search neighbourhood, postcode (e.g. 10115), or address..."
-                     aria-label="Search neighbourhood, postcode, or address"
-                     autocomplete="off"
-                     data-area-search-input>
-              <button type="button" class="area-search-clear" data-area-search-clear aria-label="Clear location search" hidden>${icon('close', 12)}</button>
-            </div>
-            <div class="area-suggestions" id="area-suggestions" role="listbox" aria-label="Location suggestions" hidden></div>
-          </div>
-
           <div class="area-section">
             <div class="area-section__header">
               <span class="area-section__title">Popular neighbourhoods</span>
@@ -13502,6 +13820,21 @@ function fitScreen() {
             </div>
           </div>
 
+          <div class="area-search-wrap" data-area-search-wrap>
+            <div class="area-search-field">
+              <span class="area-search-icon" aria-hidden="true">${icon('search', 16)}</span>
+              <input type="text"
+                     class="area-search-input"
+                     id="area-search-input"
+                     placeholder="Search neighbourhood, postcode (e.g. 10115), or address..."
+                     aria-label="Search neighbourhood, postcode, or address"
+                     autocomplete="off"
+                     data-area-search-input>
+              <button type="button" class="area-search-clear" data-area-search-clear aria-label="Clear location search" hidden>${icon('close', 12)}</button>
+            </div>
+            <div class="area-suggestions" id="area-suggestions" role="listbox" aria-label="Location suggestions" hidden></div>
+          </div>
+
           <div class="area-section area-section--anywhere">
             <div class="options options--anywhere">
               <label class="option-card option-card--anywhere ${picked.includes('anywhere') ? 'is-selected' : ''}" data-card>
@@ -13515,7 +13848,7 @@ function fitScreen() {
           <div class="options ${opts.length > 6 ? 'options--compact' : opts.length > 4 ? 'options--chips' : 'options--tiles'}${q.id === 'frequency' ? ' options--stack-mobile' : ''}"${q.maxPick ? ` data-maxpick="${q.maxPick}"` : ''}>${cards}</div>
         `}
         ${NOCHOICE ? `<p class="field-error" role="alert">${q.multi ? 'Pick at least one, or tell Urby in your own words.' : 'Pick one of the options, or tell Urby in your own words.'}</p>` : ''}
-
+        
         <div class="btn-row desktop-cta">
           ${idx > 0 ? `<button class="btn btn--secondary" type="button" data-back="${esc(q.id)}">${icon('back', 18)} Back</button>` : `<button class="btn btn--secondary" type="button" data-go="landing">${icon('back', 18)} Back</button>`}
           <button class="btn btn--primary" type="submit" data-continue style="flex:1 1 auto">${isLastQuestion ? 'See my recommendation &rarr;' : 'Continue &rarr;'}</button>
@@ -14229,8 +14562,10 @@ function recommendationScreen() {
 
   const planAside = `<div class="planbox">
     <div class="planbox__badge">${isRec ? 'Recommended' : 'Your choice'}</div>
-    <div class="planbox__name">${esc(plan.name)}</div>
-    <div class="planbox__price"><b>${price} €</b> <span>/ month</span></div>
+    <div class="planbox__idrow">
+      <div class="planbox__name">${esc(plan.name)}</div>
+      <div class="planbox__price"><b>${price} €</b> <span>/ month</span></div>
+    </div>
 
     <!-- Commitment tabs: Monthly / 12 mo / 24 mo -->
     <div class="termpick" role="group" aria-label="Membership duration">
@@ -14305,7 +14640,6 @@ function recommendationScreen() {
       </div>
       <div class="shelf">
         ${whyBlock}
-        ${askBlock(true, true)}
         <details class="shelf__row"${MOREPICK==='terms'?' open':''}><summary class="shelf__head" data-more="terms"><span class="shelf__icon">${icon('info',18)}</span><span class="shelf__label">Membership details and terms</span>
           <span class="shelf__hint">what&rsquo;s included, limits, cancelling</span><span class="shelf__chev">${icon('chevron',18)}</span></summary>
           <div class="shelf__body">
@@ -14566,19 +14900,19 @@ function plansScreen() {
   </div>`;
 
   return `${topbar(1, { stepper: false, savedNote: Boolean(S.email && S.saveOptIn) })}<main class="content plans-page" id="main">
+    <div class="plans-head">
+      <h1 class="h-question" tabindex="-1">Choose your membership</h1>
+    </div>
+
+    <div class="commit-row">${COMMITMENTS.map(c => {
+      const isCur = c.id === S.commitmentId;
+      const termLabel = c.minimumTermMonths === 1 ? 'Monthly' : `${c.minimumTermMonths} months`;
+      const savingBadge = c.id === 'annual' ? '<span class="commit-save-pill">Save 15%</span>' : c.id === 'biennial' ? '<span class="commit-save-pill">Save 20%</span>' : '';
+      return `<button class="chip-sm ${isCur ? 'is-current' : ''}" type="button" data-commit="${esc(c.id)}"><span>${esc(termLabel)}</span>${savingBadge}</button>`;
+    }).join('')}</div>
+
     <div class="plans-layout">
       <div class="plans-main">
-        <div class="plans-head">
-          <h1 class="h-question" tabindex="-1">Choose your membership</h1>
-        </div>
-
-        <div class="commit-row">${COMMITMENTS.map(c => {
-          const isCur = c.id === S.commitmentId;
-          const termLabel = c.minimumTermMonths === 1 ? 'Monthly' : `${c.minimumTermMonths} months`;
-          const savingBadge = c.id === 'annual' ? '<span class="commit-save-pill">Save 15%</span>' : c.id === 'biennial' ? '<span class="commit-save-pill">Save 20%</span>' : '';
-          return `<button class="chip-sm ${isCur ? 'is-current' : ''}" type="button" data-commit="${esc(c.id)}"><span>${esc(termLabel)}</span>${savingBadge}</button>`;
-        }).join('')}</div>
-
         <section class="plans-options-card" aria-label="Membership options">
           <div class="plan-lines-group">${planLines}</div>
 
@@ -14586,16 +14920,16 @@ function plansScreen() {
             <span class="always-sparkle">✦</span>
             <span><strong>Always included:</strong> on-site activities &middot; online classes &middot; video on demand</span>
           </div>
-
-          <div class="plans-cta-wrap">
-            <button class="btn btn--primary btn-continue-plan" type="button" data-go="details">
-              Choose ${esc(selectedPlan.name)} and continue ${icon('arrowRight', 16)}
-            </button>
-            <button class="linkish plans-venues-link" type="button" data-go="catalog">
-              Explore venues before choosing
-            </button>
-          </div>
         </section>
+
+        <div class="plans-cta-wrap">
+          <button class="btn btn--primary btn-continue-plan" type="button" data-go="details">
+            Choose ${esc(selectedPlan.name)} and continue ${icon('arrowRight', 16)}
+          </button>
+          <button class="linkish plans-venues-link" type="button" data-go="catalog">
+            Explore venues before choosing
+          </button>
+        </div>
       </div>
       <aside class="plans-layout__sidebar">
         ${routinePanel()}
@@ -14856,22 +15190,16 @@ function paymentScreen() {
           </details>
 
           <!-- 3. Primary & Secondary Action Row -->
-          <div class="btn-row pay-actions">
-            <div class="desktop-cta">
-              <button class="btn btn--primary btn--lg" type="submit" style="width:100%">
+          <div class="pay-actions">
+            <div class="pay-actions__row desktop-cta">
+              <button class="btn btn--secondary pay-btn-back" type="button" data-go="details">${icon('back',16)} Back to details</button>
+              <button class="btn btn--primary pay-btn-confirm" type="submit">
                 Confirm and start membership &mdash; ${price} &euro; / mo
               </button>
             </div>
-            <div class="pay-actions__secondary">
-              <button class="btn btn--secondary" type="button" data-go="details">${icon('back',16)} Back to details</button>
+            <div class="pay-actions__footer">
               <button class="linkish xsmall muted" type="button" data-go="save">Save progress for later</button>
             </div>
-          </div>
-
-          <!-- 4. Honest Pilot Disclaimer -->
-          <div class="notice notice--simulated">
-            ${icon('info',18)}
-            <span><strong>Simulated checkout.</strong> Nothing is charged, no card details are collected, and no live contract is formed.</span>
           </div>
 
           <!-- Mobile Sticky Paybar -->
@@ -14950,7 +15278,6 @@ function paymentScreen() {
               Billed monthly. ${esc(renewal)}
             </div>
           </div>
-          ${ulaNote('Review your membership details and start date before confirming.')}
         </div>
       </aside>
     </div>
@@ -15175,6 +15502,10 @@ function saveScreen() {
   const hasPlan = fitComplete(S.answers) || S.planOverridden;
   const F = hasPlan ? fitSummary() : null;
   const answered = QUESTIONS.filter(q => isAnswered(S.answers[q.id])).length;
+  const currentQNum = Math.min(answered + 1, QUESTIONS.length);
+  const backActionLabel = hasPlan
+    ? 'Back to recommendation'
+    : `Continue with question ${currentQNum}`;
 
   const starredKeys = Object.keys(S.starredVenues || {});
   const allStarredRoutine = F ? (starredKeys.length
@@ -15224,11 +15555,12 @@ function saveScreen() {
   ` : `
     <div class="saverecap">
       <div class="saverecap__head">
-        <span class="saverecap__tag">Your progress so far</span>
-        <div class="saverecap__plan savepanel__where"><b>question ${Math.min(answered + 1, QUESTIONS.length)} of ${QUESTIONS.length}</b></div>
-        <div class="saverecap__meta">We'll save every answer you've given so far.</div>
+        <span class="saverecap__tag">Your fit draft</span>
+        <div class="saverecap__plan savepanel__where"><b>Question ${currentQNum} of ${QUESTIONS.length}</b></div>
+        <div class="saverecap__meta">Urby has saved your draft and is matching 190+ Berlin studios.</div>
       </div>
       <div class="saverecap__chips">
+        <div class="saverecap__label">Your selections so far (tap to edit)</div>
         ${answerChips({ label:'', compact:true })}
       </div>
     </div>
@@ -15241,33 +15573,41 @@ function saveScreen() {
     <div class="savepanel">
       <div class="savepanel__left">
         <div class="savepanel__guide">${ulaAvatar('sm')}<span>Urby &middot; Membership guide</span></div>
-        <h1 class="savepanel__title" tabindex="-1">Here&rsquo;s what you&rsquo;re saving</h1>
-        <p class="savepanel__sub">${hasPlan ? 'Your custom routine, matching studios, and membership plan.' : 'Your answers and progress so far.'}</p>
+        <h1 class="savepanel__title" tabindex="-1">${hasPlan ? 'Don&rsquo;t lose your personalized plan' : 'Don&rsquo;t lose your progress'}</h1>
+        <p class="savepanel__sub">${hasPlan ? 'Your custom routine, matching studios, and calculated membership plan.' : 'Your answers, matching studios, and progress so far.'}</p>
         ${recapSection}
       </div>
 
       <div class="savepanel__right">
-        <h2 class="savepanel__asktitle">Keep your progress</h2>
-        <p class="savepanel__asksub">Email yourself a secure link to pick up right where you left off.</p>
+        <div class="save-perk-banner">
+          ${icon('sparkle',14)} <span><strong>10% off voucher included</strong> &middot; applied when you return</span>
+        </div>
 
         <form data-form="save" novalidate class="saveform">
-          <label class="savefield__label" for="save-email">Email address</label>
-          <input id="save-email" class="savefield" type="email" name="email" placeholder="Your email address" value="${esc(FIELDS.email||'')}">
-          ${ERRORS.email?`<p class="field-error" role="alert">${esc(ERRORS.email)}</p>`:''}
-          <button class="btn btn--primary btn--block" type="submit">Save my progress</button>
-          <div class="save-perk-badge" style="display:flex;align-items:center;justify-content:center;gap:6px;margin:8px 0 2px;font-size:12px;color:#854d0e;background:#fefce8;border:1px solid #fef08a;padding:5px 10px;border-radius:6px;font-weight:600">
-            ${icon('sparkle',13)} <span>Save progress &amp; get <strong>10% off</strong> first month</span>
+          <div class="savefield__wrap">
+            <label class="savefield__label" for="save-email">Email address</label>
+            <input id="save-email" class="savefield" type="email" name="email" placeholder="Your email address" value="${esc(FIELDS.email||'')}">
+            ${ERRORS.email?`<p class="field-error" role="alert">${esc(ERRORS.email)}</p>`:''}
           </div>
+          <button class="btn btn--primary btn--block" type="submit">Email me my return link</button>
+          
+          <div class="save-trust-line">
+            ${icon('lock',13)} <span>No spam &middot; Instant 1-click return link &middot; No card needed</span>
+          </div>
+
           <div class="orline"><span>or continue with</span></div>
           <div class="sso-row" style="max-width:none">
             <button class="sso-btn" type="submit" name="provider" value="google" aria-label="Save with Google">${GOOGLE} Google <small class="muted">(simulated)</small></button>
-            <button class="sso-btn" type="submit" name="provider" value="apple" aria-label="Save with Apple">${APPLE} Apple <small class="muted">(simulated)</small></button></div>
-          <div class="consent-row" style="max-width:none;margin:16px 0 12px"><label class="checkbox"><input type="checkbox" name="marketing" id="marketing" ${S.marketing?'checked':''}><span></span></label>
-            <label class="consent-label" for="marketing">Email me occasional offers &amp; updates <span class="muted">(optional)</span></label></div>
-          <div class="notice notice--soft">${icon('lock',18)}<span><b>No payment will be taken.</b> Private return link.</span></div>
-          <p class="terms-line" style="margin-top:12px">By continuing, you agree to our <button class="linkish" data-go="terms">Terms</button> and <button class="linkish" data-go="privacy">Privacy Policy</button>.</p>
+            <button class="sso-btn" type="submit" name="provider" value="apple" aria-label="Save with Apple">${APPLE} Apple <small class="muted">(simulated)</small></button>
+          </div>
+          <div class="consent-row" style="max-width:none">
+            <label class="checkbox"><input type="checkbox" name="marketing" id="marketing" ${S.marketing?'checked':''}><span></span></label>
+            <label class="consent-label" for="marketing">Email me occasional offers &amp; updates <span class="muted">(optional)</span></label>
+          </div>
+          <p class="terms-line">By continuing, you agree to our <button class="linkish" data-go="terms">Terms</button> and <button class="linkish" data-go="privacy">Privacy Policy</button>.</p>
         </form>
-        <p class="save-out"><button class="linkish strong" data-skip-save>Continue without saving</button></p>
+        <p class="save-out"><button class="linkish strong" data-skip-save>&larr; ${esc(backActionLabel)}</button></p>
+        <div class="save-bookmark"><span>Prefer not to use email?</span> <button class="linkish" type="button" data-copy-resume>${icon('bookmark',12)} Copy private bookmark link</button></div>
       </div>
     </div>
     <p class="savefoot"><button class="linkish" data-go="terms">Terms</button>

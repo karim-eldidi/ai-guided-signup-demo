@@ -208,22 +208,16 @@ function paymentScreen() {
           </details>
 
           <!-- 3. Primary & Secondary Action Row -->
-          <div class="btn-row pay-actions">
-            <div class="desktop-cta">
-              <button class="btn btn--primary btn--lg" type="submit" style="width:100%">
+          <div class="pay-actions">
+            <div class="pay-actions__row desktop-cta">
+              <button class="btn btn--secondary pay-btn-back" type="button" data-go="details">${icon('back',16)} Back to details</button>
+              <button class="btn btn--primary pay-btn-confirm" type="submit">
                 Confirm and start membership &mdash; ${price} &euro; / mo
               </button>
             </div>
-            <div class="pay-actions__secondary">
-              <button class="btn btn--secondary" type="button" data-go="details">${icon('back',16)} Back to details</button>
+            <div class="pay-actions__footer">
               <button class="linkish xsmall muted" type="button" data-go="save">Save progress for later</button>
             </div>
-          </div>
-
-          <!-- 4. Honest Pilot Disclaimer -->
-          <div class="notice notice--simulated">
-            ${icon('info',18)}
-            <span><strong>Simulated checkout.</strong> Nothing is charged, no card details are collected, and no live contract is formed.</span>
           </div>
 
           <!-- Mobile Sticky Paybar -->
@@ -302,7 +296,6 @@ function paymentScreen() {
               Billed monthly. ${esc(renewal)}
             </div>
           </div>
-          ${ulaNote('Review your membership details and start date before confirming.')}
         </div>
       </aside>
     </div>

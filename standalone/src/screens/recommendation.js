@@ -675,8 +675,10 @@ function recommendationScreen() {
 
   const planAside = `<div class="planbox">
     <div class="planbox__badge">${isRec ? 'Recommended' : 'Your choice'}</div>
-    <div class="planbox__name">${esc(plan.name)}</div>
-    <div class="planbox__price"><b>${price} €</b> <span>/ month</span></div>
+    <div class="planbox__idrow">
+      <div class="planbox__name">${esc(plan.name)}</div>
+      <div class="planbox__price"><b>${price} €</b> <span>/ month</span></div>
+    </div>
 
     <!-- Commitment tabs: Monthly / 12 mo / 24 mo -->
     <div class="termpick" role="group" aria-label="Membership duration">
@@ -751,7 +753,6 @@ function recommendationScreen() {
       </div>
       <div class="shelf">
         ${whyBlock}
-        ${askBlock(true, true)}
         <details class="shelf__row"${MOREPICK==='terms'?' open':''}><summary class="shelf__head" data-more="terms"><span class="shelf__icon">${icon('info',18)}</span><span class="shelf__label">Membership details and terms</span>
           <span class="shelf__hint">what&rsquo;s included, limits, cancelling</span><span class="shelf__chev">${icon('chevron',18)}</span></summary>
           <div class="shelf__body">
@@ -1012,19 +1013,19 @@ function plansScreen() {
   </div>`;
 
   return `${topbar(1, { stepper: false, savedNote: Boolean(S.email && S.saveOptIn) })}<main class="content plans-page" id="main">
+    <div class="plans-head">
+      <h1 class="h-question" tabindex="-1">Choose your membership</h1>
+    </div>
+
+    <div class="commit-row">${COMMITMENTS.map(c => {
+      const isCur = c.id === S.commitmentId;
+      const termLabel = c.minimumTermMonths === 1 ? 'Monthly' : `${c.minimumTermMonths} months`;
+      const savingBadge = c.id === 'annual' ? '<span class="commit-save-pill">Save 15%</span>' : c.id === 'biennial' ? '<span class="commit-save-pill">Save 20%</span>' : '';
+      return `<button class="chip-sm ${isCur ? 'is-current' : ''}" type="button" data-commit="${esc(c.id)}"><span>${esc(termLabel)}</span>${savingBadge}</button>`;
+    }).join('')}</div>
+
     <div class="plans-layout">
       <div class="plans-main">
-        <div class="plans-head">
-          <h1 class="h-question" tabindex="-1">Choose your membership</h1>
-        </div>
-
-        <div class="commit-row">${COMMITMENTS.map(c => {
-          const isCur = c.id === S.commitmentId;
-          const termLabel = c.minimumTermMonths === 1 ? 'Monthly' : `${c.minimumTermMonths} months`;
-          const savingBadge = c.id === 'annual' ? '<span class="commit-save-pill">Save 15%</span>' : c.id === 'biennial' ? '<span class="commit-save-pill">Save 20%</span>' : '';
-          return `<button class="chip-sm ${isCur ? 'is-current' : ''}" type="button" data-commit="${esc(c.id)}"><span>${esc(termLabel)}</span>${savingBadge}</button>`;
-        }).join('')}</div>
-
         <section class="plans-options-card" aria-label="Membership options">
           <div class="plan-lines-group">${planLines}</div>
 
@@ -1032,16 +1033,16 @@ function plansScreen() {
             <span class="always-sparkle">✦</span>
             <span><strong>Always included:</strong> on-site activities &middot; online classes &middot; video on demand</span>
           </div>
-
-          <div class="plans-cta-wrap">
-            <button class="btn btn--primary btn-continue-plan" type="button" data-go="details">
-              Choose ${esc(selectedPlan.name)} and continue ${icon('arrowRight', 16)}
-            </button>
-            <button class="linkish plans-venues-link" type="button" data-go="catalog">
-              Explore venues before choosing
-            </button>
-          </div>
         </section>
+
+        <div class="plans-cta-wrap">
+          <button class="btn btn--primary btn-continue-plan" type="button" data-go="details">
+            Choose ${esc(selectedPlan.name)} and continue ${icon('arrowRight', 16)}
+          </button>
+          <button class="linkish plans-venues-link" type="button" data-go="catalog">
+            Explore venues before choosing
+          </button>
+        </div>
       </div>
       <aside class="plans-layout__sidebar">
         ${routinePanel()}
