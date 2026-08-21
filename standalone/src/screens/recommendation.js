@@ -1082,30 +1082,40 @@ function plansScreen() {
     </article>`;
   }).join('');
 
-  const targetScreen = given.length > 0 ? 'recommendation' : 'fit';
+  const actsCount = (A().activities || []).filter(x => x !== SKIP).length;
+  const hasRoutine = actsCount > 0 || given.length > 0;
+  const routineStatusText = actsCount > 0
+    ? `${actsCount} ${actsCount === 1 ? 'activity' : 'activities'} saved`
+    : (given.length > 0 ? 'Routine saved' : '');
+
   const fitStrip = `<div class="plans-fit-bar" role="region" aria-label="Urby recommendation">
     <div class="plans-fit-bar__left">
       <div class="plans-fit-bar__brand">${ulaAvatar()} <b>Urby</b></div>
       <div class="plans-fit-bar__prompt">
-        <span><strong>Not sure which to choose?</strong> Find the best membership for your routine.</span>
+        ${hasRoutine && rec
+          ? `<span>Recommended: <strong>${esc(rec.planName)}</strong> based on your routine (${actsCount > 0 ? `${actsCount} saved` : 'custom fit'}).</span>`
+          : `<span><strong>Not sure which to choose?</strong> Find the best membership for your routine.</span>`}
       </div>
     </div>
     <div class="plans-fit-bar__right">
-      <button class="btn btn--secondary plans-fit-bar__cta" type="button" data-go="${targetScreen}">
-        Find your fit ${icon('arrowRight', 14)}
+      <button class="btn btn--secondary plans-fit-bar__cta" type="button" data-go="${hasRoutine ? 'recommendation' : 'fit'}">
+        ${hasRoutine ? `Review fit ${icon('arrowRight', 14)}` : `Find your fit ${icon('arrowRight', 14)}`}
       </button>
     </div>
   </div>`;
 
-  const actsCount = (A().activities || []).filter(x => x !== SKIP).length;
-  const routineStatusText = actsCount > 0
-    ? `${actsCount} ${actsCount === 1 ? 'activity' : 'activities'} saved`
-    : (given.length > 0 ? 'Routine saved' : (S.commitmentId === 'annual' ? '12-month commitment' : S.commitmentId === 'biennial' ? '24-month commitment' : 'Monthly &middot; Cancel anytime'));
+  const stickySub = hasRoutine
+    ? `<button class="plans-sticky-bar__sublink linkish" type="button" data-go="recommendation" aria-label="Review your routine and recommendation">
+        ${icon('checkThin', 12)} <span>${routineStatusText || 'Routine saved'} &middot; <u>Review fit</u> &rarr;</span>
+      </button>`
+    : `<button class="plans-sticky-bar__sublink linkish" type="button" data-go="fit" aria-label="Find your fit with Urby">
+        ${icon('sparkle', 12)} <span>Not sure? <u>Find your fit</u> &rarr;</span>
+      </button>`;
 
   const stickyBar = `<div class="plans-sticky-bar">
     <div class="plans-sticky-bar__left">
       <div class="plans-sticky-bar__name"><b>${esc(selectedPlan.name)}</b> &middot; ${selectedPrice} &euro;/mo</div>
-      <div class="plans-sticky-bar__sub">${actsCount > 0 || given.length > 0 ? `${icon('checkThin', 12)} ` : ''}${routineStatusText}</div>
+      <div class="plans-sticky-bar__sub">${stickySub}</div>
     </div>
     <button class="btn btn--primary plans-sticky-bar__cta" type="button" data-go="details">
       Continue with ${esc(selectedPlan.name)}

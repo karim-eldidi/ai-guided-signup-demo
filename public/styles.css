@@ -1167,6 +1167,15 @@ main.plans-page { width:100%; max-width:1080px; margin: 0 auto; box-sizing:borde
   .plans-sticky-bar__left { min-width: 0; }
   .plans-sticky-bar__name { font-size: 14.5px; color: var(--ink); }
   .plans-sticky-bar__sub { font-size: 12px; color: var(--navy-soft); margin-top: 2px; }
+  .plans-sticky-bar__sublink {
+    display: inline-flex; align-items: center; gap: 4px; font-size: 12px;
+    color: var(--navy-soft); background: none; border: none; padding: 0; margin: 0;
+    cursor: pointer; text-align: left; line-height: 1.3;
+  }
+  .plans-sticky-bar__sublink svg { flex: 0 0 auto; color: var(--navy-soft); }
+  .plans-sticky-bar__sublink u { text-underline-offset: 2.5px; color: var(--navy); font-weight: 600; }
+  .plans-sticky-bar__sublink:hover, .plans-sticky-bar__sublink:focus-visible { color: var(--ink); }
+  .plans-sticky-bar__sublink:hover u, .plans-sticky-bar__sublink:focus-visible u { color: var(--ink); text-decoration-color: var(--ink); }
   .plans-sticky-bar__cta { height: 44px; padding: 0 18px; font-size: 14px; font-weight: 700; flex: 0 0 auto; }
 }
 .plus-sheet__intro { margin:7px 0 0; color:var(--navy); line-height:1.5; }
