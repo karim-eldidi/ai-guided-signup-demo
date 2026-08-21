@@ -1014,39 +1014,18 @@ function plansScreen() {
     </article>`;
   }).join('');
 
-  const fitStrip = `<div class="plans-fit-bar" role="region" aria-label="Your routine fit">
+  const targetScreen = given.length > 0 ? 'recommendation' : 'fit';
+  const fitStrip = `<div class="plans-fit-bar" role="region" aria-label="Urby recommendation">
     <div class="plans-fit-bar__left">
       <div class="plans-fit-bar__brand">${ulaAvatar()} <b>Urby</b></div>
-      ${given.length > 0 ? `
-        <div class="plans-fit-bar__status">
-          ${icon('checkFill', 16)}
-          <span class="plans-fit-bar__status-label">Your fit</span>
-        </div>
-        <div class="plans-fit-bar__chips">
-          ${given.map(x => `
-            <button class="answer-chip" type="button" data-edit="${esc(x.id)}" aria-label="Change answer to: ${esc(x.prompt)}">
-              ${icon(x.icon, 14)}
-              <span>${esc(compactAnswerLabel(x.id, S.answers[x.id]))}</span>
-              <span class="answer-chip__edit-icon">${icon('pencil', 11)}</span>
-            </button>
-          `).join('')}
-        </div>
-      ` : `
-        <div class="plans-fit-bar__prompt">
-          <span>Not sure which plan fits you best? Answer 4 quick questions for a personalized routine.</span>
-        </div>
-      `}
+      <div class="plans-fit-bar__prompt">
+        <span><strong>Not sure which one to choose?</strong> Let Urby recommend your perfect membership based on your routine.</span>
+      </div>
     </div>
     <div class="plans-fit-bar__right">
-      ${given.length > 0 ? `
-        <button class="linkish plans-fit-bar__edit-all" type="button" data-go="fit">
-          Edit answers ${icon('pencil', 12)}
-        </button>
-      ` : `
-        <button class="btn btn--secondary plans-fit-bar__cta" type="button" data-go="fit">
-          Find my fit ${icon('arrowRight', 14)}
-        </button>
-      `}
+      <button class="btn btn--secondary plans-fit-bar__cta" type="button" data-go="${targetScreen}">
+        Find your fit ${icon('arrowRight', 14)}
+      </button>
     </div>
   </div>`;
 

@@ -842,21 +842,21 @@ main.plans-page { width:100%; max-width:1080px; margin: 0 auto; box-sizing:borde
 
 .commit-row {
   display: inline-flex; align-items: center; justify-content: center;
-  background: #edebe4; padding: 4px; border-radius: 12px; gap: 4px; margin: 0 auto;
+  background: var(--yellow); border: 1.5px solid var(--yellow-border); padding: 4px; border-radius: 14px; gap: 4px; margin: 0 auto;
 }
 .commit-row .commit-tab,
 .commit-row .chip-sm {
-  height: 38px; padding: 0 16px; border-radius: 8px; font-size: 13.5px; font-weight: 600;
+  height: 38px; padding: 0 16px; border-radius: 10px; font-size: 13.5px; font-weight: 600;
   display: inline-flex; align-items: center; gap: 6px;
   background: transparent; border: none; color: var(--navy); cursor: pointer;
   transition: all .15s ease;
 }
 .commit-row .commit-tab:hover,
-.commit-row .chip-sm:hover { color: var(--ink); }
+.commit-row .chip-sm:hover { color: var(--ink); background: rgba(255,255,255,0.45); }
 .commit-row .commit-tab.is-current,
 .commit-row .chip-sm.is-current {
-  background: #ffffff; color: var(--ink); font-weight: 700;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  background: #ffffff; color: var(--ink); font-weight: 800;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 .commit-save-pill {
   background: #e6f4ea; color: #137333; font-size: 11px; font-weight: 700;
@@ -865,43 +865,32 @@ main.plans-page { width:100%; max-width:1080px; margin: 0 auto; box-sizing:borde
 
 /* Plans Fit Bar across top */
 .plans-fit-bar {
-  background: #fbf9f4; border: 1px solid #ebe7de; border-radius: 16px;
-  padding: 12px 18px; margin-bottom: 24px;
+  background: #fdfaf0; border: 1.5px solid #f2e4b8; border-radius: 16px;
+  padding: 14px 20px; margin-bottom: 24px;
   display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
 }
 .plans-fit-bar__left {
-  display: flex; align-items: center; gap: 12px; flex-wrap: wrap; min-width: 0;
+  display: flex; align-items: center; gap: 14px; min-width: 0; flex: 1 1 auto;
 }
 .plans-fit-bar__brand {
   display: inline-flex; align-items: center; gap: 8px;
-  font-size: 14.5px; font-weight: 700; color: var(--ink); flex-shrink: 0;
+  font-size: 14.5px; font-weight: 800; color: var(--ink); flex-shrink: 0;
 }
 .plans-fit-bar__brand svg { width: 24px; height: 24px; }
-.plans-fit-bar__status {
-  display: inline-flex; align-items: center; gap: 5px;
-  font-size: 13.5px; font-weight: 700; color: #137333; margin-left: 4px; flex-shrink: 0;
-}
-.plans-fit-bar__status-label { color: var(--ink); font-weight: 700; }
-.plans-fit-bar__chips {
-  display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap;
-}
 .plans-fit-bar__prompt {
-  font-size: 13.5px; font-weight: 600; color: var(--navy); line-height: 1.35;
+  font-size: 14px; color: var(--navy); line-height: 1.4;
+}
+.plans-fit-bar__prompt strong {
+  color: var(--ink); font-weight: 700; margin-right: 4px;
 }
 .plans-fit-bar__right { flex-shrink: 0; }
-.plans-fit-bar__edit-all {
-  font-size: 13.5px; font-weight: 600; color: var(--navy);
-  display: inline-flex; align-items: center; gap: 5px; cursor: pointer;
-  text-decoration: underline; text-underline-offset: 3px;
-}
-.plans-fit-bar__edit-all:hover { color: var(--ink); }
 .plans-fit-bar__cta {
-  height: 36px; padding: 0 16px; font-size: 13px; font-weight: 700; border-radius: 8px;
+  height: 40px; padding: 0 18px; font-size: 13.5px; font-weight: 700; border-radius: 10px;
   display: inline-flex; align-items: center; gap: 6px;
-  background: #fff; border: 1.5px solid var(--border); color: var(--ink); cursor: pointer;
-  transition: all .15s ease;
+  background: #fff; border: 1.5px solid #dcd5c7; color: var(--ink); cursor: pointer;
+  transition: all .15s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.04);
 }
-.plans-fit-bar__cta:hover { border-color: var(--ink); background: #fdf5d3; }
+.plans-fit-bar__cta:hover { border-color: var(--ink); background: #fdf5d3; transform: translateY(-1px); }
 
 .plans-options-card {
   padding: 16px; background: #fff; border: 1.5px solid var(--border); border-radius: 20px;
@@ -10534,7 +10523,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 4824919 + local edits</span>
+  <span class="demo-banner__build">build dcd1821 + local edits</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -15014,39 +15003,18 @@ function plansScreen() {
     </article>`;
   }).join('');
 
-  const fitStrip = `<div class="plans-fit-bar" role="region" aria-label="Your routine fit">
+  const targetScreen = given.length > 0 ? 'recommendation' : 'fit';
+  const fitStrip = `<div class="plans-fit-bar" role="region" aria-label="Urby recommendation">
     <div class="plans-fit-bar__left">
       <div class="plans-fit-bar__brand">${ulaAvatar()} <b>Urby</b></div>
-      ${given.length > 0 ? `
-        <div class="plans-fit-bar__status">
-          ${icon('checkFill', 16)}
-          <span class="plans-fit-bar__status-label">Your fit</span>
-        </div>
-        <div class="plans-fit-bar__chips">
-          ${given.map(x => `
-            <button class="answer-chip" type="button" data-edit="${esc(x.id)}" aria-label="Change answer to: ${esc(x.prompt)}">
-              ${icon(x.icon, 14)}
-              <span>${esc(compactAnswerLabel(x.id, S.answers[x.id]))}</span>
-              <span class="answer-chip__edit-icon">${icon('pencil', 11)}</span>
-            </button>
-          `).join('')}
-        </div>
-      ` : `
-        <div class="plans-fit-bar__prompt">
-          <span>Not sure which plan fits you best? Answer 4 quick questions for a personalized routine.</span>
-        </div>
-      `}
+      <div class="plans-fit-bar__prompt">
+        <span><strong>Not sure which one to choose?</strong> Let Urby recommend your perfect membership based on your routine.</span>
+      </div>
     </div>
     <div class="plans-fit-bar__right">
-      ${given.length > 0 ? `
-        <button class="linkish plans-fit-bar__edit-all" type="button" data-go="fit">
-          Edit answers ${icon('pencil', 12)}
-        </button>
-      ` : `
-        <button class="btn btn--secondary plans-fit-bar__cta" type="button" data-go="fit">
-          Find my fit ${icon('arrowRight', 14)}
-        </button>
-      `}
+      <button class="btn btn--secondary plans-fit-bar__cta" type="button" data-go="${targetScreen}">
+        Find your fit ${icon('arrowRight', 14)}
+      </button>
     </div>
   </div>`;
 

@@ -829,21 +829,21 @@ main.plans-page { width:100%; max-width:1080px; margin: 0 auto; box-sizing:borde
 
 .commit-row {
   display: inline-flex; align-items: center; justify-content: center;
-  background: #edebe4; padding: 4px; border-radius: 12px; gap: 4px; margin: 0 auto;
+  background: var(--yellow); border: 1.5px solid var(--yellow-border); padding: 4px; border-radius: 14px; gap: 4px; margin: 0 auto;
 }
 .commit-row .commit-tab,
 .commit-row .chip-sm {
-  height: 38px; padding: 0 16px; border-radius: 8px; font-size: 13.5px; font-weight: 600;
+  height: 38px; padding: 0 16px; border-radius: 10px; font-size: 13.5px; font-weight: 600;
   display: inline-flex; align-items: center; gap: 6px;
   background: transparent; border: none; color: var(--navy); cursor: pointer;
   transition: all .15s ease;
 }
 .commit-row .commit-tab:hover,
-.commit-row .chip-sm:hover { color: var(--ink); }
+.commit-row .chip-sm:hover { color: var(--ink); background: rgba(255,255,255,0.45); }
 .commit-row .commit-tab.is-current,
 .commit-row .chip-sm.is-current {
-  background: #ffffff; color: var(--ink); font-weight: 700;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  background: #ffffff; color: var(--ink); font-weight: 800;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 .commit-save-pill {
   background: #e6f4ea; color: #137333; font-size: 11px; font-weight: 700;
@@ -852,43 +852,32 @@ main.plans-page { width:100%; max-width:1080px; margin: 0 auto; box-sizing:borde
 
 /* Plans Fit Bar across top */
 .plans-fit-bar {
-  background: #fbf9f4; border: 1px solid #ebe7de; border-radius: 16px;
-  padding: 12px 18px; margin-bottom: 24px;
+  background: #fdfaf0; border: 1.5px solid #f2e4b8; border-radius: 16px;
+  padding: 14px 20px; margin-bottom: 24px;
   display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
 }
 .plans-fit-bar__left {
-  display: flex; align-items: center; gap: 12px; flex-wrap: wrap; min-width: 0;
+  display: flex; align-items: center; gap: 14px; min-width: 0; flex: 1 1 auto;
 }
 .plans-fit-bar__brand {
   display: inline-flex; align-items: center; gap: 8px;
-  font-size: 14.5px; font-weight: 700; color: var(--ink); flex-shrink: 0;
+  font-size: 14.5px; font-weight: 800; color: var(--ink); flex-shrink: 0;
 }
 .plans-fit-bar__brand svg { width: 24px; height: 24px; }
-.plans-fit-bar__status {
-  display: inline-flex; align-items: center; gap: 5px;
-  font-size: 13.5px; font-weight: 700; color: #137333; margin-left: 4px; flex-shrink: 0;
-}
-.plans-fit-bar__status-label { color: var(--ink); font-weight: 700; }
-.plans-fit-bar__chips {
-  display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap;
-}
 .plans-fit-bar__prompt {
-  font-size: 13.5px; font-weight: 600; color: var(--navy); line-height: 1.35;
+  font-size: 14px; color: var(--navy); line-height: 1.4;
+}
+.plans-fit-bar__prompt strong {
+  color: var(--ink); font-weight: 700; margin-right: 4px;
 }
 .plans-fit-bar__right { flex-shrink: 0; }
-.plans-fit-bar__edit-all {
-  font-size: 13.5px; font-weight: 600; color: var(--navy);
-  display: inline-flex; align-items: center; gap: 5px; cursor: pointer;
-  text-decoration: underline; text-underline-offset: 3px;
-}
-.plans-fit-bar__edit-all:hover { color: var(--ink); }
 .plans-fit-bar__cta {
-  height: 36px; padding: 0 16px; font-size: 13px; font-weight: 700; border-radius: 8px;
+  height: 40px; padding: 0 18px; font-size: 13.5px; font-weight: 700; border-radius: 10px;
   display: inline-flex; align-items: center; gap: 6px;
-  background: #fff; border: 1.5px solid var(--border); color: var(--ink); cursor: pointer;
-  transition: all .15s ease;
+  background: #fff; border: 1.5px solid #dcd5c7; color: var(--ink); cursor: pointer;
+  transition: all .15s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.04);
 }
-.plans-fit-bar__cta:hover { border-color: var(--ink); background: #fdf5d3; }
+.plans-fit-bar__cta:hover { border-color: var(--ink); background: #fdf5d3; transform: translateY(-1px); }
 
 .plans-options-card {
   padding: 16px; background: #fff; border: 1.5px solid var(--border); border-radius: 20px;
