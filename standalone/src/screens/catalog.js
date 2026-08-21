@@ -894,7 +894,7 @@ function searchScreen() {
           <section class="placesrow">
             <div class="venue-results-bar">
               <div class="venue-results-bar__left placesrow__title">
-                <h2 class="venue-results-bar__title" id="results-count">Places ${b.label ? `near ${esc(b.label)}` : 'near you'}${b.groups.length === 1 ? ` for ${esc(b.groups[0].label).toLowerCase()}` : ''}</h2>
+                <h2 class="venue-results-bar__title" id="results-count">${b.within.length} Places ${b.label ? (b.label.toLowerCase().startsWith('near') ? esc(b.label) : `near ${esc(b.label)}`) : 'near you'}${b.groups.length === 1 ? ` for ${esc(b.groups[0].label).toLowerCase()}` : ''}</h2>
                 <span class="venue-results-bar__count">${searched ? 'Search results' : `${plural(b.within.length, 'place', 'places')} found${b.label ? ` &middot; ${esc(b.label)}` : ''}`}</span>
               </div>
               ${searched ? '' : `

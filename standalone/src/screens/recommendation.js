@@ -154,15 +154,9 @@ function planDrawer(plan, price, each, commitment, isRec, hereT, cheaperPlan, ch
 
 
       ${allPlans ? `
-        <details class="drawer-compare" style="margin-top:10px;margin-bottom:14px;border:1px solid var(--border);border-radius:var(--radius);background:#fff">
-          <summary style="padding:10px 12px;font-size:13px;font-weight:700;color:var(--navy);cursor:pointer;display:flex;align-items:center;justify-content:space-between">
-            <span>Compare memberships</span>
-            <span class="planbox__why-chevron">${icon('chevron', 14)}</span>
-          </summary>
-          <div style="padding:10px 12px 14px;border-top:1px solid var(--border)">
-            ${allPlans}
-          </div>
-        </details>
+        <div class="plan-drawer__compare-wrap" style="margin-top:12px;margin-bottom:14px">
+          ${allPlans}
+        </div>
       ` : ''}
 
       <div style="margin-top:14px">
@@ -717,21 +711,25 @@ function recommendationScreen() {
         const isCurrentPick = pl.id === plan.id;
 
         return `<div class="allplans__row ${isRecTier ? 'is-recommended' : ''} ${isCurrentPick ? 'is-current' : ''}" data-plan="${esc(pl.id)}" role="button" tabindex="0" aria-label="Select ${esc(pl.name)} membership">
-          <div class="allplans__icon-box">
-            <span>${meta.emoji}</span>
-          </div>
-          <div class="allplans__headline-wrap">
-            <span class="allplans__headline">${esc(meta.headline)}</span>
-            <div class="allplans__tier-line">
-              <span class="allplans__tier-name">${esc(meta.tierName)}</span>
-              ${isRecTier ? `<span class="allplans__tag--gold">Recommended</span>` : ''}
+          <div class="allplans__row-main">
+            <div class="allplans__icon-box">
+              <span>${meta.emoji}</span>
+            </div>
+            <div class="allplans__row-info">
+              <div class="allplans__title-line">
+                <span class="allplans__tier-name allplans__name">${esc(meta.tierName)}</span>
+                ${isRecTier ? `<span class="allplans__tag allplans__tag--gold">Recommended</span>` : ''}
+                ${isCurrentPick && !isRecTier ? `<span class="allplans__tag allplans__tag--current">Active</span>` : ''}
+              </div>
+              <div class="allplans__tagline">${esc(meta.headline)}</div>
+            </div>
+            <div class="allplans__price-box allplans__price-col">
+              <span class="allplans__price-val"><b>${p} &euro;</b></span>
+              <span class="allplans__price-unit"><small>/ mo</small></span>
             </div>
           </div>
-          <div class="allplans__price-col">
-            <b>${p} &euro;</b> <small>/ month</small>
-          </div>
-          <div class="allplans__meta-wrap">
-            <div class="allplans__meta-line">
+          <div class="allplans__row-sub allplans__meta-wrap">
+            <div class="allplans__allowance-line allplans__meta-line">
               <span>${visitsFor(pl)} visits &middot; ${esc(info.opensText)}</span>
             </div>
             ${info.statusText ? `
@@ -819,7 +817,7 @@ function recommendationScreen() {
       <span class="rowcard__chev">${icon('chevron',20)}</span>
     </summary>
     <div class="rowcard__body rowcard__body--flush">
-      <div class="more-quick-ask">
+      <div class="more-quick-ask ask__row" data-more="ask">
         <form data-form="ask" class="more-quick-ask__form">
           <label for="more-ask-input" class="sr-only">Ask Urby a question</label>
           <span class="more-quick-ask__icon">${icon('search',16)}</span>

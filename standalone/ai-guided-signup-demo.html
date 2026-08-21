@@ -5461,12 +5461,12 @@ button.appcard:hover .appcard__info-icon {
    behaviour, so it is a card of its own with a handle that names it, and it starts open.
    Closing it is how the column gets shorter, which is the other thing he asked for. */
 .allplans {
-  margin-top: 20px;
+  margin-top: 16px;
   background: #ffffff;
   border: 1.5px solid var(--border);
-  border-radius: 20px;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(16, 24, 40, .03);
+  box-shadow: 0 2px 12px rgba(16, 24, 40, .03);
 }
 .allplans__head {
   display: flex;
@@ -5475,7 +5475,7 @@ button.appcard:hover .appcard__info-icon {
   gap: 12px;
   cursor: pointer;
   list-style: none;
-  padding: 18px 20px 16px;
+  padding: 14px 16px;
   background: #ffffff;
   transition: background .15s ease;
   user-select: none;
@@ -5485,14 +5485,14 @@ button.appcard:hover .appcard__info-icon {
 .allplans__headcopy { min-width: 0; }
 .allplans__title {
   margin: 0;
-  font-size: 17.5px;
+  font-size: 15.5px;
   font-weight: 800;
   letter-spacing: -.02em;
   color: var(--ink);
 }
 .allplans__subtitle {
-  margin: 3px 0 0;
-  font-size: 13.5px;
+  margin: 2px 0 0;
+  font-size: 12.5px;
   color: #64748b;
   font-weight: 500;
 }
@@ -5502,6 +5502,7 @@ button.appcard:hover .appcard__info-icon {
   justify-content: center;
   color: #64748b;
   transition: transform .2s ease;
+  flex-shrink: 0;
 }
 .allplans[open] .allplans__chev {
   transform: rotate(180deg);
@@ -5511,117 +5512,145 @@ button.appcard:hover .appcard__info-icon {
   display: flex;
   flex-direction: column;
   background: #ffffff;
+  border-top: 1px solid #f1f5f9;
 }
 .allplans__row {
-  display: grid;
-  grid-template-columns: 40px 1fr auto;
-  gap: 6px 12px;
-  align-items: start;
-  padding: 16px 18px;
-  border-top: 1px solid #f1f5f9;
+  display: flex;
+  flex-direction: column;
+  padding: 12px 14px;
+  border-bottom: 1px solid #f1f5f9;
   background: #ffffff;
   cursor: pointer;
   transition: background .15s ease, border-color .15s ease;
   user-select: none;
+  position: relative;
+}
+.allplans__row:last-child {
+  border-bottom: none;
 }
 .allplans__row:hover {
-  background: #fcfbfa;
+  background: #f8fafc;
 }
 .allplans__row.is-recommended {
-  background: #fdfaf0;
-  border-top: 1px solid #fef08a;
-  border-bottom: 1px solid #fef08a;
+  background: #fefce8;
 }
 .allplans__row.is-recommended:hover {
-  background: #fdf8e8;
+  background: #fef9c3;
+}
+.allplans__row.is-current::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3.5px;
+  background: #0f172a;
+  border-radius: 0 2px 2px 0;
 }
 
+.allplans__row-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
 .allplans__icon-box {
-  grid-column: 1;
-  grid-row: 1;
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  background: #f8fafc;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: #f1f5f9;
   border: 1px solid #e2e8f0;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: 16px;
   flex-shrink: 0;
 }
 .allplans__row.is-recommended .allplans__icon-box {
-  background: #fff;
+  background: #ffffff;
   border-color: #fde68a;
 }
 
-.allplans__headline-wrap {
-  grid-column: 2;
-  grid-row: 1;
+.allplans__row-info {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
+  flex: 1 1 auto;
   min-width: 0;
 }
-.allplans__headline {
-  font-size: 15.5px;
-  font-weight: 800;
-  color: var(--ink);
-  letter-spacing: -.02em;
-  line-height: 1.25;
-}
-.allplans__tier-line {
+.allplans__title-line {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
   gap: 6px;
-  margin-top: 2px;
+  flex-wrap: wrap;
 }
-.allplans__tier-name {
-  font-size: 13.5px;
-  font-weight: 700;
-  color: var(--navy);
+.allplans__name {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -.01em;
+  line-height: 1.2;
 }
 .allplans__tag--gold {
   background: #fef3c7;
   color: #92400e;
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 700;
-  padding: 2px 7px;
+  padding: 1px 6px;
   border-radius: 9999px;
+  border: 1px solid #fde68a;
   letter-spacing: 0.01em;
   white-space: nowrap;
+  line-height: 1.3;
+}
+.allplans__tag--current {
+  background: #e2e8f0;
+  color: #334155;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 9999px;
+  white-space: nowrap;
+  line-height: 1.3;
+}
+.allplans__tagline {
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  line-height: 1.25;
 }
 
-.allplans__price-col {
-  grid-column: 3;
-  grid-row: 1;
+.allplans__price-box {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
   white-space: nowrap;
   text-align: right;
+  flex-shrink: 0;
   font-variant-numeric: tabular-nums;
-  padding-top: 1px;
+  margin-left: auto;
 }
-.allplans__price-col b {
-  font-size: 16.5px;
+.allplans__price-val {
+  font-size: 15px;
   font-weight: 800;
   color: var(--ink);
   letter-spacing: -.02em;
 }
-.allplans__price-col small {
-  font-size: 12px;
+.allplans__price-unit {
+  font-size: 11.5px;
   color: #64748b;
   font-weight: 500;
 }
 
-.allplans__meta-wrap {
-  grid-column: 2 / -1;
+.allplans__row-sub {
+  margin-top: 5px;
+  padding-left: 44px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  margin-top: 4px;
+  gap: 3px;
 }
-.allplans__meta-line {
-  font-size: 12.5px;
+.allplans__allowance-line {
+  font-size: 12px;
   color: #64748b;
   font-weight: 500;
   line-height: 1.35;
@@ -5630,16 +5659,16 @@ button.appcard:hover .appcard__info-icon {
 .allplans__status {
   display: inline-flex;
   align-items: flex-start;
-  gap: 6px;
-  font-size: 12px;
+  gap: 5px;
+  font-size: 11.5px;
   font-weight: 600;
   line-height: 1.35;
 }
 .allplans__status svg {
   flex-shrink: 0;
-  width: 13px;
-  height: 13px;
-  margin-top: 2px;
+  width: 12px;
+  height: 12px;
+  margin-top: 1.5px;
 }
 .allplans__status--warn {
   color: #b45309;
@@ -5653,12 +5682,12 @@ button.appcard:hover .appcard__info-icon {
 
 .allplans__foot {
   text-align: center;
-  padding: 16px 20px;
+  padding: 12px 16px;
   border-top: 1px solid #f1f5f9;
   background: #ffffff;
 }
 .allplans__feature-link {
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 700;
   color: #2b61b6;
   text-decoration: underline;
@@ -5672,12 +5701,12 @@ button.appcard:hover .appcard__info-icon {
 }
 
 @media (max-width: 480px) {
-  .allplans__head { padding: 14px 16px 12px; }
-  .allplans__row { padding: 14px 14px; gap: 4px 10px; grid-template-columns: 36px 1fr auto; }
-  .allplans__icon-box { width: 36px; height: 36px; font-size: 16px; border-radius: 8px; }
-  .allplans__headline { font-size: 14.5px; }
-  .allplans__price-col b { font-size: 15.5px; }
-  .allplans__foot { padding: 14px 16px; }
+  .allplans__head { padding: 12px 14px; }
+  .allplans__row { padding: 10px 12px; }
+  .allplans__icon-box { width: 32px; height: 32px; font-size: 15px; }
+  .allplans__row-sub { padding-left: 42px; }
+  .allplans__name { font-size: 13.5px; }
+  .allplans__price-val { font-size: 14.5px; }
 }
 
 /* What the money opens, on the card that carries the money (rule 14). */
@@ -10885,7 +10914,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 21dd901 + local edits</span>
+  <span class="demo-banner__build">build 3533e9a + local edits</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -14085,7 +14114,7 @@ function searchScreen() {
           <section class="placesrow">
             <div class="venue-results-bar">
               <div class="venue-results-bar__left placesrow__title">
-                <h2 class="venue-results-bar__title" id="results-count">Places ${b.label ? `near ${esc(b.label)}` : 'near you'}${b.groups.length === 1 ? ` for ${esc(b.groups[0].label).toLowerCase()}` : ''}</h2>
+                <h2 class="venue-results-bar__title" id="results-count">${b.within.length} Places ${b.label ? (b.label.toLowerCase().startsWith('near') ? esc(b.label) : `near ${esc(b.label)}`) : 'near you'}${b.groups.length === 1 ? ` for ${esc(b.groups[0].label).toLowerCase()}` : ''}</h2>
                 <span class="venue-results-bar__count">${searched ? 'Search results' : `${plural(b.within.length, 'place', 'places')} found${b.label ? ` &middot; ${esc(b.label)}` : ''}`}</span>
               </div>
               ${searched ? '' : `
@@ -14505,15 +14534,9 @@ function planDrawer(plan, price, each, commitment, isRec, hereT, cheaperPlan, ch
 
 
       ${allPlans ? `
-        <details class="drawer-compare" style="margin-top:10px;margin-bottom:14px;border:1px solid var(--border);border-radius:var(--radius);background:#fff">
-          <summary style="padding:10px 12px;font-size:13px;font-weight:700;color:var(--navy);cursor:pointer;display:flex;align-items:center;justify-content:space-between">
-            <span>Compare memberships</span>
-            <span class="planbox__why-chevron">${icon('chevron', 14)}</span>
-          </summary>
-          <div style="padding:10px 12px 14px;border-top:1px solid var(--border)">
-            ${allPlans}
-          </div>
-        </details>
+        <div class="plan-drawer__compare-wrap" style="margin-top:12px;margin-bottom:14px">
+          ${allPlans}
+        </div>
       ` : ''}
 
       <div style="margin-top:14px">
@@ -15068,21 +15091,25 @@ function recommendationScreen() {
         const isCurrentPick = pl.id === plan.id;
 
         return `<div class="allplans__row ${isRecTier ? 'is-recommended' : ''} ${isCurrentPick ? 'is-current' : ''}" data-plan="${esc(pl.id)}" role="button" tabindex="0" aria-label="Select ${esc(pl.name)} membership">
-          <div class="allplans__icon-box">
-            <span>${meta.emoji}</span>
-          </div>
-          <div class="allplans__headline-wrap">
-            <span class="allplans__headline">${esc(meta.headline)}</span>
-            <div class="allplans__tier-line">
-              <span class="allplans__tier-name">${esc(meta.tierName)}</span>
-              ${isRecTier ? `<span class="allplans__tag--gold">Recommended</span>` : ''}
+          <div class="allplans__row-main">
+            <div class="allplans__icon-box">
+              <span>${meta.emoji}</span>
+            </div>
+            <div class="allplans__row-info">
+              <div class="allplans__title-line">
+                <span class="allplans__tier-name allplans__name">${esc(meta.tierName)}</span>
+                ${isRecTier ? `<span class="allplans__tag allplans__tag--gold">Recommended</span>` : ''}
+                ${isCurrentPick && !isRecTier ? `<span class="allplans__tag allplans__tag--current">Active</span>` : ''}
+              </div>
+              <div class="allplans__tagline">${esc(meta.headline)}</div>
+            </div>
+            <div class="allplans__price-box allplans__price-col">
+              <span class="allplans__price-val"><b>${p} &euro;</b></span>
+              <span class="allplans__price-unit"><small>/ mo</small></span>
             </div>
           </div>
-          <div class="allplans__price-col">
-            <b>${p} &euro;</b> <small>/ month</small>
-          </div>
-          <div class="allplans__meta-wrap">
-            <div class="allplans__meta-line">
+          <div class="allplans__row-sub allplans__meta-wrap">
+            <div class="allplans__allowance-line allplans__meta-line">
               <span>${visitsFor(pl)} visits &middot; ${esc(info.opensText)}</span>
             </div>
             ${info.statusText ? `
@@ -15170,7 +15197,7 @@ function recommendationScreen() {
       <span class="rowcard__chev">${icon('chevron',20)}</span>
     </summary>
     <div class="rowcard__body rowcard__body--flush">
-      <div class="more-quick-ask">
+      <div class="more-quick-ask ask__row" data-more="ask">
         <form data-form="ask" class="more-quick-ask__form">
           <label for="more-ask-input" class="sr-only">Ask Urby a question</label>
           <span class="more-quick-ask__icon">${icon('search',16)}</span>
@@ -15747,8 +15774,11 @@ function paymentScreen() {
 
   return `${topbar(3)}<main class="content pay-page" id="main">
     <div class="pay-head">
+      <div class="ula-note" style="margin-bottom:14px">
+        <p>${ulaAvatar('sm')} <span><strong>Urby</strong> &middot; Final step before your routine begins. Everything you agree to is transparently listed below.</span></p>
+      </div>
       <h1 class="h-question" style="margin-top:0" tabindex="-1">Review and confirm</h1>
-      <p class="pay-sub">Final step before your routine begins. Everything you agree to is transparently listed below.</p>
+      <p class="pay-sub">Payment is simulated in this pilot. No card will be charged.</p>
     </div>
 
     <div class="pay-layout">
@@ -15815,7 +15845,7 @@ function paymentScreen() {
           </details>
 
           <!-- Back button on bottom of payment options column -->
-          <div class="pay-left-actions desktop-cta">
+          <div class="pay-left-actions desktop-cta pay-actions__secondary">
             <button class="btn btn--secondary pay-btn-back" type="button" data-go="details">
               ${icon('back',16)} Back to details
             </button>
@@ -15823,9 +15853,11 @@ function paymentScreen() {
 
           <!-- Mobile Sticky Paybar -->
           <div class="paybar">
-            <button class="btn btn--secondary paybar__back-btn" type="button" data-go="details" aria-label="Back to details">
-              ${icon('back',16)}
-            </button>
+            <div class="pay-actions__secondary">
+              <button class="btn btn--secondary paybar__back-btn" type="button" data-go="details" aria-label="Back to details">
+                ${icon('back',16)}
+              </button>
+            </div>
             <div class="paybar__info">
               <b>${esc(plan.name)}</b>
               <span>${price} &euro; / month${each?` &middot; &approx; ${each} &euro; / session`:''}</span>
@@ -15844,17 +15876,14 @@ function paymentScreen() {
             <div class="pay-summary-plan-badge">${esc(plan.name)}</div>
             <div class="pay-summary-price">
               <b>${price} &euro;</b> <span>/ month</span>
-              <small>${esc(commitment.label)} &middot; Auto-renews</small>
             </div>
+            <p class="pay-summary-term">${esc(commitment.name)} &middot; Auto-renews monthly</p>
           </div>
 
-          <div class="pay-summary-divider"></div>
-
-          <!-- Member Details -->
           <div class="pay-summary-details">
             <div class="pay-detail-row">
-              <span class="pay-detail-label">Member</span>
-              <span class="pay-detail-val font-semibold">${esc(memberName)}</span>
+              <span class="pay-detail-label">Name</span>
+              <span class="pay-detail-val">${esc(memberName)}</span>
             </div>
             <div class="pay-detail-row">
               <span class="pay-detail-label">Email</span>
@@ -15863,12 +15892,15 @@ function paymentScreen() {
           </div>
 
           <!-- Start date card selector -->
-          <div class="pay-startdate-block">
+          <div class="pay-startdate-block pay-detail-row--editable">
+            <select id="start-date" class="pay-select sr-only" aria-label="Start date" tabindex="-1">
+              ${startDateChoices().map(d => `<option value="${esc(d)}" ${d === currentStart ? 'selected' : ''}>${esc(d)}</option>`).join('')}
+            </select>
             <div class="pay-startdate-header">
               <span class="pay-startdate-icon">${icon('calendar', 18)}</span>
               <div class="pay-startdate-headcopy">
                 <h4 class="pay-startdate-title">When should your membership start?</h4>
-                <p class="pay-startdate-sub">Memberships start on the 1st of the month.</p>
+                <p class="pay-startdate-sub pay-detail-subtext">Memberships start on the 1st of the month.</p>
               </div>
             </div>
             <div class="pay-startdate-grid">
@@ -16236,7 +16268,7 @@ function saveScreen() {
       </div>
 
       <div class="savepanel__right">
-        <div class="save-perk-banner">
+        <div class="save-perk-banner save-perk-badge">
           ${icon('sparkle',14)} <span><strong>10% off voucher included</strong> &middot; applied when you return</span>
         </div>
 

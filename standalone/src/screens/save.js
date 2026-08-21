@@ -93,7 +93,7 @@ function saveScreen() {
       </div>
 
       <div class="savepanel__right">
-        <div class="save-perk-banner">
+        <div class="save-perk-banner save-perk-badge">
           ${icon('sparkle',14)} <span><strong>10% off voucher included</strong> &middot; applied when you return</span>
         </div>
 

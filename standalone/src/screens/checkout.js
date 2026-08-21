@@ -159,8 +159,11 @@ function paymentScreen() {
 
   return `${topbar(3)}<main class="content pay-page" id="main">
     <div class="pay-head">
+      <div class="ula-note" style="margin-bottom:14px">
+        <p>${ulaAvatar('sm')} <span><strong>Urby</strong> &middot; Final step before your routine begins. Everything you agree to is transparently listed below.</span></p>
+      </div>
       <h1 class="h-question" style="margin-top:0" tabindex="-1">Review and confirm</h1>
-      <p class="pay-sub">Final step before your routine begins. Everything you agree to is transparently listed below.</p>
+      <p class="pay-sub">Payment is simulated in this pilot. No card will be charged.</p>
     </div>
 
     <div class="pay-layout">
@@ -227,7 +230,7 @@ function paymentScreen() {
           </details>
 
           <!-- Back button on bottom of payment options column -->
-          <div class="pay-left-actions desktop-cta">
+          <div class="pay-left-actions desktop-cta pay-actions__secondary">
             <button class="btn btn--secondary pay-btn-back" type="button" data-go="details">
               ${icon('back',16)} Back to details
             </button>
@@ -235,9 +238,11 @@ function paymentScreen() {
 
           <!-- Mobile Sticky Paybar -->
           <div class="paybar">
-            <button class="btn btn--secondary paybar__back-btn" type="button" data-go="details" aria-label="Back to details">
-              ${icon('back',16)}
-            </button>
+            <div class="pay-actions__secondary">
+              <button class="btn btn--secondary paybar__back-btn" type="button" data-go="details" aria-label="Back to details">
+                ${icon('back',16)}
+              </button>
+            </div>
             <div class="paybar__info">
               <b>${esc(plan.name)}</b>
               <span>${price} &euro; / month${each?` &middot; &approx; ${each} &euro; / session`:''}</span>
@@ -256,17 +261,14 @@ function paymentScreen() {
             <div class="pay-summary-plan-badge">${esc(plan.name)}</div>
             <div class="pay-summary-price">
               <b>${price} &euro;</b> <span>/ month</span>
-              <small>${esc(commitment.label)} &middot; Auto-renews</small>
             </div>
+            <p class="pay-summary-term">${esc(commitment.name)} &middot; Auto-renews monthly</p>
           </div>
 
-          <div class="pay-summary-divider"></div>
-
-          <!-- Member Details -->
           <div class="pay-summary-details">
             <div class="pay-detail-row">
-              <span class="pay-detail-label">Member</span>
-              <span class="pay-detail-val font-semibold">${esc(memberName)}</span>
+              <span class="pay-detail-label">Name</span>
+              <span class="pay-detail-val">${esc(memberName)}</span>
             </div>
             <div class="pay-detail-row">
               <span class="pay-detail-label">Email</span>
@@ -275,12 +277,15 @@ function paymentScreen() {
           </div>
 
           <!-- Start date card selector -->
-          <div class="pay-startdate-block">
+          <div class="pay-startdate-block pay-detail-row--editable">
+            <select id="start-date" class="pay-select sr-only" aria-label="Start date" tabindex="-1">
+              ${startDateChoices().map(d => `<option value="${esc(d)}" ${d === currentStart ? 'selected' : ''}>${esc(d)}</option>`).join('')}
+            </select>
             <div class="pay-startdate-header">
               <span class="pay-startdate-icon">${icon('calendar', 18)}</span>
               <div class="pay-startdate-headcopy">
                 <h4 class="pay-startdate-title">When should your membership start?</h4>
-                <p class="pay-startdate-sub">Memberships start on the 1st of the month.</p>
+                <p class="pay-startdate-sub pay-detail-subtext">Memberships start on the 1st of the month.</p>
               </div>
             </div>
             <div class="pay-startdate-grid">
