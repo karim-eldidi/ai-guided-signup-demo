@@ -7768,71 +7768,78 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 .pay-page {
   max-width: 1040px;
   margin: 0 auto;
-  padding: 32px 24px 80px;
+  padding: 20px 24px 60px;
 }
 .pay-head {
-  margin-bottom: 24px;
+  margin-bottom: 16px;
+}
+.pay-head .ula-note {
+  margin-bottom: 8px;
+  padding: 6px 12px;
+}
+.pay-head .ula-note p {
+  font-size: 13px;
 }
 .pay-sub {
-  font-size: 15px;
+  font-size: 13.5px;
   color: var(--navy-soft);
-  margin: 6px 0 0;
+  margin: 2px 0 0;
 }
 .pay-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.95fr);
-  gap: 32px;
+  gap: 24px;
   align-items: start;
 }
 .pay-main form {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 14px;
 }
 .pay-section-card {
   background: #fff;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-xl);
-  padding: 24px;
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  padding: 16px 18px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.02);
 }
 .pay-card-head {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 .pay-card-title {
   margin: 0;
-  font-size: 18px;
+  font-size: 16.5px;
   font-weight: 700;
   color: var(--ink);
   letter-spacing: -.01em;
 }
 .pay-card-sub {
-  margin: 0 0 16px;
-  font-size: 14px;
+  margin: 0 0 12px;
+  font-size: 13px;
   color: var(--navy-soft);
 }
 .pay-section-title {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 700;
   letter-spacing: -.01em;
   color: var(--ink);
-  margin-bottom: 18px;
+  margin-bottom: 14px;
 }
 .pay-step-badge {
   display: grid;
   place-items: center;
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: var(--ink);
   color: #fff;
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 700;
   flex-shrink: 0;
 }
@@ -7840,13 +7847,13 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 14px;
-  padding: 10px 14px;
+  margin-top: 10px;
+  padding: 8px 12px;
   background: #f8fafc;
   border-radius: var(--radius-sm);
-  font-size: 12.5px;
+  font-size: 12px;
   color: var(--navy-soft);
-  line-height: 1.4;
+  line-height: 1.35;
 }
 .pay-mock-notice svg {
   flex: 0 0 auto;
@@ -7859,10 +7866,10 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   transition: padding .2s ease, box-shadow .2s ease;
 }
 .pay-terms-disclosure:not([open]) {
-  padding: 16px 20px;
+  padding: 12px 18px;
 }
 .pay-terms-disclosure[open] {
-  padding: 24px;
+  padding: 18px;
 }
 .pay-terms-disclosure summary {
   list-style: none;
@@ -7886,7 +7893,7 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 17px;
+  font-size: 15.5px;
   font-weight: 700;
   letter-spacing: -.01em;
   color: var(--ink);
@@ -7905,8 +7912,8 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   transform: rotate(180deg);
 }
 .pay-terms-body {
-  margin-top: 18px;
-  padding-top: 16px;
+  margin-top: 12px;
+  padding-top: 12px;
   border-top: 1px solid rgba(0,0,0,0.06);
   cursor: default;
 }
@@ -7916,14 +7923,14 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 .pay-terms-list li {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
-  font-size: 14px;
-  line-height: 1.45;
+  gap: 8px;
+  font-size: 13px;
+  line-height: 1.4;
   color: var(--ink);
 }
 .pay-terms-list svg {
@@ -7932,17 +7939,17 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   color: var(--ink);
 }
 .pay-left-actions {
-  margin-top: 16px;
+  margin-top: 10px;
 }
 .pay-left-actions .pay-btn-back {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  height: 48px;
-  padding: 0 20px;
-  font-size: 14.5px;
+  height: 44px;
+  padding: 0 18px;
+  font-size: 14px;
   font-weight: 600;
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius);
   background: #ffffff;
   border: 1px solid var(--border);
   color: var(--ink);
@@ -7957,76 +7964,72 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 /* Sidebar Order Summary */
 .pay-sidebar {
   position: sticky;
-  top: 84px;
+  top: 76px;
   margin: 0;
   padding: 0;
   align-self: start;
 }
 .pay-summary-card {
   background: #fff;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-xl);
-  padding: 24px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  padding: 16px 18px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.03);
   margin: 0;
 }
-.pay-summary-head {
+.pay-summary-hero {
+  margin-top: 4px;
+  margin-bottom: 8px;
+}
+.pay-summary-hero__top {
   display: flex;
-  align-items: flex-start;
+  align-items: baseline;
   justify-content: space-between;
-  gap: 12px;
+  gap: 10px;
 }
-.pay-plan-badge {
-  display: inline-block;
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: .06em;
-  background: #fef08a;
-  color: #854d0e;
-  padding: 3px 8px;
-  border-radius: 9999px;
-  margin-bottom: 6px;
-}
-.pay-summary-title {
-  font-size: 20px;
+.pay-summary-plan-name {
+  font-size: 18px;
   font-weight: 800;
   letter-spacing: -.02em;
-  margin: 0;
   color: var(--ink);
-}
-.pay-summary-term {
-  font-size: 13px;
-  color: var(--navy-soft);
 }
 .pay-summary-price {
   text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
 .pay-summary-price b {
-  font-size: 24px;
+  font-size: 19px;
   font-weight: 800;
   color: var(--ink);
 }
 .pay-summary-price small {
-  display: block;
+  font-size: 11.5px;
+  color: var(--navy-soft);
+}
+.pay-summary-term {
   font-size: 12px;
   color: var(--navy-soft);
+  margin: 2px 0 0;
 }
 .pay-summary-divider {
   height: 1px;
   background: rgba(0,0,0,0.06);
-  margin: 18px 0;
+  margin: 10px 0;
 }
 .pay-summary-details {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 5px;
+}
+.pay-summary-details--inclusions {
+  margin-top: 8px;
 }
 .pay-detail-row {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  font-size: 13.5px;
+  font-size: 12.5px;
 }
 .pay-detail-label {
   color: var(--navy-soft);
@@ -8034,18 +8037,19 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 .pay-detail-val {
   color: var(--ink);
   text-align: right;
+  font-weight: 500;
 }
 
 /* Start Date Card Selector */
 .pay-startdate-block {
-  margin-top: 16px;
-  padding-top: 14px;
+  margin-top: 10px;
+  padding-top: 10px;
   border-top: 1px solid rgba(0, 0, 0, 0.06);
 }
 .pay-startdate-header {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
+  gap: 8px;
 }
 .pay-startdate-icon {
   color: var(--ink);
@@ -8057,55 +8061,58 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
 }
 .pay-startdate-title {
   margin: 0;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--ink);
   letter-spacing: -.01em;
 }
 .pay-startdate-sub {
-  margin: 2px 0 0;
-  font-size: 12px;
+  margin: 1px 0 0;
+  font-size: 11.5px;
   color: var(--navy-soft);
 }
 .pay-startdate-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  margin-top: 12px;
+  gap: 6px;
+  margin-top: 8px;
 }
 .date-card {
   position: relative;
   border: 1.5px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 10px 6px 10px;
+  border-radius: 10px;
+  padding: 6px 7px 7px;
   background: #ffffff;
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
   transition: border-color .15s ease, background-color .15s ease, box-shadow .15s ease;
   user-select: none;
-  text-align: center;
 }
 .date-card:hover {
   border-color: #94a3b8;
   background: #fafaf9;
 }
 .date-card.is-selected {
-  border: 2px solid var(--ink);
+  border: 1.5px solid var(--ink);
   background: #ffffff;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, .06);
-  padding: 9.5px 5.5px 9.5px;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, .06);
+}
+.date-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 3px;
 }
 .date-card__radio {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   border: 1.5px solid #cbd5e1;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 6px;
 }
 .date-card.is-selected .date-card__radio {
   border-color: var(--ink);
@@ -8115,52 +8122,52 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   display: none;
 }
 .date-card.is-selected .date-card__radio-dot {
-  width: 5px;
-  height: 5px;
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
   background: #ffffff;
   display: block;
-}
-.date-card__body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-}
-.date-card__date {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--ink);
-  line-height: 1.25;
-  white-space: nowrap;
-}
-.date-card__year {
-  font-size: 11.5px;
-  font-weight: 500;
-  color: var(--navy-soft);
-  margin-top: 2px;
 }
 .date-card__badge {
   display: inline-block;
   background: #dcfce7;
   color: #15803d;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 700;
-  padding: 1.5px 6px;
+  padding: 1px 5px;
   border-radius: 9999px;
-  margin-top: 5px;
   letter-spacing: 0.01em;
+  line-height: 1.2;
+}
+.date-card__body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+.date-card__date {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.date-card__year {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--navy-soft);
+  margin-top: 1px;
 }
 
 .pay-receipt {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 5px;
 }
 .pay-receipt-row {
   display: flex;
   justify-content: space-between;
-  font-size: 14px;
+  font-size: 12.5px;
   color: var(--ink);
 }
 .pay-free-tag {
@@ -8168,55 +8175,41 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
   color: #16a34a;
 }
 .pay-receipt-total {
-  font-size: 16px;
-  font-weight: 700;
-  padding-top: 8px;
-  margin-top: 4px;
+  font-size: 14.5px;
+  font-weight: 800;
+  padding-top: 6px;
+  margin-top: 3px;
   border-top: 1px dashed rgba(0,0,0,0.1);
 }
 .pay-receipt-subtext {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--navy-soft);
-  margin-top: 4px;
-}
-.pay-urby-reassurance {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  background: #f8fafc;
-  border-radius: var(--radius);
-  padding: 12px 14px;
-}
-.pay-urby-reassurance p {
-  margin: 0;
-  font-size: 12.5px;
-  color: var(--navy);
-  line-height: 1.4;
+  margin-top: 2px;
 }
 
 /* Sidebar Actions */
 .pay-sidebar-actions {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-top: 14px;
+  gap: 6px;
+  margin-top: 10px;
 }
 .pay-sidebar-actions .pay-btn-confirm {
   width: 100%;
-  height: 52px;
-  font-size: 15.5px;
+  height: 46px;
+  font-size: 14.5px;
   font-weight: 700;
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius);
 }
 .pay-sidebar-save {
   text-align: center;
-  margin-top: 4px;
+  margin-top: 2px;
 }
 
 @media (max-width: 900px) {
   .pay-layout {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 16px;
   }
   .pay-sidebar {
     position: static;
@@ -8229,7 +8222,7 @@ body.is-dragging-pillar .pillar-card:not(.is-dragging) {
     padding: 16px 14px calc(120px + env(safe-area-inset-bottom)) !important;
   }
   .pay-section-card, .pay-summary-card {
-    padding: 18px 16px;
+    padding: 16px 14px;
   }
 }
 
@@ -10914,7 +10907,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 3533e9a + local edits</span>
+  <span class="demo-banner__build">build 5b5ad2d + local edits</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -15197,18 +15190,9 @@ function recommendationScreen() {
       <span class="rowcard__chev">${icon('chevron',20)}</span>
     </summary>
     <div class="rowcard__body rowcard__body--flush">
-      <div class="more-quick-ask ask__row" data-more="ask">
-        <form data-form="ask" class="more-quick-ask__form">
-          <label for="more-ask-input" class="sr-only">Ask Urby a question</label>
-          <span class="more-quick-ask__icon">${icon('search',16)}</span>
-          <input type="text" name="q" id="more-ask-input" class="more-quick-ask__input"
-                 placeholder="Ask Urby about plans, prices, pausing or venues…"
-                 value="${esc(ASK.q||'')}" aria-label="Ask Urby a question" autocomplete="off">
-          <button class="btn btn--secondary btn--sm more-quick-ask__btn" type="submit">Ask</button>
-        </form>
-      </div>
       <div class="shelf">
         ${whyBlock}
+        ${askBlock(true, true)}
         <details class="shelf__row"${MOREPICK==='terms'?' open':''}><summary class="shelf__head" data-more="terms"><span class="shelf__icon">${icon('info',18)}</span><span class="shelf__label">Membership details and terms</span>
           <span class="shelf__hint">what&rsquo;s included, limits, cancelling</span><span class="shelf__chev">${icon('chevron',18)}</span></summary>
           <div class="shelf__body">
@@ -15873,16 +15857,18 @@ function paymentScreen() {
           <div class="fitpanel__label">Order summary</div>
 
           <div class="pay-summary-hero">
-            <div class="pay-summary-plan-badge">${esc(plan.name)}</div>
-            <div class="pay-summary-price">
-              <b>${price} &euro;</b> <span>/ month</span>
+            <div class="pay-summary-hero__top">
+              <span class="pay-summary-plan-name">${esc(plan.name)}</span>
+              <div class="pay-summary-price">
+                <b>${price} &euro;</b> <small>/ month</small>
+              </div>
             </div>
             <p class="pay-summary-term">${esc(commitment.name)} &middot; Auto-renews monthly</p>
           </div>
 
           <div class="pay-summary-details">
             <div class="pay-detail-row">
-              <span class="pay-detail-label">Name</span>
+              <span class="pay-detail-label">Member</span>
               <span class="pay-detail-val">${esc(memberName)}</span>
             </div>
             <div class="pay-detail-row">
@@ -15897,7 +15883,7 @@ function paymentScreen() {
               ${startDateChoices().map(d => `<option value="${esc(d)}" ${d === currentStart ? 'selected' : ''}>${esc(d)}</option>`).join('')}
             </select>
             <div class="pay-startdate-header">
-              <span class="pay-startdate-icon">${icon('calendar', 18)}</span>
+              <span class="pay-startdate-icon">${icon('calendar', 15)}</span>
               <div class="pay-startdate-headcopy">
                 <h4 class="pay-startdate-title">When should your membership start?</h4>
                 <p class="pay-startdate-sub pay-detail-subtext">Memberships start on the 1st of the month.</p>
@@ -15910,13 +15896,13 @@ function paymentScreen() {
                 return `
                   <label class="date-card ${isSel ? 'is-selected' : ''}" data-start-date-card>
                     <input type="radio" name="start_date_choice" value="${esc(d)}" class="sr-only" ${isSel ? 'checked' : ''} data-start-date>
-                    <div class="date-card__radio">
-                      <span class="date-card__radio-dot"></span>
+                    <div class="date-card__top">
+                      <span class="date-card__radio"><span class="date-card__radio-dot"></span></span>
+                      ${idx === 0 ? `<span class="date-card__badge">Earliest</span>` : ''}
                     </div>
                     <div class="date-card__body">
                       <span class="date-card__date">${esc(dayMonth)}</span>
                       <span class="date-card__year">${esc(year)}</span>
-                      ${idx === 0 ? `<span class="date-card__badge">Earliest</span>` : ''}
                     </div>
                   </label>
                 `;
@@ -15925,7 +15911,7 @@ function paymentScreen() {
           </div>
 
           <!-- Highlights of what's included -->
-          <div class="pay-summary-details" style="margin-top:14px">
+          <div class="pay-summary-details pay-summary-details--inclusions">
             <div class="pay-detail-row">
               <span class="pay-detail-label">Monthly visits</span>
               <span class="pay-detail-val font-semibold">${monthlyAllowance(plan)} visits / month</span>

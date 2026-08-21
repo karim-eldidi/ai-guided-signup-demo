@@ -258,16 +258,18 @@ function paymentScreen() {
           <div class="fitpanel__label">Order summary</div>
 
           <div class="pay-summary-hero">
-            <div class="pay-summary-plan-badge">${esc(plan.name)}</div>
-            <div class="pay-summary-price">
-              <b>${price} &euro;</b> <span>/ month</span>
+            <div class="pay-summary-hero__top">
+              <span class="pay-summary-plan-name">${esc(plan.name)}</span>
+              <div class="pay-summary-price">
+                <b>${price} &euro;</b> <small>/ month</small>
+              </div>
             </div>
             <p class="pay-summary-term">${esc(commitment.name)} &middot; Auto-renews monthly</p>
           </div>
 
           <div class="pay-summary-details">
             <div class="pay-detail-row">
-              <span class="pay-detail-label">Name</span>
+              <span class="pay-detail-label">Member</span>
               <span class="pay-detail-val">${esc(memberName)}</span>
             </div>
             <div class="pay-detail-row">
@@ -282,7 +284,7 @@ function paymentScreen() {
               ${startDateChoices().map(d => `<option value="${esc(d)}" ${d === currentStart ? 'selected' : ''}>${esc(d)}</option>`).join('')}
             </select>
             <div class="pay-startdate-header">
-              <span class="pay-startdate-icon">${icon('calendar', 18)}</span>
+              <span class="pay-startdate-icon">${icon('calendar', 15)}</span>
               <div class="pay-startdate-headcopy">
                 <h4 class="pay-startdate-title">When should your membership start?</h4>
                 <p class="pay-startdate-sub pay-detail-subtext">Memberships start on the 1st of the month.</p>
@@ -295,13 +297,13 @@ function paymentScreen() {
                 return `
                   <label class="date-card ${isSel ? 'is-selected' : ''}" data-start-date-card>
                     <input type="radio" name="start_date_choice" value="${esc(d)}" class="sr-only" ${isSel ? 'checked' : ''} data-start-date>
-                    <div class="date-card__radio">
-                      <span class="date-card__radio-dot"></span>
+                    <div class="date-card__top">
+                      <span class="date-card__radio"><span class="date-card__radio-dot"></span></span>
+                      ${idx === 0 ? `<span class="date-card__badge">Earliest</span>` : ''}
                     </div>
                     <div class="date-card__body">
                       <span class="date-card__date">${esc(dayMonth)}</span>
                       <span class="date-card__year">${esc(year)}</span>
-                      ${idx === 0 ? `<span class="date-card__badge">Earliest</span>` : ''}
                     </div>
                   </label>
                 `;
@@ -310,7 +312,7 @@ function paymentScreen() {
           </div>
 
           <!-- Highlights of what's included -->
-          <div class="pay-summary-details" style="margin-top:14px">
+          <div class="pay-summary-details pay-summary-details--inclusions">
             <div class="pay-detail-row">
               <span class="pay-detail-label">Monthly visits</span>
               <span class="pay-detail-val font-semibold">${monthlyAllowance(plan)} visits / month</span>
