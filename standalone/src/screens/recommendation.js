@@ -621,8 +621,8 @@ function recommendationScreen() {
      bigger allowance. `plusWanted > 0` matters: without it a plan that publishes no Plus
      allowance at all (Classic, 0) would satisfy 0 >= 0 and upsell on nothing. */
   const plusShort = Boolean(topPlan.plusCheckIns > plan.plusCheckIns && plusWanted > 0 && plusWanted >= plan.plusCheckIns);
-  /* Always display all 4 plans in the Compare memberships card */
-  const gridPlans = PLANS.slice().sort((x, y) => x.rank - y.rank);
+  const needsMax = Boolean(rec.planId === 'max' || plan.id === 'max' || plusShort);
+  const gridPlans = (needsMax ? PLANS : PLANS.filter(p => p.id !== 'max')).slice().sort((x, y) => x.rank - y.rank);
   const COUNTWORDS = { 1:'one', 2:'two', 3:'three', 4:'four', 5:'five', 6:'six' };
   const gridCount = COUNTWORDS[gridPlans.length] || String(gridPlans.length);
 
@@ -637,9 +637,12 @@ function recommendationScreen() {
         const missedVisits = visitsNeed > 4 ? visitsNeed - 4 : 0;
         const missedPlaces = total > opens ? total - opens : 0;
         let warn = '';
-        if (missedVisits > 0 && missedPlaces > 0) warn = `Misses ${missedVisits} sessions and ${missedPlaces} places`;
-        else if (missedPlaces > 0) warn = `Misses ${missedPlaces} places`;
-        else if (missedVisits > 0) warn = `Misses ${missedVisits} sessions`;
+        if (missedVisits > 0) {
+          warn = `Limited to 4 visits — does not fit an ${visitsNeed}-visit routine`;
+          if (missedPlaces > 0) warn += ` (and misses ${missedPlaces} places)`;
+        } else if (missedPlaces > 0) {
+          warn = `Misses ${missedPlaces} places`;
+        }
         return { opensText, statusText: warn, statusType: 'warn' };
       }
     },
@@ -733,7 +736,7 @@ function recommendationScreen() {
               <span>${visitsFor(pl)} visits &middot; ${esc(info.opensText)}</span>
             </div>
             ${info.statusText ? `
-              <div class="allplans__status allplans__status--${info.statusType}">
+              <div class="allplans__status allplans__status--${info.statusType} ${info.statusType === 'warn' ? 'allplans__warn' : ''}">
                 ${info.statusType === 'good' ? icon('checkThin', 13) : icon('info', 13)}
                 <span>${esc(info.statusText)}</span>
               </div>
@@ -743,9 +746,7 @@ function recommendationScreen() {
       }).join('')}
     </div>
     <div class="allplans__foot">
-      <button class="linkish allplans__feature-link" type="button" data-go="plans">
-        Compare every plan feature &rarr;
-      </button>
+      ${!needsMax ? `<button class="linkish allplans__feature-link" type="button" data-go="plans">Compare every plan feature (including Max) &rarr;</button>` : `<button class="linkish allplans__feature-link" type="button" data-go="plans">Compare every plan feature &rarr;</button>`}
     </div>
   </details>`;
 
@@ -817,18 +818,9 @@ function recommendationScreen() {
       <span class="rowcard__chev">${icon('chevron',20)}</span>
     </summary>
     <div class="rowcard__body rowcard__body--flush">
-      <div class="more-quick-ask ask__row" data-more="ask">
-        <form data-form="ask" class="more-quick-ask__form">
-          <label for="more-ask-input" class="sr-only">Ask Urby a question</label>
-          <span class="more-quick-ask__icon">${icon('search',16)}</span>
-          <input type="text" name="q" id="more-ask-input" class="more-quick-ask__input"
-                 placeholder="Ask Urby about plans, prices, pausing or venues…"
-                 value="${esc(ASK.q||'')}" aria-label="Ask Urby a question" autocomplete="off">
-          <button class="btn btn--secondary btn--sm more-quick-ask__btn" type="submit">Ask</button>
-        </form>
-      </div>
       <div class="shelf">
         ${whyBlock}
+        ${askBlock(true, true)}
         <details class="shelf__row"${MOREPICK==='terms'?' open':''}><summary class="shelf__head" data-more="terms"><span class="shelf__icon">${icon('info',18)}</span><span class="shelf__label">Membership details and terms</span>
           <span class="shelf__hint">what&rsquo;s included, limits, cancelling</span><span class="shelf__chev">${icon('chevron',18)}</span></summary>
           <div class="shelf__body">
@@ -1105,13 +1097,18 @@ function plansScreen() {
     </div>
   </div>`;
 
+  const actsCount = (A().activities || []).filter(x => x !== SKIP).length;
+  const routineStatusText = actsCount > 0
+    ? `${actsCount} ${actsCount === 1 ? 'activity' : 'activities'} saved`
+    : (given.length > 0 ? 'Routine saved' : (S.commitmentId === 'annual' ? '12-month commitment' : S.commitmentId === 'biennial' ? '24-month commitment' : 'Monthly &middot; Cancel anytime'));
+
   const stickyBar = `<div class="plans-sticky-bar">
     <div class="plans-sticky-bar__left">
       <div class="plans-sticky-bar__name"><b>${esc(selectedPlan.name)}</b> &middot; ${selectedPrice} &euro;/mo</div>
-      <div class="plans-sticky-bar__sub">${S.commitmentId === 'annual' ? '12-month commitment' : S.commitmentId === 'biennial' ? '24-month commitment' : 'Monthly &middot; Cancel anytime'}</div>
+      <div class="plans-sticky-bar__sub">${actsCount > 0 || given.length > 0 ? `${icon('checkThin', 12)} ` : ''}${routineStatusText}</div>
     </div>
     <button class="btn btn--primary plans-sticky-bar__cta" type="button" data-go="details">
-      Choose ${esc(selectedPlan.name)} and continue ${icon('arrowRight', 16)}
+      Continue with ${esc(selectedPlan.name)}
     </button>
   </div>`;
 

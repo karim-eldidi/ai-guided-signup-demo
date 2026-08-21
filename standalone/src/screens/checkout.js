@@ -170,6 +170,7 @@ function paymentScreen() {
     <div class="pay-layout">
       <!-- LEFT COLUMN: Payment Options & Terms -->
       <div class="pay-main">
+        ${ulaNote('Review your membership summary and confirm. Payment is simulated in this pilot — no real charge will occur.')}
         <form id="pay-form" data-form="payment">
           <!-- 1. Payment Method Section -->
           <div class="pay-section-card">

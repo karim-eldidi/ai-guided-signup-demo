@@ -42,7 +42,7 @@ function go(route, opts={}) {
      email anyway, as part of the membership; saving is a separate choice, on its own
      screen, reached by someone who wants to leave. */
   ROUTE = route; EDITING = null; SHEET = null; CITYPICK = false; CITYWANTED = null; PLACEWANTED = null; VENUESOPEN = false; APPSOPEN = false; DAYNOTE = null; VENUEQ = '';
-  MOREOPEN = false; MOREPICK = null; ALTOPEN = null; PLANPLUS = null; PLANASK = false; WHEREPICK = false; SEEALL = false;
+  MOREOPEN = false; MOREPICK = null; ALTOPEN = false; PLANPLUS = null; PLANASK = false; WHEREPICK = false; SEEALL = false;
   document.body.classList.remove('save-modal-open'); document.body.classList.remove('login-modal-open'); document.body.style.overflow = '';
   /* A reviewer saw the save screen's "enter a valid email" error appear under the
      details form's own email field. Errors belong to the screen that produced them. */
@@ -491,17 +491,27 @@ document.addEventListener('click', e => {
     }
   }
   if (t.dataset.where) {
-    /* Picking a place to look from is the answer to one of the four questions, so it is
-       recorded as one and Urby will not ask it again (rule 11). Everything downstream of
-       it is stale the moment it changes: the week was built from venues that may now be
-       out of range, and the plan was chosen from what was in it (rule 52). */
-    S.answers.area = [t.dataset.where];
+    const targetId = t.dataset.where;
+    const isSuggestion = t.classList.contains('area-suggestion-item');
+    if (isSuggestion) {
+      S.answers.area = [targetId];
+      WHEREPICK = false;
+    } else if (targetId === 'anywhere') {
+      S.answers.area = ['anywhere'];
+    } else {
+      let current = areaIds(S.answers.area).filter(x => x !== 'anywhere');
+      if (current.includes(targetId)) {
+        current = current.filter(x => x !== targetId);
+        if (current.length === 0) current = ['anywhere'];
+      } else {
+        current.push(targetId);
+      }
+      S.answers.area = current;
+    }
     S.weekDays = []; S.weekSwap = {};
     if (!S.planOverridden) S.chosenPlanId = null;
-    WHEREPICK = false; SEEALL = false;
+    SEEALL = false;
     log('answer_given', { question:'area', value:S.answers.area, mode:'venue_page' });
-    /* A result on screen was measured from the old place, so it is re-run rather than
-       left standing next to a location line that now says something else. */
     if (SEARCH.q) SEARCH.result = searchPlaces(SEARCH.q);
     renderInPlace(); return;
   }

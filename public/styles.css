@@ -4795,12 +4795,12 @@ button.appcard:hover .appcard__info-icon {
   bottom: 14px;
   left: 14px;
   right: 14px;
-  max-width: 380px;
+  max-width: 420px;
   margin: 0 auto;
   background: #ffffff;
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 8px 26px rgba(0,0,0,0.16);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.18);
   padding: 12px;
   z-index: 20;
   display: flex;
@@ -4827,6 +4827,7 @@ button.appcard:hover .appcard__info-icon {
   display: grid;
   place-items: center;
   cursor: pointer;
+  z-index: 5;
 }
 
 .berlin-map-preview-close:hover {
@@ -4836,26 +4837,47 @@ button.appcard:hover .appcard__info-icon {
 
 .berlin-map-preview-media {
   position: relative;
-  width: 76px;
-  height: 76px;
-  border-radius: var(--radius-sm);
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
   overflow: hidden;
   flex-shrink: 0;
-  background: #eee;
+  background: #f1f3f5;
+  display: flex;
+}
+
+.berlin-map-preview-media .venue-card__glyph {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--navy-soft);
+  z-index: 1;
 }
 
 .berlin-map-preview-media img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  z-index: 2;
 }
 
 .berlin-map-preview-media .hit__badge--plan {
   position: absolute;
-  bottom: 4px;
-  left: 4px;
-  font-size: 9px;
-  padding: 1px 4px;
+  top: 6px;
+  left: 6px;
+  z-index: 3;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  padding: 2px 6px;
+  background: rgba(20, 22, 26, 0.78);
+  color: #ffffff;
+  border-radius: 4px;
+  backdrop-filter: blur(4px);
+  line-height: 1.2;
 }
 
 .berlin-map-preview-info {
@@ -4865,10 +4887,10 @@ button.appcard:hover .appcard__info-icon {
 }
 
 .berlin-map-preview-title {
-  font-size: 14px;
+  font-size: 14.5px;
   font-weight: 700;
   color: var(--ink);
-  margin: 0 0 2px;
+  margin: 0 0 3px;
   cursor: pointer;
   text-decoration: underline;
   text-underline-offset: 2px;
@@ -4889,11 +4911,16 @@ button.appcard:hover .appcard__info-icon {
 .berlin-map-preview-actions {
   display: flex;
   gap: 8px;
+  margin-top: 4px;
 }
 
 .berlin-map-preview-actions .btn {
-  padding: 4px 10px;
+  height: 32px;
+  padding: 0 12px;
   font-size: 12px;
+  font-weight: 600;
+  border-radius: 6px;
+  white-space: nowrap;
 }
 
 .berlin-map-footer-note {

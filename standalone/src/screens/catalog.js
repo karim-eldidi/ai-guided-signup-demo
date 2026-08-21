@@ -349,7 +349,7 @@ function interactiveBerlinMap(b) {
       <button type="button" class="berlin-map-pin ${tierClass} ${isSelected ? 'is-selected' : ''}"
         data-map-pin="${esc(v.id)}"
         style="left:${p.left}%;top:${p.top}%;z-index:${isSelected ? 10 : 3};"
-        title="${esc(v.name)} — ${v.distanceKm} km"
+        ${isSelected ? '' : `title="${esc(v.name)} — ${v.distanceKm} km"`}
         aria-label="${esc(v.name)}, ${v.distanceKm} km away">
         <span class="berlin-map-pin__num">${idx + 1}</span>
       </button>
@@ -835,7 +835,10 @@ function searchScreen() {
                   ${icon('city', 14)} Anywhere in Berlin
                 </button>
               </div>
-              <p class="wherepick__note">${icon('info', 16)} <span>This is one of Urby&rsquo;s four questions, so picking here means she won&rsquo;t ask it again.</span></p>
+              <div class="wherepick__actions" style="margin-top:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+                <p class="wherepick__note" style="margin:0">${icon('info', 16)} <span>Select one or more neighbourhoods.</span></p>
+                <button class="btn btn--secondary btn-sm" type="button" data-toggle-where>Done</button>
+              </div>
             </div>` : ''}
 
             <form data-form="search" class="venue-search-bar" role="search">

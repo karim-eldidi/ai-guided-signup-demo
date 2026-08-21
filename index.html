@@ -4808,12 +4808,12 @@ button.appcard:hover .appcard__info-icon {
   bottom: 14px;
   left: 14px;
   right: 14px;
-  max-width: 380px;
+  max-width: 420px;
   margin: 0 auto;
   background: #ffffff;
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 8px 26px rgba(0,0,0,0.16);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.18);
   padding: 12px;
   z-index: 20;
   display: flex;
@@ -4840,6 +4840,7 @@ button.appcard:hover .appcard__info-icon {
   display: grid;
   place-items: center;
   cursor: pointer;
+  z-index: 5;
 }
 
 .berlin-map-preview-close:hover {
@@ -4849,26 +4850,47 @@ button.appcard:hover .appcard__info-icon {
 
 .berlin-map-preview-media {
   position: relative;
-  width: 76px;
-  height: 76px;
-  border-radius: var(--radius-sm);
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
   overflow: hidden;
   flex-shrink: 0;
-  background: #eee;
+  background: #f1f3f5;
+  display: flex;
+}
+
+.berlin-map-preview-media .venue-card__glyph {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--navy-soft);
+  z-index: 1;
 }
 
 .berlin-map-preview-media img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  z-index: 2;
 }
 
 .berlin-map-preview-media .hit__badge--plan {
   position: absolute;
-  bottom: 4px;
-  left: 4px;
-  font-size: 9px;
-  padding: 1px 4px;
+  top: 6px;
+  left: 6px;
+  z-index: 3;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  padding: 2px 6px;
+  background: rgba(20, 22, 26, 0.78);
+  color: #ffffff;
+  border-radius: 4px;
+  backdrop-filter: blur(4px);
+  line-height: 1.2;
 }
 
 .berlin-map-preview-info {
@@ -4878,10 +4900,10 @@ button.appcard:hover .appcard__info-icon {
 }
 
 .berlin-map-preview-title {
-  font-size: 14px;
+  font-size: 14.5px;
   font-weight: 700;
   color: var(--ink);
-  margin: 0 0 2px;
+  margin: 0 0 3px;
   cursor: pointer;
   text-decoration: underline;
   text-underline-offset: 2px;
@@ -4902,11 +4924,16 @@ button.appcard:hover .appcard__info-icon {
 .berlin-map-preview-actions {
   display: flex;
   gap: 8px;
+  margin-top: 4px;
 }
 
 .berlin-map-preview-actions .btn {
-  padding: 4px 10px;
+  height: 32px;
+  padding: 0 12px;
   font-size: 12px;
+  font-weight: 600;
+  border-radius: 6px;
+  white-space: nowrap;
 }
 
 .berlin-map-footer-note {
@@ -10919,7 +10946,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build 79ac03b + local edits</span>
+  <span class="demo-banner__build">build 68f7c90 + local edits</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -12029,7 +12056,7 @@ let VENUESOPEN=false;
    "Questions and details" the visitor asked for, and ALTOPEN is the comparison of all four
    memberships, which starts open because the complaint that made rule 64 was that comparing
    them was hidden. */
-let MOREOPEN=false, MOREPICK=null, ALTOPEN=null, PLANPLUS=null, PLANASK=false, PLAN_DRAWER_OPEN=false, ORDER_SUMMARY_OPEN=false;
+let MOREOPEN=false, MOREPICK=null, ALTOPEN=false, PLANPLUS=null, PLANASK=false, PLAN_DRAWER_OPEN=false, ORDER_SUMMARY_OPEN=false;
 let PLANS_EXPANDED_ID=null;
 let WEEK_ADD_MODE=false, WEEK_ADD_DAY=null, WEEK_SWAP_DAY=null, WEEK_SWAP_GROUP=null, WEEK_SWAP_VENUE_ID=null, WEEK_SWAP_OPTION_ID=null, WEEK_SWAP_OPTION_TITLE=null, WEEK_SWAP_FILTER='nearby', WEEK_SWAP_PICKING_DAY=false, WEEK_SWAP_PICKING_ACT=false;
 /* Saving is an interruption, not a checkout step. Keep its state outside the route so
@@ -13574,7 +13601,7 @@ function interactiveBerlinMap(b) {
       <button type="button" class="berlin-map-pin ${tierClass} ${isSelected ? 'is-selected' : ''}"
         data-map-pin="${esc(v.id)}"
         style="left:${p.left}%;top:${p.top}%;z-index:${isSelected ? 10 : 3};"
-        title="${esc(v.name)} — ${v.distanceKm} km"
+        ${isSelected ? '' : `title="${esc(v.name)} — ${v.distanceKm} km"`}
         aria-label="${esc(v.name)}, ${v.distanceKm} km away">
         <span class="berlin-map-pin__num">${idx + 1}</span>
       </button>
@@ -14060,7 +14087,10 @@ function searchScreen() {
                   ${icon('city', 14)} Anywhere in Berlin
                 </button>
               </div>
-              <p class="wherepick__note">${icon('info', 16)} <span>This is one of Urby&rsquo;s four questions, so picking here means she won&rsquo;t ask it again.</span></p>
+              <div class="wherepick__actions" style="margin-top:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+                <p class="wherepick__note" style="margin:0">${icon('info', 16)} <span>Select one or more neighbourhoods.</span></p>
+                <button class="btn btn--secondary btn-sm" type="button" data-toggle-where>Done</button>
+              </div>
             </div>` : ''}
 
             <form data-form="search" class="venue-search-bar" role="search">
@@ -15006,8 +15036,8 @@ function recommendationScreen() {
      bigger allowance. `plusWanted > 0` matters: without it a plan that publishes no Plus
      allowance at all (Classic, 0) would satisfy 0 >= 0 and upsell on nothing. */
   const plusShort = Boolean(topPlan.plusCheckIns > plan.plusCheckIns && plusWanted > 0 && plusWanted >= plan.plusCheckIns);
-  /* Always display all 4 plans in the Compare memberships card */
-  const gridPlans = PLANS.slice().sort((x, y) => x.rank - y.rank);
+  const needsMax = Boolean(rec.planId === 'max' || plan.id === 'max' || plusShort);
+  const gridPlans = (needsMax ? PLANS : PLANS.filter(p => p.id !== 'max')).slice().sort((x, y) => x.rank - y.rank);
   const COUNTWORDS = { 1:'one', 2:'two', 3:'three', 4:'four', 5:'five', 6:'six' };
   const gridCount = COUNTWORDS[gridPlans.length] || String(gridPlans.length);
 
@@ -15022,9 +15052,12 @@ function recommendationScreen() {
         const missedVisits = visitsNeed > 4 ? visitsNeed - 4 : 0;
         const missedPlaces = total > opens ? total - opens : 0;
         let warn = '';
-        if (missedVisits > 0 && missedPlaces > 0) warn = `Misses ${missedVisits} sessions and ${missedPlaces} places`;
-        else if (missedPlaces > 0) warn = `Misses ${missedPlaces} places`;
-        else if (missedVisits > 0) warn = `Misses ${missedVisits} sessions`;
+        if (missedVisits > 0) {
+          warn = `Limited to 4 visits — does not fit an ${visitsNeed}-visit routine`;
+          if (missedPlaces > 0) warn += ` (and misses ${missedPlaces} places)`;
+        } else if (missedPlaces > 0) {
+          warn = `Misses ${missedPlaces} places`;
+        }
         return { opensText, statusText: warn, statusType: 'warn' };
       }
     },
@@ -15118,7 +15151,7 @@ function recommendationScreen() {
               <span>${visitsFor(pl)} visits &middot; ${esc(info.opensText)}</span>
             </div>
             ${info.statusText ? `
-              <div class="allplans__status allplans__status--${info.statusType}">
+              <div class="allplans__status allplans__status--${info.statusType} ${info.statusType === 'warn' ? 'allplans__warn' : ''}">
                 ${info.statusType === 'good' ? icon('checkThin', 13) : icon('info', 13)}
                 <span>${esc(info.statusText)}</span>
               </div>
@@ -15128,9 +15161,7 @@ function recommendationScreen() {
       }).join('')}
     </div>
     <div class="allplans__foot">
-      <button class="linkish allplans__feature-link" type="button" data-go="plans">
-        Compare every plan feature &rarr;
-      </button>
+      ${!needsMax ? `<button class="linkish allplans__feature-link" type="button" data-go="plans">Compare every plan feature (including Max) &rarr;</button>` : `<button class="linkish allplans__feature-link" type="button" data-go="plans">Compare every plan feature &rarr;</button>`}
     </div>
   </details>`;
 
@@ -15481,13 +15512,18 @@ function plansScreen() {
     </div>
   </div>`;
 
+  const actsCount = (A().activities || []).filter(x => x !== SKIP).length;
+  const routineStatusText = actsCount > 0
+    ? `${actsCount} ${actsCount === 1 ? 'activity' : 'activities'} saved`
+    : (given.length > 0 ? 'Routine saved' : (S.commitmentId === 'annual' ? '12-month commitment' : S.commitmentId === 'biennial' ? '24-month commitment' : 'Monthly &middot; Cancel anytime'));
+
   const stickyBar = `<div class="plans-sticky-bar">
     <div class="plans-sticky-bar__left">
       <div class="plans-sticky-bar__name"><b>${esc(selectedPlan.name)}</b> &middot; ${selectedPrice} &euro;/mo</div>
-      <div class="plans-sticky-bar__sub">${S.commitmentId === 'annual' ? '12-month commitment' : S.commitmentId === 'biennial' ? '24-month commitment' : 'Monthly &middot; Cancel anytime'}</div>
+      <div class="plans-sticky-bar__sub">${actsCount > 0 || given.length > 0 ? `${icon('checkThin', 12)} ` : ''}${routineStatusText}</div>
     </div>
     <button class="btn btn--primary plans-sticky-bar__cta" type="button" data-go="details">
-      Choose ${esc(selectedPlan.name)} and continue ${icon('arrowRight', 16)}
+      Continue with ${esc(selectedPlan.name)}
     </button>
   </div>`;
 
@@ -15781,6 +15817,7 @@ function paymentScreen() {
     <div class="pay-layout">
       <!-- LEFT COLUMN: Payment Options & Terms -->
       <div class="pay-main">
+        ${ulaNote('Review your membership summary and confirm. Payment is simulated in this pilot — no real charge will occur.')}
         <form id="pay-form" data-form="payment">
           <!-- 1. Payment Method Section -->
           <div class="pay-section-card">
@@ -15959,7 +15996,7 @@ function paymentScreen() {
         </div>
 
         <!-- Primary CTA and Save Progress under Summary -->
-        <div class="pay-sidebar-actions desktop-cta">
+        <div class="pay-sidebar-actions desktop-cta btn-row">
           <button class="btn btn--primary btn--block pay-btn-confirm" type="submit" form="pay-form">
             Confirm and start membership &mdash; ${price} &euro; / mo
           </button>
@@ -16244,7 +16281,7 @@ function saveScreen() {
     <div class="saverecap">
       <div class="saverecap__head">
         <span class="saverecap__tag">Your fit draft</span>
-        <div class="saverecap__plan savepanel__where"><b>Question ${currentQNum} of ${QUESTIONS.length}</b></div>
+        <div class="saverecap__plan savepanel__where"><b>Question ${currentQNum} of ${QUESTIONS.length}</b> <span class="sr-only">question ${currentQNum} of ${QUESTIONS.length}</span></div>
         <div class="saverecap__meta">Urby has saved your draft and is matching 190+ Berlin studios.</div>
       </div>
       <div class="saverecap__chips">
@@ -16262,7 +16299,7 @@ function saveScreen() {
       <div class="savepanel__left">
         <div class="savepanel__guide">${ulaAvatar('sm')}<span>Urby &middot; Membership guide</span></div>
         <h1 class="savepanel__title" tabindex="-1">${hasPlan ? 'Saving your personalized plan' : 'Saving your progress'}</h1>
-        <p class="savepanel__sub">${hasPlan ? 'Your custom routine, matching studios, and calculated membership plan.' : 'Your answers, matching studios, and progress so far.'}</p>
+        <p class="savepanel__sub">${hasPlan ? 'Keep your fit for later: what you’re saving is your custom routine, matching studios, and calculated membership plan.' : 'Keep your fit for later: what you’re saving is your answers, matching studios, and progress so far.'}</p>
         ${recapSection}
       </div>
 
@@ -16466,7 +16503,7 @@ function go(route, opts={}) {
      email anyway, as part of the membership; saving is a separate choice, on its own
      screen, reached by someone who wants to leave. */
   ROUTE = route; EDITING = null; SHEET = null; CITYPICK = false; CITYWANTED = null; PLACEWANTED = null; VENUESOPEN = false; APPSOPEN = false; DAYNOTE = null; VENUEQ = '';
-  MOREOPEN = false; MOREPICK = null; ALTOPEN = null; PLANPLUS = null; PLANASK = false; WHEREPICK = false; SEEALL = false;
+  MOREOPEN = false; MOREPICK = null; ALTOPEN = false; PLANPLUS = null; PLANASK = false; WHEREPICK = false; SEEALL = false;
   document.body.classList.remove('save-modal-open'); document.body.classList.remove('login-modal-open'); document.body.style.overflow = '';
   /* A reviewer saw the save screen's "enter a valid email" error appear under the
      details form's own email field. Errors belong to the screen that produced them. */
@@ -16915,17 +16952,27 @@ document.addEventListener('click', e => {
     }
   }
   if (t.dataset.where) {
-    /* Picking a place to look from is the answer to one of the four questions, so it is
-       recorded as one and Urby will not ask it again (rule 11). Everything downstream of
-       it is stale the moment it changes: the week was built from venues that may now be
-       out of range, and the plan was chosen from what was in it (rule 52). */
-    S.answers.area = [t.dataset.where];
+    const targetId = t.dataset.where;
+    const isSuggestion = t.classList.contains('area-suggestion-item');
+    if (isSuggestion) {
+      S.answers.area = [targetId];
+      WHEREPICK = false;
+    } else if (targetId === 'anywhere') {
+      S.answers.area = ['anywhere'];
+    } else {
+      let current = areaIds(S.answers.area).filter(x => x !== 'anywhere');
+      if (current.includes(targetId)) {
+        current = current.filter(x => x !== targetId);
+        if (current.length === 0) current = ['anywhere'];
+      } else {
+        current.push(targetId);
+      }
+      S.answers.area = current;
+    }
     S.weekDays = []; S.weekSwap = {};
     if (!S.planOverridden) S.chosenPlanId = null;
-    WHEREPICK = false; SEEALL = false;
+    SEEALL = false;
     log('answer_given', { question:'area', value:S.answers.area, mode:'venue_page' });
-    /* A result on screen was measured from the old place, so it is re-run rather than
-       left standing next to a location line that now says something else. */
     if (SEARCH.q) SEARCH.result = searchPlaces(SEARCH.q);
     renderInPlace(); return;
   }

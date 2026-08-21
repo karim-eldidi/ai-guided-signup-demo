@@ -70,7 +70,7 @@ function saveScreen() {
     <div class="saverecap">
       <div class="saverecap__head">
         <span class="saverecap__tag">Your fit draft</span>
-        <div class="saverecap__plan savepanel__where"><b>Question ${currentQNum} of ${QUESTIONS.length}</b></div>
+        <div class="saverecap__plan savepanel__where"><b>Question ${currentQNum} of ${QUESTIONS.length}</b> <span class="sr-only">question ${currentQNum} of ${QUESTIONS.length}</span></div>
         <div class="saverecap__meta">Urby has saved your draft and is matching 190+ Berlin studios.</div>
       </div>
       <div class="saverecap__chips">
@@ -88,7 +88,7 @@ function saveScreen() {
       <div class="savepanel__left">
         <div class="savepanel__guide">${ulaAvatar('sm')}<span>Urby &middot; Membership guide</span></div>
         <h1 class="savepanel__title" tabindex="-1">${hasPlan ? 'Saving your personalized plan' : 'Saving your progress'}</h1>
-        <p class="savepanel__sub">${hasPlan ? 'Your custom routine, matching studios, and calculated membership plan.' : 'Your answers, matching studios, and progress so far.'}</p>
+        <p class="savepanel__sub">${hasPlan ? 'Keep your fit for later: what you’re saving is your custom routine, matching studios, and calculated membership plan.' : 'Keep your fit for later: what you’re saving is your answers, matching studios, and progress so far.'}</p>
         ${recapSection}
       </div>
 
