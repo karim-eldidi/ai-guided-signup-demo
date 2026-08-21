@@ -838,7 +838,7 @@ main.plans-page { width:100%; max-width:1080px; margin: 0 auto; box-sizing:borde
 
 .plans-layout { display:grid; grid-template-columns:minmax(0,1fr) 340px; gap:32px; align-items:start; }
 .plans-main { min-width:0; }
-.plans-layout__sidebar .routine { position: sticky; top: 24px; }
+.plans-layout__sidebar { position: sticky; top: 24px; }
 
 .commit-row {
   display: inline-flex; align-items: center; justify-content: center;
@@ -863,20 +863,70 @@ main.plans-page { width:100%; max-width:1080px; margin: 0 auto; box-sizing:borde
   padding: 2px 7px; border-radius: 6px; letter-spacing: 0.01em;
 }
 
+/* Plans Fit Bar across top */
+.plans-fit-bar {
+  background: #fbf9f4; border: 1px solid #ebe7de; border-radius: 16px;
+  padding: 12px 18px; margin-bottom: 24px;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+}
+.plans-fit-bar__left {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap; min-width: 0;
+}
+.plans-fit-bar__brand {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 14.5px; font-weight: 700; color: var(--ink); flex-shrink: 0;
+}
+.plans-fit-bar__brand svg { width: 24px; height: 24px; }
+.plans-fit-bar__status {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 13.5px; font-weight: 700; color: #137333; margin-left: 4px; flex-shrink: 0;
+}
+.plans-fit-bar__status-label { color: var(--ink); font-weight: 700; }
+.plans-fit-bar__chips {
+  display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.plans-fit-bar__prompt {
+  font-size: 13.5px; font-weight: 600; color: var(--navy); line-height: 1.35;
+}
+.plans-fit-bar__right { flex-shrink: 0; }
+.plans-fit-bar__edit-all {
+  font-size: 13.5px; font-weight: 600; color: var(--navy);
+  display: inline-flex; align-items: center; gap: 5px; cursor: pointer;
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.plans-fit-bar__edit-all:hover { color: var(--ink); }
+.plans-fit-bar__cta {
+  height: 36px; padding: 0 16px; font-size: 13px; font-weight: 700; border-radius: 8px;
+  display: inline-flex; align-items: center; gap: 6px;
+  background: #fff; border: 1.5px solid var(--border); color: var(--ink); cursor: pointer;
+  transition: all .15s ease;
+}
+.plans-fit-bar__cta:hover { border-color: var(--ink); background: #fdf5d3; }
+
 .plans-options-card {
   padding: 16px; background: #fff; border: 1.5px solid var(--border); border-radius: 20px;
   box-shadow: 0 8px 28px rgba(16, 24, 40, .04);
 }
 .plan-lines-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
 .plan-line {
+  position: relative;
   background: #fff; border: 1.5px solid var(--border); border-radius: 16px;
-  overflow: hidden; cursor: pointer; transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+  overflow: visible; cursor: pointer; transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
   user-select: none;
 }
 .plan-line:hover { border-color: #a8a49c; }
 .plan-line.is-selected {
   border: 2px solid var(--ink); background: #fdfaf0; box-shadow: 0 4px 16px rgba(0,0,0,0.06);
 }
+
+.plan-badge-reco {
+  position: absolute; top: -11px; right: 20px;
+  background: #1e293b; color: #fae69e; font-size: 11px; font-weight: 700;
+  padding: 3px 10px; border-radius: 9999px; letter-spacing: 0.02em;
+  display: inline-flex; align-items: center; gap: 5px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12); z-index: 2;
+}
+.plan-badge-reco svg { width: 12px; height: 12px; color: #fae69e; }
 
 .plan-line__header {
   display: grid; grid-template-columns: 44px minmax(130px, 1.4fr) minmax(160px, 1.8fr) auto;
@@ -915,6 +965,7 @@ main.plans-page { width:100%; max-width:1080px; margin: 0 auto; box-sizing:borde
 
 .plan-line__expanded {
   padding: 0 20px 20px; border-top: 1px solid #eae6df; background: #fff;
+  border-radius: 0 0 14px 14px;
 }
 .plan-diff-grid {
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding-top: 18px;
@@ -937,11 +988,11 @@ main.plans-page { width:100%; max-width:1080px; margin: 0 auto; box-sizing:borde
 .always-sparkle { font-size: 16px; color: #d4a300; flex: 0 0 auto; }
 
 .plans-nav-row {
-  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  display: flex; align-items: center; justify-content: flex-start; gap: 16px;
   margin-top: 24px;
 }
 .btn-back-plan {
-  height: 48px; padding: 0 20px; font-size: 15px; font-weight: 600;
+  height: 44px; padding: 0 20px; font-size: 14.5px; font-weight: 600;
   border-radius: var(--radius); background: #fff; border: 1.5px solid var(--border);
   color: var(--ink); display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
   transition: all .15s ease;
@@ -949,31 +1000,64 @@ main.plans-page { width:100%; max-width:1080px; margin: 0 auto; box-sizing:borde
 .btn-back-plan:hover {
   border-color: var(--ink); background: var(--cream);
 }
-.btn-continue-plan {
-  height: 48px; padding: 0 28px; border-radius: var(--radius); font-size: 15.5px; font-weight: 700;
-  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  background: var(--ink); color: #fff; border: none; cursor: pointer;
-  transition: transform .15s ease, box-shadow .15s ease, background-color .15s ease;
+
+/* Right Column Summary Card */
+.plan-summary-card {
+  background: #fdfcf9; border: 1.5px solid var(--border); border-radius: 20px;
+  padding: 24px; box-shadow: 0 8px 28px rgba(16, 24, 40, .04);
+  display: flex; flex-direction: column; gap: 16px;
 }
-.btn-continue-plan:hover {
+.plan-summary-card__head {
+  display: flex; align-items: center; gap: 12px;
+}
+.plan-summary-card__icon { font-size: 24px; line-height: 1; }
+.plan-summary-card__name {
+  margin: 0; font-size: 20px; font-weight: 800; color: var(--ink); letter-spacing: -.02em;
+}
+.plan-summary-card__price-row {
+  display: flex; flex-direction: column; gap: 6px; padding-bottom: 14px;
+  border-bottom: 1px solid #ebe7df;
+}
+.plan-summary-card__price { display: flex; align-items: baseline; gap: 6px; }
+.plan-summary-card__price b {
+  font-size: 28px; font-weight: 800; letter-spacing: -.03em; color: var(--ink);
+}
+.plan-summary-card__price span { font-size: 14px; color: #2b61b6; font-weight: 500; }
+.plan-summary-card__term-badge {
+  display: inline-block; align-self: flex-start;
+  background: #e6f4ea; color: #137333; font-size: 11.5px; font-weight: 700;
+  padding: 3px 8px; border-radius: 6px;
+}
+.plan-summary-card__reason {
+  margin: 0; font-size: 13.5px; line-height: 1.45; color: var(--navy); font-weight: 500;
+}
+.plan-summary-card__cta {
+  height: 50px; width: 100%; padding: 0 20px; font-size: 15.5px; font-weight: 700;
+  border-radius: var(--radius); display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  background: var(--ink); color: #fff; border: none; cursor: pointer;
+  transition: transform .15s ease, background-color .15s ease;
+}
+.plan-summary-card__cta:hover {
   background: #1e293b; transform: translateY(-1px);
 }
-
-.routine .btn--secondary {
-  height: 46px; font-size: 14.5px; font-weight: 700; border-radius: var(--radius);
-  width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  background: #ede8df; border: 1.5px solid #dcd5c7; color: var(--ink); cursor: pointer;
-  transition: all .15s ease;
+.plan-summary-card__routine-link {
+  font-size: 13.5px; font-weight: 600; color: #2b61b6; text-align: center;
+  cursor: pointer; background: transparent; border: none; padding: 4px 0;
+  text-decoration: underline; text-underline-offset: 3px;
 }
-.routine .btn--secondary:hover {
-  background: #e2dbcd; border-color: var(--ink);
+.plan-summary-card__routine-link:hover { color: var(--ink); }
+
+.plan-summary__save {
+  margin-top: 14px; padding: 8px 4px;
 }
 
 .plans-sticky-bar { display: none; }
 
 @media (max-width: 960px) {
   .plans-layout { grid-template-columns: 1fr; gap: 24px; align-items: start; }
-  .plans-layout__sidebar .routine { position: static; margin-top: 16px; height: auto; }
+  .plans-layout__sidebar { position: static; margin-top: 16px; }
+  .plans-fit-bar { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .plans-fit-bar__right { align-self: flex-start; }
 }
 @media (max-width: 680px) {
   main.plans-page { padding: 20px 16px 120px; }
@@ -10450,7 +10534,7 @@ button.venue-card:hover { border-color:var(--ink); }
   <span class="demo-banner__short">Pilot demo</span>
   <span class="demo-banner__text">Pilot demo — real Urban Sports Club prices, terms and venues. Simulated payment.</span>
   <button class="linkish" data-go="data" style="color:var(--yellow-bright)">Journey data</button>
-  <span class="demo-banner__build">build fdc7755 + local edits</span>
+  <span class="demo-banner__build">build 4824919 + local edits</span>
   <button type="button" class="demo-banner__toggle" data-banner-toggle aria-expanded="true" aria-controls="demo-banner">Hide</button>
 </div>
 <div id="app"></div>
@@ -14861,8 +14945,17 @@ const PLAN_LINE_META = [
 ];
 
 function plansScreen() {
-  const selectedPlanId = S.chosenPlanId || (PLANS.find(pl => pl.mostPopular) || PLANS[1]).id;
+  const given = QUESTIONS.filter(x => isAnswered(S.answers[x.id]));
+  const isComplete = fitComplete(S.answers);
+  const rec = (isComplete || given.length > 0) ? recommend(S.answers, matchVenues(S.answers)) : null;
+
+  const defaultPlanId = rec ? rec.planId : (PLANS.find(pl => pl.mostPopular) || PLANS[1]).id;
+  const selectedPlanId = S.chosenPlanId || defaultPlanId;
   const selectedPlan = PLANS.find(pl => pl.id === selectedPlanId) || PLANS[1];
+  const selectedMeta = PLAN_LINE_META.find(pt => pt.id === selectedPlan.id) || PLAN_LINE_META[1];
+  const selectedPrice = priceFor(selectedPlan, S.commitmentId);
+
+  const termBadgeText = S.commitmentId === 'annual' ? '12 months · Save 15%' : S.commitmentId === 'biennial' ? '24 months · Save 20%' : 'Monthly';
 
   const termLabel = S.commitmentId === 'annual' ? '12-month contract' : S.commitmentId === 'biennial' ? '24-month contract' : 'Monthly contract';
   const pauseRule = S.commitmentId === 'monthly' ? 'Pause anytime (1–6 months)' : 'Pausing and downgrading not available';
@@ -14871,9 +14964,12 @@ function plansScreen() {
     const pl = PLANS.find(p => p.id === pt.id) || PLANS[0];
     const price = priceFor(pl, S.commitmentId);
     const isExpanded = PLANS_EXPANDED_ID === pl.id;
+    const isSelected = selectedPlan.id === pl.id;
+    const isRecommended = rec && rec.planId === pl.id;
     const allowances = pt.getAllowances(termLabel, pauseRule);
 
-    return `<article class="plan-line ${isExpanded ? 'is-selected is-expanded' : ''}" data-pick-plan="${esc(pl.id)}" role="button" tabindex="0" aria-expanded="${isExpanded ? 'true' : 'false'}" ${isExpanded ? 'aria-current="true"' : ''}>
+    return `<article class="plan-line ${isSelected ? 'is-selected' : ''} ${isExpanded ? 'is-expanded' : ''}" data-pick-plan="${esc(pl.id)}" role="button" tabindex="0" aria-expanded="${isExpanded ? 'true' : 'false'}" ${isSelected ? 'aria-current="true"' : ''}>
+      ${isRecommended ? `<div class="plan-badge-reco">${icon('sparkle', 12)}<span>Recommended for your routine</span></div>` : ''}
       <div class="plan-line__header">
         <div class="plan-line__icon-wrap"><span class="plan-line__icon">${pt.iconEmoji}</span></div>
         <div class="plan-line__info">
@@ -14918,9 +15014,45 @@ function plansScreen() {
     </article>`;
   }).join('');
 
+  const fitStrip = `<div class="plans-fit-bar" role="region" aria-label="Your routine fit">
+    <div class="plans-fit-bar__left">
+      <div class="plans-fit-bar__brand">${ulaAvatar()} <b>Urby</b></div>
+      ${given.length > 0 ? `
+        <div class="plans-fit-bar__status">
+          ${icon('checkFill', 16)}
+          <span class="plans-fit-bar__status-label">Your fit</span>
+        </div>
+        <div class="plans-fit-bar__chips">
+          ${given.map(x => `
+            <button class="answer-chip" type="button" data-edit="${esc(x.id)}" aria-label="Change answer to: ${esc(x.prompt)}">
+              ${icon(x.icon, 14)}
+              <span>${esc(compactAnswerLabel(x.id, S.answers[x.id]))}</span>
+              <span class="answer-chip__edit-icon">${icon('pencil', 11)}</span>
+            </button>
+          `).join('')}
+        </div>
+      ` : `
+        <div class="plans-fit-bar__prompt">
+          <span>Not sure which plan fits you best? Answer 4 quick questions for a personalized routine.</span>
+        </div>
+      `}
+    </div>
+    <div class="plans-fit-bar__right">
+      ${given.length > 0 ? `
+        <button class="linkish plans-fit-bar__edit-all" type="button" data-go="fit">
+          Edit answers ${icon('pencil', 12)}
+        </button>
+      ` : `
+        <button class="btn btn--secondary plans-fit-bar__cta" type="button" data-go="fit">
+          Find my fit ${icon('arrowRight', 14)}
+        </button>
+      `}
+    </div>
+  </div>`;
+
   const stickyBar = `<div class="plans-sticky-bar">
     <div class="plans-sticky-bar__left">
-      <div class="plans-sticky-bar__name"><b>${esc(selectedPlan.name)}</b> &middot; ${priceFor(selectedPlan, S.commitmentId)} &euro;/mo</div>
+      <div class="plans-sticky-bar__name"><b>${esc(selectedPlan.name)}</b> &middot; ${selectedPrice} &euro;/mo</div>
       <div class="plans-sticky-bar__sub">${S.commitmentId === 'annual' ? '12-month commitment' : S.commitmentId === 'biennial' ? '24-month commitment' : 'Monthly &middot; Cancel anytime'}</div>
     </div>
     <button class="btn btn--primary plans-sticky-bar__cta" type="button" data-go="details">
@@ -14939,6 +15071,8 @@ function plansScreen() {
       }).join('')}</div>
     </div>
 
+    ${fitStrip}
+
     <div class="plans-layout">
       <div class="plans-main">
         <section class="plans-options-card" aria-label="Membership options">
@@ -14954,13 +15088,49 @@ function plansScreen() {
           <button class="btn btn--secondary btn-back-plan" type="button" data-go="recommendation">
             ${icon('arrowLeft', 16)} Back
           </button>
-          <button class="btn btn--primary btn-continue-plan" type="button" data-go="details">
-            Choose ${esc(selectedPlan.name)} and continue ${icon('arrowRight', 16)}
-          </button>
         </div>
       </div>
+
       <aside class="plans-layout__sidebar">
-        ${routinePanel({ isSecondaryAction: true })}
+        <div class="plan-summary-card">
+          <div class="plan-summary-card__head">
+            <div class="plan-summary-card__icon">${selectedMeta.iconEmoji}</div>
+            <h3 class="plan-summary-card__name">${esc(selectedPlan.name)}</h3>
+          </div>
+
+          <div class="plan-summary-card__price-row">
+            <div class="plan-summary-card__price">
+              <b>${selectedPrice} &euro;</b> <span>/ month</span>
+            </div>
+            <div class="plan-summary-card__term-badge">${esc(termBadgeText)}</div>
+          </div>
+
+          <p class="plan-summary-card__reason">
+            ${rec && rec.planId === selectedPlan.id ? esc(selectedMeta.headSub || 'Fits your weekly routine and covers your target venues.') : esc(selectedMeta.headSub || 'All-inclusive access to fitness, sports, and wellness.')}
+          </p>
+
+          <button class="btn btn--primary plan-summary-card__cta" type="button" data-go="details">
+            Choose ${esc(selectedPlan.name)} and continue ${icon('arrowRight', 16)}
+          </button>
+
+          ${given.length > 0 ? `
+            <button class="linkish plan-summary-card__routine-link" type="button" data-go="recommendation">
+              View personalized routine &rarr;
+            </button>
+          ` : `
+            <button class="linkish plan-summary-card__routine-link" type="button" data-go="fit">
+              Get a personalized routine &rarr;
+            </button>
+          `}
+        </div>
+
+        <button class="routine__save plan-summary__save" type="button" data-go="save">
+          ${icon('bookmark', 20)}
+          <span>
+            <b>Save for later</b>
+            <small>Keeps your answers and brings you back here.</small>
+          </span>
+        </button>
       </aside>
     </div>
     ${stickyBar}

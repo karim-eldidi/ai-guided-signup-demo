@@ -945,8 +945,17 @@ const PLAN_LINE_META = [
 ];
 
 function plansScreen() {
-  const selectedPlanId = S.chosenPlanId || (PLANS.find(pl => pl.mostPopular) || PLANS[1]).id;
+  const given = QUESTIONS.filter(x => isAnswered(S.answers[x.id]));
+  const isComplete = fitComplete(S.answers);
+  const rec = (isComplete || given.length > 0) ? recommend(S.answers, matchVenues(S.answers)) : null;
+
+  const defaultPlanId = rec ? rec.planId : (PLANS.find(pl => pl.mostPopular) || PLANS[1]).id;
+  const selectedPlanId = S.chosenPlanId || defaultPlanId;
   const selectedPlan = PLANS.find(pl => pl.id === selectedPlanId) || PLANS[1];
+  const selectedMeta = PLAN_LINE_META.find(pt => pt.id === selectedPlan.id) || PLAN_LINE_META[1];
+  const selectedPrice = priceFor(selectedPlan, S.commitmentId);
+
+  const termBadgeText = S.commitmentId === 'annual' ? '12 months · Save 15%' : S.commitmentId === 'biennial' ? '24 months · Save 20%' : 'Monthly';
 
   const termLabel = S.commitmentId === 'annual' ? '12-month contract' : S.commitmentId === 'biennial' ? '24-month contract' : 'Monthly contract';
   const pauseRule = S.commitmentId === 'monthly' ? 'Pause anytime (1–6 months)' : 'Pausing and downgrading not available';
@@ -955,9 +964,12 @@ function plansScreen() {
     const pl = PLANS.find(p => p.id === pt.id) || PLANS[0];
     const price = priceFor(pl, S.commitmentId);
     const isExpanded = PLANS_EXPANDED_ID === pl.id;
+    const isSelected = selectedPlan.id === pl.id;
+    const isRecommended = rec && rec.planId === pl.id;
     const allowances = pt.getAllowances(termLabel, pauseRule);
 
-    return `<article class="plan-line ${isExpanded ? 'is-selected is-expanded' : ''}" data-pick-plan="${esc(pl.id)}" role="button" tabindex="0" aria-expanded="${isExpanded ? 'true' : 'false'}" ${isExpanded ? 'aria-current="true"' : ''}>
+    return `<article class="plan-line ${isSelected ? 'is-selected' : ''} ${isExpanded ? 'is-expanded' : ''}" data-pick-plan="${esc(pl.id)}" role="button" tabindex="0" aria-expanded="${isExpanded ? 'true' : 'false'}" ${isSelected ? 'aria-current="true"' : ''}>
+      ${isRecommended ? `<div class="plan-badge-reco">${icon('sparkle', 12)}<span>Recommended for your routine</span></div>` : ''}
       <div class="plan-line__header">
         <div class="plan-line__icon-wrap"><span class="plan-line__icon">${pt.iconEmoji}</span></div>
         <div class="plan-line__info">
@@ -1002,9 +1014,45 @@ function plansScreen() {
     </article>`;
   }).join('');
 
+  const fitStrip = `<div class="plans-fit-bar" role="region" aria-label="Your routine fit">
+    <div class="plans-fit-bar__left">
+      <div class="plans-fit-bar__brand">${ulaAvatar()} <b>Urby</b></div>
+      ${given.length > 0 ? `
+        <div class="plans-fit-bar__status">
+          ${icon('checkFill', 16)}
+          <span class="plans-fit-bar__status-label">Your fit</span>
+        </div>
+        <div class="plans-fit-bar__chips">
+          ${given.map(x => `
+            <button class="answer-chip" type="button" data-edit="${esc(x.id)}" aria-label="Change answer to: ${esc(x.prompt)}">
+              ${icon(x.icon, 14)}
+              <span>${esc(compactAnswerLabel(x.id, S.answers[x.id]))}</span>
+              <span class="answer-chip__edit-icon">${icon('pencil', 11)}</span>
+            </button>
+          `).join('')}
+        </div>
+      ` : `
+        <div class="plans-fit-bar__prompt">
+          <span>Not sure which plan fits you best? Answer 4 quick questions for a personalized routine.</span>
+        </div>
+      `}
+    </div>
+    <div class="plans-fit-bar__right">
+      ${given.length > 0 ? `
+        <button class="linkish plans-fit-bar__edit-all" type="button" data-go="fit">
+          Edit answers ${icon('pencil', 12)}
+        </button>
+      ` : `
+        <button class="btn btn--secondary plans-fit-bar__cta" type="button" data-go="fit">
+          Find my fit ${icon('arrowRight', 14)}
+        </button>
+      `}
+    </div>
+  </div>`;
+
   const stickyBar = `<div class="plans-sticky-bar">
     <div class="plans-sticky-bar__left">
-      <div class="plans-sticky-bar__name"><b>${esc(selectedPlan.name)}</b> &middot; ${priceFor(selectedPlan, S.commitmentId)} &euro;/mo</div>
+      <div class="plans-sticky-bar__name"><b>${esc(selectedPlan.name)}</b> &middot; ${selectedPrice} &euro;/mo</div>
       <div class="plans-sticky-bar__sub">${S.commitmentId === 'annual' ? '12-month commitment' : S.commitmentId === 'biennial' ? '24-month commitment' : 'Monthly &middot; Cancel anytime'}</div>
     </div>
     <button class="btn btn--primary plans-sticky-bar__cta" type="button" data-go="details">
@@ -1023,6 +1071,8 @@ function plansScreen() {
       }).join('')}</div>
     </div>
 
+    ${fitStrip}
+
     <div class="plans-layout">
       <div class="plans-main">
         <section class="plans-options-card" aria-label="Membership options">
@@ -1038,13 +1088,49 @@ function plansScreen() {
           <button class="btn btn--secondary btn-back-plan" type="button" data-go="recommendation">
             ${icon('arrowLeft', 16)} Back
           </button>
-          <button class="btn btn--primary btn-continue-plan" type="button" data-go="details">
-            Choose ${esc(selectedPlan.name)} and continue ${icon('arrowRight', 16)}
-          </button>
         </div>
       </div>
+
       <aside class="plans-layout__sidebar">
-        ${routinePanel({ isSecondaryAction: true })}
+        <div class="plan-summary-card">
+          <div class="plan-summary-card__head">
+            <div class="plan-summary-card__icon">${selectedMeta.iconEmoji}</div>
+            <h3 class="plan-summary-card__name">${esc(selectedPlan.name)}</h3>
+          </div>
+
+          <div class="plan-summary-card__price-row">
+            <div class="plan-summary-card__price">
+              <b>${selectedPrice} &euro;</b> <span>/ month</span>
+            </div>
+            <div class="plan-summary-card__term-badge">${esc(termBadgeText)}</div>
+          </div>
+
+          <p class="plan-summary-card__reason">
+            ${rec && rec.planId === selectedPlan.id ? esc(selectedMeta.headSub || 'Fits your weekly routine and covers your target venues.') : esc(selectedMeta.headSub || 'All-inclusive access to fitness, sports, and wellness.')}
+          </p>
+
+          <button class="btn btn--primary plan-summary-card__cta" type="button" data-go="details">
+            Choose ${esc(selectedPlan.name)} and continue ${icon('arrowRight', 16)}
+          </button>
+
+          ${given.length > 0 ? `
+            <button class="linkish plan-summary-card__routine-link" type="button" data-go="recommendation">
+              View personalized routine &rarr;
+            </button>
+          ` : `
+            <button class="linkish plan-summary-card__routine-link" type="button" data-go="fit">
+              Get a personalized routine &rarr;
+            </button>
+          `}
+        </div>
+
+        <button class="routine__save plan-summary__save" type="button" data-go="save">
+          ${icon('bookmark', 20)}
+          <span>
+            <b>Save for later</b>
+            <small>Keeps your answers and brings you back here.</small>
+          </span>
+        </button>
       </aside>
     </div>
     ${stickyBar}
