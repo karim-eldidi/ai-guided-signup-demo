@@ -5333,58 +5333,205 @@ button.appcard:hover .appcard__info-icon {
    behaviour, so it is a card of its own with a handle that names it, and it starts open.
    Closing it is how the column gets shorter, which is the other thing he asked for. */
 .allplans {
-  margin-top: 18px; background: #fafaf9; border: 1px solid #e7e5e4;
-  border-radius: var(--radius-lg); overflow: hidden;
+  margin-top: 20px;
+  background: #ffffff;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(16, 24, 40, .03);
 }
 .allplans__head {
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  cursor: pointer; list-style: none; padding: 14px 15px;
-  font-size: 15.5px; font-weight: 700; letter-spacing: -.01em; color: var(--ink);
-  background: #fafaf9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+  list-style: none;
+  padding: 18px 20px 16px;
+  background: #ffffff;
   transition: background .15s ease;
-}
-.allplans__head:hover {
-  background: #f5f5f4;
-}
-.allplans__headcopy { min-width: 0; }
-.allplans__headcopy > span { display: block; }
-.allplans__headcopy small {
-  display: block; margin-top: 3px; color: var(--navy-soft);
-  font-size: 12.5px; line-height: 1.35; font-weight: 400; letter-spacing: 0;
+  user-select: none;
 }
 .allplans__head::-webkit-details-marker { display: none; }
-.allplans__head svg { flex: 0 0 auto; color: var(--navy-soft); transform: rotate(90deg); transition: transform .16s ease; }
-.allplans[open] .allplans__head svg { transform: rotate(-90deg); }
-.allplans[open] .allplans__head { padding-bottom: 10px; }
-.allplans__grid { display: grid; gap: 1px; background: #e7e5e4; }
+.allplans__head:hover { background: #fafaf9; }
+.allplans__headcopy { min-width: 0; }
+.allplans__title {
+  margin: 0;
+  font-size: 17.5px;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  color: var(--ink);
+}
+.allplans__subtitle {
+  margin: 3px 0 0;
+  font-size: 13.5px;
+  color: #64748b;
+  font-weight: 500;
+}
+.allplans__chev {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  transition: transform .2s ease;
+}
+.allplans[open] .allplans__chev {
+  transform: rotate(180deg);
+}
+
+.allplans__list {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+}
 .allplans__row {
-  display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; align-items: baseline;
-  background: #ffffff; padding: 11px 15px;
-  transition: background .15s ease;
+  display: grid;
+  grid-template-columns: 46px 1fr auto;
+  gap: 14px;
+  align-items: center;
+  padding: 16px 20px;
+  border-top: 1px solid #f1f5f9;
+  background: #ffffff;
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease;
+  user-select: none;
 }
-.allplans__row.is-current { background: #f4f4f5; }
-.allplans__row[data-plan] { cursor: pointer; }
-.allplans__row[data-plan]:hover { background: #fafafa; }
-.allplans__name { font-size: 15.5px; font-weight: 700; letter-spacing: -.01em; }
-/* A pill, not a caption: on the row it has to read as a label attached to that plan
-   rather than as a second half of its name. */
-.allplans__tag {
-  display: inline-block; background: #fef08a; color: #713f12;
-  font-size: 11px; font-weight: 700; letter-spacing: .01em;
-  padding: 2.5px 7px; border-radius: 999px; margin-left: 8px; vertical-align: 1px;
+.allplans__row:hover {
+  background: #fcfbfa;
 }
-.allplans__price { font-size: 15.5px; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
-.allplans__price small { font-weight: 400; font-size: 12px; color: var(--navy-soft); }
-.allplans__opens { font-size: 13.5px; color: var(--navy-soft); font-variant-numeric: tabular-nums; }
-.allplans__act { text-align: right; font-size: 13.5px; }
-/* Rule 41: an option states what it costs, not only what it saves — on the row itself,
-   so nobody has to hold two numbers in their head to find the catch. */
-.allplans__warn {
-  grid-column: 1 / -1; display: flex; align-items: flex-start; gap: 6px;
-  font-size: 12px; line-height: 1.4; color: #8a5a1a; margin-top: 4px;
+.allplans__row.is-recommended {
+  background: #fdfaf0;
+  border-top: 1px solid #fef08a;
+  border-bottom: 1px solid #fef08a;
 }
-.allplans__warn svg { flex: 0 0 auto; margin-top: 1px; }
-.allplans__foot { text-align: center; font-size: 13.5px; margin: 0; padding: 13px 15px; background: #fafaf9; }
+.allplans__row.is-recommended:hover {
+  background: #fdf8e8;
+}
+
+.allplans__icon-box {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.allplans__row.is-recommended .allplans__icon-box {
+  background: #fff;
+  border-color: #fde68a;
+}
+
+.allplans__main {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.allplans__headline {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -.02em;
+}
+.allplans__tier-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.allplans__tier-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--navy);
+}
+.allplans__tag--gold {
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  letter-spacing: 0.01em;
+}
+.allplans__meta-line {
+  font-size: 12.5px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.allplans__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 2px;
+}
+.allplans__status svg {
+  flex-shrink: 0;
+  width: 13px;
+  height: 13px;
+}
+.allplans__status--warn {
+  color: #b45309;
+}
+.allplans__status--good {
+  color: #15803d;
+}
+.allplans__status--info {
+  color: #1e40af;
+}
+
+.allplans__right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 6px;
+}
+.allplans__price {
+  white-space: nowrap;
+  text-align: right;
+}
+.allplans__price b {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -.02em;
+}
+.allplans__price small {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
+}
+.allplans__row-chev {
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+}
+
+.allplans__foot {
+  text-align: center;
+  padding: 16px 20px;
+  border-top: 1px solid #f1f5f9;
+  background: #ffffff;
+}
+.allplans__feature-link {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #2b61b6;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+}
+.allplans__feature-link:hover {
+  color: var(--ink);
+}
 
 /* What the money opens, on the card that carries the money (rule 14). */
 .planbox__opens {

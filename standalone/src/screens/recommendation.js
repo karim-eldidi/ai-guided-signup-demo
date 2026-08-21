@@ -637,40 +637,128 @@ function recommendationScreen() {
   /* Counted from what is rendered, so the heading can never claim a row that is not there. */
   const gridCount = COUNTWORDS[gridPlans.length] || String(gridPlans.length);
 
-  /* Rule 64 said all four sit in the grid. That half is superseded by the decision above;
-     the rest of it stands — the grid is on the plan card, one tap from the recommendation,
-     every row it lists is visible, and the `plans` screen is still one link away for the
-     tier this grid is leaving out. */
+  const COMPARE_META = {
+    essential: {
+      emoji: '📅',
+      headline: 'Once a week',
+      tierName: 'Essential',
+      getInfo: (t, total, recId, visitsNeed) => {
+        const opens = t ? t.included : 4;
+        const opensText = `opens ${opens} of your ${total} places`;
+        const missedVisits = visitsNeed > 4 ? visitsNeed - 4 : 0;
+        const missedPlaces = total > opens ? total - opens : 0;
+        let warn = '';
+        if (missedVisits > 0 && missedPlaces > 0) warn = `Misses ${missedVisits} sessions and ${missedPlaces} places`;
+        else if (missedPlaces > 0) warn = `Misses ${missedPlaces} places`;
+        else if (missedVisits > 0) warn = `Misses ${missedVisits} sessions`;
+        return { opensText, statusText: warn, statusType: 'warn' };
+      }
+    },
+    classic: {
+      emoji: '👟',
+      headline: 'Move most days',
+      tierName: 'Classic',
+      getInfo: (t, total, recId) => {
+        const opens = t ? t.included : 20;
+        const opensText = total > opens ? `opens ${opens} of your ${total} places` : `opens all ${total} places`;
+        let statusText = '', statusType = 'warn';
+        if (recId === 'classic') {
+          statusText = 'Covers your full routine';
+          statusType = 'good';
+        } else {
+          const missedPlaces = total > opens ? total - opens : 0;
+          if (missedPlaces > 0) statusText = `Misses ${missedPlaces} places, including your recovery studios`;
+          else statusText = 'Does not include spa & wellness Plus visits';
+        }
+        return { opensText, statusText, statusType };
+      }
+    },
+    premium: {
+      emoji: '🧘',
+      headline: 'Add spas & recovery',
+      tierName: 'Premium',
+      getInfo: (t, total, recId) => {
+        const opensText = `opens all ${total} places`;
+        let statusText = 'Covers your full routine', statusType = 'good';
+        if (recId === 'max') {
+          statusText = '4 Plus visits included';
+          statusType = 'info';
+        }
+        return { opensText, statusText, statusType };
+      }
+    },
+    max: {
+      emoji: '💖',
+      headline: 'Live exceptionally',
+      tierName: 'Max',
+      getInfo: (t, total) => {
+        const opensText = `opens all ${total} places · 8 Plus visits`;
+        return { opensText, statusText: 'Adds 4 more Plus visits and 1 more massage', statusType: 'info' };
+      }
+    }
+  };
+
+  const totalNearby = hereT && hereT.nearby ? hereT.nearby : (pool.length || 25);
+  const visitsNeeded = visitsWanted(a.frequency);
+
   const allPlans = `<details class="allplans" ${ALTOPEN ? 'open' : ''}>
     <summary class="allplans__head" data-toggle-alt>
-      <span class="allplans__headcopy"><span>Compare memberships</span>
-        <small>${esc(listWords(gridPlans.map(pl=>pl.name)))}</small></span>${icon('chevron',18)}</summary>
-    <div class="allplans__grid">
+      <div class="allplans__headcopy">
+        <h3 class="allplans__title">Compare memberships</h3>
+        <p class="allplans__subtitle">What changes for your routine</p>
+      </div>
+      <span class="allplans__chev">${icon('chevronDown', 18)}</span>
+    </summary>
+    <div class="allplans__list">
       ${gridPlans.map(pl => {
-        const p = priceFor(pl, S.commitmentId), t = totalsFor(pl), here = pl.id === plan.id;
-        const tag = here
-          ? (isRec ? 'Recommended' : 'Your choice')
-          : (pl.id === rec.planId
-              ? 'Urby&rsquo;s choice'
-              : (pl.rank < plan.rank ? 'Cheaper option' : 'More access'));
-        const short = a.frequency && !carriesFrequency(pl, a.frequency)
-          ? `Not enough for your ${visitsWanted(a.frequency)}-visit routine` : '';
-        const fewer = !here && t && hereT && t.nearby && t.included < hereT.included
-          ? `${hereT.included-t.included} fewer ${hereT.included-t.included===1?'place':'places'} than ${plan.name}` : '';
-        const note = short || fewer;
-        return `<div class="allplans__row ${here?'is-current':''}" ${here?'':`data-plan="${esc(pl.id)}" role="button" tabindex="0"`}>
-          <div class="allplans__name">${esc(pl.name)}${tag?` <span class="allplans__tag">${tag}</span>`:''}</div>
-          <div class="allplans__price">${p} €<small>/mo</small></div>
-          <div class="allplans__opens">${visitsFor(pl)} visits${t&&t.nearby
-            ? ` &middot; opens ${t.included} of ${t.nearby} ${t.nearby===1?'place':'places'}`
-            : ` &middot; ${esc(pl.bestFor.toLowerCase())}`}</div>
-          <div class="allplans__act">${here?'':icon('chevron',17)}</div>
-          ${note?`<div class="allplans__warn">${icon('info',14)} <span>${esc(note)}</span></div>`:''}
+        const p = priceFor(pl, S.commitmentId);
+        const t = totalsFor(pl);
+        const meta = COMPARE_META[pl.id] || {
+          emoji: '✨', headline: pl.name, tierName: pl.name,
+          getInfo: () => ({ opensText: `opens places`, statusText: '', statusType: 'info' })
+        };
+        const info = meta.getInfo(t, totalNearby, rec.planId, visitsNeeded);
+        const isRecTier = pl.id === rec.planId;
+        const isCurrentPick = pl.id === plan.id;
+
+        return `<div class="allplans__row ${isRecTier ? 'is-recommended' : ''} ${isCurrentPick ? 'is-current' : ''}" data-plan="${esc(pl.id)}" role="button" tabindex="0" aria-label="Select ${esc(pl.name)} membership">
+          <div class="allplans__icon-box">
+            <span>${meta.emoji}</span>
+          </div>
+          <div class="allplans__main">
+            <div class="allplans__row-head">
+              <span class="allplans__headline">${esc(meta.headline)}</span>
+            </div>
+            <div class="allplans__tier-row">
+              <span class="allplans__tier-name">${esc(meta.tierName)}</span>
+              ${isRecTier ? `<span class="allplans__tag--gold">Recommended</span>` : ''}
+            </div>
+            <div class="allplans__meta-line">
+              <span>${visitsFor(pl)} visits &middot; ${esc(info.opensText)}</span>
+            </div>
+            ${info.statusText ? `
+              <div class="allplans__status allplans__status--${info.statusType}">
+                ${info.statusType === 'good' ? icon('checkThin', 13) : icon('info', 13)}
+                <span>${esc(info.statusText)}</span>
+              </div>
+            ` : ''}
+          </div>
+          <div class="allplans__right">
+            <div class="allplans__price">
+              <b>${p} &euro;</b> <small>/ month</small>
+            </div>
+            <div class="allplans__row-chev">
+              ${icon('chevronDown', 16)}
+            </div>
+          </div>
         </div>`;
       }).join('')}
     </div>
-    <p class="allplans__foot"><button class="linkish" type="button" data-go="plans">See everything each plan includes${
-      showTop?'':`, ${esc(topPlan.name)} included`}</button></p>
+    <div class="allplans__foot">
+      <button class="linkish allplans__feature-link" type="button" data-go="plans">
+        Compare every plan feature &rarr;
+      </button>
+    </div>
   </details>`;
 
   const planAside = `<div class="planbox">
