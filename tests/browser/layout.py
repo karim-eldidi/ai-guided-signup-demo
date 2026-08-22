@@ -82,7 +82,7 @@ with sync_playwright() as p:
         P(f"{label}: options are a {cols}-column visual grid") if cols==2 else F(f"{label}: options are {cols} columns")
 
         # does the question fit without scrolling?
-        pg.reload(); pg.wait_for_timeout(400)
+        pg.goto(URL); pg.wait_for_timeout(400)
         pg.locator('[data-start-fit]').click(); pg.wait_for_timeout(700)
         cta=pg.locator('[data-continue]:visible').first.bounding_box()
         bottom=cta['y']+cta['height']

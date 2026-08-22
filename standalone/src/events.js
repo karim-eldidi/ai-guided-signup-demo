@@ -275,7 +275,7 @@ function go(route, opts={}) {
      on the landing page and then compulsory two screens later. Signing up collects an
      email anyway, as part of the membership; saving is a separate choice, on its own
      screen, reached by someone who wants to leave. */
-  ROUTE = route; EDITING = null; SHEET = null; CITYPICK = false; CITYWANTED = null; PLACEWANTED = null; VENUESOPEN = false; APPSOPEN = false; DAYNOTE = null; VENUEQ = '';
+  ROUTE = route; if (route !== 'fit') EDITING = null; SHEET = null; CITYPICK = false; CITYWANTED = null; PLACEWANTED = null; VENUESOPEN = false; APPSOPEN = false; DAYNOTE = null; VENUEQ = '';
   MOREOPEN = false; MOREPICK = null; ALTOPEN = false; PLANPLUS = null; PLANASK = false; WHEREPICK = false; SEEALL = false;
   document.body.classList.remove('save-modal-open'); document.body.classList.remove('login-modal-open'); document.body.style.overflow = '';
   /* A reviewer saw the save screen's "enter a valid email" error appear under the
@@ -283,18 +283,61 @@ function go(route, opts={}) {
   ERRORS = {}; FIELDS = {}; NOCHOICE = false; UNCLEAR = false;
   if (['fit','recommendation','save','details','payment'].includes(route)) S.lastStep = route;
   saveState(S);
-  /* The route lives in history state, not in the address bar. It used to write
-     "#recommendation", which looked like a deep link and was not one: opening it in a
-     fresh browser silently showed the landing page, so a saved or shared link quietly
-     lost someone's answers. Back and forward still work — popstate reads the state
-     object. The only shareable link is the resume link, which carries the answers. */
-  if (!opts.replace) history.pushState({ route }, '', location.href.split('#')[0]);
+
+  const targetUrl = getUrlForRoute(route);
+  if (opts.replace) {
+    history.replaceState({ route }, '', targetUrl);
+  } else {
+    const currentHash = location.hash || '';
+    const targetHash = targetUrl.includes('#') ? targetUrl.substring(targetUrl.indexOf('#')) : '';
+    if (history.state?.route !== route || currentHash !== targetHash) {
+      history.pushState({ route }, '', targetUrl);
+    }
+  }
   render();
 }
+
+function getUrlForRoute(route) {
+  const base = location.pathname + (location.search || '');
+  switch (route) {
+    case 'about': return base + '#how-it-works';
+    case 'fit': return base + '#fit';
+    case 'recommendation': return base + '#recommendation';
+    case 'catalog': return base + '#explore';
+    case 'checkout': return base + '#details';
+    case 'confirmation': return base + '#confirmation';
+    case 'landing':
+    default:
+      return base;
+  }
+}
+
+function getRouteFromUrl() {
+  const hash = (location.hash || '').replace(/^#/, '').trim().toLowerCase();
+  if (!hash || hash === 'landing') return 'landing';
+  if (['about', 'how-it-works', 'see-how-it-works'].includes(hash)) return 'about';
+  if (['fit', 'questions', 'start'].includes(hash)) return 'fit';
+  if (['recommendation', 'routine', 'plan'].includes(hash)) return 'recommendation';
+  if (['catalog', 'explore', 'venues'].includes(hash)) return 'catalog';
+  if (['checkout', 'details', 'payment'].includes(hash)) return 'checkout';
+  if (['confirmation', 'complete'].includes(hash)) return 'confirmation';
+  return 'landing';
+}
+
 window.addEventListener('popstate', e => {
-  const r = (e.state && e.state.route) || 'landing';
-  if (SHEET) { SHEET=null; render(); return; }
-  ROUTE = r; EDITING=null; render();
+  if (SHEET) { SHEET = null; render(); return; }
+  const r = (e.state && e.state.route) || getRouteFromUrl();
+  ROUTE = r;
+  if (r !== 'fit') EDITING = null;
+  render();
+});
+window.addEventListener('hashchange', () => {
+  const r = getRouteFromUrl();
+  if (r && r !== ROUTE) {
+    ROUTE = r;
+    if (r !== 'fit') EDITING = null;
+    render();
+  }
 });
 window.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
@@ -1309,7 +1352,7 @@ document.addEventListener('click', e => {
     } else DAYNOTE = null;
     log(S.planOverridden?'plan_changed':'plan_reset_to_recommended', { to:t.dataset.plan }); render(false); return; }
   if (t.dataset.commit) { S.commitmentId = t.dataset.commit; log('commitment_changed',{ to:t.dataset.commit }); render(false); return; }
-  if (t.dataset.edit) { REVIEW_ANSWERS_OPEN = false; EDITING = t.dataset.edit; ROUTE='fit'; history.pushState({route:'fit'},'',location.href.split('#')[0]); render(); return; }
+  if (t.dataset.edit) { REVIEW_ANSWERS_OPEN = false; EDITING = t.dataset.edit; go('fit'); return; }
   if (t.dataset.back) { const i=qIndex(t.dataset.back); const prev=QUESTIONS[i-1];
     if (prev) { EDITING = prev.id; ROUTE='fit'; render(); } return; }
   /* "Continue without saving" now means what it says: carry on looking. It used to drop
@@ -1321,7 +1364,7 @@ document.addEventListener('click', e => {
     if (t.closest('#exit-modal')) { closeSaveModal('continued_without_saving'); return; }
     go(fitComplete(S.answers) || S.planOverridden ? 'recommendation' : 'fit'); return;
   }
-  if (t.dataset.reset !== undefined) { clearStoredState(); S = JSON.parse(JSON.stringify(BLANK)); history.replaceState({route:'landing'},'',location.pathname); go('landing',{replace:true}); return; }
+  if (t.dataset.reset !== undefined) { clearStoredState(); S = JSON.parse(JSON.stringify(BLANK)); go('landing', { replace: true }); return; }
   if (t.dataset.copyResume !== undefined) {
     const done = () => { t.textContent = 'Copied — bookmark or reopen this link'; log('resume_link_copied',{ atStep:S.lastStep, identified:Boolean(S.email) }); };
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(resumeUrl()).then(done).catch(()=>{});
@@ -2077,11 +2120,6 @@ document.addEventListener('submit', e => {
       }
     }
   } catch (_) {}
-  /* Older builds wrote step names into the address bar even though they were not
-     shareable state. Clear those obsolete hashes quietly and show the normal landing
-     page; exposing that implementation detail only distracts from starting again. */
-  const stale = location.hash.match(/^#(fit|recommendation|save|details|payment)$/);
-  if (stale) history.replaceState({ route:'landing' }, '', location.pathname);
   const m = location.hash.match(/^#resume=(.+)$/);
   if (m) {
     try {
@@ -2089,8 +2127,9 @@ document.addEventListener('submit', e => {
       S.returns = (S.returns||0)+1;
       log('returned',{ returnNumber:S.returns, toStep:S.lastStep });
       saveState(S);
-      history.replaceState({ route:'landing' }, '', location.pathname);
-      go(S.paid?'confirmation':(S.lastStep==='landing'?'landing':S.lastStep), { replace:true });
+      const targetStep = S.paid ? 'confirmation' : (S.lastStep === 'landing' ? 'landing' : S.lastStep);
+      history.replaceState({ route: targetStep }, '', getUrlForRoute(targetStep));
+      go(targetStep, { replace: true });
       return;
     } catch (err) { /* fall through to a fresh visit */ }
   }
@@ -2102,6 +2141,16 @@ document.addEventListener('submit', e => {
   S.source = p.get('utm_source') || p.get('source') || 'direct';
   S.campaign = p.get('utm_campaign') || p.get('campaign');
   log('landing_viewed',{ source:S.source, campaign:S.campaign, variant:VARIANT });
-  history.replaceState({ route:'landing' }, '', location.href);
+
+  let initialRoute = getRouteFromUrl();
+  // Guard stateful routes: if user arrived directly at #recommendation/details without answers or plan, start cleanly at landing
+  if (initialRoute === 'recommendation' && !S.chosenPlanId && Object.keys(S.answers || {}).length === 0) {
+    initialRoute = 'landing';
+  } else if (initialRoute === 'checkout' && !S.chosenPlanId) {
+    initialRoute = 'landing';
+  }
+
+  ROUTE = initialRoute;
+  history.replaceState({ route: initialRoute }, '', getUrlForRoute(initialRoute));
   render();
 })();
