@@ -4080,16 +4080,17 @@ button.appcard:hover .appcard__info-icon {
 
 @media (max-width: 980px) {
   .about-hero { grid-template-columns: 1fr; min-height: 0; }
-  .about-hero__copy { padding: 96px 20px 24px; }
+  .about-hero__copy { padding: clamp(102px, 14vw, 116px) 20px 20px; }
   .about-hero__media {
     position: relative;
     width: 100%;
-    height: clamp(280px, 60vw, 420px);
+    height: clamp(230px, 58vw, 320px);
+    overflow: hidden;
   }
   .about-hero__media img {
-    object-position: 60% 25%;
-    -webkit-mask-image: none;
-    mask-image: none;
+    object-position: 63% 16%;
+    -webkit-mask-image: radial-gradient(ellipse 135% 88% at 30% 90%, #000 40%, rgba(0, 0, 0, .45) 68%, transparent 96%);
+    mask-image: radial-gradient(ellipse 135% 88% at 30% 90%, #000 40%, rgba(0, 0, 0, .45) 68%, transparent 96%);
   }
   .about-week {
     grid-template-columns: 1fr;
@@ -4109,17 +4110,17 @@ button.appcard:hover .appcard__info-icon {
 }
 
 @media (max-width: 640px) {
-  /* Let the photograph enter smoothly below the CTA with the runner's head and smiling face
-     fully framed and visible, without any dark muddy veil over the background. */
+  /* An asymmetric curved fade that gently dips over the top-right above the runner's head,
+     letting the yellow background merge organically while keeping the image cropped compactly. */
   .about-hero__media {
     z-index: 1;
     margin-top: 0;
-    height: clamp(300px, 80vw, 420px);
+    height: clamp(220px, 56vw, 300px);
   }
   .about-hero__media img {
-    object-position: 60% 25%;
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, .5) 8%, #000 24%, #000 100%);
-    mask-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, .5) 8%, #000 24%, #000 100%);
+    object-position: 63% 16%;
+    -webkit-mask-image: radial-gradient(ellipse 135% 88% at 30% 90%, #000 40%, rgba(0, 0, 0, .45) 68%, transparent 96%);
+    mask-image: radial-gradient(ellipse 135% 88% at 30% 90%, #000 40%, rgba(0, 0, 0, .45) 68%, transparent 96%);
   }
 }
 

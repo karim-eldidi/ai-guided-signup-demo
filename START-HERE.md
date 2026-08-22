@@ -105,10 +105,11 @@ Doing it yourself is free and takes thirty seconds.
 Live and working:
 - Non-tollgate landing page with instant venue search and "Find my fit" entry point.
 - 4-question fit journey with natural language support and skip capabilities.
-- Curated Activities gallery with match percentages, category filters, distance toggles, and carousel navigation.
-- Calm, spacious "My week" routine builder with universal 7-day venue scheduling and session swapping.
+- Routine-first recommendation with editable sessions and venue swapping.
+- Curated Activities & studios gallery with traceable match reasons, category filters, distance controls, and membership access.
 - Deterministic membership recommendation with monthly/annual commitments and transparent alternative comparison.
 - Universal 7-day venue scheduling with dynamic feedback notices.
 - Save for later modal with unguessable resume tokens and cross-session restoration.
 - Simulated checkout with order summary and terms.
+- Enforced 18+ signup requirement with a clearly explained date-of-birth check.
 - Multi-viewport responsive layouts (Desktop 1440px/1280px and Mobile 390px).

@@ -343,15 +343,12 @@ reuse `porting/nextjs-sections/` as the pattern for components.
     what completes step 1, which the old flat `step / 3` fill claimed before a single
     question had been answered. The segments are `aria-hidden`; the visible count is the
     accessible one.
-59. **Bounded by arithmetic, not by invented policy.** Date of birth had no `max`, so the
-    picker accepted tomorrow and the form took it. The two limits we can defend are the ones
-    arithmetic hands us: nobody was born in the future, and nobody signing up was born 120
-    years ago. A *minimum age* is a different kind of claim — the published terms in
-    `data/plans.json` carry none, so asserting "you must be 18" would have been the pilot
-    inventing a fact about Urban Sports Club, which rule 6 forbids. The picker is bounded and
-    the typed value is re-checked on submit, because the form is `novalidate` and `max` only
-    guides the widget. If a real minimum age exists it belongs in `data/plans.json` with a
-    source, and the check reads it from there.
+59. **The signup age requirement is enforced, not merely suggested.** Urban Sports Club signup
+    requires the member to be at least 18 years old. Date of birth therefore has a latest valid
+    date of exactly 18 years before today, as well as a defensive earliest date 120 years ago.
+    The typed value is re-checked on submit because the form is `novalidate` and input bounds
+    alone only guide the browser widget. The checkout explains the 18+ requirement beside the
+    field so a visitor knows why the information is needed.
 
     Also, rule 33 applied to the longest page we have: the landing panel asks *"Not sure where
     to start?"* and the Urby section a scroll below it asked the identical question again.

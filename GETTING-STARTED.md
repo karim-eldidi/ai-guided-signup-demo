@@ -113,7 +113,7 @@ For a stakeholder review, the live demo plus the `/admin/journeys` page is the s
 
 1. Landing page → search for a favourite studio or click **Find my fit** / **Start with one answer** (notice email is not requested upfront).
 2. Answer Urby's four questions. On one of them, type instead of clicking — try *"realistically about twice a week"* or *"I live in 12045"* — so people see it handles natural language.
-3. On the recommendation, explore the **Activities gallery** and **My week** routine. Tap **Swap** or add studios across any of the 7 days (`MON`–`SUN`).
+3. On the recommendation, explore **My routine** and **Activities & studios**. Use **Swap** on a session or add another place, and notice the plan and coverage feedback update.
 4. Press **Save for later** in the top right → enter an email → copy the resume link → open it in a **private window**. Everything comes back instantly.
 5. Finish through details and simulated checkout.
 6. End on `/admin/journeys` (server mode) to view the funnel analytics.

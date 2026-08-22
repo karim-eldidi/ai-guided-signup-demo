@@ -44,10 +44,10 @@ honest "switched off" screen until you open the page with the token yourself.
 1. **http://localhost:3000** (or open `index.html`) — the landing page. Notice that email is **not** a toll gate (Rule 61). Search for a favourite sport/venue or click **Find my fit** / **Start with one answer**.
 2. **Answer Urby's four questions.** Pick Goal, Activities, Area (pick up to 2, e.g. home and work), and Frequency. Use quick choice cards, or type into *"Answer in your own words"* — try *"realistically about twice a week"* or *"I live in 12045"*.
 3. **The recommendation.**
-   - **Activities gallery**: Curated studio cards with match scores, distance, tier access, and smooth carousel navigation.
-   - **My week routine**: Editorial, calm weekly schedule showing your activities. Tap any day (`MON`–`SUN`) to toggle sessions, or click **Swap** to change any venue.
+   - **My routine**: A practical starting week built from the visitor's answers. Swap a session or add another place to adapt it.
+   - **Activities & studios**: Curated venue cards explain the match with traceable reasons such as activity, area, and preference fit, alongside membership access.
    - **Plan choice**: One clear recommended plan, why it fits, monthly/annual commitment options, and transparent comparison with alternative plans.
-4. **Universal venue adding.** Click `+ Add to week` on any studio card. Notice you can schedule it to **any of the 7 days** (`MON` through `SUN`) with instant plan reflection and dynamic confirmation feedback.
+4. **Routine editing.** Open **Activities & studios**, add a place to the routine, or use **Swap** on an existing session. The plan and coverage feedback update with the visitor's choices.
 5. **Press "Save for later"** in the top right. Enter an email to receive your secure resume link. Open that link in a private window to verify your progress, answers, and routine resume instantly.
 6. **Finish the journey** — enter details, review the simulated payment screen (order summary, cancellation terms), and confirm.
 7. **`/admin/journeys?token=…`** (server mode, needs `ADMIN_TOKEN` — see above) — view the funnel, visitor sources, answer patterns, rule firings, returns, and conversion stats.

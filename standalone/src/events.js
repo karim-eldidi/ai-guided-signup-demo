@@ -148,7 +148,8 @@ function layoutAboutJourney() {
 
   if (isStacked) {
     const start = { x: passB.r, y: passB.cy, axis: 'h' };
-    const rightTurnX = Math.min(base.width - 20, Math.max(passB.r + 28, grid ? grid.r : passB.r + 36));
+    const fridayTile = tiles.length > 2 ? tiles[2] : null;
+    const rightTurnX = fridayTile ? Math.min(base.width - 24, Math.max(passB.r + 24, fridayTile.cx)) : Math.min(base.width - 24, passB.r + 36);
     const gutterY = (passB.b + tiles[0].t) / 2;
     const enter0 = { x: tiles[0].cx, y: tiles[0].t, axis: 'v' };
 
