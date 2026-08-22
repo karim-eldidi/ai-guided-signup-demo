@@ -4,7 +4,8 @@
    "Saved to you@example.com" after they had explicitly chosen not to save and
    then typed the address the membership legally requires. Those are two different
    things and the interface must not conflate them. */
-const BLANK = { email:null, authMethod:null, saveOptIn:false, marketing:false, marketingAsked:false, answers:{}, freeText:{}, radiusKm:'auto',
+const BLANK = { email:null, firstName:null, lastName:null, authMethod:null, saveOptIn:false, marketing:false, marketingAsked:false, answers:{}, freeText:{}, radiusKm:'auto',
+                preferences:{ minRating:null, strictlyNearMe:false, sportFocus:[] },
                 weekDays:[], weekSwap:{}, starredVenues:{}, routineCustomized:false,
                 chosenPlanId:null, planOverridden:false, dismissedUpsell:false, commitmentId:'monthly', details:{}, startDate:null,
                 paid:false, lastStep:'landing', returns:0, events:[], source:null, campaign:null, variant:VARIANT };
@@ -17,6 +18,7 @@ let SEARCH={q:'',result:null};
 let ROUTE='landing', ACKTEXT=null, UNCLEAR=false, NOCHOICE=false, EDITING=null, ERRORS={}, FIELDS={}, TYPING=false, SHEET=null, PANEL_OPEN=false;
 let CRAFTING_TRANSITION=false, REVIEW_ANSWERS_OPEN=false;
 let LOGIN_MODAL_OPEN=false, LOGIN_ERROR=null, LOGIN_SUCCESS=false;
+let USER_MENU_OPEN=false, PERSONAL_DETAILS_MODAL_OPEN=false, PREFERENCES_MODAL_OPEN=false, FAVORITE_LIMIT_MODAL_OPEN=false, RESUME_COPIED_TOAST=false;
 /* City is "detected" in production (IP or browser location). The pilot only has
    venue data loaded for Berlin, so the chip says so plainly and a Change link
    never lies about coverage — picking another city logs the demand instead. */
@@ -49,8 +51,8 @@ let WHEREPICK=false, SEEALL=false;
 let VENUE_MORE_FILTERS_OPEN=false;
 let VENUE_TIER_FILTERS=new Set();
 let VENUE_ACT_FILTERS=new Set();
-let VENUE_ACT_SEARCH_Q='';
-let RECO_VIEW='pillars'; /* 'pillars' (activities gallery) or 'week' (day-by-day schedule) */
+let HOW_TO_EDIT_OPEN=false, SESSION_SWAP_DAY=null, SESSION_SWAP_OPEN=false;
+let RECO_VIEW='routine'; /* 'routine' (starting week routine) or 'pillars' (activities & studios) */
 /* Read while the routine's places are filtered, but nothing adds to it any more — the
    "hide this venue" control is gone. An empty set filters nothing, which is what the
    screen already does; the declaration is here only so that read keeps working. */
@@ -130,6 +132,35 @@ const esc = v => String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;')
 const log = (name,payload) => {
   S.events.push({ name, payload:payload||null, at:new Date().toISOString() });
   saveState(S);
+};
+const isLoggedIn = () => Boolean(S.email && S.authMethod);
+const hasSaveableProgress = () => {
+  const ans = S.answers || {};
+  const answeredCount = Object.keys(ans).filter(k => ans[k] !== undefined && ans[k] !== null && ans[k] !== '').length;
+  return Boolean(answeredCount > 0 || S.chosenPlanId || S.paid || (S.starredVenues && Object.keys(S.starredVenues).length > 0));
+};
+const userFirstName = () => {
+  if (S.firstName && S.firstName.trim()) return S.firstName.trim();
+  if (S.details && S.details.firstName && S.details.firstName.trim()) return S.details.firstName.trim();
+  if (S.email) {
+    const local = S.email.split('@')[0].replace(/[._-]/g, ' ');
+    return local.charAt(0).toUpperCase() + local.slice(1);
+  }
+  return null;
+};
+const userLastName = () => {
+  if (S.lastName && S.lastName.trim()) return S.lastName.trim();
+  if (S.details && S.details.lastName && S.details.lastName.trim()) return S.details.lastName.trim();
+  return '';
+};
+const maskedEmail = (email = S.email) => {
+  if (!email || typeof email !== 'string') return '';
+  const parts = email.split('@');
+  if (parts.length !== 2) return email;
+  const name = parts[0];
+  const domain = parts[1];
+  const maskedName = name.length > 2 ? `${name[0]}${'*'.repeat(Math.min(4, name.length - 1))}` : `${name[0]}*`;
+  return `${maskedName}@${domain}`;
 };
 const b64e = o => btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 const b64d = s => JSON.parse(decodeURIComponent(escape(atob(s.replace(/-/g,'+').replace(/_/g,'/')))));

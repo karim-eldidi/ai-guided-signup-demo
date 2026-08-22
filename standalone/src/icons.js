@@ -20,6 +20,10 @@ const ICONS = {
   close:'<path d="M18 6 6 18M6 6l12 12"/>',
   speech:'<path d="M20 12.4c0 3.9-3.6 7-8 7-1 0-2-.2-2.9-.5L4.5 20.5l1.2-3.6A6.6 6.6 0 0 1 4 12.4c0-3.9 3.6-7 8-7s8 3.1 8 7Z"/>',
   arrowRight:'<path d="M4 12h15"/><path d="M13 6l6 6-6 6"/>', chevron:'<path d="M9 5l7 7-7 7"/>', chevronDown:'<path d="M5 9l7 7 7-7"/>', back:'<path d="M15 19l-7-7 7-7"/>',
+  /* about.js asked for these three by name and silently got the info glyph instead —
+     that is the (i) that appeared beside "See how it works". */
+  arrowDown:'<path d="M12 4v15"/><path d="M6 13l6 6 6-6"/>',
+  check:'<path d="M4 12.5 9 17.5 20 6.5"/>',
   tag:'<path d="M12.6 3.5H20v7.4l-9 9-8-8Z"/><circle cx="16.2" cy="7.3" r="1.5"/>',
   card:'<rect x="3" y="5.5" width="18" height="13" rx="2.2"/><path d="M3 10h18"/>',
   paypal:'<path d="M6.5 20.5l1.6-11h4.4c2.8 0 4.6 1.4 4.2 4.1-.4 2.8-2.5 4.6-5.3 4.6h-2l-.9 5.3h-2z"/>',
@@ -63,7 +67,9 @@ const ICONS = {
   bag:'<path d="M6 8V6a6 6 0 0 1 12 0v2"/><rect x="4" y="8" width="16" height="13" rx="2.5"/><path d="M10 12h4"/>',
   shower:'<path d="M4 4h7a4 4 0 0 1 4 4v1"/><path d="M11 14v.01M14 14v.01M17 14v.01M9 18v.01M12 18v.01M15 18v.01"/><path d="M10 9a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1H10V9z"/>',
   map:'<polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/>',
-  user:'<circle cx="12" cy="8" r="4.2"/><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0"/>'
+  user:'<circle cx="12" cy="8" r="4.2"/><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0"/>',
+  sliders:'<line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/>',
+  link:'<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>'
 };
 const icon = (n, s = 22) => svg(ICONS[n] || ICONS.info, s);
 const ulaAvatar = (size='md') => {

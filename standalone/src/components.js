@@ -9,15 +9,87 @@ const STEP_LABELS = { landing:'the landing page', fit:"Urby's questions", recomm
    fit and leaving is a way *out*, not a way through, and drawing "1 of 3" above it told
    the visitor they were mid-purchase when they had just decided not to be. Rule 8: one
    decision per screen — and the decision here is only whether to be sent a link. */
+function activePlanTitle() {
+  const pId = S.chosenPlanId || (recommend(S.answers, matchVenues(S.answers)) || {}).planId || 'classic';
+  const p = planById(pId);
+  return p ? p.name : 'Classic';
+}
+
+function userAccountDropdown() {
+  const name = userFirstName() || 'Member';
+  const planName = activePlanTitle();
+  const email = maskedEmail(S.email);
+
+  return `<div class="user-menu-popover" id="user-menu-popover" role="menu" aria-label="Account menu">
+    <div class="user-menu__header">
+      <div class="user-menu__title">${esc(name)}'s plan</div>
+      <div class="user-menu__badge">${icon('checkThin', 13)} <span>${esc(planName)} · Saved automatically</span></div>
+      ${email ? `<div class="user-menu__email">${esc(email)}</div>` : ''}
+    </div>
+    <div class="user-menu__body">
+      <button class="user-menu__action user-menu__action--highlight" type="button" data-user-menu-action="continue" role="menuitem">
+        <span>Continue your plan</span>
+        ${icon('arrowRight', 15)}
+      </button>
+      <button class="user-menu__action" type="button" data-user-menu-action="personal-details" role="menuitem">
+        <div class="user-menu__action-icon">${icon('user', 16)}</div>
+        <div class="user-menu__action-content">
+          <div class="user-menu__action-title">Personal details</div>
+          <div class="user-menu__action-sub">Edit your name and email</div>
+        </div>
+      </button>
+      <button class="user-menu__action" type="button" data-user-menu-action="preferences" role="menuitem">
+        <div class="user-menu__action-icon">${icon('sliders', 16)}</div>
+        <div class="user-menu__action-content">
+          <div class="user-menu__action-title">Edit your preferences</div>
+          <div class="user-menu__action-sub">Recommendation &amp; filter settings</div>
+        </div>
+      </button>
+      <button class="user-menu__action" type="button" data-user-menu-action="copy-link" role="menuitem">
+        <div class="user-menu__action-icon">${icon('link', 16)}</div>
+        <div class="user-menu__action-content">
+          <div class="user-menu__action-title">Copy return link</div>
+          <div class="user-menu__action-sub">${RESUME_COPIED_TOAST ? '<strong style="color:var(--c-forest,#107e4a)">✓ Copied link to clipboard!</strong>' : 'Resume on any phone or laptop'}</div>
+        </div>
+      </button>
+      <div class="user-menu__divider"></div>
+      <button class="user-menu__action user-menu__action--plain" type="button" data-user-menu-action="new-plan" role="menuitem">
+        Start a new plan
+      </button>
+      <button class="user-menu__action user-menu__action--plain user-menu__action--danger" type="button" data-user-menu-action="forget-me" role="menuitem">
+        Forget me on this device
+      </button>
+    </div>
+  </div>`;
+}
+
+function userNavChip(modifier = '') {
+  if (isLoggedIn()) {
+    const fName = userFirstName() || 'Member';
+    const wrapClass = modifier ? ` user-nav-chip-wrapper--${modifier}` : '';
+    const chipClass = modifier ? ` user-nav-chip--${modifier}` : '';
+    return `<div class="user-nav-chip-wrapper${wrapClass}">
+      <button class="user-nav-chip${chipClass} ${USER_MENU_OPEN?'is-active':''}" type="button" data-toggle-user-menu aria-expanded="${USER_MENU_OPEN}" aria-haspopup="true">
+        ${icon('user', 14)} <span>Hi, ${esc(fName)}</span>
+      </button>
+      ${USER_MENU_OPEN ? userAccountDropdown() : ''}
+    </div>`;
+  }
+  return '';
+}
+
 function topbar(step, opts={}) {
   const { savedNote = Boolean(S.email && S.saveOptIn), saveExit = true, sub = null, stepper = true, back = null, checkout = false } = opts;
-  const n = savedNote ? `<div class="saved-note" title="Saved to ${esc(S.email)} — your progress is safe.">${icon('checkThin',13)} <span>Saved &middot;</span> <span class="saved-note__mail">${esc(S.email)}</span></div>` : '';
+  const n = (savedNote && !isLoggedIn()) ? `<div class="saved-note" title="Saved to ${esc(S.email)} — your progress is safe.">${icon('checkThin',13)} <span>Saved &middot;</span> <span class="saved-note__mail">${esc(S.email)}</span></div>` : '';
+  const userChip = userNavChip();
+  const authLinks = `<div class="topbar__auth-links"><button class="topbar__auth-link" type="button" data-open-login>Log in</button>${saveExit?`<span class="topbar__auth-dot" aria-hidden="true">&middot;</span><button class="topbar__auth-link" type="button" data-go="save" data-open-exit>Save for later</button>`:''}</div>`;
+  const rightAuth = userChip ? userChip : (back ? `<button class="link-plain linkish" data-go="${esc(back.route)}">${icon('back',17)} ${esc(back.label)}</button>` : authLinks);
 
   if (!stepper) {
     return `<header class="topbar">
       <div class="topbar__left"><button class="wordmark linkish" style="text-decoration:none" data-go="landing">Urban Sports Club</button>${n}</div>
       <div class="topbar__center"></div>
-      <div class="topbar__right">${back?`<button class="link-plain linkish" data-go="${esc(back.route)}">${icon('back',17)} ${esc(back.label)}</button>`:(saveExit?`<button class="link-plain" data-go="save" data-open-exit>Save for later</button>`:'')}</div></header>`;
+      <div class="topbar__right">${rightAuth}</div></header>`;
   }
 
   /* Dedicated question progress during fit discovery (Option 1: separate discovery from checkout) */
@@ -36,11 +108,11 @@ function topbar(step, opts={}) {
           <div class="qstep__bars" aria-hidden="true">${qBars}</div>
         </div>
       </div>
-      <div class="topbar__right">${saveExit?`<button class="link-plain" data-go="save" data-open-exit>Save for later</button>`:''}</div></header>
+      <div class="topbar__right">${rightAuth}</div></header>
     <div class="mobile-progress">
       <div class="mobile-progress__label">${qText}</div>
       <div class="mobile-progress__track"><div class="mobile-progress__fill" style="width:${barPct}%"></div></div>
-      ${savedNote?`<div class="saved-note saved-note--mobile">${icon('checkThin',16)} Saved — your progress is safe.</div>`:''}
+      ${savedNote && !isLoggedIn()?`<div class="saved-note saved-note--mobile">${icon('checkThin',16)} Saved — your progress is safe.</div>`:''}
     </div>`;
   }
 
@@ -58,10 +130,10 @@ function topbar(step, opts={}) {
   return `<header class="topbar">
     <div class="topbar__left"><button class="wordmark linkish" style="text-decoration:none" data-go="landing">Urban Sports Club</button>${n}</div>
     <div class="topbar__center"><div class="stepper">${dots}</div></div>
-    <div class="topbar__right">${saveExit?`<button class="link-plain" data-go="save" data-open-exit>Save for later</button>`:''}</div></header>
+    <div class="topbar__right">${rightAuth}</div></header>
   <div class="mobile-progress"><div class="mobile-progress__label">${mobileText}</div>
     <div class="mobile-progress__track"><div class="mobile-progress__fill" style="width:${barPct}%"></div></div>
-    ${savedNote?`<div class="saved-note saved-note--mobile">${icon('checkThin',16)} Saved — your progress is safe.</div>`:''}</div>`;
+    ${savedNote && !isLoggedIn()?`<div class="saved-note saved-note--mobile">${icon('checkThin',16)} Saved — your progress is safe.</div>`:''}</div>`;
 }
 const ulaRow = () => `<div class="ula-row">${ulaAvatar()}<div class="ula-name"><b>Urby</b> <span>· Membership guide</span></div></div>`;
 const ulaNote = text => `<div class="ula-note">${ulaAvatar('sm')}<p>${text}</p></div>`;
@@ -174,21 +246,21 @@ function loginModal() {
       <div class="login-modal__head">
         <div style="display:flex;align-items:center;gap:10px;margin:2px 0 6px">
           ${ulaAvatar('xs')}
-          <h2 id="login-modal-title" style="margin:0;font-size:21px;font-weight:800;letter-spacing:-0.02em">Resume your journey</h2>
+          <h2 id="login-modal-title" style="margin:0;font-size:21px;font-weight:800;letter-spacing:-0.02em">Sign in or resume</h2>
         </div>
-        <p class="small muted" style="margin:0 0 16px">Enter your email to pick up where you left off.</p>
+        <p class="small muted" style="margin:0 0 16px">Enter your details to save unlimited places and access your plan.</p>
       </div>
       ${err}
       <form data-form="login" novalidate class="login-form">
         <div class="field" style="margin-bottom:14px">
           <label class="field__label" for="login-email">Your email address</label>
-          <input id="login-email" class="field__input" type="email" name="email" placeholder="you@example.com" value="${esc(FIELDS.loginEmail||'')}" autocomplete="email" required>
+          <input id="login-email" class="field__input" type="email" name="email" placeholder="you@example.com" value="${esc(FIELDS.loginEmail||S.email||'')}" autocomplete="email" required autofocus>
         </div>
-        <button class="btn btn--primary btn--block" type="submit">Resume my journey</button>
+        <button class="btn btn--primary btn--block" type="submit">Continue to my plan</button>
         <div class="orline" style="margin:16px 0"><span>or continue with</span></div>
         <div class="sso-row" style="max-width:none;margin-bottom:12px">
-          <button class="sso-btn" type="submit" name="provider" value="google" aria-label="Resume with Google">${GOOGLE} <span>Google</span></button>
-          <button class="sso-btn" type="submit" name="provider" value="apple" aria-label="Resume with Apple">${APPLE} <span>Apple</span></button>
+          <button class="sso-btn" type="submit" name="provider" value="google" aria-label="Continue with Google">${GOOGLE} <span>Google</span></button>
+          <button class="sso-btn" type="submit" name="provider" value="apple" aria-label="Continue with Apple">${APPLE} <span>Apple</span></button>
         </div>
         ${notFoundActions}
       </form>
@@ -196,6 +268,7 @@ function loginModal() {
   </div>`;
 }
 function openLoginModal(error=null) {
+  USER_MENU_OPEN = false;
   LOGIN_MODAL_OPEN = true;
   LOGIN_ERROR = error;
   const old = document.getElementById('login-modal');
@@ -216,8 +289,199 @@ function closeLoginModal() {
   document.body.style.overflow = '';
   document.body.classList.remove('login-modal-open');
 }
-function hasSaveableProgress() {
-  return ROUTE !== 'landing' || Object.keys(S.answers||{}).length > 0 || Boolean(SEARCH.q || SEARCH.result);
+
+function personalDetailsModal() {
+  const fName = S.firstName || (S.details && S.details.firstName) || '';
+  const lName = S.lastName || (S.details && S.details.lastName) || '';
+  const email = S.email || '';
+
+  return `<div class="overlay" id="personal-details-modal" ${PERSONAL_DETAILS_MODAL_OPEN?'':'hidden'} role="dialog" aria-modal="true" aria-labelledby="personal-details-title">
+    <div class="modal modal--personal-details">
+      <button class="modal__close" data-close-personal-details aria-label="Close dialog">&times;</button>
+      <div class="modal__head" style="margin-bottom:18px">
+        <h2 id="personal-details-title" style="margin:0 0 6px;font-size:20px;font-weight:800;letter-spacing:-0.02em">Personal details</h2>
+        <p class="small muted" style="margin:0">Choose how we should address you and where to send your private return link.</p>
+      </div>
+      <form data-form="personal-details" novalidate>
+        <div class="field" style="margin-bottom:16px">
+          <label class="field__label" for="pd-first-name">First name</label>
+          <input id="pd-first-name" class="field__input" type="text" name="firstName" placeholder="e.g. Karim" value="${esc(fName)}" required>
+          <span class="field__hint" style="display:block;margin-top:5px;font-size:12px;color:var(--c-stone,#6b7280)">This is what we'll show in your greeting.</span>
+        </div>
+        <div class="field" style="margin-bottom:16px">
+          <label class="field__label" for="pd-last-name">Last name <span class="muted" style="font-weight:normal">(optional)</span></label>
+          <input id="pd-last-name" class="field__input" type="text" name="lastName" placeholder="e.g. Eldidi" value="${esc(lName)}">
+        </div>
+        <div class="field" style="margin-bottom:20px">
+          <label class="field__label" for="pd-email">Email address</label>
+          <input id="pd-email" class="field__input" type="email" name="email" placeholder="you@example.com" value="${esc(email)}" required>
+          <span class="field__hint" style="display:block;margin-top:5px;font-size:12px;color:var(--c-stone,#6b7280)">Changing this updates where your return link is sent.</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:24px">
+          <button class="btn btn--primary" type="submit">Save changes</button>
+          <button class="btn btn--linkish" type="button" data-close-personal-details>Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>`;
+}
+
+function openPersonalDetailsModal() {
+  USER_MENU_OPEN = false;
+  PERSONAL_DETAILS_MODAL_OPEN = true;
+  const old = document.getElementById('personal-details-modal');
+  if (old) old.outerHTML = personalDetailsModal();
+  const modal = document.getElementById('personal-details-modal');
+  if (!modal) return;
+  modal.hidden = false;
+  document.body.style.overflow = 'hidden';
+  const input = modal.querySelector('input');
+  if (input) input.focus();
+}
+
+function closePersonalDetailsModal() {
+  PERSONAL_DETAILS_MODAL_OPEN = false;
+  const modal = document.getElementById('personal-details-modal');
+  if (modal) modal.hidden = true;
+  document.body.style.overflow = '';
+}
+
+function recommendationPreferencesModal() {
+  const prefs = S.preferences || { minRating: null, strictlyNearMe: false, sportFocus: [] };
+  const currentRating = prefs.minRating ? String(prefs.minRating) : 'any';
+  const strictlyNearMe = Boolean(prefs.strictlyNearMe);
+  const sportFocus = Array.isArray(prefs.sportFocus) ? prefs.sportFocus : [];
+
+  const mainSports = [
+    { id: 'gym', label: 'Gym & Fitness' },
+    { id: 'bouldering', label: 'Bouldering' },
+    { id: 'yoga', label: 'Yoga' },
+    { id: 'swimming', label: 'Swimming' },
+    { id: 'pilates', label: 'Pilates' },
+    { id: 'crossfit', label: 'CrossFit' },
+    { id: 'sauna', label: 'Sauna & Spa' },
+    { id: 'dance', label: 'Dance' },
+    { id: 'martial_arts', label: 'Martial Arts' },
+    { id: 'padel', label: 'Padel / Tennis' }
+  ];
+
+  return `<div class="overlay" id="preferences-modal" ${PREFERENCES_MODAL_OPEN?'':'hidden'} role="dialog" aria-modal="true" aria-labelledby="preferences-title">
+    <div class="modal modal--preferences">
+      <button class="modal__close" data-close-preferences aria-label="Close preferences dialog">&times;</button>
+      <div class="modal__head" style="margin-bottom:18px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          ${icon('sliders', 18)}
+          <h2 id="preferences-title" style="margin:0;font-size:20px;font-weight:800;letter-spacing:-0.02em">Recommendation settings</h2>
+        </div>
+        <p class="small muted" style="margin:0">Fine-tune how Urby selects places and creates your routine.</p>
+      </div>
+      <form data-form="recommendation-preferences" novalidate>
+        <div class="pref-group" style="margin-bottom:20px">
+          <label class="field__label" style="margin-bottom:8px;display:block">Minimum studio rating</label>
+          <div class="segmented-chips">
+            <label class="seg-chip ${currentRating==='any'?'is-selected':''}">
+              <input type="radio" name="minRating" value="any" ${currentRating==='any'?'checked':''}>
+              <span>Any rating</span>
+            </label>
+            <label class="seg-chip ${currentRating==='4.0'?'is-selected':''}">
+              <input type="radio" name="minRating" value="4.0" ${currentRating==='4.0'?'checked':''}>
+              <span>★ 4.0 and above</span>
+            </label>
+            <label class="seg-chip ${currentRating==='4.5'?'is-selected':''}">
+              <input type="radio" name="minRating" value="4.5" ${currentRating==='4.5'?'checked':''}>
+              <span>★ 4.5 only</span>
+            </label>
+          </div>
+          <span class="field__hint" style="display:block;margin-top:5px;font-size:12px;color:var(--c-stone,#6b7280)">Prioritize studios highly rated by members in Berlin.</span>
+        </div>
+
+        <div class="pref-group" style="margin-bottom:20px">
+          <label class="pref-switch">
+            <input type="checkbox" name="strictlyNearMe" value="yes" ${strictlyNearMe?'checked':''}>
+            <span class="pref-switch__slider"></span>
+            <div class="pref-switch__content">
+              <strong>Strictly in my selected area</strong>
+              <div class="small muted">Only recommend venues within 3 km of your neighbourhood, disabling automatic wide-radius search.</div>
+            </div>
+          </label>
+        </div>
+
+        <div class="pref-group" style="margin-bottom:24px">
+          <label class="field__label" style="margin-bottom:8px;display:block">Specialized sport focus</label>
+          <div class="pref-sports-grid">
+            ${mainSports.map(s => `
+              <label class="pref-sport-chip ${sportFocus.includes(s.id)?'is-selected':''}">
+                <input type="checkbox" name="sportFocus" value="${s.id}" ${sportFocus.includes(s.id)?'checked':''}>
+                <span>${s.label}</span>
+              </label>
+            `).join('')}
+          </div>
+          <span class="field__hint" style="display:block;margin-top:6px;font-size:12px;color:var(--c-stone,#6b7280)">Urby will give special priority to these activities when creating your plan.</span>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:12px">
+          <button class="btn btn--primary" type="submit">Save preferences</button>
+          <button class="btn btn--linkish" type="button" data-close-preferences>Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>`;
+}
+
+function openPreferencesModal() {
+  USER_MENU_OPEN = false;
+  PREFERENCES_MODAL_OPEN = true;
+  const old = document.getElementById('preferences-modal');
+  if (old) old.outerHTML = recommendationPreferencesModal();
+  const modal = document.getElementById('preferences-modal');
+  if (!modal) return;
+  modal.hidden = false;
+  document.body.style.overflow = 'hidden';
+}
+
+function closePreferencesModal() {
+  PREFERENCES_MODAL_OPEN = false;
+  const modal = document.getElementById('preferences-modal');
+  if (modal) modal.hidden = true;
+  document.body.style.overflow = '';
+}
+
+function favoriteLimitModal() {
+  return `<div class="overlay" id="favorite-limit-modal" ${FAVORITE_LIMIT_MODAL_OPEN?'':'hidden'} role="dialog" aria-modal="true" aria-labelledby="fav-limit-title">
+    <div class="modal modal--fav-limit">
+      <button class="modal__close" data-close-favorite-limit aria-label="Close dialog">&times;</button>
+      <div style="text-align:center;padding:12px 6px 16px">
+        <div style="display:inline-flex;margin-bottom:12px">${ulaAvatar('lg')}</div>
+        <h2 id="fav-limit-title" style="margin:0 0 8px;font-size:21px;font-weight:800;letter-spacing:-0.02em">Save unlimited places</h2>
+        <p class="muted" style="margin:0 auto 20px;max-width:360px;line-height:1.45;font-size:14px">You've reached the 10-studio limit for guests. Sign in or save your email to keep saving unlimited favorite places and sync across devices.</p>
+        <div style="display:flex;flex-direction:column;gap:10px;max-width:300px;margin:0 auto">
+          <button class="btn btn--primary btn--block" type="button" data-open-login>Sign in or save progress</button>
+          <button class="btn btn--secondary btn--block" type="button" data-close-favorite-limit>Keep my 10 places</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function openFavoriteLimitModal() {
+  FAVORITE_LIMIT_MODAL_OPEN = true;
+  const old = document.getElementById('favorite-limit-modal');
+  if (old) old.outerHTML = favoriteLimitModal();
+  const modal = document.getElementById('favorite-limit-modal');
+  if (!modal) return;
+  modal.hidden = false;
+  document.body.style.overflow = 'hidden';
+}
+
+function closeFavoriteLimitModal() {
+  FAVORITE_LIMIT_MODAL_OPEN = false;
+  const modal = document.getElementById('favorite-limit-modal');
+  if (modal) modal.hidden = true;
+  document.body.style.overflow = '';
+}
+
+function globalModals() {
+  return `${exitModal()}${loginModal()}${personalDetailsModal()}${recommendationPreferencesModal()}${favoriteLimitModal()}`;
 }
 function armSaveInactivity() {
   clearTimeout(SAVE_IDLE_TIMER);
@@ -319,39 +583,130 @@ function cityChip() {
 }
 
 function urbyMascotAvatar(size = 'md') {
-  const w = size === 'sm' ? 44 : size === 'lg' ? 88 : 68;
-  const h = size === 'sm' ? 44 : size === 'lg' ? 88 : 68;
-  return `<div class="urby-mascot" style="width:${w}px;height:${h}px;flex:0 0 ${w}px;" aria-hidden="true">
+  const w = size === 'sm' ? 40 : size === 'lg' ? 80 : 58;
+  const h = size === 'sm' ? 40 : size === 'lg' ? 80 : 58;
+  return `<div class="urby-mascot urby-mascot--animated" style="width:${w}px;height:${h}px;flex:0 0 ${w}px;" aria-label="Urby, membership guide" role="img">
     <svg width="100%" height="100%" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="50" cy="94" rx="28" ry="5" fill="rgba(0,0,0,0.08)" />
-      <!-- Left Waving Hand -->
-      <g class="urby-wave">
-        <path d="M78 48 C84 40, 92 36, 91 43 C90 48, 85 54, 76 56 Z" fill="#f6d64a" stroke="#d97706" stroke-width="1.5" />
-        <circle cx="90" cy="40" r="3.5" fill="#f6d64a" stroke="#d97706" stroke-width="1.5" />
+      <!-- Background Circle -->
+      <circle cx="50" cy="50" r="48" fill="#FEF3C7" stroke="#FDE68A" stroke-width="2" />
+      
+      <!-- Mascot Container with gentle floating motion -->
+      <g class="urby-float-group">
+        <!-- Shadow -->
+        <ellipse cx="50" cy="88" rx="22" ry="4" fill="rgba(0,0,0,0.06)" />
+
+        <!-- Top flame / tuft -->
+        <path class="urby-tuft" d="M50 18 C46 10, 52 6, 56 8 C58 10, 57 15, 50 18 Z" fill="#F59E0B" />
+
+        <!-- Character Body (Cute rounded bean shape) -->
+        <path class="urby-body" d="M30 40 C30 22, 70 22, 70 40 C70 54, 76 74, 72 84 C70 88, 30 88, 28 84 C24 74, 30 54, 30 40 Z" fill="#FCD34D" stroke="#D97706" stroke-width="2" />
+
+        <!-- Headband (Black with URBY lettering) -->
+        <path d="M28 35 C28 33, 72 33, 72 35 L73 45 C73 47, 27 47, 27 45 Z" fill="#18181B" />
+        <text x="50" y="42.5" fill="#FFFFFF" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="7.5" font-weight="900" letter-spacing="1" text-anchor="middle">URBY</text>
+
+        <!-- Eyes Group (with blink animation) -->
+        <g class="urby-eyes">
+          <ellipse cx="43" cy="53" rx="2.8" ry="3.8" fill="#18181B" />
+          <circle cx="44.2" cy="51.8" r="1.1" fill="#FFFFFF" />
+          <ellipse cx="57" cy="53" rx="2.8" ry="3.8" fill="#18181B" />
+          <circle cx="58.2" cy="51.8" r="1.1" fill="#FFFFFF" />
+        </g>
+
+        <!-- Rosy Cheeks -->
+        <ellipse cx="36" cy="57" rx="3" ry="1.8" fill="#FCA5A5" opacity="0.85" />
+        <ellipse cx="64" cy="57" rx="3" ry="1.8" fill="#FCA5A5" opacity="0.85" />
+
+        <!-- Happy Smile -->
+        <path d="M47 58 Q50 62 53 58" fill="none" stroke="#18181B" stroke-width="1.8" stroke-linecap="round" />
       </g>
-      <!-- Body & Hoodie -->
-      <path d="M26 62 C26 50, 74 50, 74 62 L78 88 C78 92, 22 92, 22 88 Z" fill="#18181b" />
-      <path d="M42 56 L47 72 M58 56 L53 72" stroke="#e4e4e7" stroke-width="2" stroke-linecap="round" />
-      <path d="M38 56 Q50 68 62 56" fill="none" stroke="#27272a" stroke-width="3" />
-      <path d="M47 76 C47 80, 53 80, 53 76 L53 73" fill="none" stroke="#e4e4e7" stroke-width="1.8" stroke-linecap="round" />
-      <path d="M24 64 C20 70, 20 76, 26 80" fill="#18181b" stroke="#09090b" stroke-width="2" stroke-linecap="round" />
-      <!-- Character Head / Flame body -->
-      <path d="M50 12 C32 12, 25 24, 25 38 C25 54, 34 60, 50 60 C66 60, 75 54, 75 38 C75 24, 68 12, 50 12 Z" fill="#fcd34d" stroke="#f59e0b" stroke-width="1.5" />
-      <path d="M50 12 C47 6, 52 2, 55 4 C57 6, 56 10, 50 12 Z" fill="#f59e0b" />
-      <!-- Headband -->
-      <path d="M25 29 C25 27, 75 27, 75 29 L75 36 C75 38, 25 38, 25 36 Z" fill="#ffffff" stroke="#e5e7eb" stroke-width="1" />
-      <path d="M47 31 L47 34 C47 35.5, 53 35.5, 53 34 L53 31" fill="none" stroke="#111827" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-      <!-- Eyes -->
-      <ellipse cx="41" cy="43" rx="3.2" ry="4.2" fill="#18181b" />
-      <circle cx="42.2" cy="41.5" r="1.3" fill="#ffffff" />
-      <ellipse cx="59" cy="43" rx="3.2" ry="4.2" fill="#18181b" />
-      <circle cx="60.2" cy="41.5" r="1.3" fill="#ffffff" />
-      <!-- Rosy Cheeks -->
-      <ellipse cx="34" cy="48" rx="3.5" ry="2" fill="#fca5a5" opacity="0.8" />
-      <ellipse cx="66" cy="48" rx="3.5" ry="2" fill="#fca5a5" opacity="0.8" />
-      <!-- Happy Smile -->
-      <path d="M46 48 Q50 53 54 48" fill="none" stroke="#18181b" stroke-width="2" stroke-linecap="round" />
     </svg>
+  </div>`;
+}
+
+function howToEditModal() {
+  if (!HOW_TO_EDIT_OPEN) return '';
+  return `<div class="sheet-backdrop" data-close-how-to-edit></div>
+  <div class="modal modal--how-to-edit" role="dialog" aria-modal="true" aria-labelledby="how-to-edit-title">
+    <button class="modal__close" type="button" data-close-how-to-edit aria-label="Close guide">&times;</button>
+    <div class="how-to-edit-head">
+      <div class="how-to-edit-avatar">${urbyMascotAvatar('md')}</div>
+      <div>
+        <div class="sheet__guide" style="font-size:12px;font-weight:700;color:var(--navy-soft);margin-bottom:2px">Urby &middot; Membership guide</div>
+        <h2 id="how-to-edit-title" style="margin:0;font-size:20px;font-weight:800;letter-spacing:-0.02em">How your starting routine works</h2>
+      </div>
+    </div>
+    <div class="how-to-edit-body" style="margin-top:16px">
+      <div class="how-to-edit-step">
+        <div class="how-to-edit-step__num">1</div>
+        <div class="how-to-edit-step__text">
+          <strong>Change any suggested session</strong>
+          <p>Tap &ldquo;Change&rdquo; on any day to swap it for another partner studio near you that fits what you want to do.</p>
+        </div>
+      </div>
+      <div class="how-to-edit-step">
+        <div class="how-to-edit-step__num">2</div>
+        <div class="how-to-edit-step__text">
+          <strong>Add more sessions &amp; sports</strong>
+          <p>Tap &ldquo;Add another session&rdquo; or switch to &ldquo;Activities &amp; studios&rdquo; to browse all places across Berlin.</p>
+        </div>
+      </div>
+      <div class="how-to-edit-step">
+        <div class="how-to-edit-step__num">3</div>
+        <div class="how-to-edit-step__text">
+          <strong>Your membership adjusts dynamically</strong>
+          <p>As you add or swap places, the recommended plan updates so your routine is always covered at the best price.</p>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:20px">
+      <button class="btn btn--primary btn--block" type="button" data-close-how-to-edit>Got it</button>
+    </div>
+  </div>`;
+}
+
+function swapSessionModal(day, plan, pool) {
+  if (!SESSION_SWAP_OPEN || !SESSION_SWAP_DAY) return '';
+  const dayName = SESSION_SWAP_DAY;
+  const venues = (pool || VENUES).slice(0, 8);
+  return `<div class="sheet-backdrop" data-close-session-swap></div>
+  <div class="modal modal--swap-session" role="dialog" aria-modal="true" aria-labelledby="swap-session-title">
+    <div class="sheet__handle-bar" data-close-session-swap><div class="sheet__handle"></div></div>
+    <div class="swap-session-head">
+      <div>
+        <span class="routine-day-pill" style="margin-bottom:4px">${esc(dayName)}</span>
+        <h2 id="swap-session-title" style="margin:4px 0 0;font-size:19px;font-weight:800">Change ${esc(dayName)} session</h2>
+      </div>
+      <button class="modal__close" type="button" data-close-session-swap aria-label="Close studio selector">&times;</button>
+    </div>
+    <p class="small muted" style="margin:4px 0 14px">Pick an alternative studio near you for ${esc(dayName)}:</p>
+    <div class="swap-session-list">
+      ${venues.map(v => {
+        const inPlan = includedIn(v, plan.id);
+        const grp = ACTIVITY_GROUPS.find(g => venueInGroup(v, g)) || ACTIVITY_GROUPS[0];
+        const dist = typeof v.distanceKm === 'number' ? `${v.distanceKm} km away` : 'nearby';
+        const tierBadge = v.tier === 'plus' ? 'Plus included' : v.tier === 'premium' ? 'Premium' : 'Included';
+        return `<div class="swap-session-item">
+          <div class="swap-session-thumb">${venueMedia(v)}</div>
+          <div class="swap-session-info">
+            <div class="swap-session-cat">${esc(grp.label)}</div>
+            <strong class="swap-session-name">${esc(v.name)}</strong>
+            <div class="swap-session-meta">
+              <span class="routine-item__badge ${inPlan ? (v.tier === 'plus' ? 'routine-item__badge--plus' : 'routine-item__badge--included') : 'routine-item__badge--upgrade'}">
+                ${icon('checkThin', 11)} ${tierBadge}
+              </span>
+              <span>&middot; ${dist}</span>
+            </div>
+          </div>
+          <button class="btn btn--secondary btn--sm swap-session-btn" type="button" data-swap-day-venue="${esc(v.id)}" data-day="${esc(dayName)}">
+            Select
+          </button>
+        </div>`;
+      }).join('')}
+    </div>
+    <div class="swap-session-foot" style="margin-top:14px;text-align:center">
+      <button class="linkish strong" type="button" data-set-reco-view="pillars" data-close-session-swap>Browse all activities &amp; studios &rarr;</button>
+    </div>
   </div>`;
 }
 
@@ -469,11 +824,6 @@ function venueSheet() {
   const yours = v.access ? v.access[plan.id] : null;
   const firstAccess = v.access ? PLANS.find(pl => v.access[pl.id] && !/^not included/i.test(v.access[pl.id])) : firstPlan;
 
-  // Match % score
-  let matchPct = 94;
-  if (A().activities && A().activities.some(act => v.activities.includes(act))) matchPct = 98;
-  else if (km < 3) matchPct = 96;
-
   // Tier info & badges
   const tier = v.tier || 'standard';
   const tierBadgeText = tier === 'premium' ? '👑 Premium' : tier === 'plus' ? '✓ Plus access' : `✓ ${plan.name} included`;
@@ -516,7 +866,7 @@ function venueSheet() {
             ${venueMedia(v)}
             <!-- Overlay Badges -->
             <div class="venue-hero-badges-top">
-              <span class="venue-hero-badge venue-hero-badge--match">${icon('sparkle', 13)} ${matchPct}% match</span>
+              <span class="venue-hero-badge venue-hero-badge--dist">${km} km away</span>
               <span class="venue-hero-badge ${tierBadgeClass}">${tierBadgeText}</span>
             </div>
             <button class="venue-hero-star-btn ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(v.id)}" aria-label="${isStarred ? 'Remove from routine' : 'Add to routine'}" title="${isStarred ? 'In your routine' : 'Add to routine'}">
@@ -564,14 +914,23 @@ function venueSheet() {
             <div class="venue-urby-card__main">
               ${urbyMascotAvatar('md')}
               <div class="venue-urby-card__info">
-                <h4 class="venue-urby-card__title">Recommended for your routine</h4>
-                <div class="venue-urby-card__bullet">
-                  <span class="venue-urby-bullet-icon venue-urby-bullet-icon--check">${icon('checkThin', 14)}</span>
-                  <span>${included ? `Included with <b>${esc(plan.name)}</b>` : `Included from <b>${esc(firstAccess ? firstAccess.name : 'Plus')}</b>`}</span>
+                <div class="venue-urby-card__title-row">
+                  <h4 class="venue-urby-card__title">Why Urby matched this for you</h4>
+                  ${explainVenueMatch(v, S.answers, plan).isTopMatch ? `<span class="venue-urby-top-match-badge">${icon('starFill', 11)} Great match</span>` : ''}
                 </div>
-                <div class="venue-urby-card__bullet">
-                  <span class="venue-urby-bullet-icon venue-urby-bullet-icon--cal">${icon('calendar', 14)}</span>
-                  <span>${esc(visitsText)}</span>
+                <div class="venue-urby-card__bullets">
+                  ${explainVenueMatch(v, S.answers, plan).reasons.map(r => `
+                    <div class="venue-urby-card__bullet">
+                      <span class="venue-urby-bullet-icon venue-urby-bullet-icon--${r.type}">${icon(r.icon, 13)}</span>
+                      <span>${esc(r.text)}</span>
+                    </div>
+                  `).join('')}
+                  ${v.goodToKnow ? `
+                    <div class="venue-urby-card__bullet">
+                      <span class="venue-urby-bullet-icon venue-urby-bullet-icon--highlight">${icon('sparkles', 13)}</span>
+                      <span><b>Highlight:</b> ${esc(v.goodToKnow)}</span>
+                    </div>
+                  ` : ''}
                 </div>
               </div>
             </div>

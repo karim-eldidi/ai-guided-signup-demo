@@ -1,17 +1,249 @@
 /* ---------------- render, routing, history ---------------- */
 const SCREENS = {
-  landing, search:searchScreen, fit:fitScreen, plans:plansScreen, recommendation:recommendationScreen, save:saveScreen, details:detailsScreen,
+  landing, about:aboutScreen, search:searchScreen, fit:fitScreen, plans:plansScreen, recommendation:recommendationScreen, save:saveScreen, details:detailsScreen,
   payment:paymentScreen, confirmation:confirmationScreen, left:leftScreen, email:emailScreen, data:dataScreen,
   login: () => { openLoginModal(); return landingScreen(); },
   terms: () => simpleScreen('Terms — placeholder', ['The pilot links here so the consent wording sits in the right place, but the real content comes from Legal.']),
   privacy: () => simpleScreen('Privacy policy — placeholder', ['What the pilot does implement: marketing consent is captured separately from accepting the Terms, stored per visitor, and the follow-up email only includes marketing content when consent was given.'])
 };
 
+let ABOUT_JOURNEY_OBSERVER = null;
+
+/* ---------------- the yellow line through the week ----------------
+
+   One rule, and everything else falls out of it: a node sits on the BORDER of a tile,
+   on the side facing wherever the line is coming from or going to, and the line travels
+   in the gutters between tiles.
+
+   The version this replaces placed five nodes as percentages inside each photograph
+   (`left: 28%; top: 40%` on the swimming tile, and so on) and then hand-drew two separate
+   paths, one for desktop and one for phones. That had three consequences: the dots landed
+   on people, any change to the grid invalidated every coordinate, and the phone path was a
+   different piece of code that nobody kept in step.
+
+   Reading positions off the real layout instead means the line can never cross a face, the
+   same code serves every viewport, and reflowing the grid reroutes the line for free. */
+
+const r1 = n => Math.round(n * 10) / 10;
+
+/* A polyline with rounded corners. The radius shrinks to fit short segments, so a tight
+   gutter on a phone still turns cleanly instead of overshooting into the next tile. */
+function roundedCorners(pts, radius) {
+  if (!pts.length) return '';
+  const d = [`M ${r1(pts[0].x)} ${r1(pts[0].y)}`];
+  for (let i = 1; i < pts.length - 1; i++) {
+    const p = pts[i], a = pts[i - 1], b = pts[i + 1];
+    const d1 = Math.hypot(p.x - a.x, p.y - a.y);
+    const d2 = Math.hypot(b.x - p.x, b.y - p.y);
+    if (d1 < 1 || d2 < 1) continue;
+    const rr = Math.min(radius, d1 / 2, d2 / 2);
+    const s = { x: p.x + (a.x - p.x) / d1 * rr, y: p.y + (a.y - p.y) / d1 * rr };
+    const e = { x: p.x + (b.x - p.x) / d2 * rr, y: p.y + (b.y - p.y) / d2 * rr };
+    d.push(`L ${r1(s.x)} ${r1(s.y)}`, `Q ${r1(p.x)} ${r1(p.y)} ${r1(e.x)} ${r1(e.y)}`);
+  }
+  const last = pts[pts.length - 1];
+  d.push(`L ${r1(last.x)} ${r1(last.y)}`);
+  return d.join(' ');
+}
+
+/* Nodes are children of the section rather than of a photograph. That is the whole
+   reason they no longer sit on a swimmer's chest. */
+function placeJourneyNodes(section, nodes, terminal) {
+  let layer = section.querySelector('.about-week__nodes');
+  if (!layer) {
+    layer = document.createElement('div');
+    layer.className = 'about-week__nodes';
+    layer.setAttribute('aria-hidden', 'true');
+    section.appendChild(layer);
+  }
+  const all = terminal ? nodes.concat([terminal]) : nodes;
+  while (layer.children.length > all.length) layer.lastElementChild.remove();
+  while (layer.children.length < all.length) {
+    const s = document.createElement('span');
+    s.className = 'about-week__node';
+    layer.appendChild(s);
+  }
+  all.forEach((p, i) => {
+    const el = layer.children[i];
+    el.classList.toggle('about-week__node--end', !!terminal && i === nodes.length);
+    el.style.left = `${r1(p.x)}px`;
+    el.style.top = `${r1(p.y)}px`;
+    el.style.setProperty('--node-order', String(i));
+  });
+}
+
+function layoutAboutJourney() {
+  const section = document.querySelector('.about-week');
+  const svgEl = section && section.querySelector('.about-week__journey');
+  const pathEl = svgEl && svgEl.querySelector('path');
+  const pass = section && section.querySelector('.about-pass');
+  const stops = section ? [...section.querySelectorAll('[data-journey-stop]')] : [];
+  const endEl = section && section.querySelector('.about-week__end');
+  if (!section || !pathEl || !pass || stops.length < 2) return;
+
+  const base = section.getBoundingClientRect();
+  if (base.width < 2 || base.height < 2) return;
+  const box = el => {
+    const r = el.getBoundingClientRect();
+    return {
+      l: r.left - base.left, r: r.right - base.left,
+      t: r.top - base.top, b: r.bottom - base.top,
+      cx: r.left + r.width / 2 - base.left,
+      cy: r.top + r.height / 2 - base.top,
+      w: r.width, h: r.height
+    };
+  };
+
+  svgEl.setAttribute('viewBox', `0 0 ${r1(base.width)} ${r1(base.height)}`);
+
+  /* The side of `b` that faces `towards`, and the axis the line travels on there. */
+  const anchorOn = (b, towards) => {
+    const dx = towards.x - b.cx, dy = towards.y - b.cy;
+    if (Math.abs(dx) >= Math.abs(dy)) return { x: dx >= 0 ? b.r : b.l, y: b.cy, axis: 'h' };
+    return { x: b.cx, y: dy >= 0 ? b.b : b.t, axis: 'v' };
+  };
+
+  /* Right-angled waypoints between two anchors. A turn needs one; two anchors that both
+     travel on the same axis at different offsets need a pair, which is what makes the
+     step from the membership pass up into Monday read as one deliberate elbow. */
+  const between = (from, to) => {
+    const near = (a, c) => Math.abs(a - c) < 1.5;
+    if (near(from.y, to.y) || near(from.x, to.x)) return [];
+    if (from.axis === 'h' && to.axis === 'v') return [{ x: to.x, y: from.y }];
+    if (from.axis === 'v' && to.axis === 'h') return [{ x: from.x, y: to.y }];
+    if (from.axis === 'h') { const m = (from.x + to.x) / 2; return [{ x: m, y: from.y }, { x: m, y: to.y }]; }
+    const m = (from.y + to.y) / 2;
+    return [{ x: from.x, y: m }, { x: to.x, y: m }];
+  };
+
+  const tiles = stops.map(box);
+  const endB = endEl ? box(endEl) : null;
+  const visual = section.querySelector('.about-week__visual');
+  const grid = visual ? box(visual) : null;
+
+  /* A sequence that wraps onto a new row returns along the outside rather than cutting
+     back through the row it just left. Without this the days would have to be laid out
+     right to left along the bottom row for the line to look sensible, and Sunday would
+     print before Saturday. The margin is clamped so a phone, where the grid nearly fills
+     the width, still has somewhere to put the turn. */
+  const wrapsRow = (a, b) => b.cy > a.cy + a.h * 0.5 && b.cx < a.cx - 1;
+  const wrapRoute = (a, b) => {
+    if (!grid) return null;
+    const m = Math.max(8, Math.min(18, base.width - grid.r, grid.l));
+    const gutter = (a.b + b.t) / 2;
+    return {
+      leave: { x: a.r, y: a.cy, axis: 'h' },
+      enter: { x: b.l, y: b.cy, axis: 'h' },
+      via: [ { x: grid.r + m, y: a.cy }, { x: grid.r + m, y: gutter },
+             { x: grid.l - m, y: gutter }, { x: grid.l - m, y: b.cy } ]
+    };
+  };
+
+  const passB = box(pass);
+  const isStacked = passB.b < tiles[0].t - 2;
+  const nodes = [];
+  let pts = [];
+  let prev;
+  let pendingWrap = null;
+
+  if (isStacked) {
+    const start = { x: passB.r, y: passB.cy, axis: 'h' };
+    const rightTurnX = Math.min(base.width - 20, Math.max(passB.r + 28, grid ? grid.r : passB.r + 36));
+    const gutterY = (passB.b + tiles[0].t) / 2;
+    const enter0 = { x: tiles[0].cx, y: tiles[0].t, axis: 'v' };
+
+    pts.push(
+      start,
+      { x: rightTurnX, y: passB.cy },
+      { x: rightTurnX, y: gutterY },
+      { x: tiles[0].cx, y: gutterY },
+      enter0
+    );
+    nodes.push(enter0);
+
+    const next0 = tiles.length > 1 ? tiles[1] : null;
+    const onward0 = next0 || endB || { cx: tiles[0].cx, cy: tiles[0].cy + tiles[0].h };
+    const wrap0 = next0 && wrapsRow(tiles[0], next0) ? wrapRoute(tiles[0], next0) : null;
+    const leave0 = wrap0 ? wrap0.leave : anchorOn(tiles[0], { x: onward0.cx, y: onward0.cy });
+
+    if (Math.abs(leave0.x - enter0.x) > 1 || Math.abs(leave0.y - enter0.y) > 1) pts.push(leave0);
+    prev = leave0;
+    pendingWrap = wrap0;
+  } else {
+    const start = anchorOn(passB, { x: tiles[0].cx, y: tiles[0].cy });
+    pts.push(start);
+    prev = start;
+  }
+
+  tiles.forEach((t, i) => {
+    if (isStacked && i === 0) return;
+
+    const next = i + 1 < tiles.length ? tiles[i + 1] : null;
+    const onward = next || endB || { cx: t.cx, cy: t.cy + t.h };
+    const wrap = next && wrapsRow(t, next) ? wrapRoute(t, next) : null;
+
+    const enter = pendingWrap ? pendingWrap.enter : anchorOn(t, { x: prev.x, y: prev.y });
+    const leave = wrap ? wrap.leave : anchorOn(t, { x: onward.cx, y: onward.cy });
+
+    pts.push(...(pendingWrap ? pendingWrap.via : between(prev, enter)), enter);
+    nodes.push(enter);
+    if (Math.abs(leave.x - enter.x) > 1 || Math.abs(leave.y - enter.y) > 1) pts.push(leave);
+    prev = leave;
+    pendingWrap = wrap;
+  });
+
+  let terminal = null;
+  if (endB) {
+    terminal = anchorOn(endB, { x: prev.x, y: prev.y });
+    pts.push(...between(prev, terminal), terminal);
+  }
+
+  pathEl.setAttribute('d', roundedCorners(pts, 22));
+  placeJourneyNodes(section, nodes, terminal);
+
+  /* Length feeds the draw-in. Re-measuring on resize updates the dash pattern but must
+     not replay the animation, so `is-drawn` is only ever added once. */
+  if (pathEl.getTotalLength) {
+    section.style.setProperty('--journey-length', `${Math.ceil(pathEl.getTotalLength()) + 4}px`);
+  }
+}
+
+function armAboutJourney() {
+  if (ABOUT_JOURNEY_OBSERVER) ABOUT_JOURNEY_OBSERVER.disconnect();
+  ABOUT_JOURNEY_OBSERVER = null;
+  const section = document.querySelector('.about-week');
+  if (!section) return;
+  requestAnimationFrame(layoutAboutJourney);
+  if (typeof ResizeObserver !== 'undefined') {
+    ABOUT_JOURNEY_OBSERVER = new ResizeObserver(layoutAboutJourney);
+    ABOUT_JOURNEY_OBSERVER.observe(section);
+  }
+  /* Photographs change the tiles' heights as they land, so re-measure when they do. */
+  section.querySelectorAll('img').forEach(img => {
+    if (!img.complete) img.addEventListener('load', layoutAboutJourney, { once: true });
+  });
+  if (typeof IntersectionObserver === 'undefined') { section.classList.add('is-drawn'); return; }
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      layoutAboutJourney();
+      section.classList.add('is-drawn');
+      io.disconnect();
+    });
+  }, { threshold: 0.15 });
+  io.observe(section);
+}
+
 function render(focus = true) {
   const screenHtml = (SCREENS[ROUTE]||landing)();
-  /* The save dialog belongs to the journey shell, not to a particular screen. Some
-     older screens already include it; append it only where it is absent. */
-  document.getElementById('app').innerHTML = screenHtml.includes('id="exit-modal"') ? screenHtml : screenHtml + exitModal();
+  /* Append global dialogs (save/exit, login, personal details, preferences, favorite limit) */
+  let fullHtml = screenHtml.includes('id="exit-modal"') ? screenHtml : screenHtml + exitModal();
+  if (!fullHtml.includes('id="login-modal"')) fullHtml += loginModal();
+  if (!fullHtml.includes('id="personal-details-modal"')) fullHtml += personalDetailsModal();
+  if (!fullHtml.includes('id="preferences-modal"')) fullHtml += recommendationPreferencesModal();
+  if (!fullHtml.includes('id="favorite-limit-modal"')) fullHtml += favoriteLimitModal();
+
+  document.getElementById('app').innerHTML = fullHtml;
   if (focus) {
     /* focus the heading, so keyboard and screen-reader users land on the content
        rather than tabbing through the header to reach the answers */
@@ -27,6 +259,7 @@ function render(focus = true) {
   const sheet = document.querySelector('.sheet');
   if (sheet) { document.body.style.overflow='hidden'; (sheet.querySelector('.sheet__close')||sheet).focus(); }
   else document.body.style.overflow='';
+  armAboutJourney();
   armSaveInactivity();
 }
 function go(route, opts={}) {
@@ -68,6 +301,13 @@ window.addEventListener('keydown', e => {
     if (modal && !modal.hidden) closeSaveModal('esc_key');
     const loginModalEl = document.getElementById('login-modal');
     if (loginModalEl && !loginModalEl.hidden) closeLoginModal();
+    const pdModalEl = document.getElementById('personal-details-modal');
+    if (pdModalEl && !pdModalEl.hidden) closePersonalDetailsModal();
+    const prefsModalEl = document.getElementById('preferences-modal');
+    if (prefsModalEl && !prefsModalEl.hidden) closePreferencesModal();
+    const favLimitEl = document.getElementById('favorite-limit-modal');
+    if (favLimitEl && !favLimitEl.hidden) closeFavoriteLimitModal();
+    if (USER_MENU_OPEN) { USER_MENU_OPEN = false; renderInPlace(); }
   }
 });
 
@@ -135,6 +375,11 @@ function advance(nextRoute) {
    throw the reader back to the heading. */
 function renderInPlace() {
   const y = window.scrollY;
+  const galleryScrolls = new Map();
+  document.querySelectorAll('#activity-gallery-scroll, #category-pills-scroll, .activity-gallery, .category-pills').forEach((el, idx) => {
+    const key = el.id || `scroll-idx-${idx}`;
+    galleryScrolls.set(key, el.scrollLeft);
+  });
   const at = document.activeElement;
   const isVenueInput = at && at.matches && at.matches('[data-venue-input]');
   const isVenueFilter = at && at.matches && at.matches('[data-form="venue-filter"] input');
@@ -142,6 +387,11 @@ function renderInPlace() {
 
   render(false);
   window.scrollTo(0, y);
+
+  galleryScrolls.forEach((scrollLeft, key) => {
+    const el = key.startsWith('scroll-idx-') ? document.querySelectorAll('.activity-gallery, .category-pills')[Number(key.replace('scroll-idx-', ''))] : document.getElementById(key);
+    if (el) el.scrollLeft = scrollLeft;
+  });
 
   if (isVenueInput) {
     const box = document.querySelector('[data-venue-input]');
@@ -181,6 +431,17 @@ document.addEventListener('input', e => {
 document.addEventListener('change', e => {
   const ansForm = e.target.closest('form[data-form="answer"]');
   if (ansForm) {
+    const qid = ansForm.dataset.qid;
+    if (qid === 'area' && e.target && e.target.name === 'choice') {
+      if (e.target.value === 'anywhere' && e.target.checked) {
+        ansForm.querySelectorAll('input[name="choice"]').forEach(inp => {
+          if (inp !== e.target) inp.checked = false;
+        });
+      } else if (e.target.value !== 'anywhere' && e.target.checked) {
+        const anywhereInp = ansForm.querySelector('input[name="choice"][value="anywhere"]');
+        if (anywhereInp) anywhereInp.checked = false;
+      }
+    }
     ansForm.querySelectorAll('.option-card').forEach(card => {
       const inp = card.querySelector('input');
       if (inp) card.classList.toggle('is-selected', inp.checked);
@@ -254,9 +515,161 @@ document.addEventListener('click', e => {
     const ws = document.querySelector('[data-where-suggestions]');
     if (ws) ws.hidden = true;
   }
+  if (!e.target.closest('.user-nav-chip-wrapper') && USER_MENU_OPEN) {
+    USER_MENU_OPEN = false;
+    renderInPlace();
+  }
 
-  const t = e.target.closest('[data-go],[data-open-exit],[data-close-exit],[data-open-login],[data-close-login],[data-open-review-answers],[data-close-review-answers],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-app],[data-close-app-sheet],[data-change-city],[data-city],[data-unsure],[data-radius],[data-toggle-apps],[data-toggle-more],[data-more],[data-toggle-alt],[data-add-day],[data-add-venue],[data-pick-plan],[data-confirm-plan],[data-skip-save],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-search-example],[data-venue-search-all],[data-venue-clear],[data-toggle-where],[data-where],[data-select-area],[data-area-search-clear],[data-where-search-clear],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-filter-category],[data-scroll-pills],[data-scroll-gallery],[data-toggle-star],[data-open-plan-drawer],[data-close-plan-drawer],[data-open-order-summary],[data-close-order-summary],[data-toggle-more-filters],[data-toggle-tier-filter],[data-toggle-act-filter],[data-clear-all-filters],[data-apply-filters],[data-act-search-clear],[data-remove-tier-filter],[data-remove-act-filter],[data-remove-cat-filter],[data-remove-radius-filter],[data-venue-view-mode],[data-map-pin],[data-map-close-preview],[data-upgrade-plan],[data-dismiss-upsell]');
+  const t = e.target.closest('[data-jump],[data-go],[data-toggle-user-menu],[data-user-menu-action],[data-continue-plan],[data-open-personal-details],[data-close-personal-details],[data-open-preferences],[data-close-preferences],[data-open-favorite-limit],[data-close-favorite-limit],[data-go-login-for-favorites],[data-open-exit],[data-close-exit],[data-open-login],[data-close-login],[data-open-review-answers],[data-close-review-answers],[data-open-how-to-edit],[data-close-how-to-edit],[data-change-session],[data-close-session-swap],[data-swap-day-venue],[data-plan],[data-commit],[data-edit],[data-reset],[data-begin],[data-start-fit],[data-copy-resume],[data-back],[data-venue],[data-close-sheet],[data-app],[data-close-app-sheet],[data-change-city],[data-city],[data-unsure],[data-radius],[data-toggle-apps],[data-toggle-more],[data-more],[data-toggle-alt],[data-add-day],[data-add-venue],[data-pick-plan],[data-confirm-plan],[data-skip-save],[data-ask-example],[data-ask-clear],[data-ask-contact],[data-search-example],[data-venue-search-all],[data-venue-clear],[data-toggle-where],[data-where],[data-select-area],[data-area-search-clear],[data-where-search-clear],[data-cat],[data-cat-all],[data-see-all],[data-pick],[data-plus-open],[data-close-plus],[data-plan-ask],[data-toggle-swap-day],[data-select-swap-day],[data-toggle-swap-act],[data-select-swap-group],[data-swap-filter],[data-select-swap-opt],[data-confirm-week-swap],[data-set-reco-view],[data-open-add-venue],[data-filter-category],[data-scroll-pills],[data-scroll-gallery],[data-toggle-star],[data-open-plan-drawer],[data-close-plan-drawer],[data-open-order-summary],[data-close-order-summary],[data-toggle-more-filters],[data-toggle-tier-filter],[data-toggle-act-filter],[data-clear-all-filters],[data-apply-filters],[data-act-search-clear],[data-remove-tier-filter],[data-remove-act-filter],[data-remove-cat-filter],[data-remove-radius-filter],[data-venue-view-mode],[data-map-pin],[data-map-close-preview],[data-upgrade-plan],[data-dismiss-upsell]');
   if (!t) return;
+
+  if (t.dataset.toggleUserMenu !== undefined) {
+    USER_MENU_OPEN = !USER_MENU_OPEN;
+    renderInPlace();
+    return;
+  }
+
+  if (t.dataset.userMenuAction) {
+    const act = t.dataset.userMenuAction;
+    if (act === 'continue') {
+      USER_MENU_OPEN = false;
+      go(S.paid ? 'confirmation' : (S.lastStep === 'landing' ? (Object.keys(S.answers||{}).length ? 'recommendation' : 'fit') : S.lastStep));
+      return;
+    }
+    if (act === 'personal-details') {
+      openPersonalDetailsModal();
+      return;
+    }
+    if (act === 'preferences') {
+      openPreferencesModal();
+      return;
+    }
+    if (act === 'copy-link') {
+      try {
+        navigator.clipboard.writeText(resumeUrl()).then(() => {
+          RESUME_COPIED_TOAST = true;
+          renderInPlace();
+          setTimeout(() => { RESUME_COPIED_TOAST = false; renderInPlace(); }, 2500);
+        }).catch(() => {});
+      } catch (_) {}
+      return;
+    }
+    if (act === 'new-plan') {
+      USER_MENU_OPEN = false;
+      S = JSON.parse(JSON.stringify(BLANK));
+      saveState(S);
+      go('landing');
+      return;
+    }
+    if (act === 'forget-me') {
+      USER_MENU_OPEN = false;
+      S = JSON.parse(JSON.stringify(BLANK));
+      clearStoredState();
+      try {
+        fetch('/api/auth/logout', { method: 'POST' }).catch(() => {});
+      } catch (_) {}
+      go('landing');
+      return;
+    }
+  }
+
+  if (t.dataset.continuePlan !== undefined) {
+    go(S.paid ? 'confirmation' : (S.lastStep === 'landing' ? (Object.keys(S.answers||{}).length ? 'recommendation' : 'fit') : S.lastStep));
+    return;
+  }
+
+  if (t.dataset.openPersonalDetails !== undefined) {
+    openPersonalDetailsModal();
+    return;
+  }
+  if (t.dataset.closePersonalDetails !== undefined) {
+    closePersonalDetailsModal();
+    renderInPlace();
+    return;
+  }
+  if (t.dataset.openPreferences !== undefined) {
+    openPreferencesModal();
+    return;
+  }
+  if (t.dataset.closePreferences !== undefined) {
+    closePreferencesModal();
+    renderInPlace();
+    return;
+  }
+  if (t.dataset.openFavoriteLimit !== undefined) {
+    openFavoriteLimitModal();
+    return;
+  }
+  if (t.dataset.closeFavoriteLimit !== undefined) {
+    closeFavoriteLimitModal();
+    renderInPlace();
+    return;
+  }
+  if (t.dataset.goLoginForFavorites !== undefined) {
+    closeFavoriteLimitModal();
+    openLoginModal();
+    return;
+  }
+
+  if (t.classList.contains('about-nav__back') || (ROUTE === 'about' && (t.dataset.go === 'landing' || t.dataset.back !== undefined))) {
+    e.preventDefault();
+    go('landing');
+    return;
+  }
+
+  if (t.dataset.openHowToEdit !== undefined) {
+    HOW_TO_EDIT_OPEN = true;
+    log('how_to_edit_opened');
+    render(false);
+    return;
+  }
+
+  if (t.dataset.closeHowToEdit !== undefined) {
+    HOW_TO_EDIT_OPEN = false;
+    render(false);
+    return;
+  }
+
+  if (t.dataset.changeSession !== undefined) {
+    SESSION_SWAP_DAY = t.dataset.changeSession;
+    SESSION_SWAP_OPEN = true;
+    log('session_swap_opened', { day: SESSION_SWAP_DAY, venue: t.dataset.venueId });
+    render(false);
+    return;
+  }
+
+  if (t.dataset.closeSessionSwap !== undefined) {
+    SESSION_SWAP_OPEN = false;
+    SESSION_SWAP_DAY = null;
+    render(false);
+    return;
+  }
+
+  if (t.dataset.swapDayVenue !== undefined) {
+    const vid = t.dataset.swapDayVenue;
+    if (!S.starredVenues) S.starredVenues = {};
+    const currentCount = Object.keys(S.starredVenues).length;
+    if (!S.starredVenues[vid] && currentCount >= 10 && !isLoggedIn()) {
+      openFavoriteLimitModal();
+      renderInPlace();
+      return;
+    }
+    S.starredVenues[vid] = { freq: 1 };
+    S.routineCustomized = true;
+    SESSION_SWAP_OPEN = false;
+    SESSION_SWAP_DAY = null;
+    log('session_venue_swapped', { day: t.dataset.day, venue: vid });
+    render(false);
+    return;
+  }
+
+  if (t.dataset.jump) {
+    const el = document.getElementById(t.dataset.jump);
+    if (el) {
+      el.scrollIntoView({ behavior: SCROLL_BEHAVIOR(), block: 'start' });
+    }
+    return;
+  }
 
   if (t.dataset.confirmPlan) {
     S.chosenPlanId = t.dataset.confirmPlan;
@@ -278,6 +691,7 @@ document.addEventListener('click', e => {
 
   if (t.dataset.openReviewAnswers !== undefined) {
     REVIEW_ANSWERS_OPEN = true;
+    log('review_answers_opened');
     render(false);
     return;
   }
@@ -526,7 +940,7 @@ document.addEventListener('click', e => {
       }
       S.answers.area = current;
     }
-    S.weekDays = []; S.weekSwap = {};
+    S.weekDays = []; S.weekSwap = {}; S.routineCustomized = false; S.starredVenues = {};
     if (!S.planOverridden) S.chosenPlanId = null;
     SEEALL = false;
     log('answer_given', { question:'area', value:S.answers.area, mode:'venue_page' });
@@ -537,7 +951,7 @@ document.addEventListener('click', e => {
     ACTIVE_CATEGORY_FILTERS.clear();
     ACTIVE_CATEGORY_FILTER = 'all';
     delete S.answers.activities;
-    S.weekDays = []; S.weekSwap = {};
+    S.weekDays = []; S.weekSwap = {}; S.routineCustomized = false; S.starredVenues = {};
     if (!S.planOverridden) S.chosenPlanId = null;
     SEARCH = { q:'', result:null };
     log('answer_cleared', { question:'activities', value:[], mode:'venue_page' });
@@ -693,6 +1107,7 @@ document.addEventListener('click', e => {
     log('searched', { query:SEARCH.q, matched:SEARCH.result?SEARCH.result.kind:'none', example:true });
     render(false); return; }
   if (t.dataset.askExample) { ASK.q = t.dataset.askExample; ASK.result = askUrby(ASK.q);
+    MOREOPEN = true; MOREPICK = 'ask';
     log('ula_asked', { question:ASK.q, matched:ASK.result?ASK.result.kind:'none', example:true }); render(false);
     document.querySelector('.ask__answer')?.scrollIntoView({ behavior:SCROLL_BEHAVIOR(), block:'center' }); return; }
   if (t.dataset.askClear !== undefined) { ASK = { q:'', result:null }; render(false);
@@ -746,6 +1161,10 @@ document.addEventListener('click', e => {
     return;
   }
   if (t.dataset.closeAppSheet !== undefined) {
+    if (t.dataset.commit) {
+      S.commitmentId = t.dataset.commit;
+      log('commitment_changed', { to: t.dataset.commit });
+    }
     APP_SHEET = null;
     document.body.style.overflow = '';
     render(false);
@@ -777,11 +1196,17 @@ document.addEventListener('click', e => {
       S.routineCustomized = true;
       log('venue_unstarred', { venue: vId });
     } else {
+      const currentCount = Object.keys(S.starredVenues).length;
+      if (currentCount >= 10 && !isLoggedIn()) {
+        openFavoriteLimitModal();
+        renderInPlace();
+        return;
+      }
       S.starredVenues[vId] = { freq: 1 };
       S.routineCustomized = true;
       log('venue_starred', { venue: vId, freq: 1 });
     }
-    render(false);
+    renderInPlace();
     return;
   }
   if (t.dataset.openPlanDrawer !== undefined) {
@@ -1274,8 +1699,7 @@ document.addEventListener('change', e => {
 });
 
 /* Live validation: clear field errors on typing as soon as input is valid */
-document.addEventListener('input', e => {
-  const input = e.target.closest('form[data-form="details"] input, form[data-form="save"] input');
+const validateFormInput = (input) => {
   if (!input || !input.name) return;
   const name = input.name, val = input.value.trim();
   let isValid = false;
@@ -1284,7 +1708,44 @@ document.addEventListener('input', e => {
   } else if (name === 'email') {
     isValid = validEmail(val);
   } else if (name === 'birthDate') {
-    isValid = val && val <= dobMax() && val >= dobMin();
+    if (val && /^\d{4}-\d{2}-\d{2}$/.test(val)) {
+      const parts = val.split('-');
+      const form = input.closest('form');
+      if (form) {
+        const y = form.querySelector('#dob_year');
+        const m = form.querySelector('#dob_month');
+        const d = form.querySelector('#dob_day');
+        if (y) y.value = parts[0];
+        if (m) m.value = parts[1];
+        if (d) d.value = parts[2];
+      }
+    }
+    isValid = val && val <= dobMax() && val >= dobMin() && isAtLeast18(val);
+    if (isValid) {
+      delete ERRORS.birthDate;
+      input.closest('.field--dob')?.querySelector('.field-error')?.remove();
+    }
+  } else if (name === 'dob_day' || name === 'dob_month' || name === 'dob_year') {
+    if (name !== 'dob_month') input.value = input.value.replace(/\D/g, '');
+    const clean = input.value;
+    if (name === 'dob_day' && clean.length === 2) {
+      document.getElementById('dob_month')?.focus();
+    } else if (name === 'dob_month' && clean) {
+      document.getElementById('dob_year')?.focus();
+    }
+    const form = input.closest('form');
+    const day = (form?.querySelector('#dob_day')?.value || '').trim();
+    const month = (form?.querySelector('#dob_month')?.value || '').trim();
+    const year = (form?.querySelector('#dob_year')?.value || '').trim();
+    if (year.length === 4 && day.length >= 1 && month.length >= 1) {
+      const iso = `${year}-${month.padStart(2,'0')}-${day.padStart(2,'0')}`;
+      const hidden = form?.querySelector('#birthDate');
+      if (hidden) hidden.value = iso;
+      if (iso <= dobMax() && iso >= dobMin() && isAtLeast18(iso)) {
+        delete ERRORS.birthDate;
+        input.closest('.field--dob')?.querySelector('.field-error')?.remove();
+      }
+    }
   } else if (name === 'postcode') {
     isValid = /^\d{4,5}$/.test(val);
   }
@@ -1293,6 +1754,16 @@ document.addEventListener('input', e => {
     const field = input.closest('.field');
     field?.querySelector('.field-error')?.remove();
   }
+};
+
+document.addEventListener('input', e => {
+  const input = e.target.closest('form[data-form="details"] input, form[data-form="details"] select, form[data-form="save"] input');
+  if (input) validateFormInput(input);
+});
+
+document.addEventListener('change', e => {
+  const input = e.target.closest('form[data-form="details"] select, form[data-form="details"] input');
+  if (input) validateFormInput(input);
 });
 
 document.addEventListener('submit', e => {
@@ -1311,19 +1782,21 @@ document.addEventListener('submit', e => {
       if (inModal) openSaveModal('form','validation_error');
       else document.getElementById('app').innerHTML = (SCREENS[ROUTE])();
       return false; }
-    else S.authMethod = 'email';
+    else if (kind !== 'save') S.authMethod = 'email';
     S.email = email; FIELDS.email = '';
+    S.saveOptIn = (kind === 'save' || dest === 'saved-modal');
     saveJourney(S.email, S);
     saveState(S);
     log('identified', { authMethod:S.authMethod, marketing:S.marketing, at:ROUTE });
     if (dest === 'saved-modal') {
-      S.saveOptIn = true; render(false); openSaveModal('saved','save_completed'); return true;
+      render(false); openSaveModal('saved','save_completed'); return true;
     }
     go(dest); return true;
   };
 
   if (kind === 'login') {
     const email = (fd.get('email')||'').trim();
+    const firstName = (fd.get('firstName')||'').trim();
     if (provider) {
       const demoEmail = `demo.${provider}.user@example.com`;
       let saved = getJourney(demoEmail) || getJourney(email);
@@ -1331,16 +1804,17 @@ document.addEventListener('submit', e => {
         saved = {
           answers: { goal: ['move_more'], activities: ['gym', 'yoga'], area: ['mitte'], frequency: 'twice' },
           chosenPlanId: 'classic', commitmentId: 'monthly',
-          email: demoEmail, authMethod: provider, lastStep: 'recommendation'
+          email: demoEmail, firstName: firstName || 'Demo', authMethod: provider, lastStep: 'recommendation'
         };
         saveJourney(demoEmail, saved);
       }
       S = Object.assign(JSON.parse(JSON.stringify(BLANK)), saved);
+      if (firstName) S.firstName = firstName;
       S.returns = (S.returns||0) + 1;
       log('returned_via_login', { authMethod: provider, email: demoEmail });
       closeLoginModal();
       saveState(S);
-      go(S.paid ? 'confirmation' : (S.lastStep === 'landing' ? 'fit' : S.lastStep));
+      go(S.paid ? 'confirmation' : (S.lastStep === 'landing' ? (Object.keys(S.answers||{}).length ? 'recommendation' : 'fit') : S.lastStep));
       return;
     }
     if (!validEmail(email)) {
@@ -1350,21 +1824,86 @@ document.addEventListener('submit', e => {
     const saved = getJourney(email);
     if (saved) {
       S = Object.assign(JSON.parse(JSON.stringify(BLANK)), saved);
+      if (firstName) S.firstName = firstName;
       S.returns = (S.returns||0) + 1;
+      S.email = email;
+      S.authMethod = 'email';
+      S.saveOptIn = true;
       log('returned_via_login', { authMethod: 'email', email });
       closeLoginModal();
       saveState(S);
-      go(S.paid ? 'confirmation' : (S.lastStep === 'landing' ? 'fit' : S.lastStep));
+      go(S.paid ? 'confirmation' : (S.lastStep === 'landing' ? (Object.keys(S.answers||{}).length ? 'recommendation' : 'fit') : S.lastStep));
       return;
     } else {
-      openLoginModal(`No saved journey found for "${email}". Check the spelling or start a new fit quiz.`);
+      S.email = email;
+      if (firstName) S.firstName = firstName;
+      S.authMethod = 'email';
+      S.saveOptIn = true;
+      saveJourney(email, S);
+      saveState(S);
+      try {
+        fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, firstName, lastName: S.lastName || '', state: S })
+        }).catch(() => {});
+      } catch (_) {}
+      closeLoginModal();
+      log('returned_via_login', { authMethod: 'email', email });
+      go(S.paid ? 'confirmation' : (Object.keys(S.answers||{}).length ? 'recommendation' : (S.lastStep === 'landing' ? 'fit' : S.lastStep)));
       return;
     }
+  }
+
+  if (kind === 'personal-details') {
+    const firstName = (fd.get('firstName') || '').trim();
+    const lastName = (fd.get('lastName') || '').trim();
+    const email = (fd.get('email') || '').trim();
+    if (firstName) S.firstName = firstName;
+    if (lastName) S.lastName = lastName;
+    if (email && validEmail(email)) S.email = email;
+    if (!S.details) S.details = {};
+    if (firstName) S.details.firstName = firstName;
+    if (lastName) S.details.lastName = lastName;
+    if (email) S.details.email = email;
+    saveState(S);
+    if (S.email) saveJourney(S.email, S);
+    try {
+      fetch('/api/user/profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ firstName: S.firstName, lastName: S.lastName, email: S.email })
+      }).catch(() => {});
+    } catch (_) {}
+    closePersonalDetailsModal();
+    renderInPlace();
+    return;
+  }
+
+  if (kind === 'recommendation-preferences') {
+    const minRatingVal = fd.get('minRating');
+    const minRating = minRatingVal && minRatingVal !== 'any' ? Number(minRatingVal) : null;
+    const strictlyNearMe = fd.get('strictlyNearMe') === 'yes';
+    const sportFocus = fd.getAll('sportFocus');
+    S.preferences = { minRating, strictlyNearMe, sportFocus };
+    saveState(S);
+    if (S.email) saveJourney(S.email, S);
+    try {
+      fetch('/api/user/preferences', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ preferences: S.preferences, email: S.email })
+      }).catch(() => {});
+    } catch (_) {}
+    closePreferencesModal();
+    renderInPlace();
+    return;
   }
 
   if (kind === 'ask') {
     ASK.q = (fd.get('q')||'').trim();
     ASK.result = askUrby(ASK.q);
+    MOREOPEN = true; MOREPICK = 'ask';
     log('ula_asked', { question:ASK.q, matched:ASK.result?ASK.result.kind:'none' });
     render(false);
     document.querySelector('.ask__answer')?.scrollIntoView({ behavior:SCROLL_BEHAVIOR(), block:'center' });
@@ -1422,9 +1961,15 @@ document.addEventListener('submit', e => {
     const opts = optionsFor(q);
     const chosen = fd.getAll('choice').filter(id => opts.some(o => o.id === id));
     if (chosen.length) {
-      if (qid === 'frequency') { S.weekDays = []; S.weekSwap = {}; }   // a new frequency rebuilds the week
-      S.answers[qid] = q.multi ? chosen : chosen[0];
-      log('answer_given',{ question:qid, value:q.multi?chosen:chosen[0], mode:'choice' });
+      if (qid === 'frequency' || qid === 'area' || qid === 'activities' || qid === 'goal') {
+        S.weekDays = []; S.weekSwap = {}; S.routineCustomized = false; S.starredVenues = {};
+      }
+      let finalVal = q.multi ? chosen : chosen[0];
+      if (qid === 'area' && Array.isArray(finalVal) && finalVal.includes('anywhere')) {
+        finalVal = finalVal.length > 1 ? finalVal.filter(x => x !== 'anywhere') : ['anywhere'];
+      }
+      S.answers[qid] = finalVal;
+      log('answer_given',{ question:qid, value:finalVal, mode:'choice' });
       ACKTEXT = ackFor(qid, S.answers[qid]);
     }
     else if (text) {
@@ -1442,7 +1987,19 @@ document.addEventListener('submit', e => {
       document.getElementById('app').innerHTML = fitScreen(); NOCHOICE = false; return; }
     EDITING = null;
     if (S.answers.area && !PANEL_OPEN) PANEL_OPEN = true;   // reveal the matches the first time there are any
-    if (fitComplete(S.answers)) { const r=recommend(A(),matchVenues(A())); log('recommendation_shown',{ planId:r.planId, rules:r.appliedRules }); advance('recommendation'); }
+    if (fitComplete(S.answers)) {
+      const r = recommend(A(), matchVenues(A()));
+      log('recommendation_shown', { planId: r.planId, rules: r.appliedRules });
+      const chosenActs = (S.answers.activities || []).filter(x => x !== SKIP);
+      if (chosenActs.length > 0) {
+        const primaryGroup = ACTIVITY_GROUPS.find(g => g.id === chosenActs[0] || g.activities.includes(chosenActs[0]));
+        if (primaryGroup) {
+          ACTIVE_CATEGORY_FILTER = primaryGroup.id;
+          ACTIVE_CATEGORY_FILTERS = new Set([primaryGroup.id]);
+        }
+      }
+      advance('recommendation');
+    }
     else advance('fit');
     return;
   }
@@ -1460,9 +2017,17 @@ document.addEventListener('submit', e => {
       });
       log('details_prefilled', { provider });
       saveState(S);
-      render(false); document.getElementById('birthDate')?.focus(); return;
+      render(false); document.getElementById('dob_day')?.focus(); return;
     }
     const d={}; ['firstName','lastName','email','birthDate','phone','street','postcode','city'].forEach(k=>d[k]=(fd.get(k)||'').trim());
+    const dDay = (fd.get('dob_day') || '').trim().replace(/\D/g, '');
+    const dMonth = (fd.get('dob_month') || '').trim();
+    const dYear = (fd.get('dob_year') || '').trim().replace(/\D/g, '');
+    if (dDay && dMonth && dYear.length === 4) {
+      d.birthDate = `${dYear}-${dMonth.padStart(2, '0')}-${dDay.padStart(2, '0')}`;
+    } else if (!d.birthDate) {
+      d.birthDate = '';
+    }
     S.details=d; ERRORS={};
     if (!d.firstName) ERRORS.firstName='We need your first name for the membership.';
     if (!d.lastName)  ERRORS.lastName='We need your last name for the membership.';
@@ -1479,6 +2044,7 @@ document.addEventListener('submit', e => {
     if (!d.city)      ERRORS.city='Please add your city.';
     if (Object.keys(ERRORS).length) { log('details_validation_failed',{ fields:Object.keys(ERRORS) });
       const keep={...ERRORS}; document.getElementById('app').innerHTML=(()=>{ ERRORS=keep; return detailsScreen(); })();
+      if (ERRORS.birthDate) document.getElementById('dob_day')?.focus();
       document.querySelector('.field-error')?.scrollIntoView({block:'center'}); return; }
     /* We now hold an address, but holding one is not the same as being asked to
        keep the journey — saveOptIn stays as the visitor left it. */

@@ -30,34 +30,49 @@ function matchVenues(answers = {}, limit = 6) {
   const goalList = Array.isArray(answers.goal) ? answers.goal.filter(x => x !== SKIP) : (answers.goal && answers.goal !== SKIP ? [answers.goal] : []);
   const goalAffinities = [...new Set(goalList.flatMap(g => GOAL_AFFINITY[g] || []))];
   const aff = chosen.length ? chosen : goalAffinities;
+
+  const prefs = answers.preferences || (typeof S !== 'undefined' ? S.preferences : null) || {};
+  const sportFocus = Array.isArray(prefs.sportFocus) ? prefs.sportFocus : [];
+  const minRating = prefs.minRating ? Number(prefs.minRating) : null;
+  const strictlyNearMe = Boolean(prefs.strictlyNearMe);
+
   const scored = VENUES.map(v => {
     const km = nearestOf(v), hits = v.activities.filter(x => aff.includes(x));
     const nearestArea = from.reduce((best,a)=>distanceKm(a,v)<distanceKm(best,v)?a:best, from[0]);
-    const basePct = hits.length > 0 ? 98 : 72;
-    const distPenalty = Math.min(28, Math.round(km * 2.5));
-    const matchPct = Math.max(45, Math.min(99, basePct - distPenalty));
-    return { ...v, distanceKm: km, nearestArea, affinityHits: hits, matchPct, score: anywhere ? hits.length * 3 - km * 0.05 : hits.length * 1.5 - km };
+    const focusHits = v.activities.filter(x => sportFocus.includes(x));
+    const vRating = v.rating !== undefined ? Number(v.rating) : 4.5;
+    const ratingPenalty = minRating && vRating < minRating ? -800 : 0;
+    const score = (hits.length > 0 ? 1000 + hits.length * 10 : 0) + (focusHits.length * 200) + ratingPenalty - (anywhere ? km * 0.05 : km);
+    return { ...v, rating: vRating, distanceKm: km, nearestArea, affinityHits: hits, score };
   }).sort((x,y) => y.score - x.score);
-  if (anywhere) return { venues: scored.slice(0,limit), pool: scored, area, areas: from, radiusKm:null, widened:false, anywhere:true,
-                         categories:[...new Set(scored.slice(0,limit).flatMap(v=>v.activities))] };
-  /* An explicit choice wins over the automatic widening. */
-  const pick = RADII.find(r => r.id === (S.radiusKm || 'auto')) || RADII[0];
-  let nearby, radiusKm = pick.km, widened = false;
-  if (pick.id === 'any') { nearby = scored; radiusKm = null; }
-  else if (pick.id !== 'auto') { nearby = scored.filter(v => v.distanceKm <= pick.km); }
-  else {
-    nearby = scored.filter(v => v.distanceKm <= 3); radiusKm = 3;
-    if (nearby.length < 3) { radiusKm = 8; nearby = scored.filter(v => v.distanceKm <= 8); widened = true; }
-    if (nearby.length < 3) { nearby = scored; radiusKm = null; widened = true; }
+
+  let candidates = chosen.length ? scored.filter(v => v.affinityHits.length > 0) : scored;
+  if (minRating) {
+    const rated = candidates.filter(v => (v.rating || 4.5) >= minRating);
+    if (rated.length >= 2) candidates = rated;
   }
-  /* If they named activities and nothing within the radius does any of them, look
-     across the whole city rather than reporting "0 of 0 places". Distances stay
-     real, so the screen can say how much further it is. */
+
+  if (anywhere) return { venues: candidates.slice(0,limit), pool: candidates, area, areas: from, radiusKm:null, widened:false, anywhere:true,
+                         categories:[...new Set(candidates.slice(0,limit).flatMap(v=>v.activities))] };
+  /* An explicit choice wins over the automatic widening. */
+  const pick = RADII.find(r => r.id === (typeof S !== 'undefined' && S.radiusKm ? S.radiusKm : 'auto')) || RADII[0];
+  let nearby, radiusKm = pick.km, widened = false;
+  if (pick.id === 'any') { nearby = candidates; radiusKm = null; }
+  else if (pick.id !== 'auto') { nearby = candidates.filter(v => v.distanceKm <= pick.km); }
+  else if (strictlyNearMe) {
+    nearby = candidates.filter(v => v.distanceKm <= 3.5);
+    radiusKm = 3;
+    widened = false;
+  } else {
+    nearby = candidates.filter(v => v.distanceKm <= 3); radiusKm = 3;
+    if (nearby.length < 3) { radiusKm = 8; nearby = candidates.filter(v => v.distanceKm <= 8); widened = true; }
+    if (nearby.length < 3) { nearby = candidates; radiusKm = null; widened = true; }
+  }
   let reachedFurther = false;
-  if (chosen.length && !nearby.some(v => v.activities.some(x=>chosen.includes(x)))) {
+  if (chosen.length && !nearby.length) {
     const anywhereMatches = scored.filter(v => v.activities.some(x=>chosen.includes(x)));
     if (anywhereMatches.length) {
-      nearby = [...nearby, ...anywhereMatches].filter((v,i,all)=>all.findIndex(x=>x.id===v.id)===i);
+      nearby = anywhereMatches;
       reachedFurther = true;
     }
   }
@@ -65,6 +80,101 @@ function matchVenues(answers = {}, limit = 6) {
   /* `venues` is what we show — six at most. `pool` is everything within the radius,
      which is what coverage counts: "4 of 6 places" must count all six. */
   return { venues, pool: nearby, area, areas: from, radiusKm, widened, reachedFurther, anywhere:false, categories:[...new Set(venues.flatMap(v=>v.activities))] };
+}
+
+function explainVenueMatch(venue, answers = {}, plan = null) {
+  const reasons = [];
+  if (!venue) return { reasons, matchScore: 0, isTopMatch: false, primaryReason: null };
+
+  // 1. Location Proximity
+  const areaLabel = venue.nearestArea ? venue.nearestArea.name : (AREAS.find(a=>a.id===venue.area)||{}).name;
+  if (venue.distanceKm !== undefined && venue.distanceKm !== null) {
+    if (venue.distanceKm <= 1.5) {
+      reasons.push({
+        type: 'location',
+        strong: true,
+        text: areaLabel ? `${venue.distanceKm} km from ${areaLabel}` : `${venue.distanceKm} km away`,
+        icon: 'map-pin'
+      });
+    } else {
+      reasons.push({
+        type: 'location',
+        strong: false,
+        text: areaLabel ? `${venue.distanceKm} km from ${areaLabel}` : `${venue.distanceKm} km away`,
+        icon: 'map-pin'
+      });
+    }
+  }
+
+  // 2. Activity Match
+  const rawChosen = answers.activities || [];
+  const chosenActs = activityIdsFor(rawChosen);
+  const matchingActs = (venue.activities || []).filter(a => chosenActs.includes(a));
+  if (matchingActs.length > 0) {
+    const grp = ACTIVITY_GROUPS.find(g => g.activities.some(a => matchingActs.includes(a)));
+    reasons.push({
+      type: 'activity',
+      strong: true,
+      text: grp ? `Matches your ${grp.label} focus` : 'Matches your activity preference',
+      icon: grp ? grp.icon : 'bolt'
+    });
+  }
+
+  // 3. Goal Synergy
+  const goals = Array.isArray(answers.goal)
+    ? answers.goal.filter(x => x && x !== SKIP)
+    : (answers.goal && answers.goal !== SKIP ? [answers.goal] : []);
+
+  if (goals.includes('unwind') && (venue.activities || []).some(a => ['yoga', 'pilates', 'sauna', 'spa', 'meditation', 'swimming'].includes(a))) {
+    reasons.push({
+      type: 'goal',
+      strong: true,
+      text: 'Fits your Unwind & relax goal',
+      icon: 'leaf'
+    });
+  } else if (goals.includes('move_more') && (venue.activities || []).some(a => ['gym', 'strength', 'crossfit', 'hiit', 'boxing'].includes(a))) {
+    reasons.push({
+      type: 'goal',
+      strong: true,
+      text: 'Great for your fitness & strength goal',
+      icon: 'dumbbell'
+    });
+  } else if (goals.includes('try_new') && (venue.activities || []).some(a => ['bouldering', 'climbing', 'dance', 'martial_arts', 'padel', 'tennis'].includes(a))) {
+    reasons.push({
+      type: 'goal',
+      strong: true,
+      text: 'Great for trying new activities',
+      icon: 'sparkles'
+    });
+  }
+
+  // 4. Plan Access
+  if (plan) {
+    const planId = typeof plan === 'string' ? plan : plan.id;
+    const planObj = typeof plan === 'string' ? (PLANS.find(p => p.id === plan) || { name: plan }) : plan;
+    const inc = includedIn(venue, planId);
+    if (inc) {
+      const accessStr = venue.access && venue.access[planId];
+      const visitsDesc = accessStr && !/^not included/i.test(accessStr) ? ` (${accessStr})` : '';
+      reasons.push({
+        type: 'access',
+        strong: true,
+        text: `Included in ${planObj.name}${visitsDesc}`,
+        icon: 'checkThin'
+      });
+    }
+  }
+
+  const matchScore = reasons.filter(r => r.strong).length;
+  const isTopMatch = matchScore >= 3;
+  const primaryReason = reasons.find(r => r.strong) || reasons[0] || null;
+
+  return {
+    reasons,
+    matchScore,
+    isTopMatch,
+    primaryReason
+  };
 }
 
 /* ---------------- coverage (ported from src/coverage.js) ----------------

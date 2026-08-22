@@ -25,6 +25,31 @@ function detailsScreen() {
       ${o.max?`max="${esc(o.max)}"`:''} ${o.min?`min="${esc(o.min)}"`:''} ${o.optional?'':'required aria-required="true"'}>
     ${ERRORS[name]?`<div class="field-error">${esc(ERRORS[name])}</div>`:''}
     ${o.why?`<div class="field__why">${icon('info',14)} <span>${esc(o.why)}</span></div>`:''}</div>`;
+
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const dobParts = (d.birthDate && typeof d.birthDate === 'string') ? d.birthDate.split('-') : [];
+  const dYear = dobParts[0] || '';
+  const dMonth = dobParts[1] || '';
+  const dDay = dobParts[2] || '';
+  const dobField = `<div class="field field--dob">
+    <label id="dob-label">Date of birth</label>
+    <div class="dob-fields-row" role="group" aria-labelledby="dob-label">
+      <input id="dob_day" name="dob_day" type="text" inputmode="numeric" placeholder="DD" maxlength="2" value="${esc(dDay)}" autocomplete="bday-day" aria-label="Day of birth" required>
+      <select id="dob_month" name="dob_month" autocomplete="bday-month" aria-label="Month of birth" required>
+        <option value="">Month</option>
+        ${MONTHS.map((m, i) => {
+          const val = String(i + 1).padStart(2, '0');
+          const isSel = (dMonth === val || dMonth === String(i + 1));
+          return `<option value="${val}" ${isSel ? 'selected' : ''}>${m}</option>`;
+        }).join('')}
+      </select>
+      <input id="dob_year" name="dob_year" type="text" inputmode="numeric" placeholder="YYYY" maxlength="4" value="${esc(dYear)}" autocomplete="bday-year" aria-label="Year of birth" required>
+      <input id="birthDate" name="birthDate" type="text" autocomplete="bday" required value="${esc(d.birthDate||'')}" min="${dobMin()}" max="${dobMax()}" style="position:absolute;width:1px;height:1px;opacity:0.001;pointer-events:none;z-index:-1" tabindex="-1" aria-hidden="true">
+    </div>
+    ${ERRORS.birthDate ? `<div class="field-error">${esc(ERRORS.birthDate)}</div>` : ''}
+    <div class="field__why">${icon('info',14)} <span>Venues check age on entry. Must be at least 18 years old.</span></div>
+  </div>`;
+
   const each = perSession(F.price, S.answers.frequency, plan);
   const shown = F.included.slice(0, 2), more = Math.max(0, F.included.length - shown.length);
 
@@ -57,26 +82,15 @@ function detailsScreen() {
       const placesLabel = placesCount === 1 ? '1 saved place needs' : `${placesCount} saved places need`;
 
       upsellBlock = `<div class="ordercard__upsell">
-        <div class="ordercard__upsell-head">
-          <div class="ordercard__upsell-title">${placesLabel} ${esc(upPlan.name)}</div>
-          <span class="ordercard__upsell-delta">+${delta} &euro;/mo</span>
+        <div class="ordercard__upsell-content">
+          <span class="ordercard__upsell-icon">${icon('sparkle', 15)}</span>
+          <div class="ordercard__upsell-text">
+            <span class="ordercard__upsell-title">${placesLabel} <strong>${esc(upPlan.name)}</strong></span>
+            <span class="ordercard__upsell-delta">+${delta} &euro;/mo</span>
+          </div>
         </div>
-        <div class="ordercard__upsell-venues">
-          ${lockedVenues.slice(0, 2).map(v => `
-            <div class="asidevenue asidevenue--locked">
-              <div class="asidevenue__media">${venueMedia(v)}</div>
-              <div>
-                <div class="asidevenue__name">${esc(v.name)}</div>
-                <div class="asidevenue__meta asidevenue__meta--locked">Needs ${esc(upPlan.name)}</div>
-              </div>
-            </div>
-          `).join('')}
-        </div>
-        <button class="btn btn--secondary btn--block ordercard__upsell-btn" type="button" data-upgrade-plan="${esc(upPlan.id)}">
-          Upgrade to ${esc(upPlan.name)} (${upPrice} &euro;/mo)
-        </button>
-        <button class="linkish ordercard__upsell-keep" type="button" data-dismiss-upsell>
-          Keep ${esc(plan.name)}
+        <button class="ordercard__upsell-btn" type="button" data-upgrade-plan="${esc(upPlan.id)}" aria-label="Upgrade to ${esc(upPlan.name)}">
+          Upgrade
         </button>
       </div>`;
     }
@@ -132,7 +146,7 @@ function detailsScreen() {
           <section class="details-section"><div class="fitpanel__label">Personal information</div>
             <div class="details-grid details-grid--person">
               ${f('firstName','First name',{auto:'given-name'})}${f('lastName','Last name',{auto:'family-name'})}
-              ${f('birthDate','Date of birth',{type:'date',auto:'bday',max:dobMax(),min:dobMin(),why:'Must be at least 18 years old.'})}
+              ${dobField}
             </div></section>
           <section class="details-section"><div class="fitpanel__label">Contact details</div>
             <div class="details-grid details-grid--contact">
@@ -216,18 +230,14 @@ function paymentScreen() {
 
   return `${topbar(3)}<main class="content pay-page" id="main">
     <div class="pay-head">
-      <div class="pay-urby-note">
-        ${ulaAvatar('xs')}
-        <span><strong>Urby</strong> &middot; Final step &mdash; everything is transparently listed below.</span>
-      </div>
       <h1 class="h-question" style="margin-top:0" tabindex="-1">Review and confirm</h1>
       <p class="pay-sub">Payment is simulated in this pilot. No card will be charged.</p>
+      ${ulaNote('Review your plan and simulated payment details. You can cancel with 72 hours notice anytime.')}
     </div>
 
     <div class="pay-layout">
       <!-- LEFT COLUMN: Payment Options & Terms -->
       <div class="pay-main">
-        ${ulaNote('Review your membership summary and confirm. Payment is simulated in this pilot — no real charge will occur.')}
         <form id="pay-form" data-form="payment">
           <!-- 1. Payment Method Section -->
           <div class="pay-section-card">

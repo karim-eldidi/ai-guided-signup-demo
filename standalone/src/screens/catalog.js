@@ -33,15 +33,14 @@ const CATALOG_ALL_ACTIVITIES = [
 function browsePlaces() {
   const o = browseOrigin();
   const radius = RADII.find(x=>x.id===(S.radiusKm||'3')) || RADII.find(x=>x.id==='3') || RADII[0];
-  const chosenActs = activityIdsFor(A().activities || []);
+  const answers = A();
+  const chosenActs = activityIdsFor(answers.activities || []);
+  const goalList = Array.isArray(answers.goal) ? answers.goal.filter(x => x !== SKIP) : (answers.goal && answers.goal !== SKIP ? [answers.goal] : []);
+  const hasPreferences = chosenActs.length > 0 || goalList.length > 0;
 
   let list = VENUES.map(v => {
     const km = Math.round(Math.min(...o.origins.map(a=>distanceKm(a,v))) * 10) / 10;
-    const hits = (v.activities || []).filter(x => chosenActs.includes(x));
-    const basePct = hits.length > 0 ? 98 : 74;
-    const distPenalty = Math.min(28, Math.round(km * 2.5));
-    const matchPct = Math.max(45, Math.min(99, basePct - distPenalty));
-    return { ...v, distanceKm: km, matchPct };
+    return { ...v, distanceKm: km };
   });
 
   // 1. Radius filter:
@@ -125,6 +124,7 @@ function placeCard(v, opts = {}) {
   const grpIcon = activityIcon(v.activities);
 
   const isStarred = Boolean(S.starredVenues && S.starredVenues[v.id]);
+  const matchInfo = explainVenueMatch(v, S.answers, plan);
 
   const accessBadge = inPlan
     ? (v.tier === 'plus'
@@ -134,13 +134,8 @@ function placeCard(v, opts = {}) {
         : `<span class="access-pill access-pill--included-overlay">${icon('checkThin', 11)} Included</span>`)
     : `<span class="access-pill access-pill--locked-overlay venue-card__lock">${icon('lock', 11)} Needs ${v.tier === 'premium' ? 'Premium' : 'Classic'}</span>`;
 
-  const matchBadge = v.matchPct
-    ? `<span class="activity-card__badge">${v.matchPct}% match</span>`
-    : '';
-
   return `<div class="activity-card venue-card hit ${inPlan ? '' : 'is-locked'} ${isStarred ? 'is-starred' : ''}" draggable="true" data-drag-venue="${esc(v.id)}" data-drag-name="${esc(v.name)}">
     <div class="activity-card__badges">
-      ${matchBadge}
       ${accessBadge}
       <span class="sr-only hit__badge hit__badge--${esc(lowest.id)}">${esc(lowest.name)}</span>
     </div>
@@ -154,7 +149,14 @@ function placeCard(v, opts = {}) {
     <div class="activity-card__content hit__body">
       <div class="activity-card__activity"><b>${esc(kindLabel)}</b></div>
       <button class="activity-card__vname venue-card__name hit__name linkish" data-venue="${esc(v.id)}">${esc(v.name)}</button>
-      <div class="activity-card__dist hit__meta">${where}${acts?` &middot; ${esc(acts)}`:''}</div>
+      <div class="activity-card__dist hit__meta" style="display:none">${where}${acts?` &middot; ${esc(acts)}`:''}</div>
+      <div class="match-reasons-row">
+        ${matchInfo.reasons.slice(0, 2).map(r => `
+          <span class="match-pill match-pill--${r.type}">
+            ${icon(r.icon, 11)} <span>${esc(r.text)}</span>
+          </span>
+        `).join('')}
+      </div>
       ${priced && lowest ? `<p class="hit__price">Included from <strong>${esc(lowest.name)}</strong>, ${priceFor(lowest, S.commitmentId)} € a month.</p>` : ''}
       <div class="activity-card__actions">
         ${isStarred ? `
@@ -367,7 +369,7 @@ function interactiveBerlinMap(b) {
         <h4 class="berlin-map-preview-title" data-venue="${esc(selectedVenue.id)}">${esc(selectedVenue.name)}</h4>
         <div class="berlin-map-preview-meta">${selectedVenue.distanceKm} km &middot; ${(selectedVenue.activities || []).map(a => ACTIVITY_LABELS[a] || a).slice(0, 2).join(', ')}</div>
         <div class="berlin-map-preview-actions">
-          <button class="btn btn--secondary btn-sm" type="button" data-star-venue="${esc(selectedVenue.id)}">
+          <button class="btn btn--secondary btn-sm" type="button" data-toggle-star="${esc(selectedVenue.id)}">
             ${Boolean(S.starredVenues && S.starredVenues[selectedVenue.id]) ? '✓ In routine' : '+ Add to routine'}
           </button>
           <button class="btn btn--primary btn-sm" type="button" data-venue="${esc(selectedVenue.id)}">

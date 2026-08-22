@@ -34,7 +34,12 @@ SRC_DIR = os.path.join(HERE, "src")
 OPT = os.path.join(HERE, "opt")           # optional smaller images, if present
 # Venue photographs come from Urban Sports Club's own media bucket at runtime
 # (see data/venues.json); these are the design images plus three offline fallbacks.
-IMAGES = ["hero-climber.jpg", "email-header.jpg",
+IMAGES = ["hero-climber.jpg", "email-header.jpg", "about-hero-motion.jpg",
+          "about-strength.jpg", "about-swimming.jpg", "about-yoga.jpg",
+          "about-hiit.jpg", "about-pilates.jpg", "about-massage.jpg", "about-swim.jpg", "about-climb.jpg",
+          "about-boxing.jpg", "about-dance.jpg", "about-cycling.jpg",
+          "about-bouldering.jpg", "about-wellness.jpg",
+          "hero-solo-tennis-v2.png", "hero-solo-swimming-v2.png",
           # offline fallbacks for three venues, from the supplied designs
           "venue-boulderklub.jpg", "venue-stadtbad.jpg", "venue-yoga.jpg"]
 
@@ -46,6 +51,7 @@ MODULES = [
     "state.js",
     "components.js",
     "screens/landing.js",
+    "screens/about.js",
     "screens/catalog.js",
     "screens/questions.js",
     "screens/recommendation.js",
@@ -91,8 +97,9 @@ def data_url(name):
     """Prefer the size-optimised copy in standalone/opt/ when it exists."""
     optimised = os.path.join(OPT, name)
     path = optimised if os.path.exists(optimised) else os.path.join(ROOT, "public", "images", name)
+    mime = "image/png" if name.lower().endswith(".png") else "image/jpeg"
     with open(path, "rb") as fh:
-        return "data:image/jpeg;base64," + base64.b64encode(fh.read()).decode()
+        return f"data:{mime};base64," + base64.b64encode(fh.read()).decode()
 
 
 def font_data_url(name):

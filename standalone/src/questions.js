@@ -179,8 +179,18 @@ const groupById = id => ACTIVITY_GROUPS.find(g=>g.id===id) || null;
 const venueInGroup = (v,g) => v.activities.some(a=>g.activities.includes(a));
 /* never offer a group the loaded data cannot show */
 const availableGroups = () => ACTIVITY_GROUPS.filter(g => VENUES.some(v=>venueInGroup(v,g)));
-const activityIdsFor = (ids=[]) => [...new Set(ids.flatMap(id=>(groupById(id)||{activities:[]}).activities))];
 const plural = (n,one,many) => `${n} ${n===1?one:many}`;
+const activityIdsFor = (ids=[]) => {
+  const list = Array.isArray(ids) ? ids : (ids ? [ids] : []);
+  return [...new Set(list.flatMap(id => {
+    const grp = groupById(id);
+    if (grp) return grp.activities;
+    const byAct = ACTIVITY_GROUPS.find(g => g.id === id || g.activities.includes(id));
+    if (byAct) return byAct.activities;
+    if (id === 'box') return (groupById('fight') || { activities: ['boxing', 'martial_arts'] }).activities;
+    return [id];
+  }))];
+};
 const groupWords = (ids=[]) => {
   const gs = ids.map(groupById).filter(Boolean);
   if (!gs.length) return '';

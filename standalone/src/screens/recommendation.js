@@ -270,14 +270,6 @@ function recommendationScreen() {
       const nearestArea = from.reduce((best, a) => distanceKm(a, v) < distanceKm(best, v) ? a : best, from[0]);
       v = { ...v, distanceKm: km, nearestArea };
     }
-    if (typeof v.matchPct !== 'number') {
-      const chosen = activityIdsFor(a.activities || []);
-      const hits = (v.activities || []).filter(x => chosen.includes(x));
-      const basePct = hits.length > 0 ? 98 : 72;
-      const distPenalty = Math.min(28, Math.round((v.distanceKm || 0) * 2.5));
-      const matchPct = Math.max(45, Math.min(99, basePct - distPenalty));
-      v = { ...v, matchPct };
-    }
     return v;
   };
 
@@ -287,76 +279,138 @@ function recommendationScreen() {
     return `<span class="tier-tag tier-tag--standard">Classic studio</span>`;
   };
 
-  // Routine venues: user-starred places or curated starting places matching their routine
-  const starredKeys = Object.keys(S.starredVenues || {});
-  let routineVenues = [];
-  if (starredKeys.length) {
-    routineVenues = starredKeys.map(id => resolveVenue(VENUES.find(v => v.id === id))).filter(Boolean);
-  } else if (!S.routineCustomized) {
-    // Default initial routine from matched venues in their goal/area
-    routineVenues = (wanted.length ? wanted : pool).slice(0, 3).map(resolveVenue).filter(Boolean);
+  // Routine sessions: mapped week sessions or curated starter routine matching their answers
+  const daysList = ['MON', 'WED', 'SAT', 'FRI', 'SUN'];
+  let routineSessions = [];
+
+  if (wp.sessions && wp.sessions.length > 0) {
+    routineSessions = wp.sessions.map((s, idx) => {
+      const dayShort = s.day ? (s.day.length > 3 ? s.day.slice(0, 3).toUpperCase() : s.day.toUpperCase()) : daysList[idx] || 'MON';
+      const resolved = resolveVenue(s.venue);
+      return {
+        ...s,
+        dayShort,
+        venue: resolved
+      };
+    });
   }
 
-  const routineItemsHtml = routineVenues.map(v => {
-    const inPlan = includedIn(v, plan.id);
-    const grp = ACTIVITY_GROUPS.find(g => venueInGroup(v, g)) || ACTIVITY_GROUPS[0];
-    const areaLabel = v.nearestArea ? v.nearestArea.name : (AREAS.find(a => a.id === v.area) || {}).name || '';
-    const distLabel = areaLabel ? `${v.distanceKm} km from ${esc(areaLabel)}` : `${v.distanceKm} km away`;
-    const statusBadge = inPlan
-      ? (v.tier === 'plus'
-          ? `<span class="routine-item__badge routine-item__badge--plus">${icon('checkThin', 11)} Plus included</span>`
-          : v.tier === 'premium'
-          ? `<span class="routine-item__badge routine-item__badge--premium">${icon('checkThin', 11)} Included in Premium</span>`
-          : `<span class="routine-item__badge routine-item__badge--included">${icon('checkThin', 11)} Included in ${esc(plan.name)}</span>`)
-      : `<span class="routine-item__badge routine-item__badge--upgrade">${icon('lock', 11)} Needs ${v.tier === 'premium' ? 'Premium' : 'Classic'}</span>`;
+  // Ensure at least 3 starter sessions are presented if pool has venues available
+  if (routineSessions.length < 3 && pool.length >= 3) {
+    const usedIds = new Set(routineSessions.map(s => s.venue?.id).filter(Boolean));
+    const extraCandidates = pool.filter(v => !usedIds.has(v.id));
+    while (routineSessions.length < 3 && extraCandidates.length > 0) {
+      const extraV = extraCandidates.shift();
+      const idx = routineSessions.length;
+      const dayShort = daysList[idx] || 'SAT';
+      const grp = ACTIVITY_GROUPS.find(g => venueInGroup(extraV, g)) || ACTIVITY_GROUPS[0];
+      const resolved = resolveVenue(extraV);
+      routineSessions.push({
+        day: dayShort === 'MON' ? 'Monday' : dayShort === 'WED' ? 'Wednesday' : dayShort === 'SAT' ? 'Saturday' : 'Day',
+        dayShort,
+        activity: grp.label,
+        venue: resolved,
+        included: includedIn(resolved, plan.id),
+        access: accessLabel(resolved, plan.id),
+        distanceKm: resolved.distanceKm
+      });
+    }
+  }
 
-    return `<li class="routine-item ${inPlan ? '' : 'is-upgrade'}">
-      <button class="routine-item__thumb-btn" type="button" data-venue="${esc(v.id)}" aria-label="Details about ${esc(v.name)}">
-        <span class="routine-item__thumb">${venueMedia(v)}</span>
+  const routineBannerHtml = `<div class="routine-banner">
+    <div class="routine-banner__left">
+      <div class="routine-banner__avatar">${urbyMascotAvatar('md')}</div>
+      <div class="routine-banner__text">
+        <h3 class="routine-banner__title">Here&rsquo;s a starting routine</h3>
+        <p class="routine-banner__desc">I&rsquo;ve suggested three sessions from what you told me.<br class="hide-mobile"> Change anything &mdash; this gets better as you make it yours.</p>
+      </div>
+    </div>
+    <div class="routine-banner__right">
+      <button class="btn-how-to-edit" type="button" data-open-how-to-edit aria-label="Learn how to edit your routine">
+        ${icon('question', 15)} <span>How to edit</span>
       </button>
-      <div class="routine-item__content">
-        <div class="routine-item__title-row">
-          <button class="routine-item__title linkish" type="button" data-venue="${esc(v.id)}"><b>${esc(v.name)}</b></button>
-        </div>
-        <div class="routine-item__sub routine-item__meta-row">
-          ${statusBadge}
-          <span class="routine-item__sep">&middot;</span>
-          <span class="routine-item__cat">${esc(grp.label)}</span>
-          <span class="routine-item__sep">&middot;</span>
-          <span class="routine-item__dist">${distLabel}</span>
+    </div>
+  </div>`;
+
+  const routineHeadHtml = `<div class="routine-section-head">
+    <h2 class="routine-section-title">Your week, to start</h2>
+    <p class="routine-section-sub">${routineSessions.length} suggested ${routineSessions.length === 1 ? 'session' : 'sessions'} &middot; near ${esc(where)}</p>
+  </div>`;
+
+  const sessionRowsHtml = routineSessions.map((s, idx) => {
+    const dayPill = s.dayShort || daysList[idx] || 'MON';
+    const v = s.venue;
+    const inPlan = s.included !== undefined ? s.included : includedIn(v, plan.id);
+    const grpLabel = s.activity || (ACTIVITY_GROUPS.find(g => venueInGroup(v, g)) || {}).label || 'Workout';
+    const dist = typeof v.distanceKm === 'number' ? `${v.distanceKm} km away` : 'nearby';
+
+    let accessBadge = '';
+    if (inPlan) {
+      if (v.tier === 'plus') {
+        accessBadge = `<span class="routine-access-badge routine-access-badge--plus">${icon('checkThin', 11)} Plus included</span>`;
+      } else if (v.tier === 'premium') {
+        accessBadge = `<span class="routine-access-badge routine-access-badge--premium">${icon('checkThin', 11)} Premium included</span>`;
+      } else {
+        accessBadge = `<span class="routine-access-badge routine-access-badge--included">${icon('checkThin', 11)} ${plan.id === 'plus' ? 'Plus included' : 'Classic included'}</span>`;
+      }
+    } else {
+      accessBadge = `<span class="routine-access-badge routine-access-badge--upgrade">${icon('lock', 11)} Needs ${v.tier === 'premium' ? 'Premium' : 'Plus'}</span>`;
+    }
+
+    return `<div class="routine-session-row routine-item">
+      <div class="routine-session-row__day">
+        <span class="routine-day-badge">${esc(dayPill)}</span>
+      </div>
+      <button class="routine-session-row__thumb-btn" type="button" data-venue="${esc(v.id)}" aria-label="Details about ${esc(v.name)}">
+        <span class="routine-session-row__thumb">${venueMedia(v)}</span>
+      </button>
+      <div class="routine-session-row__info">
+        <div class="routine-session-row__cat">${esc(grpLabel)}</div>
+        <button class="routine-session-row__name routine-item__title linkish" type="button" data-venue="${esc(v.id)}">
+          <strong>${esc(v.name)}</strong>
+        </button>
+        <div class="routine-session-row__meta routine-item__sub">
+          ${accessBadge}
+          <span class="routine-session-row__dist">&middot; ${dist}</span>
         </div>
       </div>
-      <div class="routine-item__actions">
-        <button class="routine-item__remove-btn" type="button" data-toggle-star="${esc(v.id)}" aria-label="Remove ${esc(v.name)} from routine" title="Remove from routine">
-          ${icon('trash', 14)}
+      <div class="routine-session-row__actions">
+        <button class="btn-routine-change" type="button" data-change-session="${esc(s.day || dayPill)}" data-venue-id="${esc(v.id)}" aria-label="Change ${esc(dayPill)} session">
+          Change
         </button>
       </div>
-    </li>`;
+    </div>`;
   }).join('');
 
-  const routineBlock = `<div class="routine-card">
-    <div class="routine-card__head">
-      <div class="routine-card__head-lead">
-        <h2 class="routine-card__title">My Routine</h2>
-        <p class="routine-card__sub">${routineVenues.length} saved places &middot; Matching your fitness routine in ${esc(where)}</p>
-      </div>
-      <button class="routine-card__add-btn" type="button" data-go="search" aria-label="Browse and add places to routine">
-        ${icon('plus', 13)} <span>Add places</span>
-      </button>
-    </div>
+  const routineStatusMarker = `<div class="routine-card__foot routine-card__status" style="display:none">Urby adjusts to cover your favorites</div>`;
 
-    <div class="routine-card__status" style="display:none" aria-hidden="true">
-      <span>Your membership adjusts to cover your favorites.</span>
+  const addSessionCardHtml = `<div class="routine-add-card" role="button" tabindex="0" data-set-reco-view="pillars" aria-label="Add another session to routine">
+    <div class="routine-add-card__icon" aria-hidden="true">
+      ${icon('plus', 16)}
     </div>
-    <div class="routine-card__foot" style="display:none" aria-hidden="true">
-      <span>Your membership adjusts to cover your favorites.</span>
+    <div class="routine-add-card__text">
+      <strong class="routine-add-card__title">Add another session</strong>
+      <p class="routine-add-card__sub">Browse activities and studios, or search for a place you already know.</p>
     </div>
-    ${routineVenues.length ? `<ol class="routine-list">${routineItemsHtml}</ol>` : `
-      <div class="routine-empty-state">
-        <p>No places in your routine yet. Explore activities and add studios you&rsquo;d like to visit.</p>
-        <button class="btn btn--secondary btn--sm" type="button" data-set-reco-view="pillars">Browse activities &rarr;</button>
+  </div>`;
+
+  const routineFooterHtml = `<div class="routine-footer-reset">
+    <button class="routine-reset-btn linkish" type="button" data-open-review-answers>
+      ${icon('refresh', 14)} <span>Start over with different answers</span>
+    </button>
+  </div>`;
+
+  const routineBlock = `<div class="routine-container">
+    ${routineBannerHtml}
+    ${routineHeadHtml}
+    <div class="routine-session-card">
+      <div class="routine-session-list">
+        ${sessionRowsHtml}
       </div>
-    `}
+    </div>
+    ${addSessionCardHtml}
+    ${routineFooterHtml}
+    ${routineStatusMarker}
   </div>`;
 
   const displayGroups = ACTIVE_CATEGORY_FILTER === 'all'
@@ -374,23 +428,26 @@ function recommendationScreen() {
       seenVenueIds.add(v.id);
     });
   } else if (ACTIVE_CATEGORY_FILTER === 'all') {
-    const userGroups = groups.length ? groups.map(groupById).filter(Boolean) : ACTIVITY_GROUPS;
-    userGroups.forEach(grp => {
-      const grpVenues = pool.filter(v => venueInGroup(v, grp) && !EXCLUDED_VENUES.has(v.id) && !seenVenueIds.has(v.id));
-      const take = (S.radiusKm === 'any' || userGroups.length <= 2) ? grpVenues : grpVenues.slice(0, 4);
-      take.forEach(v => {
-        curatedCards.push({ grp, v });
-        seenVenueIds.add(v.id);
+    const userGroups = groups.length ? groups.map(groupById).filter(Boolean) : [];
+    if (userGroups.length > 0) {
+      userGroups.forEach(grp => {
+        const grpVenues = pool.filter(v => venueInGroup(v, grp) && !EXCLUDED_VENUES.has(v.id) && !seenVenueIds.has(v.id));
+        const take = (S.radiusKm === 'any' || userGroups.length <= 2) ? grpVenues : grpVenues.slice(0, 4);
+        take.forEach(v => {
+          curatedCards.push({ grp, v });
+          seenVenueIds.add(v.id);
+        });
       });
-    });
-    ACTIVITY_GROUPS.forEach(grp => {
-      const grpVenues = pool.filter(v => venueInGroup(v, grp) && !EXCLUDED_VENUES.has(v.id) && !seenVenueIds.has(v.id));
-      const take = (S.radiusKm === 'any') ? grpVenues : grpVenues.slice(0, 3);
-      take.forEach(v => {
-        curatedCards.push({ grp, v });
-        seenVenueIds.add(v.id);
+    } else {
+      ACTIVITY_GROUPS.forEach(grp => {
+        const grpVenues = pool.filter(v => venueInGroup(v, grp) && !EXCLUDED_VENUES.has(v.id) && !seenVenueIds.has(v.id));
+        const take = (S.radiusKm === 'any') ? grpVenues : grpVenues.slice(0, 3);
+        take.forEach(v => {
+          curatedCards.push({ grp, v });
+          seenVenueIds.add(v.id);
+        });
       });
-    });
+    }
   } else {
     displayGroups.forEach(grp => {
       const grpVenues = pool.filter(v => venueInGroup(v, grp) && !EXCLUDED_VENUES.has(v.id));
@@ -481,6 +538,7 @@ function recommendationScreen() {
           const areaLabel = vResolved.nearestArea ? vResolved.nearestArea.name : (AREAS.find(a=>a.id===vResolved.area)||{}).name || '';
           const distLabel = areaLabel ? `${vResolved.distanceKm} km from ${esc(areaLabel)}` : `${vResolved.distanceKm} km away`;
           const isStarred = Boolean(S.starredVenues && S.starredVenues[vResolved.id]);
+          const matchInfo = explainVenueMatch(vResolved, S.answers, plan);
 
           const accessBadge = inPlan
             ? (vResolved.tier === 'plus'
@@ -492,13 +550,8 @@ function recommendationScreen() {
                venue instead of inferring it, or the badge lies whenever the two disagree. */
             : `<span class="access-pill access-pill--locked-overlay venue-card__lock">${icon('lock', 11)} Needs ${esc((firstPlanWithAccess(vResolved) || {}).name || 'a higher plan')}</span>`;
 
-          const matchBadge = vResolved.matchPct
-            ? `<span class="activity-card__badge">${vResolved.matchPct}% match</span>`
-            : '';
-
           return `<div class="activity-card venue-card ${inPlan ? '' : 'is-locked'} ${isStarred ? 'is-starred' : ''}" draggable="true" data-drag-venue="${esc(vResolved.id)}" data-drag-name="${esc(vResolved.name)}">
             <div class="activity-card__badges">
-              ${matchBadge}
               ${accessBadge}
             </div>
             <button class="activity-card__star-btn ${isStarred ? 'is-active' : ''}" type="button" data-toggle-star="${esc(vResolved.id)}" aria-label="${isStarred ? `Remove ${esc(vResolved.name)} from routine` : `Add ${esc(vResolved.name)} to routine`}" title="${isStarred ? 'In your routine' : 'Add to routine'}">
@@ -512,7 +565,14 @@ function recommendationScreen() {
               <div class="activity-card__activity"><b>${esc(grp.label)}</b></div>
               <div class="venue-card__meta" style="display:none">for ${esc(grp.label.toLowerCase())}</div>
               <button class="activity-card__vname venue-card__name linkish" data-venue="${esc(vResolved.id)}">${esc(vResolved.name)}</button>
-              <div class="activity-card__dist">${distLabel}</div>
+              <div class="activity-card__dist" style="display:none">${distLabel}</div>
+              <div class="match-reasons-row">
+                ${matchInfo.reasons.slice(0, 2).map(r => `
+                  <span class="match-pill match-pill--${r.type}">
+                    ${icon(r.icon, 11)} <span>${esc(r.text)}</span>
+                  </span>
+                `).join('')}
+              </div>
               <div class="activity-card__actions">
                 ${isStarred ? `
                   <button class="btn-pill btn-pill--sm btn-pill--starred btn-pill--block" type="button" data-toggle-star="${esc(vResolved.id)}" title="Click to remove from routine">
@@ -556,13 +616,13 @@ function recommendationScreen() {
     })()}
   </div>`;
 
-  const routineCount = routineVenues.length;
+  const routineCount = routineSessions.length;
   const recoTabs = `<div class="reco-tabs" role="tablist" aria-label="Recommendation view format">
-    <button class="reco-tab ${RECO_VIEW==='pillars'?'is-active':''}" type="button" data-set-reco-view="pillars" aria-selected="${RECO_VIEW==='pillars'}">
-      Activities &amp; studios
-    </button>
     <button class="reco-tab ${RECO_VIEW==='routine'||RECO_VIEW==='week'?'is-active':''}" type="button" data-set-reco-view="routine" data-toggle-routine aria-selected="${RECO_VIEW==='routine'||RECO_VIEW==='week'}">
       ${icon('calendar', 14)} <span>My routine</span> <span class="reco-tab__badge">${routineCount}</span>
+    </button>
+    <button class="reco-tab ${RECO_VIEW==='pillars'?'is-active':''}" type="button" data-set-reco-view="pillars" aria-selected="${RECO_VIEW==='pillars'}">
+      Activities &amp; studios
     </button>
     ${MOBILE() ? `<button class="reco-tab reco-tab--mobile ${RECO_VIEW==='plan'?'is-active':''}" type="button" data-set-reco-view="plan" aria-selected="${RECO_VIEW==='plan'}">
       ${icon('sparkle', 14)} <span>My Plan</span>
@@ -621,8 +681,7 @@ function recommendationScreen() {
      bigger allowance. `plusWanted > 0` matters: without it a plan that publishes no Plus
      allowance at all (Classic, 0) would satisfy 0 >= 0 and upsell on nothing. */
   const plusShort = Boolean(topPlan.plusCheckIns > plan.plusCheckIns && plusWanted > 0 && plusWanted >= plan.plusCheckIns);
-  const needsMax = Boolean(rec.planId === 'max' || plan.id === 'max' || plusShort);
-  const gridPlans = (needsMax ? PLANS : PLANS.filter(p => p.id !== 'max')).slice().sort((x, y) => x.rank - y.rank);
+  const gridPlans = PLANS.slice().sort((x, y) => x.rank - y.rank);
   const COUNTWORDS = { 1:'one', 2:'two', 3:'three', 4:'four', 5:'five', 6:'six' };
   const gridCount = COUNTWORDS[gridPlans.length] || String(gridPlans.length);
 
@@ -724,14 +783,14 @@ function recommendationScreen() {
                 ${isRecTier ? `<span class="allplans__tag allplans__tag--gold">Recommended</span>` : ''}
                 ${isCurrentPick && !isRecTier ? `<span class="allplans__tag allplans__tag--current">Active</span>` : ''}
               </div>
-              <div class="allplans__tagline">${esc(meta.headline)}</div>
+              <div class="allplans__headline allplans__tagline">${esc(meta.headline)}</div>
             </div>
-            <div class="allplans__price-box allplans__price-col">
-              <span class="allplans__price-val"><b>${p} &euro;</b></span>
-              <span class="allplans__price-unit"><small>/ mo</small></span>
+            <div class="allplans__price-box">
+              <span class="allplans__price-val">${p} &euro;</span>
+              <span class="allplans__price-unit">/ mo</span>
             </div>
           </div>
-          <div class="allplans__row-sub allplans__meta-wrap">
+          <div class="allplans__row-sub">
             <div class="allplans__allowance-line allplans__meta-line">
               <span>${visitsFor(pl)} visits &middot; ${esc(info.opensText)}</span>
             </div>
@@ -746,7 +805,7 @@ function recommendationScreen() {
       }).join('')}
     </div>
     <div class="allplans__foot">
-      ${!needsMax ? `<button class="linkish allplans__feature-link" type="button" data-go="plans">Compare every plan feature (including Max) &rarr;</button>` : `<button class="linkish allplans__feature-link" type="button" data-go="plans">Compare every plan feature &rarr;</button>`}
+      <button class="linkish allplans__feature-link" type="button" data-go="plans">Compare every plan feature &rarr;</button>
     </div>
   </details>`;
 
@@ -870,7 +929,7 @@ function recommendationScreen() {
     <button class="btn btn--primary paybar__cta" data-go="details">Continue</button>
   </div>
   ${planDrawer(plan, price, each, commitment, isRec, hereT, cheaperPlan, cheaperT, visitsFor, wp, allPlans)}
-  ${exitModal()}${venueSheet()}${appSheet()}${reviewAnswersSheet()}`;
+  ${exitModal()}${venueSheet()}${appSheet()}${reviewAnswersSheet()}${howToEditModal()}${swapSessionModal(SESSION_SWAP_DAY, plan, pool)}`;
 }
 
 /* For the visitor who already knows. Aligned in the PM session: a way past the
@@ -1138,7 +1197,7 @@ function plansScreen() {
     <div class="plans-layout">
       <div class="plans-main">
         <section class="plans-options-card" aria-label="Membership options">
-          <div class="plans-options-list" role="region" aria-label="Membership tiers">
+          <div class="plans-options-list plan-lines-group" role="region" aria-label="Membership tiers">
             ${planLines}
           </div>
 

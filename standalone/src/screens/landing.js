@@ -51,15 +51,32 @@ function landing() {
         <p class="terms-line">By continuing, you agree to our <button class="linkish" data-go="terms">Terms</button> and <button class="linkish" data-go="privacy">Privacy Policy</button>.</p>
         <p class="landing__alt">Already know what you want? <button class="linkish strong" type="button" data-go="plans">View memberships ${icon('arrowRight',17)}</button></p></form>`;
 
+  const fName = userFirstName();
+  const hasPlan = Boolean(isLoggedIn() || S.saveOptIn);
+  const planName = activePlanTitle();
+  const routineDays = (S.weekDays && S.weekDays.length) ? S.weekDays.length : (SESSIONS[S.answers?.frequency] || 2);
+
+  /* Saved plan hero card (when user has a saved plan or is logged in) vs fresh discovery hero */
+  const savedPlanHero = `
+    <div class="landing-hero-card landing-hero-card--saved">
+      <div class="landing-hero-card__badge">${icon('checkThin', 12)} <span>PLAN SAVED</span></div>
+      <h2 class="landing-hero-card__title">Welcome back${fName ? `, ${esc(fName)}` : ''}</h2>
+      <p class="landing-hero-card__value">Your ${esc(planName)} recommendation and ${routineDays}-day routine are ready to review or adapt.</p>
+      <div class="landing-hero-card__meta">
+        <span class="meta-item">${icon('checkThin', 14)} <span>${esc(planName)} membership</span></span>
+        <span class="meta-dot">&middot;</span>
+        <span class="meta-item">${icon('calendar', 14)} <span>${routineDays} days / week</span></span>
+      </div>
+      <button class="btn btn--primary btn--block landing-hero-card__btn" type="button" data-continue-plan>
+        <span>Continue your plan</span> ${icon('arrowRight', 18)}
+      </button>
+    </div>`;
+
   /* Clean, high-converting hero card + secondary actions */
   const guideFirst = `
     <div class="landing-hero-card">
       <div class="landing-hero-card__badge">${icon('sparkle',12)} <span>RECOMMENDED</span></div>
       <h2 class="landing-hero-card__title">Find the right membership for you</h2>
-      <!-- Testers met the name Urby here first and did not know what it was. The name stays,
-           because it is the guide's name everywhere else in the journey, but it now introduces
-           itself in the same breath — one clause, on its first appearance, rather than an extra
-           row on a card that already has five. -->
       <p class="landing-hero-card__value">Ask our membership guide how you want to move and get the custom routine and the plan that fits you.</p>
       <div class="landing-hero-card__meta">
         <span class="meta-item">${icon('question',15)} <span>4 quick questions</span></span>
@@ -71,8 +88,11 @@ function landing() {
       <button class="btn btn--primary btn--block landing-hero-card__btn" type="button" data-start-fit>
         <span>Build my routine</span> ${icon('arrowRight',18)}
       </button>
-    </div>
+    </div>`;
 
+  const heroCard = hasPlan ? savedPlanHero : guideFirst;
+
+  const shortcuts = `
     <div class="landing-sub-actions landing__shortcuts">
       <button class="sub-action-btn shortcut" type="button" data-go="search">
         <div class="sub-action-btn__left">
@@ -89,23 +109,24 @@ function landing() {
         </div>
         <span class="sub-action-btn__arrow">&rarr;</span>
       </button>
-    </div>`;
-  // Only show custom greeting if a real human first name is in contact details
-  const rawFirstName = (S.contact && S.contact.firstName && typeof S.contact.firstName === 'string')
-    ? S.contact.firstName.trim()
-    : '';
-  const hasRealName = rawFirstName && !rawFirstName.includes('@') && !rawFirstName.includes('.');
-  const firstName = hasRealName ? rawFirstName : null;
+    </div>
+    ${!isLoggedIn() ? `
+    <button class="landing-about-link landing-about-link--mobile" type="button" data-go="about">
+      ${icon('info',14)} <span>New to Urban Sports Club?</span> <b>See how it works</b> ${icon('arrowRight',14)}
+    </button>` : ''}`;
 
-  const loginBtnMobile = firstName
-    ? `<button class="user-nav-chip user-nav-chip--mobile" type="button" data-go="login">${icon('user', 14)} <span>Hi, ${esc(firstName)}</span></button>`
-    : `<button class="login-link login-link--mobile linkish" data-go="login">Log in</button>`;
+  const userChipMobile = userNavChip('mobile');
+  const userChipDesktop = userNavChip('desktop');
 
-  const loginBtnDesktop = firstName
-    ? `<button class="user-nav-chip user-nav-chip--desktop" type="button" data-go="login">${icon('user', 14)} <span>Hi, ${esc(firstName)}</span></button>`
-    : `<button class="login-link login-link--desktop linkish" data-go="login">Log in</button>`;
+  const loginBtnMobile = userChipMobile
+    ? userChipMobile
+    : `<button class="login-link login-link--mobile linkish" type="button" data-open-login>Log in</button>`;
 
-  const primary = VARIANT === 'email-first' ? emailFirst : guideFirst;
+  const loginBtnDesktop = userChipDesktop
+    ? userChipDesktop
+    : `<button class="login-link login-link--desktop linkish" type="button" data-open-login>Log in</button>`;
+
+  const primary = VARIANT === 'email-first' ? emailFirst : (heroCard + shortcuts);
   return `<main class="landing" id="main">
     <div class="landing__panel">
       <div class="landing__panelbar"><button class="wordmark linkish" style="text-decoration:none" data-go="landing">Urban Sports Club</button>
@@ -116,14 +137,15 @@ function landing() {
         ${primary}
       </div></div>
     <div class="landing__media">${loginBtnDesktop}
-      <img src="${IMG[HERO_SHOT.src]}" width="800" height="900" fetchpriority="high" alt="${esc(HERO_SHOT.alt)}" decoding="async"></div>
+      <img src="${IMG[HERO_SHOT.src]}" width="800" height="900" fetchpriority="high" alt="${esc(HERO_SHOT.alt)}" decoding="async">
+      ${!isLoggedIn() ? `
+      <button class="landing-about-link landing-about-link--desktop" type="button" data-go="about">
+        ${icon('info',14)} <span>New to Urban Sports Club?</span> <b>See how it works</b> ${icon('arrowRight',14)}
+      </button>` : ''}
+    </div>
   </main>
   <section class="ula-section"><div class="ula-section__inner">
     <div class="sr-only">What would you love to do more of?</div>
-    <!-- The question used to be asked twice on this page: once here, under a heading and a
-         lede, and once nowhere near the top. Now the panel asks it, so this section keeps
-         only the thing the panel cannot do — take a question of your own. It carries its
-         own heading and avatar, so it needs nothing above it. -->
     ${VARIANT === 'email-first' ? `<div class="ula-section__eyebrow">${ulaAvatar('sm')}<span>Urby · Membership guide</span></div>
     <h2 class="h-section">Start with one answer.</h2>
     <p class="ula-section__lede">Tell me what you want from movement and I&rsquo;ll find nearby places and a membership that fits. Pick one and we&rsquo;ll begin.</p>
@@ -138,12 +160,9 @@ function landing() {
     ${askBlock(false)}
   </div></section>
   <footer style="padding:40px 24px 60px;text-align:center" class="small muted">
-    <!-- The Terms and Privacy links used to hang off "By continuing…" under the email
-         field. Nothing on this page collects anything any more, so the sentence went and
-         the links moved here, where they belong on a page that makes no request. -->
     Urban Sports Club pilot · real plans, terms and venues · <button class="linkish" data-go="terms">Terms</button> · <button class="linkish" data-go="privacy">Privacy</button> · <button class="linkish" data-go="data">journey data</button> · <button class="linkish" data-go="email">follow-up email preview</button>
   </footer>
-  ${loginModal()}`;
+  ${globalModals()}`;
 }
 
 /* Where this page is looking from. If they have told us, it is theirs; if they have not,
