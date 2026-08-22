@@ -30,6 +30,41 @@ with sync_playwright() as p:
             P(f"{label}: two quiet ways past the question")
         else: F(f"{label}: the shortcuts row is wrong")
 
+        # People who do not know the product can self-select into one explanation.
+        # Desktop carries it over the photograph; phones put it below the image so it
+        # cannot cover the subject or compete with the guide card.
+        about_entry = pg.locator('.landing-about-link:visible')
+        if about_entry.count()==1 and about_entry.first.bounding_box()['height'] >= 44:
+            P(f"{label}: one accessible product explainer entry")
+        else: F(f"{label}: product explainer entry is missing, duplicated, or too small")
+        # The laptop regression was the quiet entry sitting just below the photo's fold.
+        # On stacked touch layouts it deliberately follows the image instead of covering it.
+        if not mob and w >= 1000:
+            entry_box = about_entry.first.bounding_box()
+            if entry_box and entry_box['y'] + entry_box['height'] <= h:
+                P(f"{label}: product explainer entry is above the fold")
+            else: F(f"{label}: product explainer entry falls below the fold")
+        about_entry.first.click(); pg.wait_for_timeout(250)
+        if pg.locator('.about-page h1').count()==1: P(f"{label}: product explainer opens")
+        else: F(f"{label}: product explainer did not open")
+        overflow = pg.evaluate("() => document.documentElement.scrollWidth > window.innerWidth")
+        P(f"{label}: explainer stays inside the viewport") if not overflow else F(f"{label}: explainer overflows horizontally")
+        if pg.locator('.about-pass').count()==1 and pg.locator('.about-week__moment').count()==5:
+            P(f"{label}: one membership visibly connects a five-part week")
+        else: F(f"{label}: changing-week explanation is incomplete")
+        if pg.locator('.about-page .btn--primary').count()==1:
+            P(f"{label}: explainer keeps one primary action")
+        else: F(f"{label}: explainer has multiple primary actions")
+        week_y = pg.locator('.about-week').bounding_box()['y']
+        variety_y = pg.locator('.about-variety').bounding_box()['y']
+        P(f"{label}: changing week comes before activity range") if week_y < variety_y else F(f"{label}: explainer sections are in the wrong order")
+        pg.screenshot(path=f"{OUT}/about-{w}x{h}.png", full_page=True)
+        pg.locator('.about-directory__hint').click(); pg.wait_for_timeout(250)
+        if pg.locator('.venuepage').count()==1: P(f"{label}: activity range link opens venues")
+        else: F(f"{label}: activity range link did not open venues")
+        pg.go_back(); pg.wait_for_timeout(250)
+        pg.locator('.about-nav [data-go="landing"]').last.click(); pg.wait_for_timeout(250)
+
         # start the journey and count visible Continue buttons
         pg.locator('[data-start-fit]').click(); pg.wait_for_timeout(700)
         n=pg.locator('[data-continue]:visible').count()
@@ -119,4 +154,3 @@ with sync_playwright() as p:
 
 print(f"\n=== {len(ok)} passed, {len(bad)} failed ===")
 for x in bad: print("  !",x)
-

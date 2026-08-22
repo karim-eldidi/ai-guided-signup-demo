@@ -43,8 +43,10 @@ with sync_playwright() as p:
     for sel in ['Unwind','Sauna & spa','Kreuzberg','Twice a week']:
         pg.locator(f'.option-card:has-text("{sel}")').first.click()
         pg.locator('[data-continue]:visible').first.click(); pg.wait_for_timeout(800)
-    # Karim's design, 14 Aug: the places are behind their own row — the row is the answer,
-    # and the cards, the search and the distance control are what you can do about it.
+    # Switch to Activities & studios tab if present
+    if pg.locator('[data-set-reco-view="pillars"]:visible').count():
+        pg.locator('[data-set-reco-view="pillars"]').first.click()
+        pg.wait_for_timeout(400)
     if pg.locator('.places__fold:not([open])').count():
         pg.locator('[data-toggle-places]').first.click(); pg.wait_for_timeout(450)
     names=pg.locator('.venue-card__name').all_inner_texts()
@@ -62,7 +64,7 @@ with sync_playwright() as p:
     pg.screenshot(path=f"{OUT}/venues-rendered.png", full_page=True)
 
     # Option A: Explore all venues navigates to the dedicated venue search & explorer
-    pg.locator('.made-for-you__explore-link, [data-go="search"]').first.click(); pg.wait_for_timeout(500)
+    pg.locator('.made-for-you__explore-link:visible, [data-go="search"]:visible').first.click(); pg.wait_for_timeout(500)
     box=pg.locator('.venuesearch input, input[name="q"], input[type="search"]').first
     P("the places carry their own search box") if box.is_visible() else F("no search box above the places")
     box.click(); box.type("sauna", delay=30); pg.wait_for_timeout(500)
@@ -87,7 +89,9 @@ with sync_playwright() as p:
     pg.locator('.topbar__right button').first.click(); pg.wait_for_timeout(500)
 
     # the sheet tells the truth, with a route to the source
-    pg.locator('#main [data-venue]').first.click(); pg.wait_for_timeout(600)
+    if pg.locator('[data-set-reco-view="pillars"]:visible').count():
+        pg.locator('[data-set-reco-view="pillars"]').first.click(); pg.wait_for_timeout(300)
+    pg.locator('#main [data-venue]:visible').first.click(); pg.wait_for_timeout(600)
     sheet=pg.locator('#venue-sheet')
     title=pg.locator('#sheet-title').inner_text()
     v=[x for x in V if x['name']==title]

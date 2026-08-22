@@ -163,8 +163,8 @@ with sync_playwright() as p:
 
     # Switch back to Activities tab and star a venue
     pg3.locator('[data-set-reco-view="pillars"]').first.click(); pg3.wait_for_timeout(400)
-    if pg3.locator('.activity-card__star-btn:not(.is-active)').count():
-        pg3.locator('.activity-card__star-btn:not(.is-active)').first.click(); pg3.wait_for_timeout(600)
+    if pg3.locator('.activity-card__star-btn:not(.is-active):visible').count():
+        pg3.locator('.activity-card__star-btn:not(.is-active):visible').first.click(force=True); pg3.wait_for_timeout(600)
         P("starred a new venue from activities tab")
     else:
         P("activities visible and interactive")

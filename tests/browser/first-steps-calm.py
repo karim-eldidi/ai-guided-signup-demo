@@ -68,6 +68,9 @@ with sync_playwright() as p:
         # still matters is how many are in view at a time.
         cards=pg.locator('.venue-grid--big .venue-card').count()
         P(f"{label} end: {cards} places in the rail") if cards>=4 else F(f"{label} end: only {cards} places offered")
+        if pg.locator('[data-set-reco-view="pillars"]:visible').count():
+            pg.locator('[data-set-reco-view="pillars"]').first.click()
+            pg.wait_for_timeout(300)
         vis=pg.evaluate("() => { const r=document.querySelector('.is-rail'); if(!r) return null;"
                         " const p=r.getBoundingClientRect();"
                         " return [...r.querySelectorAll('.venue-card')].filter(c=>{const b=c.getBoundingClientRect();"

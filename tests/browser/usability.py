@@ -94,7 +94,9 @@ with sync_playwright() as p:
 
     # 9. venue sheet opens in place and does not navigate
     before=h1(pg)
-    pg.locator('#main [data-venue]').first.click(); pg.wait_for_timeout(500)
+    if pg.locator('[data-set-reco-view="pillars"]:visible').count():
+        pg.locator('[data-set-reco-view="pillars"]').first.click(); pg.wait_for_timeout(300)
+    pg.locator('#main [data-venue]:visible').first.click(); pg.wait_for_timeout(500)
     if pg.locator('#venue-sheet').count():
         title=pg.locator('#sheet-title').inner_text()
         hrs=pg.locator('.sheet__row').count()

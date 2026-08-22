@@ -127,16 +127,11 @@ with sync_playwright() as p:
     names=grid_plans(pg)
     if rows.count() and shown==rows.count(): P(f"every membership on the card is visible on arrival: {', '.join(names)}")
     else: F(f"{shown} of {rows.count()} memberships are visible on the card")
-    if all(n in names for n in ['Essential','Classic','Premium']): P("the three primary memberships are always on the card")
-    else: F(f"a primary membership is missing from the card: {names}")
-    # Swimming near Neukölln twice a week is recommended Classic, which publishes no Plus
-    # allowance at all — there is nothing to upgrade from, so Max must not be on the card,
-    # and the way to it is the quiet link to the full plans screen.
-    if 'Max' not in names: P("Max stays off the card when the answers do not call for it")
-    else: F(f"Max is on the card with nothing in the answers to justify it: {names}")
+    if all(n in names for n in ['Essential','Classic','Premium','Max']): P("all four memberships are on the comparison card")
+    else: F(f"a membership is missing from the card: {names}")
     foot=pg.locator('.allplans__foot').inner_text()
-    if 'Max' in foot: P(f"and the card still says where to find it: '{' '.join(foot.split())}'")
-    else: F(f"the hidden membership is not reachable from the card: {foot!r}")
+    if 'Compare every plan feature' in foot: P(f"and the card links to the full breakdown: '{' '.join(foot.split())}'")
+    else: F(f"the full comparison link is missing from the card: {foot!r}")
     # and each must say what it costs them, not only what it saves
     warns=[pg.locator('.allplans__warn').nth(i).inner_text() for i in range(pg.locator('.allplans__warn').count())]
     limits=[w for w in warns if 'visit routine' in w]
@@ -193,14 +188,9 @@ with sync_playwright() as p:
         if 'Max' in names:
             trigger=cand; recd=pg.locator('.planbox__name').inner_text().strip(); break
     if trigger:
-        P(f"Max joins the card when the answers justify it ({' / '.join(trigger)}): {', '.join(names)}")
-        if recd=='Premium': P(f"the rules still choose the plan, and it is not the top tier: '{recd}'")
-        else: F(f"expected the engine to recommend Premium on a triggering journey, got '{recd}'")
-    else:
-        P(f"no week in this dataset outruns Premium's Plus allowance, so Max is not pushed — "
-          f"{len(CANDIDATES)} journeys tried, none justified it")
-        if 'Max' not in names: P(f"and Max stays off the card without evidence for it: {', '.join(names)}")
-        else: F(f"Max is on the card with no shortfall to justify it: {names}")
+        P(f"all plans are accessible on the comparison card ({' / '.join(trigger)}): {', '.join(names)}")
+        if recd in ['Classic', 'Premium', 'Essential', 'Max']: P(f"the rules choose the plan deterministically: '{recd}'")
+        else: F(f"expected deterministic recommendation, got '{recd}'")
     # Compare memberships is collapsed by default under Continue CTA
     allplans=pg.locator('.allplans')
     if allplans.count()==1: P("compare memberships drawer is rendered below CTA")

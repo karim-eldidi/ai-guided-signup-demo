@@ -150,8 +150,10 @@ with sync_playwright() as p:
     covm = re.search(r'(\d+) of the (\d+) places?', cov)
 
     # --- star a venue, then switch the plan -------------------------------
-    if pg.locator('.activity-card__star-btn:not(.is-active)').count():
-        pg.locator('.activity-card__star-btn:not(.is-active)').first.click(); pg.wait_for_timeout(400)
+    if pg.locator('[data-set-reco-view="pillars"]:visible').count():
+        pg.locator('[data-set-reco-view="pillars"]').first.click(); pg.wait_for_timeout(300)
+    if pg.locator('.activity-card__star-btn:not(.is-active):visible').count():
+        pg.locator('.activity-card__star-btn:not(.is-active):visible').first.click(); pg.wait_for_timeout(400)
         P("starred a venue to update routine")
     else:
         P("routine is populated")
