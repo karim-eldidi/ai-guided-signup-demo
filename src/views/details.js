@@ -24,6 +24,30 @@ export function detailsPage({ plan: planId, commitmentId, details = {}, errors =
     </div>`;
   };
 
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const dobParts = (d.birthDate && typeof d.birthDate === 'string') ? d.birthDate.split('-') : [];
+  const dYear = dobParts[0] || '';
+  const dMonth = dobParts[1] || '';
+  const dDay = dobParts[2] || '';
+  const dobField = `<div class="field field--dob">
+    <label id="dob-label">Date of birth</label>
+    <div class="dob-fields-row" role="group" aria-labelledby="dob-label">
+      <input id="dob_day" name="dob_day" type="text" inputmode="numeric" placeholder="DD" maxlength="2" value="${esc(dDay)}" autocomplete="bday-day" aria-label="Day of birth" required>
+      <select id="dob_month" name="dob_month" autocomplete="bday-month" aria-label="Month of birth" required>
+        <option value="">Month</option>
+        ${MONTHS.map((m, i) => {
+          const val = String(i + 1).padStart(2, '0');
+          const isSel = (dMonth === val || dMonth === String(i + 1));
+          return `<option value="${val}" ${isSel ? 'selected' : ''}>${m}</option>`;
+        }).join('')}
+      </select>
+      <input id="dob_year" name="dob_year" type="text" inputmode="numeric" placeholder="YYYY" maxlength="4" value="${esc(dYear)}" autocomplete="bday-year" aria-label="Year of birth" required>
+      <input id="birthDate" name="birthDate" type="hidden" value="${esc(d.birthDate||'')}">
+    </div>
+    ${errors.birthDate ? `<div class="field-error">${esc(errors.birthDate)}</div>` : ''}
+    <div class="field__why">${icon('info', 14)} <span>Venues check age on entry. Must be at least 18 years old.</span></div>
+  </div>`;
+
   const main = `<main class="content" id="main">
     <h1 class="h-question" style="margin-top:14px">Your details</h1>
     <p class="lede" style="margin-top:0;max-width:52ch">Just what we need to create your ${esc(plan.name)} membership. Nothing else.</p>
@@ -34,11 +58,7 @@ export function detailsPage({ plan: planId, commitmentId, details = {}, errors =
           ${field('firstName', 'First name', { autocomplete: 'given-name' })}
           ${field('lastName', 'Last name', { autocomplete: 'family-name' })}
           ${field('email', 'Email', { type: 'email', autocomplete: 'email', wide: true })}
-          ${field('birthDate', 'Date of birth', {
-            type: 'date',
-            autocomplete: 'bday',
-            why: 'Must be at least 18 years old.'
-          })}
+          ${dobField}
           ${field('phone', 'Mobile number', {
             type: 'tel',
             autocomplete: 'tel',

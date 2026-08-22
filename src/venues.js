@@ -6,7 +6,9 @@
  * No live availability, no personalisation beyond the answers given.
  */
 
-import { activityIdsFor } from './activities.js';
+import { activityIdsFor, ACTIVITY_GROUPS } from './activities.js';
+import { includedIn } from './coverage.js';
+import { PLANS } from './plans.js';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
@@ -79,36 +81,48 @@ export function matchVenues(answers = {}, limit = 6) {
   const goalAffinities = [...new Set(goalList.flatMap((g) => GOAL_AFFINITY[g] || []))];
   const affinity = chosen.length ? chosen : goalAffinities;
 
+  const prefs = answers.preferences || {};
+  const sportFocus = Array.isArray(prefs.sportFocus) ? prefs.sportFocus : [];
+  const minRating = prefs.minRating ? Number(prefs.minRating) : null;
+  const strictlyNearMe = Boolean(prefs.strictlyNearMe);
+
   const scored = VENUES.map((v) => {
     const km = nearestOf(v);
     const hits = v.activities.filter((a) => affinity.includes(a));
-    // Closer is better; matching the stated goal is worth roughly 1.5 km of walking.
-    const score = hits.length * 1.5 - km;
-    return { ...v, distanceKm: km, affinityHits: hits, score };
+    const focusHits = v.activities.filter((a) => sportFocus.includes(a));
+    const vRating = v.rating !== undefined ? Number(v.rating) : 4.5;
+    const ratingPenalty = minRating && vRating < minRating ? -800 : 0;
+    const score = (hits.length > 0 ? 1000 + hits.length * 10 : 0) + (focusHits.length * 200) + ratingPenalty - km;
+    return { ...v, rating: vRating, distanceKm: km, affinityHits: hits, score };
   }).sort((a, b) => b.score - a.score);
 
-  let radiusKm = 3;
-  let nearby = scored.filter((v) => v.distanceKm <= radiusKm);
-  let widened = false;
-  if (nearby.length < 3) {
-    radiusKm = 8;
-    nearby = scored.filter((v) => v.distanceKm <= radiusKm);
-    widened = true;
-  }
-  if (nearby.length < 3) {
-    nearby = scored;
-    radiusKm = null;
-    widened = true;
+  let candidates = chosen.length ? scored.filter((v) => v.affinityHits.length > 0) : scored;
+  if (minRating) {
+    const rated = candidates.filter((v) => (v.rating || 4.5) >= minRating);
+    if (rated.length >= 2) candidates = rated;
   }
 
-  /* If they named activities and nothing within the radius does any of them,
-     look across the whole city rather than reporting "0 of 0 places". The
-     distances stay real, so the screen can say how much further it is. */
+  let radiusKm = 3;
+  let nearby = candidates.filter((v) => v.distanceKm <= radiusKm);
+  let widened = false;
+  if (!strictlyNearMe) {
+    if (nearby.length < 3) {
+      radiusKm = 8;
+      nearby = candidates.filter((v) => v.distanceKm <= radiusKm);
+      widened = true;
+    }
+    if (nearby.length < 3) {
+      nearby = candidates;
+      radiusKm = null;
+      widened = true;
+    }
+  }
+
   let reachedFurther = false;
-  if (chosen.length && !nearby.some((v) => v.activities.some((a) => chosen.includes(a)))) {
+  if (chosen.length && !nearby.length) {
     const anywhereMatches = scored.filter((v) => v.activities.some((a) => chosen.includes(a)));
     if (anywhereMatches.length) {
-      nearby = [...nearby, ...anywhereMatches].filter((v, i, all) => all.findIndex((x) => x.id === v.id) === i);
+      nearby = anywhereMatches;
       reachedFurther = true;
     }
   }
@@ -128,3 +142,103 @@ export function matchVenues(answers = {}, limit = 6) {
 export function varietyScore(match) {
   return match.categories.length;
 }
+
+/**
+ * Explain why a venue matches the visitor's answers.
+ * Returns an array of authentic, factual match reasons.
+ */
+export function explainVenueMatch(venue, answers = {}, plan = null) {
+  const reasons = [];
+  if (!venue) return { reasons, matchScore: 0, isTopMatch: false, primaryReason: null };
+
+  // 1. Location Proximity
+  const areaLabel = venue.nearestArea ? venue.nearestArea.name : (areaById(venue.area) || {}).name;
+  if (venue.distanceKm !== undefined && venue.distanceKm !== null) {
+    if (venue.distanceKm <= 1.5) {
+      reasons.push({
+        type: 'location',
+        strong: true,
+        text: areaLabel ? `${venue.distanceKm} km from ${areaLabel}` : `${venue.distanceKm} km away`,
+        icon: 'map-pin'
+      });
+    } else {
+      reasons.push({
+        type: 'location',
+        strong: false,
+        text: areaLabel ? `${venue.distanceKm} km from ${areaLabel}` : `${venue.distanceKm} km away`,
+        icon: 'map-pin'
+      });
+    }
+  }
+
+  // 2. Activity Match
+  const rawChosen = answers.activities || [];
+  const chosenActs = activityIdsFor(rawChosen);
+  const matchingActs = (venue.activities || []).filter((a) => chosenActs.includes(a));
+  if (matchingActs.length > 0) {
+    const grp = ACTIVITY_GROUPS.find((g) => g.activities.some((a) => matchingActs.includes(a)));
+    reasons.push({
+      type: 'activity',
+      strong: true,
+      text: grp ? `Matches your ${grp.label} focus` : 'Matches your activity preference',
+      icon: grp ? grp.icon : 'bolt'
+    });
+  }
+
+  // 3. Goal Synergy
+  const goals = Array.isArray(answers.goal)
+    ? answers.goal.filter((x) => x && x !== '__skip')
+    : (answers.goal && answers.goal !== '__skip' ? [answers.goal] : []);
+
+  if (goals.includes('unwind') && (venue.activities || []).some((a) => ['yoga', 'pilates', 'sauna', 'spa', 'meditation', 'swimming'].includes(a))) {
+    reasons.push({
+      type: 'goal',
+      strong: true,
+      text: 'Fits your Unwind & relax goal',
+      icon: 'leaf'
+    });
+  } else if (goals.includes('move_more') && (venue.activities || []).some((a) => ['gym', 'strength', 'crossfit', 'hiit', 'boxing'].includes(a))) {
+    reasons.push({
+      type: 'goal',
+      strong: true,
+      text: 'Great for your fitness & strength goal',
+      icon: 'dumbbell'
+    });
+  } else if (goals.includes('try_new') && (venue.activities || []).some((a) => ['bouldering', 'climbing', 'dance', 'martial_arts', 'padel', 'tennis'].includes(a))) {
+    reasons.push({
+      type: 'goal',
+      strong: true,
+      text: 'Great for trying new activities',
+      icon: 'sparkles'
+    });
+  }
+
+  // 4. Plan Access
+  if (plan) {
+    const planId = typeof plan === 'string' ? plan : plan.id;
+    const planObj = typeof plan === 'string' ? (PLANS.find((p) => p.id === plan) || { name: plan }) : plan;
+    const inc = includedIn(venue, planId);
+    if (inc) {
+      const accessStr = venue.access && venue.access[planId];
+      const visitsDesc = accessStr && !/^not included/i.test(accessStr) ? ` (${accessStr})` : '';
+      reasons.push({
+        type: 'access',
+        strong: true,
+        text: `Included in ${planObj.name}${visitsDesc}`,
+        icon: 'checkThin'
+      });
+    }
+  }
+
+  const matchScore = reasons.filter((r) => r.strong).length;
+  const isTopMatch = matchScore >= 3;
+  const primaryReason = reasons.find((r) => r.strong) || reasons[0] || null;
+
+  return {
+    reasons,
+    matchScore,
+    isTopMatch,
+    primaryReason
+  };
+}
+

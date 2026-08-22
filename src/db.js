@@ -52,12 +52,49 @@ db.exec(`
     created_at TEXT NOT NULL
   );
 
+  CREATE TABLE IF NOT EXISTS users (
+    id                  TEXT PRIMARY KEY,
+    email               TEXT UNIQUE NOT NULL,
+    first_name          TEXT,
+    last_name           TEXT,
+    auth_provider       TEXT NOT NULL DEFAULT 'email',
+    marketing_consent   INTEGER NOT NULL DEFAULT 0,
+    created_at          TEXT NOT NULL,
+    updated_at          TEXT NOT NULL
+  );
+
+  CREATE TABLE IF NOT EXISTS user_preferences (
+    user_id             TEXT PRIMARY KEY,
+    min_rating          REAL,
+    strictly_near_me    INTEGER NOT NULL DEFAULT 0,
+    sport_focus         TEXT DEFAULT '[]',
+    updated_at          TEXT NOT NULL,
+    FOREIGN KEY(user_id) REFERENCES users(id)
+  );
+
+  CREATE TABLE IF NOT EXISTS user_favorites (
+    user_id             TEXT NOT NULL,
+    venue_id            TEXT NOT NULL,
+    frequency           INTEGER NOT NULL DEFAULT 1,
+    created_at          TEXT NOT NULL,
+    PRIMARY KEY(user_id, venue_id),
+    FOREIGN KEY(user_id) REFERENCES users(id)
+  );
+
   CREATE INDEX IF NOT EXISTS idx_events_session ON events(session_id);
   CREATE INDEX IF NOT EXISTS idx_sessions_token ON sessions(resume_token);
+  CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 `);
 
 // Additive migrations for pilot databases created by an earlier version.
-for (const [column, definition] of [['plan_overridden', 'INTEGER NOT NULL DEFAULT 0']]) {
+for (const [column, definition] of [
+  ['plan_overridden', 'INTEGER NOT NULL DEFAULT 0'],
+  ['first_name', 'TEXT'],
+  ['last_name', 'TEXT'],
+  ['preferences', "TEXT NOT NULL DEFAULT '{}'"],
+  ['starred_venues', "TEXT NOT NULL DEFAULT '{}'"],
+  ['user_id', 'TEXT']
+]) {
   try {
     db.exec(`ALTER TABLE sessions ADD COLUMN ${column} ${definition}`);
   } catch {
@@ -97,10 +134,83 @@ export function latestIdentifiedSession() {
   return row ? hydrate(row) : null;
 }
 
+export function getUserByEmail(email) {
+  if (!email) return null;
+  const normalized = email.trim().toLowerCase();
+  const row = db.prepare('SELECT * FROM users WHERE LOWER(email) = ?').get(normalized);
+  if (!row) return null;
+  const prefsRow = db.prepare('SELECT * FROM user_preferences WHERE user_id = ?').get(row.id);
+  const favRows = db.prepare('SELECT venue_id, frequency FROM user_favorites WHERE user_id = ?').all(row.id);
+  const favorites = {};
+  for (const f of favRows) favorites[f.venue_id] = { freq: f.frequency };
+  return {
+    ...row,
+    marketing_consent: Boolean(row.marketing_consent),
+    preferences: prefsRow ? {
+      minRating: prefsRow.min_rating,
+      strictlyNearMe: Boolean(prefsRow.strictly_near_me),
+      sportFocus: safeParse(prefsRow.sport_focus, [])
+    } : { minRating: null, strictlyNearMe: false, sportFocus: [] },
+    favorites
+  };
+}
+
+export function createUserOrUpdate({ email, firstName = null, lastName = null, authProvider = 'email', marketingConsent = 0 } = {}) {
+  if (!email) return null;
+  const normalized = email.trim().toLowerCase();
+  const existing = db.prepare('SELECT * FROM users WHERE LOWER(email) = ?').get(normalized);
+  const now = nowIso();
+  let userId;
+  if (existing) {
+    userId = existing.id;
+    db.prepare(
+      `UPDATE users SET first_name = COALESCE(?, first_name), last_name = COALESCE(?, last_name),
+       auth_provider = ?, marketing_consent = ?, updated_at = ? WHERE id = ?`
+    ).run(firstName, lastName, authProvider, marketingConsent ? 1 : 0, now, userId);
+  } else {
+    userId = randomUUID();
+    db.prepare(
+      `INSERT INTO users (id, email, first_name, last_name, auth_provider, marketing_consent, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+    ).run(userId, normalized, firstName, lastName, authProvider, marketingConsent ? 1 : 0, now, now);
+  }
+  return getUserByEmail(normalized);
+}
+
+export function saveUserPreferences(userId, prefs = {}) {
+  if (!userId) return null;
+  const now = nowIso();
+  const minRating = prefs.minRating !== undefined ? prefs.minRating : null;
+  const strictlyNearMe = prefs.strictlyNearMe ? 1 : 0;
+  const sportFocus = JSON.stringify(prefs.sportFocus || []);
+  db.prepare(
+    `INSERT INTO user_preferences (user_id, min_rating, strictly_near_me, sport_focus, updated_at)
+     VALUES (?, ?, ?, ?, ?)
+     ON CONFLICT(user_id) DO UPDATE SET
+       min_rating = excluded.min_rating,
+       strictly_near_me = excluded.strictly_near_me,
+       sport_focus = excluded.sport_focus,
+       updated_at = excluded.updated_at`
+  ).run(userId, minRating, strictlyNearMe, sportFocus, now);
+  return prefs;
+}
+
+export function saveUserFavorites(userId, favorites = {}) {
+  if (!userId) return null;
+  const now = nowIso();
+  db.prepare('DELETE FROM user_favorites WHERE user_id = ?').run(userId);
+  const stmt = db.prepare('INSERT INTO user_favorites (user_id, venue_id, frequency, created_at) VALUES (?, ?, ?, ?)');
+  for (const [venueId, meta] of Object.entries(favorites)) {
+    const freq = typeof meta === 'number' ? meta : (meta?.freq || 1);
+    stmt.run(userId, venueId, freq, now);
+  }
+  return favorites;
+}
+
 const ALLOWED = new Set([
-  'email', 'auth_method', 'marketing_consent', 'consent_asked', 'answers',
+  'email', 'first_name', 'last_name', 'auth_method', 'marketing_consent', 'consent_asked', 'answers',
   'recommendation', 'chosen_plan_id', 'plan_overridden', 'commitment_id', 'start_date',
-  'details', 'payment_status', 'last_step', 'source', 'campaign', 'returned_count'
+  'details', 'preferences', 'starred_venues', 'user_id', 'payment_status', 'last_step', 'source', 'campaign', 'returned_count'
 ]);
 
 export function updateSession(id, patch = {}) {
@@ -148,12 +258,44 @@ export function eventCounts() {
     .all();
 }
 
+/** Prepares structured export payload ready for USC upstream CRM/membership service */
+export function createMembershipExportPayload(sessionId) {
+  const session = getSession(sessionId);
+  if (!session) return null;
+  return {
+    version: '2026-08',
+    exportedAt: nowIso(),
+    sessionId: session.id,
+    userId: session.user_id,
+    identity: {
+      email: session.email,
+      firstName: session.first_name || (session.details && session.details.firstName) || null,
+      lastName: session.last_name || (session.details && session.details.lastName) || null,
+      marketingConsent: session.marketing_consent,
+      authMethod: session.auth_method
+    },
+    membership: {
+      planId: session.chosen_plan_id || (session.recommendation && session.recommendation.planId),
+      commitmentId: session.commitment_id || 'monthly',
+      startDate: session.start_date,
+      paymentStatus: session.payment_status
+    },
+    profile: {
+      answers: session.answers,
+      preferences: session.preferences,
+      starredVenues: session.starred_venues
+    }
+  };
+}
+
 function hydrate(row) {
   return {
     ...row,
     answers: safeParse(row.answers, {}),
     recommendation: safeParse(row.recommendation, null),
     details: safeParse(row.details, null),
+    preferences: safeParse(row.preferences, { minRating: null, strictlyNearMe: false, sportFocus: [] }),
+    starred_venues: safeParse(row.starred_venues, {}),
     marketing_consent: Boolean(row.marketing_consent),
     consent_asked: Boolean(row.consent_asked),
     plan_overridden: Boolean(row.plan_overridden)
@@ -168,3 +310,4 @@ function safeParse(value, fallback) {
     return fallback;
   }
 }
+

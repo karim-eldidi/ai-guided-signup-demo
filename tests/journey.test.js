@@ -17,7 +17,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
 import { recommend } from '../src/recommend.js';
-import { matchVenues, distanceKm, AREAS } from '../src/venues.js';
+import { matchVenues, explainVenueMatch, distanceKm, AREAS, VENUES } from '../src/venues.js';
 import { coverage, upsell, downsell } from '../src/coverage.js';
 import { PLANS } from '../src/plans.js';
 import { weekPlan, perSession, SESSIONS } from '../src/weekplan.js';
@@ -90,6 +90,14 @@ describe('venue matching', () => {
     const match = matchVenues({ area: 'wedding', goal: 'try_new' });
     assert.equal(typeof match.widened, 'boolean');
     if (match.radiusKm === null) assert.equal(match.widened, true);
+  });
+
+  test('activity matching strictly prioritises matching activities', () => {
+    const match = matchVenues({ area: 'mitte', activities: ['box'] });
+    assert.ok(match.venues.length > 0, 'expected at least one martial arts / boxing match');
+    for (const v of match.venues) {
+      assert.ok(v.affinityHits.length > 0, `venue ${v.name} was returned without matching chosen activity`);
+    }
   });
 });
 
@@ -222,6 +230,19 @@ describe('coverage', () => {
           `${v.name} is counted as included on Classic but its page says otherwise`);
       }
     }
+  });
+
+  test('explainVenueMatch generates authentic, traceable match reasons', () => {
+    const mitteGyms = matchVenues({ area: 'mitte', activities: ['gym'] }).venues;
+    assert.ok(mitteGyms.length > 0);
+    const topGym = mitteGyms[0];
+    const explanation = explainVenueMatch(topGym, { area: 'mitte', activities: ['gym'], goal: 'move_more' }, 'classic');
+    assert.ok(explanation.reasons.length >= 2, 'should provide multiple distinct match reasons');
+    assert.ok(explanation.reasons.some((r) => r.type === 'location' && r.text.includes('km')));
+    assert.ok(explanation.reasons.some((r) => r.type === 'activity'));
+    assert.ok(explanation.reasons.some((r) => r.type === 'goal'));
+    assert.ok(explanation.reasons.some((r) => r.type === 'access'));
+    assert.equal(explanation.isTopMatch, true);
   });
 
   test('never counts a venue twice across groups', () => {

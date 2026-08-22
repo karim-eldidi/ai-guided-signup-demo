@@ -31,7 +31,9 @@ import { dirname, join, normalize, extname } from 'node:path';
 
 import {
   createSession, getSession, getSessionByToken, updateSession,
-  recordEvent, allSessions, eventCounts, latestIdentifiedSession
+  recordEvent, allSessions, eventCounts, latestIdentifiedSession,
+  getUserByEmail, createUserOrUpdate, saveUserPreferences, saveUserFavorites,
+  createMembershipExportPayload
 } from './src/db.js';
 import { QUESTIONS, questionById, nextQuestion, isFitComplete, optionsFor } from './src/questions.js';
 import { AREAS, matchVenues } from './src/venues.js';
@@ -94,6 +96,15 @@ function redirect(res, location, extraHeaders = {}) {
   res.end();
 }
 
+function json(res, data, status = 200, extraHeaders = {}) {
+  res.writeHead(status, {
+    'content-type': 'application/json; charset=utf-8',
+    'cache-control': 'no-store',
+    ...extraHeaders
+  });
+  res.end(JSON.stringify(data));
+}
+
 function sessionCookie(id) {
   return `${COOKIE}=${id}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${60 * 60 * 24 * 30}`;
 }
@@ -107,6 +118,14 @@ async function readBody(req) {
     chunks.push(chunk);
   }
   const raw = Buffer.concat(chunks).toString('utf8');
+  const contentType = (req.headers['content-type'] || '').toLowerCase();
+  if (contentType.includes('application/json')) {
+    try {
+      return JSON.parse(raw);
+    } catch {
+      return {};
+    }
+  }
   /* Checkboxes post the same name several times. Object.fromEntries would keep
      only the last one, which silently threw away every activity but one. */
   const params = new URLSearchParams(raw);
@@ -262,6 +281,122 @@ const server = createServer(async (req, res) => {
 
   try {
     if (req.method === 'GET' && (await serveStatic(path, res))) return;
+
+    /* ---------- API endpoints for user profile, auth, preferences & export ---------- */
+    if (path === '/api/auth/login' && req.method === 'POST') {
+      const { session, setCookie } = ensureSession(req, url);
+      const body = await readBody(req);
+      const email = (body.email || '').trim();
+      const provider = body.provider || 'email';
+      const firstName = body.firstName || body.first_name || null;
+      const lastName = body.lastName || body.last_name || null;
+      const marketing = Boolean(body.marketingConsent || body.marketing);
+
+      if (!validEmail(email) && provider === 'email') {
+        return json(res, { ok: false, error: 'Invalid email address' }, 400);
+      }
+      const finalEmail = validEmail(email) ? email : `demo.${provider}.user@example.com`;
+      const user = createUserOrUpdate({
+        email: finalEmail,
+        firstName,
+        lastName,
+        authProvider: provider,
+        marketingConsent: marketing
+      });
+      updateSession(session.id, {
+        user_id: user.id,
+        email: user.email,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        auth_method: user.auth_provider,
+        marketing_consent: user.marketing_consent,
+        consent_asked: true
+      });
+      recordEvent(session.id, 'user_logged_in', { email: user.email, authMethod: provider });
+      return json(res, { ok: true, user, session: getSession(session.id) }, 200, setCookie ? { 'set-cookie': setCookie } : {});
+    }
+
+    if (path === '/api/auth/logout' && req.method === 'POST') {
+      const cookies = parseCookies(req);
+      const session = getSession(cookies[COOKIE]);
+      if (session) {
+        recordEvent(session.id, 'user_logged_out');
+      }
+      return json(res, { ok: true }, 200, { 'set-cookie': `${COOKIE}=; Path=/; HttpOnly; Max-Age=0` });
+    }
+
+    if (path === '/api/user/me' && req.method === 'GET') {
+      const cookies = parseCookies(req);
+      const session = getSession(cookies[COOKIE]);
+      if (!session || !session.email) {
+        return json(res, { authenticated: false, user: null, session: session || null }, 200);
+      }
+      const user = getUserByEmail(session.email);
+      return json(res, { authenticated: true, user, session }, 200);
+    }
+
+    if (path === '/api/user/profile' && req.method === 'POST') {
+      const { session, setCookie } = ensureSession(req, url);
+      const body = await readBody(req);
+      const firstName = (body.firstName || body.first_name || '').trim() || null;
+      const lastName = (body.lastName || body.last_name || '').trim() || null;
+      const email = (body.email || session.email || '').trim();
+      if (!validEmail(email)) {
+        return json(res, { ok: false, error: 'Valid email is required' }, 400);
+      }
+      const user = createUserOrUpdate({ email, firstName, lastName, authProvider: session.auth_method || 'email' });
+      updateSession(session.id, {
+        user_id: user.id,
+        email: user.email,
+        first_name: user.first_name,
+        last_name: user.last_name
+      });
+      recordEvent(session.id, 'profile_updated', { email: user.email, firstName, lastName });
+      return json(res, { ok: true, user, session: getSession(session.id) }, 200, setCookie ? { 'set-cookie': setCookie } : {});
+    }
+
+    if (path === '/api/user/preferences' && req.method === 'POST') {
+      const { session, setCookie } = ensureSession(req, url);
+      const body = await readBody(req);
+      const prefs = {
+        minRating: body.minRating !== undefined ? (body.minRating === null ? null : Number(body.minRating)) : null,
+        strictlyNearMe: Boolean(body.strictlyNearMe),
+        sportFocus: Array.isArray(body.sportFocus) ? body.sportFocus : []
+      };
+      if (session.user_id) {
+        saveUserPreferences(session.user_id, prefs);
+      }
+      updateSession(session.id, { preferences: prefs });
+      recordEvent(session.id, 'preferences_updated', prefs);
+      return json(res, { ok: true, preferences: prefs }, 200, setCookie ? { 'set-cookie': setCookie } : {});
+    }
+
+    if (path === '/api/user/favorites' && req.method === 'POST') {
+      const { session, setCookie } = ensureSession(req, url);
+      const body = await readBody(req);
+      const favorites = body.favorites || {};
+      const count = Object.keys(favorites).length;
+      const isLoggedIn = Boolean(session.user_id || session.email);
+      if (!isLoggedIn && count > 10) {
+        return json(res, { ok: false, error: 'guest_limit_reached', max: 10, count }, 403);
+      }
+      if (session.user_id) {
+        saveUserFavorites(session.user_id, favorites);
+      }
+      updateSession(session.id, { starred_venues: favorites });
+      recordEvent(session.id, 'favorites_synced', { count });
+      return json(res, { ok: true, favorites, count }, 200, setCookie ? { 'set-cookie': setCookie } : {});
+    }
+
+    if (path === '/api/membership/export' && (req.method === 'GET' || req.method === 'POST')) {
+      const cookies = parseCookies(req);
+      const session = getSession(cookies[COOKIE]);
+      if (!session) {
+        return json(res, { ok: false, error: 'No active session' }, 404);
+      }
+      const payload = createMembershipExportPayload(session.id);
+      return json(res, { ok: true, exportPayload: payload }, 200);
+    }
 
     /* ---------- landing ---------- */
     if (path === '/' && req.method === 'GET') {
@@ -477,11 +612,18 @@ const server = createServer(async (req, res) => {
       if (!requireIdentified(session, res)) return;
       const form = await readBody(req);
 
+      const dDay = (form.dob_day || '').trim().replace(/\D/g, '');
+      const dMonth = (form.dob_month || '').trim();
+      const dYear = (form.dob_year || '').trim().replace(/\D/g, '');
+      const birthDate = (dDay && dMonth && dYear)
+        ? `${dYear}-${dMonth.padStart(2, '0')}-${dDay.padStart(2, '0')}`
+        : (form.birthDate || '').trim();
+
       const details = {
         firstName: (form.firstName || '').trim(),
         lastName: (form.lastName || '').trim(),
         email: (form.email || '').trim(),
-        birthDate: (form.birthDate || '').trim(),
+        birthDate,
         phone: (form.phone || '').trim(),
         street: (form.street || '').trim(),
         postcode: (form.postcode || '').trim(),
@@ -736,7 +878,7 @@ const server = createServer(async (req, res) => {
   }
 });
 
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log('');
   console.log('  Urban Sports Club — Urby pilot');
   console.log(`  → http://localhost:${PORT}`);

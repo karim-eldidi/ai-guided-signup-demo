@@ -26,7 +26,8 @@ export function page({ title, body, bodyClass = '', script = '', showBanner = tr
      render identically and the type hierarchy collapses. -->
 <link rel="preload" href="/fonts/figtree-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/styles.css">
-<link rel="icon" href="data:,">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23111827'/%3E%3Cpath d='M8.5 7h6v3h-3v11a4.5 4.5 0 0 0 9 0V10h-3V7h6v14a7.5 7.5 0 0 1-15 0V7z' fill='%23ffffff'/%3E%3Crect x='20.5' y='7' width='3' height='3' fill='%23ffffff'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%23111827'/%3E%3Cpath d='M48 40h34v16H64v62a26 26 0 0 0 52 0V56H98V40h34v78a42 42 0 0 1-84 0V40z' fill='%23ffffff'/%3E%3Crect x='116' y='40' width='16' height='16' fill='%23ffffff'/%3E%3C/svg%3E">
 </head>
 <body class="${bodyClass}">
 <a class="skip-link" href="#main">Skip to main content</a>

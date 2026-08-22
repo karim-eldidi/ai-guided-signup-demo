@@ -35,9 +35,16 @@ export function availableGroups(venues = [], min = 1) {
   return ACTIVITY_GROUPS.filter((g) => venues.filter((v) => venueInGroup(v, g)).length >= min);
 }
 
-/** Selected group ids -> the venue activity ids they stand for. */
 export function activityIdsFor(groupIds = []) {
-  return [...new Set(groupIds.flatMap((id) => (groupById(id) || { activities: [] }).activities))];
+  const ids = Array.isArray(groupIds) ? groupIds : (groupIds ? [groupIds] : []);
+  return [...new Set(ids.flatMap((id) => {
+    const grp = groupById(id);
+    if (grp) return grp.activities;
+    const byAct = ACTIVITY_GROUPS.find((g) => g.id === id || g.activities.includes(id));
+    if (byAct) return byAct.activities;
+    if (id === 'box') return (groupById('fight') || { activities: ['boxing', 'martial_arts'] }).activities;
+    return [id];
+  }))];
 }
 
 /**
